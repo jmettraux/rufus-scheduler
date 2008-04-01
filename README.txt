@@ -54,9 +54,9 @@ http://rubyforge.org/tracker/?atid=18584&group_id=4812&func=browse
 
 == source
 
-http://rufus.rubyforge.org/svn/trunk/scheduler
+http://github.com/jmettraux/rufus-scheduler
 
-    svn checkout http://rufus.rubyforge.org/svn/trunk/scheduler
+    git clone git://github.com/jmettraux/rufus-scheduler.git
 
 
 == author
