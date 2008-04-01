@@ -1,0 +1,27 @@
+
+= rufus-scheduler CHANGELOG.txt
+
+
+== rufus-scheduler - 1.0.5    released 2008/03/17
+
+- bug   #18363 : constrained precision to 0.0 < p <= 1.0 - s188
+- todo  #18821 : best effort drift correction integrated - s187
+- bug   #18513 : 0 seconds and :drop_seconds => "0m". Fixed - s186
+
+
+== rufus-scheduler - 1.0.4    released 2008/02/29
+
+- todo  #18474 : implemented to_duration_array() - s183
+- todo  #18472 : added Rufus::to_time_string - s181
+
+
+== rufus-scheduler - 1.0.2    released 2008/01/26
+
+- patch #17505 : added params :first_at and :first_in for schedule_every()
+                 a patch by John Didion - s115
+
+
+== rufus-scheduler - 1.0    released 2008/01/24
+
+- initial release after "openwferu-scheduler" - 0.9.16
+
