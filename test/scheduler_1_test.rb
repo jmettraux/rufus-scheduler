@@ -33,19 +33,16 @@ class Scheduler1Test < Test::Unit::TestCase
 
         sleep 0.300
 
-        successful = true
+        count = nil
 
-        200000.times do
-            #assert_not_nil scheduler.get_job(job_id)
-            if scheduler.get_job(job_id) == nil
-                successful = false
-                break
-            end
+        200_000.times do |i|
+            break if scheduler.get_job(job_id) == nil
+            count = i + 1
         end
 
         scheduler.sstop
 
-        assert successful
+        assert_equal 200_000, count
     end
 
     def test_1
@@ -59,19 +56,17 @@ class Scheduler1Test < Test::Unit::TestCase
 
         sleep 0.300
 
-        successful = true
+        count = 1
 
-        200000.times do
+        200_000.times do
             #assert_equal 1, scheduler.find_jobs("Avery").size
-            if scheduler.find_jobs("Avery").size != 1
-                successful = false
-                break
-            end
+            count = scheduler.find_jobs("Avery").size
+            break if count != 1
         end
 
         scheduler.sstop
 
-        assert successful
+        assert_equal 1, count
     end
 
     #

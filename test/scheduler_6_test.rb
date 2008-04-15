@@ -46,6 +46,8 @@ class Scheduler6Test < Test::Unit::TestCase
 
         assert_equal "01", st
         assert_equal s0, s1
+
+        s.stop
     end
 end
 

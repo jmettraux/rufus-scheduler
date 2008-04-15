@@ -65,6 +65,11 @@ John Mettraux, jmettraux@gmail.com
 http://jmettraux.wordpress.com
 
 
+== the rest of Rufus
+
+http://rufus.rubyforge.org
+
+
 == license
 
 MIT
