@@ -242,6 +242,13 @@ module Rufus
     #         # schedule something every two days, start in 5 hours...
     #     end
     #
+    # == :thread_name option
+    #
+    # You can specify the name of the scheduler's thread. Should make
+    # it easier in some debugging situations.
+    #
+    #     scheduler.new :thread_name => "the crazy scheduler"
+    #
     class Scheduler
 
         #
@@ -296,6 +303,8 @@ module Rufus
                 # let precision at its default value
             end
 
+            @thread_name = params[:thread_name] || "rufus scheduler"
+
             #@correction = 0.00045
 
             @exit_when_no_more_jobs = false
@@ -319,8 +328,11 @@ module Rufus
 
                     require 'java'
 
-                    java.lang.Thread.current_thread.name = \
-                        "openwferu scheduler (Ruby Thread)"
+                    java.lang.Thread.current_thread.name =
+                        "#{@thread_name} (Ruby Thread)"
+                else
+
+                    Thread.current[:name] = @thread_name
                 end
 
                 loop do

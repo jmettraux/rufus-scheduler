@@ -23,6 +23,32 @@ class SchedulerTest < Test::Unit::TestCase
     #def teardown
     #end
 
+    def test_thread_name_0
+
+        scheduler = OpenWFE::Scheduler.new
+        scheduler.sstart
+
+        t = scheduler.instance_variable_get(:@scheduler_thread)
+        target = "rufus scheduler"
+        target += " (Ruby Thread)" if defined?(JRUBY_VERSION)
+        assert_equal target, t[:name]
+
+        scheduler.stop
+    end
+
+    def test_thread_name_1
+
+        scheduler = OpenWFE::Scheduler.new :thread_name => "genjiguruma"
+        scheduler.sstart
+
+        t = scheduler.instance_variable_get(:@scheduler_thread)
+        target = "genjiguruma"
+        target += " (Ruby Thread)" if defined?(JRUBY_VERSION)
+        assert_equal target, t[:name]
+
+        scheduler.stop
+    end
+
     def test_scheduler_0
 
         #Thread.abort_on_exception = true

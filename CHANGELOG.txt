@@ -1,6 +1,11 @@
 
 = rufus-scheduler CHANGELOG.txt
 
+== rufus-scheduler - 1.0.6    not yet released
+
+- todo  #19619 : added :thread_name options to Scheduler.new
+- source moved to http://github.com/jmettraux/rufus-scheduler
+
 
 == rufus-scheduler - 1.0.5    released 2008/03/17
 
