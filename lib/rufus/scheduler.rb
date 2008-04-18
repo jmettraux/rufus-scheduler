@@ -324,16 +324,7 @@ module Rufus
 
             @scheduler_thread = Thread.new do
 
-                if defined?(JRUBY_VERSION)
-
-                    require 'java'
-
-                    java.lang.Thread.current_thread.name =
-                        "#{@thread_name} (Ruby Thread)"
-                else
-
-                    Thread.current[:name] = @thread_name
-                end
+                Thread.current[:name] = @thread_name
 
                 loop do
 

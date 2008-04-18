@@ -2,6 +2,8 @@
 require 'time_0_test'
 require 'time_1_test'
 
+require 'scheduler_name_test'
+
 require 'scheduler_0_test'
 require 'scheduler_1_test'
 require 'scheduler_2_test'
