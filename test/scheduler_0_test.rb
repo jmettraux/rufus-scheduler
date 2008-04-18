@@ -15,7 +15,7 @@ require 'openwfe/util/scheduler'
 # testing otime and the scheduler
 #
 
-class SchedulerTest < Test::Unit::TestCase
+class Scheduler0Test < Test::Unit::TestCase
 
     #def setup
     #end

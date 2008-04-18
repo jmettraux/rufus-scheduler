@@ -326,6 +326,11 @@ module Rufus
 
                 Thread.current[:name] = @thread_name
 
+                if defined?(JRUBY_VERSION)
+                    require 'java'
+                    java.lang.Thread.current_thread.name = @thread_name
+                end
+
                 loop do
 
                     break if @stopped
