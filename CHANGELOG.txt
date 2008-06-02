@@ -1,6 +1,7 @@
 
 = rufus-scheduler CHANGELOG.txt
 
+
 == rufus-scheduler - 1.0.6    not yet released
 
 - todo  #19619 : added :thread_name options to Scheduler.new
