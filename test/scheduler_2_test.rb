@@ -16,108 +16,108 @@ require 'openwfe/util/scheduler'
 
 class Scheduler2Test < Test::Unit::TestCase
 
-    #def setup
-    #end
+  #def setup
+  #end
 
-    #def teardown
-    #end
+  #def teardown
+  #end
 
-    def test_0
+  def test_0
 
-        scheduler = OpenWFE::Scheduler.new
-        scheduler.sstart
+    scheduler = OpenWFE::Scheduler.new
+    scheduler.sstart
 
-        counter = 0
-        $error_counter = 0
+    counter = 0
+    $error_counter = 0
 
-        def scheduler.lwarn (&block)
-            #puts block.call
-            $error_counter += 1
-        end
-
-        job_id = scheduler.schedule_every "500" do
-            counter += 1
-            raise "exception!"
-        end
-
-        sleep 2.300
-
-        scheduler.sstop
-
-        assert_equal 4, counter, "execution count wrong"
-        assert_equal 4, $error_counter, "error count wrong"
+    def scheduler.lwarn (&block)
+      #puts block.call
+      $error_counter += 1
     end
 
-    def test_1
-
-        # repeating myself
-
-        scheduler = OpenWFE::Scheduler.new
-        scheduler.sstart
-
-        counter = 0
-        $error_counter = 0
-
-        def scheduler.lwarn (&block)
-            #puts block.call
-            $error_counter += 1
-        end
-
-        job_id = scheduler.schedule_every "500", :try_again => false do
-            counter += 1
-            raise "exception?"
-        end
-
-        sleep 2.300
-
-        scheduler.sstop
-
-        assert_equal 1, counter, "execution count wrong"
-        assert_equal 1, $error_counter, "error count wrong"
+    job_id = scheduler.schedule_every "500" do
+      counter += 1
+      raise "exception!"
     end
 
-    def test_2
+    sleep 2.300
 
-        scheduler = OpenWFE::Scheduler.new
-        scheduler.sstart
+    scheduler.sstop
 
-        def scheduler.lwarn (&block)
-            puts block.call
-        end
+    assert_equal 4, counter, "execution count wrong"
+    assert_equal 4, $error_counter, "error count wrong"
+  end
 
-        counter = 0
+  def test_1
 
-        job_id = scheduler.schedule_every "500" do |job_id, at, params|
-            counter += 1
-            params[:dont_reschedule] = true if counter == 2
-        end
+    # repeating myself
 
-        sleep 3.000
+    scheduler = OpenWFE::Scheduler.new
+    scheduler.sstart
 
-        assert_equal 2, counter
+    counter = 0
+    $error_counter = 0
+
+    def scheduler.lwarn (&block)
+      #puts block.call
+      $error_counter += 1
     end
 
-    def test_3
-
-        # repeating myself ...
-
-        scheduler = OpenWFE::Scheduler.new
-        scheduler.sstart
-
-        def scheduler.lwarn (&block)
-            puts block.call
-        end
-
-        counter = 0
-
-        job_id = scheduler.schedule_every "500" do |job_id, at, params|
-            counter += 1
-            params[:every] = "1s" if counter == 2
-        end
-
-        sleep 5.000
-
-        assert_equal 2 + 3, counter
+    job_id = scheduler.schedule_every "500", :try_again => false do
+      counter += 1
+      raise "exception?"
     end
+
+    sleep 2.300
+
+    scheduler.sstop
+
+    assert_equal 1, counter, "execution count wrong"
+    assert_equal 1, $error_counter, "error count wrong"
+  end
+
+  def test_2
+
+    scheduler = OpenWFE::Scheduler.new
+    scheduler.sstart
+
+    def scheduler.lwarn (&block)
+      puts block.call
+    end
+
+    counter = 0
+
+    job_id = scheduler.schedule_every "500" do |job_id, at, params|
+      counter += 1
+      params[:dont_reschedule] = true if counter == 2
+    end
+
+    sleep 3.000
+
+    assert_equal 2, counter
+  end
+
+  def test_3
+
+    # repeating myself ...
+
+    scheduler = OpenWFE::Scheduler.new
+    scheduler.sstart
+
+    def scheduler.lwarn (&block)
+      puts block.call
+    end
+
+    counter = 0
+
+    job_id = scheduler.schedule_every "500" do |job_id, at, params|
+      counter += 1
+      params[:every] = "1s" if counter == 2
+    end
+
+    sleep 5.000
+
+    assert_equal 2 + 3, counter
+  end
 
 end

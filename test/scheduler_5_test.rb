@@ -13,70 +13,70 @@ require 'rufus/scheduler'
 
 class Scheduler5Test < Test::Unit::TestCase
 
-    #def setup
-    #end
+  #def setup
+  #end
 
-    #def teardown
-    #end
+  #def teardown
+  #end
 
-    #
-    # Testing the :first_at parameter
-    #
-    def test_0
+  #
+  # Testing the :first_at parameter
+  #
+  def test_0
 
-        s = Rufus::Scheduler.new
-        s.start
+    s = Rufus::Scheduler.new
+    s.start
 
-        $count = 0
+    $count = 0
 
-        fa = Time.now + 3
-        
-        s.schedule_every "1s", :first_at => fa do
-            $count += 1
-        end
+    fa = Time.now + 3
 
-        sleep 1
-
-        assert_equal 0, $count
-
-        sleep 3
-
-        assert_equal 1, $count
-
-        sleep 1
-
-        assert_equal 2, $count
-
-        s.stop
+    s.schedule_every "1s", :first_at => fa do
+      $count += 1
     end
 
-    #
-    # Testing the :first_in parameter
-    #
-    def test_1
+    sleep 1
 
-        s = Rufus::Scheduler.new
-        s.start
+    assert_equal 0, $count
 
-        $count = 0
+    sleep 3
 
-        s.schedule_every "1s", :first_in => "3s" do
-            $count += 1
-        end
+    assert_equal 1, $count
 
-        sleep 1
+    sleep 1
 
-        assert_equal 0, $count
+    assert_equal 2, $count
 
-        sleep 3
+    s.stop
+  end
 
-        assert_equal 1, $count
+  #
+  # Testing the :first_in parameter
+  #
+  def test_1
 
-        sleep 1
+    s = Rufus::Scheduler.new
+    s.start
 
-        assert_equal 2, $count
+    $count = 0
 
-        s.stop
+    s.schedule_every "1s", :first_in => "3s" do
+      $count += 1
     end
+
+    sleep 1
+
+    assert_equal 0, $count
+
+    sleep 3
+
+    assert_equal 1, $count
+
+    sleep 1
+
+    assert_equal 2, $count
+
+    s.stop
+  end
 end
 

@@ -13,69 +13,69 @@ require 'rufus/scheduler'
 
 class Scheduler4Test < Test::Unit::TestCase
 
-    #def setup
-    #end
+  #def setup
+  #end
 
-    #def teardown
-    #end
+  #def teardown
+  #end
 
-    #
-    # Checking that a sleep in a schedule won't raise any exception
-    #
-    def test_0
+  #
+  # Checking that a sleep in a schedule won't raise any exception
+  #
+  def test_0
 
-        s = Rufus::Scheduler.new
-        s.start
+    s = Rufus::Scheduler.new
+    s.start
 
-        $exception = nil
+    $exception = nil
 
-        class << s
-            def lwarn (&block)
-                $exception = block.call
-            end
-        end
-
-        counters = Counters.new
-        
-        s.schedule_every "2s" do
-            counters.inc :a
-            sleep 4
-            counters.inc :b
-        end
-        s.schedule_every "3s" do
-            counters.inc :c
-        end
-        #p Time.now.to_f
-
-        sleep 10.300
-
-        s.stop
-
-        assert_equal({ :a => 3, :b => 2, :c => 3 }, counters.counters)
-        assert_nil $exception
+    class << s
+      def lwarn (&block)
+        $exception = block.call
+      end
     end
 
-    protected
+    counters = Counters.new
 
-        class Counters
+    s.schedule_every "2s" do
+      counters.inc :a
+      sleep 4
+      counters.inc :b
+    end
+    s.schedule_every "3s" do
+      counters.inc :c
+    end
+    #p Time.now.to_f
 
-            attr_reader :counters
+    sleep 10.300
 
-            def initialize
+    s.stop
 
-                @counters = {}
-            end
+    assert_equal({ :a => 3, :b => 2, :c => 3 }, counters.counters)
+    assert_nil $exception
+  end
 
-            def inc (counter)
+  protected
 
-                @counters[counter] ||= 0
-                @counters[counter] += 1
+    class Counters
 
-                #puts(
-                #    "#{counter} _ " +
-                #    "#{Time.now.to_f}  #{@counters.inspect} " +
-                #    "(#{Thread.current.object_id})")
-            end
-        end
+      attr_reader :counters
+
+      def initialize
+
+        @counters = {}
+      end
+
+      def inc (counter)
+
+        @counters[counter] ||= 0
+        @counters[counter] += 1
+
+        #puts(
+        #  "#{counter} _ " +
+        #  "#{Time.now.to_f}  #{@counters.inspect} " +
+        #  "(#{Thread.current.object_id})")
+      end
+    end
 
 end

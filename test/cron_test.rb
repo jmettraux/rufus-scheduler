@@ -17,118 +17,118 @@ require 'openwfe/util/scheduler'
 #
 class CronTest < Test::Unit::TestCase
 
-    #def setup
-    #end
+  #def setup
+  #end
 
-    #def teardown
-    #end
+  #def teardown
+  #end
 
-    def test_0
+  def test_0
 
-        $var = 0
+    $var = 0
 
-        scheduler = OpenWFE::Scheduler.new
-        scheduler.start
+    scheduler = OpenWFE::Scheduler.new
+    scheduler.start
 
-        sid = scheduler.schedule(
-            '* * * * *',
-            :schedulable => CounterSchedulable.new)
+    sid = scheduler.schedule(
+      '* * * * *',
+      :schedulable => CounterSchedulable.new)
 
-        assert sid, "scheduler did not return a job id"
+    assert sid, "scheduler did not return a job id"
 
-        sleep 120
-        scheduler.stop
+    sleep 120
+    scheduler.stop
 
-        #puts ">#{$var}<"
+    #puts ">#{$var}<"
 
-        assert_equal 2, $var
+    assert_equal 2, $var
+  end
+
+  def test_1
+
+    scheduler = OpenWFE::Scheduler.new
+    scheduler.start
+
+    sec = nil
+    has_gone_wrong = false
+    counter = 0
+
+    scheduler.schedule "* * * * * *" do
+      t = Time.new
+      if (t.sec == sec)
+        has_gone_wrong = true
+      #  print "x"
+      #else
+      #  print "."
+      end
+      #STDOUT.flush
+      sec = t.sec
+      counter = counter + 1
     end
 
-    def test_1
+    sleep 10
+    scheduler.stop
 
-        scheduler = OpenWFE::Scheduler.new
-        scheduler.start
+    #assert_equal 10, counter
+    assert [ 9, 10 ].include?(counter), "not 9 or 10 but #{counter}"
+    assert (not has_gone_wrong)
+  end
 
-        sec = nil
-        has_gone_wrong = false
-        counter = 0
+  def test_2
 
-        scheduler.schedule "* * * * * *" do
-            t = Time.new
-            if (t.sec == sec)
-                has_gone_wrong = true
-            #    print "x"
-            #else
-            #    print "."
-            end
-            #STDOUT.flush
-            sec = t.sec
-            counter = counter + 1
-        end
+    scheduler = OpenWFE::Scheduler.new
+    scheduler.start
 
-        sleep 10
-        scheduler.stop
+    counter = 0
 
-        #assert_equal 10, counter
-        assert [ 9, 10 ].include?(counter), "not 9 or 10 but #{counter}"
-        assert (not has_gone_wrong)
+    scheduler.schedule "7 * * * * *" do
+      counter += 1
     end
 
-    def test_2
+    sleep 61
+    scheduler.stop
 
-        scheduler = OpenWFE::Scheduler.new
-        scheduler.start
+    assert_equal 1, counter
+      # baby just one ... time
+  end
 
-        counter = 0
+  #
+  # testing cron unschedule
+  #
+  def test_3
 
-        scheduler.schedule "7 * * * * *" do
-            counter += 1
-        end
+    scheduler = OpenWFE::Scheduler.new
+    scheduler.start
 
-        sleep 61
-        scheduler.stop
+    counter = 0
 
-        assert_equal 1, counter
-            # baby just one ... time
+    job_id = scheduler.schedule "* * * * *" do
+      counter += 1
     end
 
-    #
-    # testing cron unschedule
-    #
-    def test_3
+    sleep 0.300
 
-        scheduler = OpenWFE::Scheduler.new
-        scheduler.start
+    #puts "job_id : #{job_id}"
 
-        counter = 0
+    assert_equal 1, scheduler.cron_job_count
 
-        job_id = scheduler.schedule "* * * * *" do
-            counter += 1
-        end
+    scheduler.unschedule job_id
 
-        sleep 0.300
+    sleep 0.300
 
-        #puts "job_id : #{job_id}"
+    assert_equal 0, scheduler.cron_job_count
 
-        assert_equal 1, scheduler.cron_job_count
+    scheduler.stop
+  end
 
-        scheduler.unschedule job_id
+  protected
 
-        sleep 0.300
+    class CounterSchedulable
+      include OpenWFE::Schedulable
 
-        assert_equal 0, scheduler.cron_job_count
-
-        scheduler.stop
+      def trigger (params)
+        $var = $var + 1
+      end
     end
-
-    protected
-
-        class CounterSchedulable
-            include OpenWFE::Schedulable
-
-            def trigger (params)
-                $var = $var + 1
-            end
-        end
 
 end

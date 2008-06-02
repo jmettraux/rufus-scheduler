@@ -17,38 +17,38 @@ require 'openwfe/util/scheduler'
 
 class SchedulerNameTest < Test::Unit::TestCase
 
-    #def setup
-    #end
+  #def setup
+  #end
 
-    #def teardown
-    #end
+  #def teardown
+  #end
 
-    def test_0
+  def test_0
 
-        scheduler = OpenWFE::Scheduler.new
-        scheduler.sstart
+    scheduler = OpenWFE::Scheduler.new
+    scheduler.sstart
 
-        sleep 0.350 if defined?(JRUBY_VERSION)
+    sleep 0.350 if defined?(JRUBY_VERSION)
 
-        t = scheduler.instance_variable_get(:@scheduler_thread)
+    t = scheduler.instance_variable_get(:@scheduler_thread)
 
-        assert_equal "rufus scheduler", t[:name]
+    assert_equal "rufus scheduler", t[:name]
 
-        scheduler.stop
-    end
+    scheduler.stop
+  end
 
-    def test_1
+  def test_1
 
-        scheduler = OpenWFE::Scheduler.new :thread_name => "genjiguruma"
-        scheduler.sstart
+    scheduler = OpenWFE::Scheduler.new :thread_name => "genjiguruma"
+    scheduler.sstart
 
-        sleep 0.350 if defined?(JRUBY_VERSION)
+    sleep 0.350 if defined?(JRUBY_VERSION)
 
-        t = scheduler.instance_variable_get(:@scheduler_thread)
+    t = scheduler.instance_variable_get(:@scheduler_thread)
 
-        assert_equal "genjiguruma", t[:name]
+    assert_equal "genjiguruma", t[:name]
 
-        scheduler.stop
-    end
+    scheduler.stop
+  end
 
 end
