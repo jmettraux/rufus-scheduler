@@ -1344,7 +1344,7 @@ module Rufus
           # dead code, keeping it as a reminder
         #++
 
-        WDS = [ "mon", "tue", "wed", "thu", "fri", "sat", "sun" ]
+        WDS = [ "sun", "mon", "tue", "wed", "thu", "fri", "sat" ]
           #
           # used by parse_weekday()
 
@@ -1353,10 +1353,14 @@ module Rufus
           item = item.downcase
 
           WDS.each_with_index do |day, index|
-            item = item.gsub day, "#{index+1}"
+            item = item.gsub day, "#{index}"
           end
 
-          parse_item item, 1, 7
+          r = parse_item item, 0, 7
+
+          return r unless r.is_a?(Array)
+
+          r.collect { |e| e == 7 ? 0 : e }.uniq
         end
 
         def parse_item (item, min, max)
@@ -1380,21 +1384,15 @@ module Rufus
 
           items = item.split(",")
 
-          items.inject([]) do |result, i|
-
-            i = Integer(i)
-
-            i = min if i < min
-            i = max if i > max
-
-            result.push i
-          end
+          items.inject([]) { |r, i| r.push(parse_range(i, min, max)) }.flatten
         end
 
         def parse_range (item, min, max)
 
           i = item.index("-")
           j = item.index("/")
+
+          return item.to_i if (not i and not j)
 
           inc = 1
 

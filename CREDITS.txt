@@ -3,6 +3,7 @@
 
 == Feedback
 
+- Manfred Usselman (no cronjobs on sundays bug)
 - Michael Goth, tests with precision > 1s
 
 * many people gave feedback previously, see

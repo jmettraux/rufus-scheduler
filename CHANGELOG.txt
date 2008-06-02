@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 1.0.6    not yet released
 
+- bug   #20476 : no cron jobs on sundays (wday == 0). Fixed.
+                 (thanks to Manfred Usselmann)
 - todo  #19619 : added :thread_name options to Scheduler.new
 - source moved to http://github.com/jmettraux/rufus-scheduler
 
