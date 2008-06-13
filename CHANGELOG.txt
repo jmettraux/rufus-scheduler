@@ -2,7 +2,12 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 1.0.6    not yet released
+== rufus-scheduler - 1.0.7    not yet released 
+
+- bug   #20648 : find_schedulable(tag) broken. Fixed.
+
+
+== rufus-scheduler - 1.0.6    released 2008/05/02
 
 - bug   #20476 : no cron jobs on sundays (wday == 0). Fixed.
                  (thanks to Manfred Usselmann)

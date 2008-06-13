@@ -349,6 +349,16 @@ module Rufus
     end
 
     #
+    # Instantiates a new Rufus::Scheduler instance, starts it and returns it
+    #
+    def self.start_new
+
+      s = self.new
+      s.start
+      s
+    end
+
+    #
     # The scheduler is stoppable via sstop()
     #
     def stop
@@ -612,12 +622,7 @@ module Rufus
     #
     def get_job (job_id)
 
-      job = @cron_jobs[job_id]
-      return job if job
-
-      @pending_jobs.find do |job|
-        job.job_id == job_id
-      end
+      @cron_jobs[job_id] || @pending_jobs.find { |job| job.job_id == job_id }
     end
 
     #
@@ -640,13 +645,8 @@ module Rufus
     #
     def find_jobs (tag)
 
-      result = @cron_jobs.values.find_all do |job|
-        job.has_tag?(tag)
-      end
-
-      result + @pending_jobs.find_all do |job|
-        job.has_tag?(tag)
-      end
+      @cron_jobs.values.find_all { |job| job.has_tag?(tag) } +
+      @pending_jobs.find_all { |job| job.has_tag?(tag) }
     end
 
     #
@@ -657,18 +657,7 @@ module Rufus
     #
     def find_schedulables (tag)
 
-      #jobs = find_jobs(tag)
-      #result = []
-      #jobs.each do |job|
-      #  result.push(job.schedulable) if job.respond_to?(:schedulable)
-      #end
-      #result
-
-      find_jobs(tags).inject([]) do |result, job|
-
-        result.push(job.schedulable) if job.respond_to?(:schedulable)
-        result
-      end
+      find_jobs(tag).find_all { |job| job.respond_to?(:schedulable) }
     end
 
     #
@@ -709,10 +698,9 @@ module Rufus
     #
     def Scheduler.is_cron_string (s)
 
-      s.match ".+ .+ .+ .+ .+"
+      s.match ".+ .+ .+ .+ .+" # well...
     end
 
-    #protected
     private
 
       def do_unschedule (job_id)

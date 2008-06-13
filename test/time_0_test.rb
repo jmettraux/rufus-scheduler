@@ -1,6 +1,6 @@
 
 #
-# Testing OpenWFE
+# Testing Rufus
 #
 # John Mettraux at openwfe.org
 #

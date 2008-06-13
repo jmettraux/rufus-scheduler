@@ -1,6 +1,6 @@
 
 #
-# Testing OpenWFE
+# Testing Rufus
 #
 # John Mettraux at openwfe.org
 #
@@ -24,8 +24,8 @@ class Scheduler2Test < Test::Unit::TestCase
 
   def test_0
 
-    scheduler = OpenWFE::Scheduler.new
-    scheduler.sstart
+    scheduler = Rufus::Scheduler.new
+    scheduler.start
 
     counter = 0
     $error_counter = 0
@@ -52,8 +52,8 @@ class Scheduler2Test < Test::Unit::TestCase
 
     # repeating myself
 
-    scheduler = OpenWFE::Scheduler.new
-    scheduler.sstart
+    scheduler = Rufus::Scheduler.new
+    scheduler.start
 
     counter = 0
     $error_counter = 0
@@ -78,8 +78,8 @@ class Scheduler2Test < Test::Unit::TestCase
 
   def test_2
 
-    scheduler = OpenWFE::Scheduler.new
-    scheduler.sstart
+    scheduler = Rufus::Scheduler.new
+    scheduler.start
 
     def scheduler.lwarn (&block)
       puts block.call
@@ -101,8 +101,8 @@ class Scheduler2Test < Test::Unit::TestCase
 
     # repeating myself ...
 
-    scheduler = OpenWFE::Scheduler.new
-    scheduler.sstart
+    scheduler = Rufus::Scheduler.new
+    scheduler.start
 
     def scheduler.lwarn (&block)
       puts block.call

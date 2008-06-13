@@ -1,6 +1,6 @@
 
 #
-# Testing OpenWFE
+# Testing Rufus
 #
 # John Mettraux at openwfe.org
 #
@@ -29,8 +29,7 @@ class Scheduler0Test < Test::Unit::TestCase
 
     $var = nil
 
-    scheduler = OpenWFE::Scheduler.new
-    scheduler.sstart
+    scheduler = Rufus::Scheduler.start_new
 
     sid = scheduler.schedule_in('2s', :schedulable => TestSchedulable.new)
 
@@ -60,8 +59,8 @@ class Scheduler0Test < Test::Unit::TestCase
 
     $var = nil
 
-    scheduler = OpenWFE::Scheduler.new
-    scheduler.sstart
+    scheduler = Rufus::Scheduler.new
+    scheduler.start
 
     sid = scheduler.schedule_in('1s') do
       $var = "ok..1"
@@ -90,8 +89,8 @@ class Scheduler0Test < Test::Unit::TestCase
 
     text = ""
 
-    scheduler = OpenWFE::Scheduler.new()
-    scheduler.sstart
+    scheduler = Rufus::Scheduler.new()
+    scheduler.start
 
     scheduler.schedule_in("1s") do
       text << "one"
@@ -117,8 +116,7 @@ class Scheduler0Test < Test::Unit::TestCase
 
     Thread.abort_on_exception = true
 
-    scheduler = OpenWFE::Scheduler.new()
-    scheduler.sstart
+    scheduler = Rufus::Scheduler.start_new
 
     #
     # phase 0
@@ -149,7 +147,7 @@ class Scheduler0Test < Test::Unit::TestCase
     job_id = scheduler.schedule_every "500", es
 
     #puts "1 job_id : " + job_id.to_s
-    
+
     #sleep(3.4) # was a bit soonish for JRuby...
     sleep 3.5
 
@@ -174,8 +172,8 @@ class Scheduler0Test < Test::Unit::TestCase
   #
   def test_scheduler_5
 
-    scheduler = OpenWFE::Scheduler.new
-    scheduler.sstart
+    scheduler = Rufus::Scheduler.new
+    scheduler.start
 
     touched = false
 
@@ -193,7 +191,7 @@ class Scheduler0Test < Test::Unit::TestCase
   #
   def test_scheduler_6
 
-    scheduler = OpenWFE::Scheduler.new
+    scheduler = Rufus::Scheduler.new
     scheduler.start
 
     #class << scheduler
@@ -267,7 +265,7 @@ class Scheduler0Test < Test::Unit::TestCase
   #
   def test_8b
 
-    scheduler = OpenWFE::Scheduler.new
+    scheduler = Rufus::Scheduler.new
     scheduler.start
 
     var = nil
@@ -287,7 +285,7 @@ class Scheduler0Test < Test::Unit::TestCase
   #
   def test_9
 
-    scheduler = OpenWFE::Scheduler.new
+    scheduler = Rufus::Scheduler.new
     scheduler.start
 
     value = nil
@@ -317,7 +315,7 @@ class Scheduler0Test < Test::Unit::TestCase
 
     e = nil
     begin
-      OpenWFE::Scheduler.new.precision = 10
+      Rufus::Scheduler.new.precision = 10
     rescue Exception => e
     end
 
@@ -327,7 +325,7 @@ class Scheduler0Test < Test::Unit::TestCase
   protected
 
     class TestSchedulable
-      include OpenWFE::Schedulable
+      include Rufus::Schedulable
 
       def trigger (params)
         $var = "ok"
@@ -335,7 +333,7 @@ class Scheduler0Test < Test::Unit::TestCase
     end
 
     class EverySchedulable
-      include OpenWFE::Schedulable
+      include Rufus::Schedulable
 
       attr_accessor :job_id, :count
 

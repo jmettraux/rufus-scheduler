@@ -1,6 +1,6 @@
 
 #
-# Testing OpenWFE
+# Testing Rufus
 #
 # John Mettraux at openwfe.org
 #
@@ -24,8 +24,8 @@ class Scheduler1Test < Test::Unit::TestCase
 
   def test_0
 
-    scheduler = OpenWFE::Scheduler.new
-    scheduler.sstart
+    scheduler = Rufus::Scheduler.new
+    scheduler.start
 
     job_id = scheduler.schedule_every "500", :tags => "Avery" do
       # don't do a thing
@@ -47,8 +47,8 @@ class Scheduler1Test < Test::Unit::TestCase
 
   def test_1
 
-    scheduler = OpenWFE::Scheduler.new
-    scheduler.sstart
+    scheduler = Rufus::Scheduler.new
+    scheduler.start
 
     job_id = scheduler.schedule_every "500", :tags => "Avery" do
       # don't do a thing
@@ -74,8 +74,8 @@ class Scheduler1Test < Test::Unit::TestCase
   #
   def _test_2
 
-    scheduler = OpenWFE::Scheduler.new
-    scheduler.sstart
+    scheduler = Rufus::Scheduler.new
+    scheduler.start
     last = nil
     job_id = scheduler.schedule_every "1s" do
       t = Time.now

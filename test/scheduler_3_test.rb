@@ -1,6 +1,6 @@
 
 #
-# Testing OpenWFE
+# Testing Rufus
 #
 # John Mettraux at openwfe.org
 #
@@ -24,7 +24,7 @@ class Scheduler3Test < Test::Unit::TestCase
   #
   def test_0
 
-    scheduler = OpenWFE::Scheduler.new
+    scheduler = Rufus::Scheduler.new
     scheduler.start
 
     value = nil

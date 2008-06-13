@@ -1,6 +1,6 @@
 
 #
-# Testing OpenWFE
+# Testing Rufus
 #
 # John Mettraux at openwfe.org
 #
@@ -25,8 +25,8 @@ class SchedulerNameTest < Test::Unit::TestCase
 
   def test_0
 
-    scheduler = OpenWFE::Scheduler.new
-    scheduler.sstart
+    scheduler = Rufus::Scheduler.new
+    scheduler.start
 
     sleep 0.350 if defined?(JRUBY_VERSION)
 
@@ -39,8 +39,8 @@ class SchedulerNameTest < Test::Unit::TestCase
 
   def test_1
 
-    scheduler = OpenWFE::Scheduler.new :thread_name => "genjiguruma"
-    scheduler.sstart
+    scheduler = Rufus::Scheduler.new :thread_name => "genjiguruma"
+    scheduler.start
 
     sleep 0.350 if defined?(JRUBY_VERSION)
 

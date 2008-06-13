@@ -37,8 +37,8 @@ spec = Gem::Specification.new do |s|
     #end
 
     files = FileList[ "{bin,docs,lib,test}/**/*" ]
-    files.exclude "rdoc" 
-    files.exclude "extras" 
+    files.exclude "rdoc"
+    files.exclude "extras"
     s.files = files.to_a
 end
 
@@ -98,7 +98,7 @@ Rake::RDocTask.new do |rd|
     rd.rdoc_dir = "html/rufus-scheduler"
 
     rd.rdoc_files.include(
-        "README.txt", "CHANGELOG.txt", "LICENSE.txt", "CREDITS.txt", 
+        "README.txt", "CHANGELOG.txt", "LICENSE.txt", "CREDITS.txt",
         "lib/**/*.rb")
 
     rd.title = "rufus-scheduler rdoc"

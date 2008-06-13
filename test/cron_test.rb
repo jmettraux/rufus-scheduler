@@ -1,6 +1,6 @@
 
 #
-# Testing OpenWFE
+# Testing Rufus
 #
 # John Mettraux at openwfe.org
 #
@@ -27,7 +27,7 @@ class CronTest < Test::Unit::TestCase
 
     $var = 0
 
-    scheduler = OpenWFE::Scheduler.new
+    scheduler = Rufus::Scheduler.new
     scheduler.start
 
     sid = scheduler.schedule(
@@ -46,7 +46,7 @@ class CronTest < Test::Unit::TestCase
 
   def test_1
 
-    scheduler = OpenWFE::Scheduler.new
+    scheduler = Rufus::Scheduler.new
     scheduler.start
 
     sec = nil
@@ -76,7 +76,7 @@ class CronTest < Test::Unit::TestCase
 
   def test_2
 
-    scheduler = OpenWFE::Scheduler.new
+    scheduler = Rufus::Scheduler.new
     scheduler.start
 
     counter = 0
@@ -97,7 +97,7 @@ class CronTest < Test::Unit::TestCase
   #
   def test_3
 
-    scheduler = OpenWFE::Scheduler.new
+    scheduler = Rufus::Scheduler.new
     scheduler.start
 
     counter = 0
@@ -111,6 +111,7 @@ class CronTest < Test::Unit::TestCase
     #puts "job_id : #{job_id}"
 
     assert_equal 1, scheduler.cron_job_count
+    assert_equal 0, scheduler.find_schedulables("nada").size
 
     scheduler.unschedule job_id
 
@@ -124,7 +125,7 @@ class CronTest < Test::Unit::TestCase
   protected
 
     class CounterSchedulable
-      include OpenWFE::Schedulable
+      include Rufus::Schedulable
 
       def trigger (params)
         $var = $var + 1
