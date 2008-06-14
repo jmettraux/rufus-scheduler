@@ -64,6 +64,7 @@ module Rufus
   #  require 'rubygems'
   #  require 'rufus/scheduler'
   #
+  #  scheduler = Rufus::Scheduler.start_new
   #
   #  scheduler.schedule_in("3d") do
   #    regenerate_monthly_report()
@@ -179,6 +180,26 @@ module Rufus
   # The rufus scheduler recognizes an optional first column for second
   # scheduling. This column can, like for the other columns, specify a
   # value ("7"), a list of values ("7,8,9,27") or a range ("7-12").
+  #
+  #
+  # == information passed to schedule blocks
+  #
+  # When calling schedule_every(), schedule_in() or schedule_at(), the block
+  # expects zero or 3 parameters like in
+  #
+  #   scheduler.schedule_every("1h20m") do |job_id, at, params|
+  #       puts "my job_id is #{job_id}"
+  #   end
+  #
+  # For schedule(), zero or two parameters can get passed
+  #
+  #   scheduler.schedule "7 * * * * *" do |job_id, cron_line, params|
+  #     puts "my job_id is #{job_id}"
+  #   end
+  #
+  # In both cases, params corresponds to the params passed to the schedule
+  # method (:tags, :first_at, :first_in, :dont_reschedule, ...)
+  #
   #
   # == Exceptions
   #
@@ -1210,7 +1231,7 @@ module Rufus
       #
       def trigger
 
-        @block.call @job_id, @cron_line
+        @block.call @job_id, @cron_line, @params
       end
 
       #

@@ -122,6 +122,23 @@ class CronTest < Test::Unit::TestCase
     scheduler.stop
   end
 
+  def test_4
+
+    scheduler = Rufus::Scheduler.start_new
+
+    val = nil
+
+    job_id = scheduler.schedule "* * * * * *" do |job_id, cron_line, params|
+      val = params.inspect
+    end
+
+    sleep 2
+
+    assert_equal '{}', val
+
+    scheduler.stop
+  end
+
   protected
 
     class CounterSchedulable
