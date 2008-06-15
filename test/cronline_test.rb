@@ -49,7 +49,21 @@ class CronLineTest < Test::Unit::TestCase
     dotest "1-5 * * * * *", [ [1,2,3,4,5], nil, nil, nil, nil, nil ]
   end
 
+  def test_2
+
+    now = Time.at(0) # something like 'Thu Jan 01 09:01:00 +0900 1970'
+
+    assert_equal now + 60, cl("* * * * *").next_time(now)
+    assert_equal now + 259260, cl("* * * * sun").next_time(now)
+    #assert_equal now + 1, cl("* * * * * *").next_time(now)
+  end
+
   protected
+
+    def cl (cronline_string)
+
+      Rufus::CronLine.new(cronline_string)
+    end
 
     def dotest (line, array)
 

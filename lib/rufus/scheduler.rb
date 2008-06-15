@@ -1242,6 +1242,18 @@ module Rufus
 
         @cron_line.original
       end
+
+      #
+      # Returns a Time instance : the next time this cron job is
+      # supposed to "fire".
+      #
+      # 'from' is used to specify the starting point for determining
+      # what will be the next time. Defaults to now.
+      #
+      def next_time (from=Time.now)
+
+        @cron_line.next_time(from)
+      end
     end
 
     #
@@ -1329,10 +1341,60 @@ module Rufus
       # This method is used by the cronline unit tests.
       #
       def to_array
+
         [ @seconds, @minutes, @hours, @days, @months, @weekdays ]
       end
 
+      #
+      # Returns the next time that this cron line is supposed to 'fire'
+      #
+      def next_time (now = Time.now)
+
+        args = []
+
+        carry = find_next(args, @seconds, now.sec)
+        carry = find_next(args, @minutes, now.min, carry)
+        carry = find_next(args, @hours, now.hour, carry)
+        carry = find_next(args, @days, now.mday, carry)
+        carry = find_next(args, @months, now.month, carry)
+
+        args << now.year + carry
+
+        #carry = find_next(args, @weekdays, now.wday)
+        args << nil
+
+        args += [ nil, nil, nil ] # yday, isdst, tz
+
+        t = Time.local(*args)
+
+        if (not @weekdays) or @weekdays.include?(t.wday)
+          t
+        else
+          # try the next day...
+          next_time(t + (24 * 3600 - 1)) # danger Wil Robinson !
+        end
+      end
+
       private
+
+        #
+        # used by the next_time() method
+        #
+        def find_next (args, array, now, carry=0)
+
+          if array
+            if (nxt = array.find { |e| e > now })
+              args << nxt
+              0
+            else
+              args << array.first
+              1
+            end
+          else
+            args << now + carry
+            0
+          end
+        end
 
         #--
         # adjust values to Ruby
