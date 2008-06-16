@@ -263,6 +263,23 @@ module Rufus
   #     # schedule something every two days, start in 5 hours...
   #   end
   #
+  # == job.next_time()
+  #
+  # Jobs, be they at, every or cron have a next_time() method, which tells
+  # when the job will be fired next time (for at and in jobs, this is also the
+  # last time).
+  #
+  # For cron jobs, the current implementation is quite brutal. It takes three
+  # seconds on my 2006 macbook to reach a cron schedule 1 year away.
+  #
+  # When is the next friday 13th ?
+  #
+  #   require 'rubygems'
+  #   require 'rufus/scheduler'
+  #
+  #   puts Rufus::CronLine.new("* * 13 * fri").next_time
+  #
+  #
   # == :thread_name option
   #
   # You can specify the name of the scheduler's thread. Should make
@@ -1166,6 +1183,15 @@ module Rufus
       def schedule_info
 
         Time.at(@at)
+      end
+
+      #
+      # next_time is last_time (except for EveryJob instances). Returns
+      # a Time instance.
+      #
+      def next_time
+
+        schedule_info
       end
     end
 
