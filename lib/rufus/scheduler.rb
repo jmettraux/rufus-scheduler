@@ -1314,8 +1314,7 @@ module Rufus
       def matches? (time)
       #def matches? (time, precision)
 
-        time = Time.at(time) \
-          if time.kind_of?(Float) or time.kind_of?(Integer)
+        time = Time.at(time) unless time.kind_of?(Time)
 
         return false \
           if no_match?(time.sec, @seconds)
@@ -1352,11 +1351,11 @@ module Rufus
 
         args = []
 
-        carry = find_next(args, @seconds, now.sec)
-        carry = find_next(args, @minutes, now.min, carry)
-        carry = find_next(args, @hours, now.hour, carry)
-        carry = find_next(args, @days, now.mday, carry)
-        carry = find_next(args, @months, now.month, carry)
+        carry = find_next(args, @seconds, now.sec, 0, 59)
+        carry = find_next(args, @minutes, now.min, 0, 59, carry)
+        carry = find_next(args, @hours, now.hour, 0, 23, carry)
+        carry = find_next(args, @days, now.mday, 1, 31, carry)
+        carry = find_next(args, @months, now.month, 1, 12, carry)
 
         args << now.year + carry
 
@@ -1364,6 +1363,8 @@ module Rufus
         args << nil
 
         args += [ nil, nil, nil ] # yday, isdst, tz
+
+        #p args
 
         t = Time.local(*args)
 
@@ -1380,7 +1381,7 @@ module Rufus
         #
         # used by the next_time() method
         #
-        def find_next (args, array, now, carry=0)
+        def find_next (args, array, now, min, max, carry=0)
 
           if array
             if (nxt = array.find { |e| e > now })
@@ -1391,8 +1392,14 @@ module Rufus
               1
             end
           else
-            args << now + carry
-            0
+            nxt = now + carry
+            if nxt > max
+              args << min
+              1
+            else
+              args << nxt
+              0
+            end
           end
         end
 
