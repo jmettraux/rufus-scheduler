@@ -1347,61 +1347,64 @@ module Rufus
       #
       # Returns the next time that this cron line is supposed to 'fire'
       #
+      # This is raw, 3 secs to iterate over 1 year on my macbook :( brutal.
+      #
       def next_time (now = Time.now)
 
-        args = []
+        #
+        # position now to the next cron second
 
-        carry = find_next(args, @seconds, now.sec, 0, 59)
-        carry = find_next(args, @minutes, now.min, 0, 59, carry)
-        carry = find_next(args, @hours, now.hour, 0, 23, carry)
-        carry = find_next(args, @days, now.mday, 1, 31, carry)
-        carry = find_next(args, @months, now.month, 1, 12, carry)
-
-        args << now.year + carry
-
-        #carry = find_next(args, @weekdays, now.wday)
-        args << nil
-
-        args += [ nil, nil, nil ] # yday, isdst, tz
-
-        #p args
-
-        t = Time.local(*args)
-
-        if (not @weekdays) or @weekdays.include?(t.wday)
-          t
+        if @seconds
+          next_sec = @seconds.find { |s| s > now.sec } || 60 + @seconds.first
+          now += next_sec - now.sec
         else
-          # try the next day...
-          next_time(t + (24 * 3600 - 1)) # danger Wil Robinson !
+          now += 1
         end
+
+        #
+        # prepare sec jump array
+
+        sjarray = nil
+
+        if @seconds
+
+          sjarray = []
+
+          i = @seconds.index(now.sec)
+          ii = i
+
+          loop do
+            cur = @seconds[ii]
+            ii += 1
+            ii = 0 if ii == @seconds.size
+            nxt = @seconds[ii]
+            nxt += 60 if ii == 0
+            sjarray << (nxt - cur)
+            break if ii == i
+          end
+
+        else
+
+          sjarray = [ 1 ]
+        end
+
+        #
+        # ok, seek...
+
+        i = 0
+
+        loop do
+          return now if matches?(now)
+          now += sjarray[i]
+          i += 1
+          i = 0 if i == sjarray.size
+          # danger... potentially no exit...
+        end
+
+        nil
       end
 
       private
-
-        #
-        # used by the next_time() method
-        #
-        def find_next (args, array, now, min, max, carry=0)
-
-          if array
-            if (nxt = array.find { |e| e > now })
-              args << nxt
-              0
-            else
-              args << array.first
-              1
-            end
-          else
-            nxt = now + carry
-            if nxt > max
-              args << min
-              1
-            else
-              args << nxt
-              0
-            end
-          end
-        end
 
         #--
         # adjust values to Ruby

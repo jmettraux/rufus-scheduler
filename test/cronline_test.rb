@@ -54,10 +54,12 @@ class CronLineTest < Test::Unit::TestCase
     now = Time.at(0) # something like 'Thu Jan 01 09:00:00 +0900 1970'
 
     assert_equal now + 60, cl("* * * * *").next_time(now)
-    assert_equal now + 259260, cl("* * * * sun").next_time(now)
-    #assert_equal now + 1, cl("* * * * * *").next_time(now)
-    assert_equal now + 3715260, cl("* * 13 * fri").next_time(now)
+    assert_equal now + 226800, cl("* * * * sun").next_time(now)
+    assert_equal now + 1, cl("* * * * * *").next_time(now)
+    assert_equal now + 3682800, cl("* * 13 * fri").next_time(now)
+
     assert_equal now + 29905800, cl("10 12 13 12 *").next_time(now)
+      # this one is slow (1 year == 3 seconds)
 
     assert_equal now + 601200, cl("* 8 * * thu").next_time(now)
   end

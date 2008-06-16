@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 1.0.7    not yet released 
 
+- todo  #20669 : implemented CronJob.next_time()
 - todo  #20667 : now passing params to schedule() blocks as well.
 - bug   #20648 : find_schedulable(tag) broken. Fixed.
 
