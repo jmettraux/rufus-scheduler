@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 1.0.7    not yet released 
+== rufus-scheduler - 1.0.7    released 2008/06/16
 
 - todo  #20669 : implemented CronJob.next_time()
 - todo  #20667 : now passing params to schedule() blocks as well.
