@@ -114,6 +114,9 @@ module Rufus
   #     regenerate_latest_report()
   #   end
   #
+  # (note : a schedule every isn't triggered immediately, thus this example
+  # will first trigger 1 hour and 20 minutes after being scheduled)
+  #
   # The scheduler has a "exit_when_no_more_jobs" attribute. When set to
   # 'true', the scheduler will exit as soon as there are no more jobs to
   # run.
@@ -505,6 +508,9 @@ module Rufus
     #     # schedule something every two days, start in 5 hours...
     #   end
     #
+    # (without setting a :first_in (or :first_at), our example schedule would
+    # have had been triggered after two days).
+    #
     def schedule_every (freq, params={}, &block)
 
       f = duration_to_f freq
@@ -525,7 +531,7 @@ module Rufus
       elsif previous_at
         previous_at + f
       else
-        Time.now.to_f + f
+        Time.now.to_f + f # not triggering immediately
       end
 
       do_schedule_at(next_at, params) do |job_id, at|
@@ -734,8 +740,7 @@ module Rufus
     #
     # Returns true if the given string seems to be a cron string.
     #
-    def Scheduler.is_cron_string (s)
-
+    def self.is_cron_string (s)
       s.match ".+ .+ .+ .+ .+" # well...
     end
 

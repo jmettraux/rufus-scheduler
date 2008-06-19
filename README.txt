@@ -17,7 +17,31 @@ http://rubyforge.org/frs/?group_id=4812
 
 == usage
 
-For all the scheduling related information, see the Rufus::Scheduler class rdoc itself or the original OpenWFEru scheduler documentation at http://openwferu.rubyforge.org/scheduler.html
+some examples :
+
+    require 'rubygems'
+    require 'rufus/scheduler'
+
+    scheduler = Rufus::Scheduler.start_new
+
+    scheduler.schedule_in("3d") do
+      regenerate_monthly_report()
+    end
+      #
+      # will call the regenerate_monthly_report method
+      # in 3 days from now
+
+     scheduler.schedule "0 22 * * 1-5" do
+       log.info "activating security system..."
+       activate_security_system()
+     end
+
+     job_id = scheduler.schedule_at "Sun Oct 07 14:24:01 +0900 2009" do
+       init_self_destruction_sequence()
+     end
+
+
+For all the scheduling related information, see the Rufus::Scheduler class rdoc itself (http://rufus.rubyforge.org/rufus-scheduler/classes/Rufus/Scheduler.html) or the original OpenWFEru scheduler documentation at http://openwferu.rubyforge.org/scheduler.html
 
 Apart from scheduling, There are also two interesting methods in this gem, they are named parse_time_string and to_time_string :
 
@@ -66,7 +90,7 @@ http://github.com/jmettraux/rufus-scheduler
 
 == author
 
-John Mettraux, jmettraux@gmail.com 
+John Mettraux, jmettraux@gmail.com
 http://jmettraux.wordpress.com
 
 
