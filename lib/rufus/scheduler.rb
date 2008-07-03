@@ -638,10 +638,14 @@ module Rufus
     #++
 
     #
-    # Unschedules an 'at' or a 'cron' job identified by the id
+    # Unschedules an 'at', 'every' or a 'cron' job identified by the id
     # it was given at schedule time.
     #
     def unschedule (job_id)
+
+      job = get_job(job_id)
+
+      job.params[:dont_reschedule] = true if job.is_a?(EveryJob)
 
       @unschedule_queue << [ :at, job_id ]
     end

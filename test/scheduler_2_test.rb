@@ -78,8 +78,7 @@ class Scheduler2Test < Test::Unit::TestCase
 
   def test_2
 
-    scheduler = Rufus::Scheduler.new
-    scheduler.start
+    scheduler = Rufus::Scheduler.start_new
 
     def scheduler.lwarn (&block)
       puts block.call

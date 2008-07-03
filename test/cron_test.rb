@@ -97,8 +97,7 @@ class CronTest < Test::Unit::TestCase
   #
   def test_3
 
-    scheduler = Rufus::Scheduler.new
-    scheduler.start
+    scheduler = Rufus::Scheduler.start_new
 
     counter = 0
 
