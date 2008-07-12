@@ -7,6 +7,7 @@
 # Sun Oct 29 16:18:25 JST 2006
 #
 
+require 'pp'
 require 'test/unit'
 
 require 'rufus/scheduler'
