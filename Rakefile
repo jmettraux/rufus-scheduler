@@ -9,7 +9,7 @@ require 'rake/rdoctask'
 require 'rake/testtask'
 
 
-RUFUS_SCHEDULER_VERSION = "1.0.7"
+RUFUS_SCHEDULER_VERSION = "1.0.8"
 
 #
 # GEM SPEC
