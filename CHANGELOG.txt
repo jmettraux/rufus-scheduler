@@ -2,6 +2,13 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 1.0.8    not yet released
+
+- todo  #21193 : spinned CronLine out to rufus/cronline.rb
+- bug   #20893 : something unschedule(every_job) not working when job was
+                 active (performing). Fixed.
+
+
 == rufus-scheduler - 1.0.7    released 2008/06/16
 
 - todo  #20669 : implemented CronJob.next_time()

@@ -31,7 +31,7 @@
 require 'thread'
 require 'monitor'
 require 'rufus/otime'
-
+require 'rufus/cronline'
 
 module Rufus
 
@@ -45,7 +45,7 @@ module Rufus
   # params (usually an array or nil), either a block, which is more in the
   # Ruby way.
   #
-  # == The gem "openwferu-scheduler"
+  # == The gem "rufus-scheduler"
   #
   # This scheduler was previously known as the "openwferu-scheduler" gem.
   #
@@ -327,6 +327,7 @@ module Rufus
 
       @pending_jobs = []
       @cron_jobs = {}
+      @every_jobs = {}
 
       @schedule_queue = Queue.new
       @unschedule_queue = Queue.new
@@ -349,7 +350,7 @@ module Rufus
       #@correction = 0.00045
 
       @exit_when_no_more_jobs = false
-      @dont_reschedule_every = false
+      #@dont_reschedule_every = false
 
       @last_cron_second = -1
 
@@ -481,7 +482,7 @@ module Rufus
     def schedule_in (duration, params={}, &block)
 
       do_schedule_at(
-        Time.new.to_f + duration_to_f(duration),
+        Time.new.to_f + Rufus::duration_to_f(duration),
         prepare_params(params),
         &block)
     end
@@ -513,72 +514,30 @@ module Rufus
     #
     def schedule_every (freq, params={}, &block)
 
-      f = duration_to_f freq
-
       params = prepare_params params
-      schedulable = params[:schedulable]
       params[:every] = freq
 
-      first_at = params.delete :first_at
-      first_in = params.delete :first_in
+      first_at = params[:first_at]
+      first_in = params[:first_in]
 
-      previous_at = params[:previous_at]
-
-      next_at = if first_at
-        first_at
+      first_at = if first_at
+        at_to_f(first_at)
       elsif first_in
-        Time.now.to_f + duration_to_f(first_in)
-      elsif previous_at
-        previous_at + f
+        Time.now.to_f + Rufus.duration_to_f(first_in)
       else
-        Time.now.to_f + f # not triggering immediately
+        Time.now.to_f + Rufus.duration_to_f(freq) # not triggering immediately
       end
 
-      do_schedule_at(next_at, params) do |job_id, at|
+      b = to_block(params, &block)
 
-        #
-        # trigger ...
+      job = EveryJob.new(self, first_at, nil, params, &b)
+      @every_jobs[job.job_id] = job
 
-        hit_exception = false
+      params[:job] = job
 
-        begin
+      do_schedule_at(first_at, params)
 
-          if schedulable
-            schedulable.trigger params
-          else
-            block.call job_id, at, params
-          end
-
-        rescue Exception => e
-
-          log_exception e
-
-          hit_exception = true
-        end
-
-        # cannot use a return here !!! (block)
-
-        unless \
-          @dont_reschedule_every or
-          (params[:dont_reschedule] == true) or
-          (hit_exception and params[:try_again] == false)
-
-          #
-          # ok, reschedule ...
-
-          params[:job_id] = job_id
-          params[:previous_at] = at
-
-          schedule_every params[:every], params, &block
-            #
-            # yes, this is a kind of recursion
-
-            # note that params[:every] might have been changed
-            # by the block/schedulable code
-        end
-
-        job_id
-      end
+      job.job_id
     end
 
     #
@@ -613,8 +572,7 @@ module Rufus
       #
       # is a job with the same id already scheduled ?
 
-      cron_id = params[:cron_id]
-      cron_id = params[:job_id] unless cron_id
+      cron_id = params[:cron_id] || params[:job_id]
 
       #unschedule(cron_id) if cron_id
       @unschedule_queue << [ :cron, cron_id ]
@@ -643,7 +601,7 @@ module Rufus
     #
     def unschedule (job_id)
 
-      @unschedule_queue << [ :at, job_id ]
+      @unschedule_queue << [ :any, job_id ]
     end
 
     #
@@ -666,7 +624,9 @@ module Rufus
     #
     def get_job (job_id)
 
-      @cron_jobs[job_id] || @pending_jobs.find { |job| job.job_id == job_id }
+      @cron_jobs[job_id] ||
+      @every_jobs[job_id] ||
+      @pending_jobs.find { |job| job.job_id == job_id }
     end
 
     #
@@ -726,7 +686,8 @@ module Rufus
     #
     def every_job_count
 
-      @pending_jobs.select { |j| j.is_a?(EveryJob) }.size
+      #@pending_jobs.select { |j| j.is_a?(EveryJob) }.size
+      @every_jobs.size
     end
 
     #
@@ -748,16 +709,25 @@ module Rufus
 
       def do_unschedule (job_id)
 
+        job = get_job job_id
+
+        return do_unschedule_cron_job(job_id) if job.is_a?(CronJob)
+
+        if job.is_a?(EveryJob)
+          @every_jobs.delete(job_id)
+          job.params[:dont_reschedule] = true
+        end
+
         for i in 0...@pending_jobs.length
           if @pending_jobs[i].job_id == job_id
             @pending_jobs.delete_at i
             return true
           end
         end
-          #
-          # not using delete_if because it scans the whole list
 
-        do_unschedule_cron_job job_id
+        job.is_a?(EveryJob)
+          #
+          # return false if it's an AtJob
       end
 
       def do_unschedule_cron_job (job_id)
@@ -770,9 +740,7 @@ module Rufus
       #
       def prepare_params (params)
 
-        params = { :schedulable => params } \
-          if params.is_a?(Schedulable)
-        params
+        params.is_a?(Schedulable) ? { :schedulable => params } : params
       end
 
       #
@@ -781,23 +749,20 @@ module Rufus
       #
       def do_schedule_at (at, params={}, &block)
 
-        #puts "0 at is '#{at.to_s}' (#{at.class})"
+        job = params.delete :job
 
-        at = at_to_f at
+        unless job
 
-        #puts "1 at is '#{at.to_s}' (#{at.class})"}"
+          #jobClass = params[:every] ? EveryJob : AtJob
+          #job_id = params[:job_id]
 
-        jobClass = params[:every] ? EveryJob : AtJob
+          b = to_block params, &block
 
-        job_id = params[:job_id]
+          #job = jobClass.new self, at, job_id, params, &b
+          job = AtJob.new self, at_to_f(at), params[:job_id], params, &b
+        end
 
-        b = to_block params, &block
-
-        job = jobClass.new self, at, job_id, params, &b
-
-        #do_unschedule(job_id) if job_id
-
-        if at < (Time.new.to_f + @precision)
+        if job.at < (Time.new.to_f + @precision)
 
           job.trigger() unless params[:discard_past]
           return nil
@@ -809,20 +774,6 @@ module Rufus
       end
 
       #
-      # Ensures that a duration is a expressed as a Float instance.
-      #
-      #   duration_to_f("10s")
-      #
-      # will yields 10.0
-      #
-      def duration_to_f (s)
-
-        return s if s.kind_of?(Float)
-        return Rufus::parse_time_string(s) if s.kind_of?(String)
-        Float(s.to_s)
-      end
-
-      #
       # Ensures an 'at' instance is translated to a float
       # (to be compared with the float coming from time.to_f)
       #
@@ -831,6 +782,7 @@ module Rufus
         at = Rufus::to_ruby_time(at) if at.kind_of?(String)
         at = Rufus::to_gm_time(at) if at.kind_of?(DateTime)
         at = at.to_f if at.kind_of?(Time)
+
         at
       end
 
@@ -843,11 +795,9 @@ module Rufus
 
         return block if block
 
-        schedulable = params[:schedulable]
+        schedulable = params.delete(:schedulable)
 
         return nil unless schedulable
-
-        params.delete :schedulable
 
         l = lambda do
           schedulable.trigger(params)
@@ -890,9 +840,6 @@ module Rufus
       # 'cron' jobs get executed if necessary then 'at' jobs.
       #
       def step
-
-        #puts Time.now.to_f
-        #puts @pending_jobs.collect { |j| [ j.job_id, j.at ] }.inspect
 
         step_unschedule
           # unschedules any job in the unschedule queue before
@@ -952,22 +899,17 @@ module Rufus
       end
 
       #
-      # triggers every eligible pending jobs, then every eligible
+      # triggers every eligible pending (at or every) jobs, then every eligible
       # cron jobs.
       #
       def step_trigger
 
-        now = Time.new
+        now = Time.now
 
-        if @exit_when_no_more_jobs
+        if @exit_when_no_more_jobs && @pending_jobs.size < 1
 
-          if @pending_jobs.size < 1
-
-            @stopped = true
-            return
-          end
-
-          @dont_reschedule_every = true if at_job_count < 1
+          @stopped = true
+          return
         end
 
         # TODO : eventually consider running cron / pending
@@ -982,10 +924,7 @@ module Rufus
 
           @last_cron_second = now.sec
 
-          #puts "step() @cron_jobs.size #{@cron_jobs.size}"
-
           @cron_jobs.each do |cron_id, cron_job|
-            #puts "step() cron_id : #{cron_id}"
             #trigger(cron_job) if cron_job.matches?(now, @precision)
             trigger(cron_job) if cron_job.matches?(now)
           end
@@ -1010,7 +949,7 @@ module Rufus
             #
             # obviously
 
-          trigger job
+          trigger(job)
 
           @pending_jobs.delete_at 0
         end
@@ -1165,9 +1104,7 @@ module Rufus
       #
       attr_accessor :at
 
-      #
-      # The constructor.
-      #
+
       def initialize (scheduler, at, at_id, params, &block)
 
         super(scheduler, at_id, params, &block)
@@ -1204,6 +1141,45 @@ module Rufus
     # An 'every' job is simply an extension of an 'at' job.
     #
     class EveryJob < AtJob
+
+      def initialize (scheduler, first_at, job_id, params, &block)
+
+        super(scheduler, first_at, job_id, params, &block)
+      end
+
+      #
+      # triggers the job, then reschedules it if necessary
+      #
+      def trigger
+
+        hit_exception = false
+
+        begin
+
+          block.call @job_id, @at, @params
+
+        rescue Exception => e
+
+          @scheduler.send(:log_exception, e)
+
+          hit_exception = true
+        end
+
+        return if \
+          @scheduler.instance_variable_get(:@exit_when_no_more_jobs) or
+          (@params[:dont_reschedule] == true) or
+          (hit_exception and @params[:try_again] == false)
+
+        #
+        # ok, reschedule ...
+
+
+        params[:job] = self
+
+        @at = @at + Rufus.duration_to_f(params[:every])
+
+        @scheduler.send(:do_schedule_at, @at, params)
+      end
 
       #
       # Returns the frequency string used to schedule this EveryJob,
@@ -1285,276 +1261,6 @@ module Rufus
 
         @cron_line.next_time(from)
       end
-    end
-
-    #
-    # A 'cron line' is a line in the sense of a crontab
-    # (man 5 crontab) file line.
-    #
-    class CronLine
-
-      #
-      # The string used for creating this cronline instance.
-      #
-      attr_reader :original
-
-      attr_reader \
-        :seconds,
-        :minutes,
-        :hours,
-        :days,
-        :months,
-        :weekdays
-
-      def initialize (line)
-
-        super()
-
-        @original = line
-
-        items = line.split
-
-        unless [ 5, 6 ].include?(items.length)
-          raise \
-            "cron '#{line}' string should hold 5 or 6 items, " +
-            "not #{items.length}" \
-        end
-
-        offset = items.length - 5
-
-        @seconds = if offset == 1
-          parse_item(items[0], 0, 59)
-        else
-          [ 0 ]
-        end
-        @minutes = parse_item(items[0+offset], 0, 59)
-        @hours = parse_item(items[1+offset], 0, 24)
-        @days = parse_item(items[2+offset], 1, 31)
-        @months = parse_item(items[3+offset], 1, 12)
-        @weekdays = parse_weekdays(items[4+offset])
-
-        #adjust_arrays()
-      end
-
-      #
-      # Returns true if the given time matches this cron line.
-      #
-      # (the precision is passed as well to determine if it's
-      # worth checking seconds and minutes)
-      #
-      def matches? (time)
-      #def matches? (time, precision)
-
-        time = Time.at(time) unless time.kind_of?(Time)
-
-        return false \
-          if no_match?(time.sec, @seconds)
-          #if precision <= 1 and no_match?(time.sec, @seconds)
-        return false \
-          if no_match?(time.min, @minutes)
-          #if precision <= 60 and no_match?(time.min, @minutes)
-        return false \
-          if no_match?(time.hour, @hours)
-        return false \
-          if no_match?(time.day, @days)
-        return false \
-          if no_match?(time.month, @months)
-        return false \
-          if no_match?(time.wday, @weekdays)
-
-        true
-      end
-
-      #
-      # Returns an array of 6 arrays (seconds, minutes, hours, days,
-      # months, weekdays).
-      # This method is used by the cronline unit tests.
-      #
-      def to_array
-
-        [ @seconds, @minutes, @hours, @days, @months, @weekdays ]
-      end
-
-      #
-      # Returns the next time that this cron line is supposed to 'fire'
-      #
-      # This is raw, 3 secs to iterate over 1 year on my macbook :( brutal.
-      #
-      def next_time (now = Time.now)
-
-        #
-        # position now to the next cron second
-
-        if @seconds
-          next_sec = @seconds.find { |s| s > now.sec } || 60 + @seconds.first
-          now += next_sec - now.sec
-        else
-          now += 1
-        end
-
-        #
-        # prepare sec jump array
-
-        sjarray = nil
-
-        if @seconds
-
-          sjarray = []
-
-          i = @seconds.index(now.sec)
-          ii = i
-
-          loop do
-            cur = @seconds[ii]
-            ii += 1
-            ii = 0 if ii == @seconds.size
-            nxt = @seconds[ii]
-            nxt += 60 if ii == 0
-            sjarray << (nxt - cur)
-            break if ii == i
-          end
-
-        else
-
-          sjarray = [ 1 ]
-        end
-
-        #
-        # ok, seek...
-
-        i = 0
-
-        loop do
-          return now if matches?(now)
-          now += sjarray[i]
-          i += 1
-          i = 0 if i == sjarray.size
-          # danger... potentially no exit...
-        end
-
-        nil
-      end
-
-      private
-
-        #--
-        # adjust values to Ruby
-        #
-        #def adjust_arrays()
-        #  @hours = @hours.collect { |h|
-        #    if h == 24
-        #      0
-        #    else
-        #      h
-        #    end
-        #  } if @hours
-        #  @weekdays = @weekdays.collect { |wd|
-        #    wd - 1
-        #  } if @weekdays
-        #end
-          #
-          # dead code, keeping it as a reminder
-        #++
-
-        WDS = [ "sun", "mon", "tue", "wed", "thu", "fri", "sat" ]
-          #
-          # used by parse_weekday()
-
-        def parse_weekdays (item)
-
-          item = item.downcase
-
-          WDS.each_with_index do |day, index|
-            item = item.gsub day, "#{index}"
-          end
-
-          r = parse_item item, 0, 7
-
-          return r unless r.is_a?(Array)
-
-          r.collect { |e| e == 7 ? 0 : e }.uniq
-        end
-
-        def parse_item (item, min, max)
-
-          return nil \
-            if item == "*"
-          return parse_list(item, min, max) \
-            if item.index(",")
-          return parse_range(item, min, max) \
-            if item.index("*") or item.index("-")
-
-          i = Integer(item)
-
-          i = min if i < min
-          i = max if i > max
-
-          [ i ]
-        end
-
-        def parse_list (item, min, max)
-
-          items = item.split(",")
-
-          items.inject([]) { |r, i| r.push(parse_range(i, min, max)) }.flatten
-        end
-
-        def parse_range (item, min, max)
-
-          i = item.index("-")
-          j = item.index("/")
-
-          return item.to_i if (not i and not j)
-
-          inc = 1
-
-          inc = Integer(item[j+1..-1]) if j
-
-          istart = -1
-          iend = -1
-
-          if i
-
-            istart = Integer(item[0..i-1])
-
-            if j
-              iend = Integer(item[i+1..j])
-            else
-              iend = Integer(item[i+1..-1])
-            end
-
-          else # case */x
-
-            istart = min
-            iend = max
-          end
-
-          istart = min if istart < min
-          iend = max if iend > max
-
-          result = []
-
-          value = istart
-          loop do
-
-            result << value
-            value = value + inc
-            break if value > iend
-          end
-
-          result
-        end
-
-        def no_match? (value, cron_values)
-
-          return false if not cron_values
-
-          cron_values.each do |v|
-            return false if value == v # ok, it matches
-          end
-
-          true # no match found
-        end
     end
 
 end

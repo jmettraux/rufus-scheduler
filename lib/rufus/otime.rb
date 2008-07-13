@@ -336,6 +336,20 @@ module Rufus
     h
   end
 
+  #
+  # Ensures that a duration is a expressed as a Float instance.
+  #
+  #   duration_to_f("10s")
+  #
+  # will yield 10.0
+  #
+  def Rufus.duration_to_f (s)
+
+    return s if s.kind_of?(Float)
+    return parse_time_string(s) if s.kind_of?(String)
+    Float(s.to_s)
+  end
+
   protected
 
     DURATIONS2M = [
