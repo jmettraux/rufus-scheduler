@@ -3,6 +3,7 @@
 
 == Feedback
 
+- Sean Liu, unschedule_every issue
 - Manfred Usselman (no cronjobs on sundays bug)
 - Michael Goth, tests with precision > 1s
 
