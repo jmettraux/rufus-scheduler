@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 1.0.8    not yet released
 
+- todo  #21203 : keeping track of At and EveryJob until last trigger is over
 - todo  #20823 : now raising exception in case of bad 'at' parameter
 - todo  #21194 : added trigger_thread to Job class
 - todo  #21193 : spinned CronLine out to rufus/cronline.rb

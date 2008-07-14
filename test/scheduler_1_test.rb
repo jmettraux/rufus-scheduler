@@ -47,8 +47,7 @@ class Scheduler1Test < Test::Unit::TestCase
 
   def test_1
 
-    scheduler = Rufus::Scheduler.new
-    scheduler.start
+    scheduler = Rufus::Scheduler.start_new
 
     job_id = scheduler.schedule_every "500", :tags => "Avery" do
       # don't do a thing
@@ -59,8 +58,8 @@ class Scheduler1Test < Test::Unit::TestCase
     count = 1
 
     200_000.times do
-      #assert_equal 1, scheduler.find_jobs("Avery").size
       count = scheduler.find_jobs("Avery").size
+      #p scheduler.instance_variable_get(:@non_cron_jobs).keys if count != 1
       break if count != 1
     end
 

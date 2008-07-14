@@ -327,7 +327,7 @@ module Rufus
 
       @pending_jobs = []
       @cron_jobs = {}
-      @every_jobs = {}
+      @non_cron_jobs = {}
 
       @schedule_queue = Queue.new
       @unschedule_queue = Queue.new
@@ -528,16 +528,7 @@ module Rufus
         Time.now.to_f + Rufus.duration_to_f(freq) # not triggering immediately
       end
 
-      b = to_block(params, &block)
-
-      job = EveryJob.new(self, first_at, nil, params, &b)
-      @every_jobs[job.job_id] = job
-
-      params[:job] = job
-
-      do_schedule_at(first_at, params)
-
-      job.job_id
+      do_schedule_at(first_at, params, &block)
     end
 
     #
@@ -574,8 +565,7 @@ module Rufus
 
       cron_id = params[:cron_id] || params[:job_id]
 
-      #unschedule(cron_id) if cron_id
-      @unschedule_queue << [ :cron, cron_id ]
+      #@unschedule_queue << cron_id
 
       #
       # schedule
@@ -583,7 +573,6 @@ module Rufus
       b = to_block(params, &block)
       job = CronJob.new(self, cron_id, cron_line, params, &b)
 
-      #@cron_jobs[job.job_id] = job
       @schedule_queue << job
 
       job.job_id
@@ -601,15 +590,17 @@ module Rufus
     #
     def unschedule (job_id)
 
-      @unschedule_queue << [ :any, job_id ]
+      @unschedule_queue << job_id
     end
 
     #
     # Unschedules a cron job
     #
+    # (deprecated : use unschedule(job_id) for all the jobs !)
+    #
     def unschedule_cron_job (job_id)
 
-      @unschedule_queue << [ :cron, job_id ]
+      unschedule(job_id)
     end
 
     #--
@@ -624,9 +615,7 @@ module Rufus
     #
     def get_job (job_id)
 
-      @cron_jobs[job_id] ||
-      @every_jobs[job_id] ||
-      @pending_jobs.find { |job| job.job_id == job_id }
+      @cron_jobs[job_id] || @non_cron_jobs[job_id]
     end
 
     #
@@ -644,9 +633,8 @@ module Rufus
     #
     def find_jobs (tag)
 
-      (@cron_jobs.values.find_all { |job| job.has_tag?(tag) } +
-       @every_jobs.values.find_all { |job| job.has_tag?(tag) } +
-       @pending_jobs.find_all { |job| job.has_tag?(tag) }).uniq
+      @cron_jobs.values.find_all { |job| job.has_tag?(tag) } +
+      @non_cron_jobs.values.find_all { |job| job.has_tag?(tag) }
     end
 
     #
@@ -682,8 +670,7 @@ module Rufus
     #
     def every_job_count
 
-      #@pending_jobs.select { |j| j.is_a?(EveryJob) }.size
-      @every_jobs.size
+      @non_cron_jobs.values.select { |j| j.class == EveryJob }.size
     end
 
     #
@@ -691,44 +678,43 @@ module Rufus
     #
     def at_job_count
 
-      @pending_jobs.select { |j| j.instance_of?(AtJob) }.size
+      @non_cron_jobs.values.select { |j| j.class == AtJob }.size
     end
 
     #
     # Returns true if the given string seems to be a cron string.
     #
     def self.is_cron_string (s)
+
       s.match ".+ .+ .+ .+ .+" # well...
     end
 
     private
 
+      #
+      # the unschedule work itself.
+      #
       def do_unschedule (job_id)
 
         job = get_job job_id
 
-        return do_unschedule_cron_job(job_id) if job.is_a?(CronJob)
+        return (@cron_jobs.delete(job_id) != nil) if job.is_a?(CronJob)
 
-        if job.is_a?(EveryJob)
-          @every_jobs.delete(job_id)
-          job.params[:dont_reschedule] = true
+        return false unless job # not found
+
+        if job.is_a?(AtJob) # catches AtJob and EveryJob instances
+          @non_cron_jobs.delete(job_id)
+          job.params[:dont_reschedule] = true # for AtJob as well, no worries
         end
 
         for i in 0...@pending_jobs.length
           if @pending_jobs[i].job_id == job_id
             @pending_jobs.delete_at i
-            return true
+            return true # asap
           end
         end
 
-        job.is_a?(EveryJob)
-          #
-          # return false if it's an AtJob
-      end
-
-      def do_unschedule_cron_job (job_id)
-
-        (@cron_jobs.delete(job_id) != nil)
+        true
       end
 
       #
@@ -749,20 +735,23 @@ module Rufus
 
         unless job
 
-          #jobClass = params[:every] ? EveryJob : AtJob
-          #job_id = params[:job_id]
+          jobClass = params[:every] ? EveryJob : AtJob
 
           b = to_block params, &block
 
-          #job = jobClass.new self, at, job_id, params, &b
-          job = AtJob.new self, at_to_f(at), params[:job_id], params, &b
+          job = jobClass.new self, at_to_f(at), params[:job_id], params, &b
         end
 
-        if job.at < (Time.new.to_f + @precision)
+        if jobClass == AtJob && job.at < (Time.new.to_f + @precision)
 
           job.trigger() unless params[:discard_past]
+
+          @non_cron_jobs.delete job.job_id # just to be sure
+
           return nil
         end
+
+        @non_cron_jobs[job.job_id] = job
 
         @schedule_queue << job
 
@@ -861,15 +850,7 @@ module Rufus
 
           break if @unschedule_queue.empty?
 
-          type, job_id = @unschedule_queue.pop
-
-          if type == :cron
-
-            do_unschedule_cron_job job_id
-          else
-
-            do_unschedule job_id
-          end
+          do_unschedule(@unschedule_queue.pop)
         end
       end
 
@@ -1148,6 +1129,8 @@ module Rufus
         def do_trigger
 
           @block.call @job_id, @at
+
+          @scheduler.instance_variable_get(:@non_cron_jobs).delete @job_id
         end
     end
 
@@ -1155,11 +1138,6 @@ module Rufus
     # An 'every' job is simply an extension of an 'at' job.
     #
     class EveryJob < AtJob
-
-      def initialize (scheduler, first_at, job_id, params, &block)
-
-        super(scheduler, first_at, job_id, params, &block)
-      end
 
       #
       # Returns the frequency string used to schedule this EveryJob,
@@ -1181,7 +1159,7 @@ module Rufus
 
           begin
 
-            block.call @job_id, @at, @params
+            @block.call @job_id, @at, @params
 
           rescue Exception => e
 
@@ -1190,14 +1168,16 @@ module Rufus
             hit_exception = true
           end
 
-          return if \
+          if \
             @scheduler.instance_variable_get(:@exit_when_no_more_jobs) or
             (@params[:dont_reschedule] == true) or
             (hit_exception and @params[:try_again] == false)
 
+            @scheduler.instance_variable_get(:@non_cron_jobs).delete(job_id)
+              # maybe it'd be better to wipe that reference from here anyway...
 
-          #@every_jobs.delete(job_id)
-            # maybe it'd be better to wipe that reference from here anyway...
+            return
+          end
 
           #
           # ok, reschedule ...

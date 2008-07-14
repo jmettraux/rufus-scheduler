@@ -160,6 +160,9 @@ class Scheduler0Test < Test::Unit::TestCase
 
     assert_equal 6, es.count
 
+    assert_nil scheduler.get_job(job_id)
+    assert_equal 1, scheduler.every_job_count # one left from before
+
     # done
 
     scheduler.sstop

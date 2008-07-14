@@ -47,7 +47,7 @@ class Scheduler4Test < Test::Unit::TestCase
     end
     #p Time.now.to_f
 
-    sleep 10.300
+    sleep 10.600
 
     s.stop
 
