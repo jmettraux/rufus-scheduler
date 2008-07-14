@@ -926,7 +926,7 @@ module Rufus
 
           @cron_jobs.each do |cron_id, cron_job|
             #trigger(cron_job) if cron_job.matches?(now, @precision)
-            trigger(cron_job) if cron_job.matches?(now)
+            cron_job.trigger if cron_job.matches?(now)
           end
         end
 
@@ -949,26 +949,9 @@ module Rufus
             #
             # obviously
 
-          trigger(job)
+          job.trigger
 
           @pending_jobs.delete_at 0
-        end
-      end
-
-      #
-      # Triggers the job (in a dedicated thread).
-      #
-      def trigger (job)
-
-        Thread.new do
-          begin
-
-            job.trigger
-
-          rescue Exception => e
-
-            log_exception e
-          end
         end
       end
 
@@ -1052,6 +1035,12 @@ module Rufus
       #
       attr_reader :params
 
+      #
+      # if the job is currently executing, this field points to
+      # the 'trigger thread'
+      #
+      attr_reader :trigger_thread
+
 
       def initialize (scheduler, job_id, params, &block)
 
@@ -1091,6 +1080,31 @@ module Rufus
 
         @scheduler.unschedule(@job_id)
       end
+
+      #
+      # Triggers the job (in a dedicated thread).
+      #
+      def trigger
+
+        Thread.new do
+
+          @trigger_thread = Thread.current
+            # keeping track of the thread
+
+          begin
+
+            do_trigger
+
+          rescue Exception => e
+
+            @scheduler.send(:log_exception, e)
+          end
+
+          #@trigger_thread = nil if @trigger_thread = Thread.current
+          @trigger_thread = nil
+            # overlapping executions, what to do ?
+        end
+      end
     end
 
     #
@@ -1112,14 +1126,6 @@ module Rufus
       end
 
       #
-      # Triggers the job (calls the block)
-      #
-      def trigger
-
-        @block.call @job_id, @at
-      end
-
-      #
       # Returns the Time instance at which this job is scheduled.
       #
       def schedule_info
@@ -1135,6 +1141,16 @@ module Rufus
 
         schedule_info
       end
+
+      protected
+
+        #
+        # Triggers the job (calls the block)
+        #
+        def do_trigger
+
+          @block.call @job_id, @at
+        end
     end
 
     #
@@ -1148,40 +1164,6 @@ module Rufus
       end
 
       #
-      # triggers the job, then reschedules it if necessary
-      #
-      def trigger
-
-        hit_exception = false
-
-        begin
-
-          block.call @job_id, @at, @params
-
-        rescue Exception => e
-
-          @scheduler.send(:log_exception, e)
-
-          hit_exception = true
-        end
-
-        return if \
-          @scheduler.instance_variable_get(:@exit_when_no_more_jobs) or
-          (@params[:dont_reschedule] == true) or
-          (hit_exception and @params[:try_again] == false)
-
-        #
-        # ok, reschedule ...
-
-
-        params[:job] = self
-
-        @at = @at + Rufus.duration_to_f(params[:every])
-
-        @scheduler.send(:do_schedule_at, @at, params)
-      end
-
-      #
       # Returns the frequency string used to schedule this EveryJob,
       # like for example "3d" or "1M10d3h".
       #
@@ -1189,6 +1171,46 @@ module Rufus
 
         @params[:every]
       end
+
+      protected
+
+        #
+        # triggers the job, then reschedules it if necessary
+        #
+        def do_trigger
+
+          hit_exception = false
+
+          begin
+
+            block.call @job_id, @at, @params
+
+          rescue Exception => e
+
+            @scheduler.send(:log_exception, e)
+
+            hit_exception = true
+          end
+
+          return if \
+            @scheduler.instance_variable_get(:@exit_when_no_more_jobs) or
+            (@params[:dont_reschedule] == true) or
+            (hit_exception and @params[:try_again] == false)
+
+
+          #@every_jobs.delete(job_id)
+            # maybe it'd be better to wipe that reference from here anyway...
+
+          #
+          # ok, reschedule ...
+
+
+          params[:job] = self
+
+          @at = @at + Rufus.duration_to_f(params[:every])
+
+          @scheduler.send(:do_schedule_at, @at, params)
+        end
     end
 
     #
@@ -1234,14 +1256,6 @@ module Rufus
       end
 
       #
-      # As the name implies.
-      #
-      def trigger
-
-        @block.call @job_id, @cron_line, @params
-      end
-
-      #
       # Returns the original cron tab string used to schedule this
       # Job. Like for example "60/3 * * * Sun".
       #
@@ -1261,6 +1275,16 @@ module Rufus
 
         @cron_line.next_time(from)
       end
+
+      protected
+
+        #
+        # As the name implies.
+        #
+        def do_trigger
+
+          @block.call @job_id, @cron_line, @params
+        end
     end
 
 end
