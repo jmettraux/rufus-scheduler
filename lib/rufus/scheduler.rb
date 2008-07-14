@@ -635,13 +635,8 @@ module Rufus
     #
     def get_schedulable (job_id)
 
-      #return nil unless job_id
-
       j = get_job(job_id)
-
-      return j.schedulable if j.respond_to?(:schedulable)
-
-      nil
+      j.respond_to?(:schedulable) ? j.schedulable : nil
     end
 
     #
@@ -649,8 +644,9 @@ module Rufus
     #
     def find_jobs (tag)
 
-      @cron_jobs.values.find_all { |job| job.has_tag?(tag) } +
-      @pending_jobs.find_all { |job| job.has_tag?(tag) }
+      (@cron_jobs.values.find_all { |job| job.has_tag?(tag) } +
+       @every_jobs.values.find_all { |job| job.has_tag?(tag) } +
+       @pending_jobs.find_all { |job| job.has_tag?(tag) }).uniq
     end
 
     #
@@ -782,6 +778,8 @@ module Rufus
         at = Rufus::to_ruby_time(at) if at.kind_of?(String)
         at = Rufus::to_gm_time(at) if at.kind_of?(DateTime)
         at = at.to_f if at.kind_of?(Time)
+
+        raise "cannot schedule at : #{at.inspect}" unless at.is_a?(Float)
 
         at
       end
