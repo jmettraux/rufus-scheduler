@@ -24,19 +24,19 @@ some examples :
 
     scheduler = Rufus::Scheduler.start_new
 
-    scheduler.schedule_in("3d") do
+    scheduler.in("3d") do
       regenerate_monthly_report()
     end
       #
       # will call the regenerate_monthly_report method
       # in 3 days from now
 
-     scheduler.schedule "0 22 * * 1-5" do
+     scheduler.cron "0 22 * * 1-5" do
        log.info "activating security system..."
        activate_security_system()
      end
 
-     job_id = scheduler.schedule_at "Sun Oct 07 14:24:01 +0900 2009" do
+     job_id = scheduler.at "Sun Oct 07 14:24:01 +0900 2009" do
        init_self_destruction_sequence()
      end
 

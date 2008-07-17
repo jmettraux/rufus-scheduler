@@ -290,6 +290,20 @@ module Rufus
   #
   #   scheduler.new :thread_name => "the crazy scheduler"
   #
+  #
+  # == job.trigger_thread
+  #
+  # Since rufus-scheduler 1.0.8, you can have access to the thread of
+  # a job currently being triggered.
+  #
+  #   job = scheduler.get_job(job_id)
+  #   thread = job.trigger_thread
+  #
+  # This new method will return nil if the job is not currently being
+  # triggered. Not that in case of an every or cron job, this method
+  # will return the thread of the last triggered instance, thus, in case
+  # of overlapping executions, you only get the most recent thread.
+  #
   class Scheduler
 
     #
