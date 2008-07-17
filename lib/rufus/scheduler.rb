@@ -471,6 +471,11 @@ module Rufus
         &block)
     end
 
+    #
+    # a shortcut for schedule_at
+    #
+    alias :at :schedule_at
+
 
     #
     # Schedules a job by stating in how much time it should trigger.
@@ -486,6 +491,11 @@ module Rufus
         prepare_params(params),
         &block)
     end
+
+    #
+    # a shortcut for schedule_in
+    #
+    alias :in :schedule_in
 
     #
     # Schedules a job in a loop. After an execution, it will not execute
@@ -530,6 +540,11 @@ module Rufus
 
       do_schedule_at(first_at, params, &block)
     end
+
+    #
+    # a shortcut for schedule_every
+    #
+    alias :every :schedule_every
 
     #
     # Schedules a cron job, the 'cron_line' is a string
@@ -577,6 +592,11 @@ module Rufus
 
       job.job_id
     end
+
+    #
+    # an alias for schedule()
+    #
+    alias :cron :schedule
 
     #--
     #

@@ -62,7 +62,7 @@ class Scheduler0Test < Test::Unit::TestCase
     scheduler = Rufus::Scheduler.new
     scheduler.start
 
-    sid = scheduler.schedule_in('1s') do
+    sid = scheduler.in('1s') do
       $var = "ok..1"
     end
 
@@ -144,7 +144,7 @@ class Scheduler0Test < Test::Unit::TestCase
 
     es = EverySchedulable.new
 
-    job_id = scheduler.schedule_every "500", es
+    job_id = scheduler.every "500", es
 
     #puts "1 job_id : " + job_id.to_s
 
@@ -268,12 +268,11 @@ class Scheduler0Test < Test::Unit::TestCase
   #
   def test_8b
 
-    scheduler = Rufus::Scheduler.new
-    scheduler.start
+    scheduler = Rufus::Scheduler.start_new
 
     var = nil
 
-    job_id = scheduler.schedule_at(Time.now.to_s, :discard_past => true) do
+    job_id = scheduler.at(Time.now.to_s, :discard_past => true) do
       var = "something"
     end
 

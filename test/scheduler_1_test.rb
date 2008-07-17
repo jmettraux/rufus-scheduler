@@ -73,8 +73,7 @@ class Scheduler1Test < Test::Unit::TestCase
   #
   def _test_2
 
-    scheduler = Rufus::Scheduler.new
-    scheduler.start
+    scheduler = Rufus::Scheduler.start_new
     last = nil
     job_id = scheduler.schedule_every "1s" do
       t = Time.now

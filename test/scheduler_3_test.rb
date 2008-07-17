@@ -41,7 +41,7 @@ class Scheduler3Test < Test::Unit::TestCase
     scheduler.schedule "* * * * *", :tags => "fish" do
       value = "cron-fish"
     end
-    scheduler.schedule "* * * * *", :tags => "vegetable" do
+    scheduler.cron "* * * * *", :tags => "vegetable" do
       value = "daikon"
     end
 
