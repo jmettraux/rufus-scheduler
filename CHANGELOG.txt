@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 1.0.8    not yet released
+== rufus-scheduler - 1.0.8    released 2008/07/18
 
 - todo  #21251 : added 'at', 'cron', 'in' and 'every' shortcut methods
 - todo  #21203 : keeping track of At and EveryJob until last trigger is over

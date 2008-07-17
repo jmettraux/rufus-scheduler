@@ -31,6 +31,10 @@ some examples :
       # will call the regenerate_monthly_report method
       # in 3 days from now
 
+     scheduler.every "10m10s" do
+       check_score(favourite_team) # every 10 minutes and 10 seconds
+     end
+
      scheduler.cron "0 22 * * 1-5" do
        log.info "activating security system..."
        activate_security_system()
