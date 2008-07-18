@@ -2,8 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 1.0.8    released 2008/07/18
+== rufus-scheduler - 1.0.9    released 2008/07/18
 
+- bug   #21262 : brought back (proxy) duration_to_f to Rufus::Scheduler
 - todo  #21251 : added 'at', 'cron', 'in' and 'every' shortcut methods
 - todo  #21203 : keeping track of At and EveryJob until last trigger is over
 - todo  #20823 : now raising exception in case of bad 'at' parameter

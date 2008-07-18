@@ -452,6 +452,18 @@ module Rufus
       join
     end
 
+    #
+    # Ensures that a duration is a expressed as a Float instance.
+    #
+    #   duration_to_f("10s")
+    #
+    # will yield 10.0
+    #
+    def duration_to_f (s)
+
+      Rufus.duration_to_f(s)
+    end
+
     #--
     #
     # The scheduling methods
@@ -501,7 +513,7 @@ module Rufus
     def schedule_in (duration, params={}, &block)
 
       do_schedule_at(
-        Time.new.to_f + Rufus::duration_to_f(duration),
+        Time.new.to_f + Rufus.duration_to_f(duration),
         prepare_params(params),
         &block)
     end
