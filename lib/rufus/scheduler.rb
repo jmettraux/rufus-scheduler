@@ -306,6 +306,8 @@ module Rufus
   #
   class Scheduler
 
+    VERSION = "1.0.10"
+
     #
     # By default, the precision is 0.250, with means the scheduler
     # will check for jobs to execute 4 times per second.
@@ -407,9 +409,9 @@ module Rufus
     #
     # Instantiates a new Rufus::Scheduler instance, starts it and returns it
     #
-    def self.start_new
+    def self.start_new (params = {})
 
-      s = self.new
+      s = self.new(params)
       s.start
       s
     end
