@@ -72,6 +72,7 @@ class Time0Test < Test::Unit::TestCase
     pts "1h", 3600.0
     pts "1h10s", 3610.0
     pts "1w2d", 777600.0
+    pts "1d1w1d", 777600.0
   end
 
   protected
@@ -79,7 +80,7 @@ class Time0Test < Test::Unit::TestCase
     def pts (time_string, seconds)
 
       assert_equal(
-        seconds, 
+        seconds,
         Rufus::parse_time_string(time_string),
         "'#{time_string}' did not map to #{seconds} seconds")
     end
