@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 1.0.10    not yet released
+== rufus-scheduler - 1.0.10    released 2008/08/28
 
 - todo  #21357 : added Rufus::Scheduler::VERSION
 - bug   #21358 : start_new() not accepting parameters. Fixed.
