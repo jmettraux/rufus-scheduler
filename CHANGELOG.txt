@@ -2,6 +2,11 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 1.0.11    released 2008/09/03
+
+- todo  #21781 : added lib/rufus-scheduler.rb to make Railsists' lives easier
+
+
 == rufus-scheduler - 1.0.10    released 2008/08/28
 
 - todo  #21357 : added Rufus::Scheduler::VERSION
