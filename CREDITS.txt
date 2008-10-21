@@ -3,6 +3,7 @@
 
 == Feedback
 
+- Xianhang Zhang, find_jobs(tag=nil) patch
 - Yi Wen, for lib/rufus-scheduler.rb
 - Adam Green and Rael Dornfest for the Taskr breaking issue feedback
 - Sean Liu, unschedule_every issue

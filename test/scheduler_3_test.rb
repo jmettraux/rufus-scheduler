@@ -50,6 +50,13 @@ class Scheduler3Test < Test::Unit::TestCase
     assert_equal 2, scheduler.find_jobs('fish').size
     #puts scheduler.find_jobs('fish')
 
+    assert_equal(
+      3,
+      scheduler.all_jobs.size)
+    assert_equal(
+      [ "Rufus::CronJob", "Rufus::CronJob", "Rufus::AtJob" ],
+      scheduler.all_jobs.collect { |j| j.class.name })
+
     scheduler.find_jobs('fish').each do |job|
       scheduler.unschedule(job.job_id)
     end

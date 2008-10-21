@@ -1,6 +1,10 @@
 
 = rufus-scheduler CHANGELOG.txt
 
+== rufus-scheduler - 1.0.12    not yet released
+
+- todo  #22489 : find_jobs(tag=nil) patch by Xianhang Zhang
+
 
 == rufus-scheduler - 1.0.11    released 2008/09/03
 

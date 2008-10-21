@@ -679,10 +679,19 @@ module Rufus
     #
     # Returns an array of jobs that have the given tag.
     #
-    def find_jobs (tag)
+    def find_jobs (tag=nil)
 
-      @cron_jobs.values.find_all { |job| job.has_tag?(tag) } +
-      @non_cron_jobs.values.find_all { |job| job.has_tag?(tag) }
+      jobs = @cron_jobs.values + @non_cron_jobs.values
+      jobs = jobs.select { |job| job.has_tag?(tag) } if tag
+      jobs
+    end
+
+    #
+    # Returns all the jobs in the scheduler.
+    #
+    def all_jobs
+
+      find_jobs()
     end
 
     #
