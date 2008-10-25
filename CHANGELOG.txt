@@ -3,6 +3,7 @@
 
 == rufus-scheduler - 1.0.12    not yet released
 
+- bug   #22546 : Added note about CronLine#next_time, K Liu
 - todo  #22489 : find_jobs(tag=nil) patch by Xianhang Zhang
 
 

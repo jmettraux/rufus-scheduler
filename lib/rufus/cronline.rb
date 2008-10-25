@@ -123,6 +123,25 @@ module Rufus
     #
     # This is raw, 3 secs to iterate over 1 year on my macbook :( brutal.
     #
+    # This method accepts an optional Time parameter. It's the starting point
+    # for the 'search'. By default, it's Time.now
+    #
+    # Note that the time instance returned will be in the same time zone that
+    # the given start point Time (thus a result in the local time zone will
+    # be passed if no start time is specified (search start time set to
+    # Time.now))
+    #
+    #   >> Rufus::CronLine.new('30 7 * * *').next_time( Time.mktime(2008,10,24,7,29) )
+    #   => Fri Oct 24 07:30:00 -0500 2008
+    #
+    #   >> Rufus::CronLine.new('30 7 * * *').next_time( Time.utc(2008,10,24,7,29) )
+    #   => Fri Oct 24 07:30:00 UTC 2008
+    #
+    #   >> Rufus::CronLine.new('30 7 * * *').next_time( Time.utc(2008,10,24,7,29)  ).localtime
+    #   => Fri Oct 24 02:30:00 -0500 2008
+    #
+    # (Thanks to K Liu for the note and the examples)
+    #
     def next_time (now = Time.now)
 
       #
