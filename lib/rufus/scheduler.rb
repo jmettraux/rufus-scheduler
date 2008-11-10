@@ -82,6 +82,9 @@ module Rufus
   #     init_self_destruction_sequence()
   #   end
   #
+  #   scheduler.join # join the scheduler (prevents exiting)
+  #
+  #
   # an example that uses a Schedulable class :
   #
   #  class Regenerator < Schedulable

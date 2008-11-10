@@ -44,6 +44,8 @@ some examples :
        init_self_destruction_sequence()
      end
 
+     scheduler.join # join the scheduler (prevents exiting)
+
 
 For all the scheduling related information, see the Rufus::Scheduler class rdoc itself (http://rufus.rubyforge.org/rufus-scheduler/classes/Rufus/Scheduler.html) or the original OpenWFEru scheduler documentation at http://openwferu.rubyforge.org/scheduler.html
 
