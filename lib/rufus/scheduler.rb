@@ -221,12 +221,25 @@ module Rufus
   #     end
   #   end
   #
+  #     # or
+  #
+  #   def scheduler.lwarn (&block)
+  #     puts "oops, something wrong happened : "
+  #     puts block.call
+  #   end
+  #
   #   # 2 - overriding the [protected] method log_exception(e) :
   #
   #   class << scheduler
   #     def log_exception (e)
   #       puts "something wrong happened : "+e.to_s
   #     end
+  #   end
+  #
+  #     # or
+  #
+  #   def scheduler.log_exception (e)
+  #     puts "something wrong happened : "+e.to_s
   #   end
   #
   # == 'Every jobs' and rescheduling
