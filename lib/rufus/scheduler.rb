@@ -29,7 +29,6 @@
 #
 
 require 'thread'
-require 'monitor'
 require 'rufus/otime'
 require 'rufus/cronline'
 
@@ -320,9 +319,11 @@ module Rufus
   # will return the thread of the last triggered instance, thus, in case
   # of overlapping executions, you only get the most recent thread.
   #
+  # TODO : document :timeout
+  #
   class Scheduler
 
-    VERSION = '1.0.11'
+    VERSION = '1.0.12'
 
     #
     # By default, the precision is 0.250, with means the scheduler
@@ -335,7 +336,7 @@ module Rufus
     #
     def precision= (f)
 
-      raise "precision must be 0.0 < p <= 1.0" \
+      raise 'precision must be 0.0 < p <= 1.0' \
         if f <= 0.0 or f > 1.0
 
       @precision = f
@@ -573,6 +574,8 @@ module Rufus
 
       first_at = params[:first_at]
       first_in = params[:first_in]
+
+      #params[:delayed] = true if first_at or first_in
 
       first_at = if first_at
         at_to_f(first_at)
@@ -1045,9 +1048,15 @@ module Rufus
     end
   end
 
+  #
+  # This error is thrown when the :timeout attribute triggers
+  #
+  class TimeOutError < RuntimeError
+  end
+
   protected
 
-    JOB_ID_LOCK = Monitor.new
+    JOB_ID_LOCK = Mutex.new
       #
       # would it be better to use a Mutex instead of a full-blown
       # Monitor ?
@@ -1156,7 +1165,19 @@ module Rufus
           @trigger_thread = nil
             # overlapping executions, what to do ?
         end
+
+        if trigger_thread_alive? and (to = @params[:timeout])
+          @scheduler.in(to, :tags => 'timeout') do
+            @trigger_thread.raise(Rufus::TimeOutError) if trigger_thread_alive?
+          end
+        end
       end
+
+      protected
+
+        def trigger_thread_alive?
+          (@trigger_thread && @trigger_thread.alive?)
+        end
     end
 
     #
