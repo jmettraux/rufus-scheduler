@@ -7,21 +7,16 @@
 # Sun Oct 29 16:18:25 JST 2006
 #
 
-require 'test/unit'
+$:.unshift(File.dirname(__FILE__) + '/../lib')
 
+require 'test/unit'
 require 'rufus/otime'
+
 
 #
 # testing otime
 #
-
 class Time0Test < Test::Unit::TestCase
-
-  #def setup
-  #end
-
-  #def teardown
-  #end
 
   def _test_to_iso_date
     #

@@ -7,17 +7,13 @@
 # Thu Feb 14 08:19:10 JST 2008
 #
 
+$:.unshift(File.dirname(__FILE__) + '/../lib')
+
 require 'test/unit'
 require 'rufus/scheduler'
 
 
 class Scheduler6Test < Test::Unit::TestCase
-
-  #def setup
-  #end
-
-  #def teardown
-  #end
 
   #
   # just a small test

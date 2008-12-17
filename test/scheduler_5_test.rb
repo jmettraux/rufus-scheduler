@@ -7,17 +7,13 @@
 # Sat Jan 26 20:05:57 JST 2008
 #
 
+$:.unshift(File.dirname(__FILE__) + '/../lib')
+
 require 'test/unit'
 require 'rufus/scheduler'
 
 
 class Scheduler5Test < Test::Unit::TestCase
-
-  #def setup
-  #end
-
-  #def teardown
-  #end
 
   #
   # Testing the :first_at parameter
@@ -31,7 +27,7 @@ class Scheduler5Test < Test::Unit::TestCase
 
     fa = Time.now + 3
 
-    s.schedule_every "1s", :first_at => fa do
+    s.schedule_every '1s', :first_at => fa do
       $count += 1
     end
 
@@ -60,7 +56,7 @@ class Scheduler5Test < Test::Unit::TestCase
 
     $count = 0
 
-    s.schedule_every "1s", :first_in => "3s" do
+    s.schedule_every '1s', :first_in => '3s' do
       $count += 1
     end
 

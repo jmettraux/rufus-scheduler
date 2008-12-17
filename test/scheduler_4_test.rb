@@ -7,17 +7,13 @@
 # Tue Jan  8 13:46:17 JST 2008
 #
 
+$:.unshift(File.dirname(__FILE__) + '/../lib')
+
 require 'test/unit'
 require 'rufus/scheduler'
 
 
 class Scheduler4Test < Test::Unit::TestCase
-
-  #def setup
-  #end
-
-  #def teardown
-  #end
 
   #
   # Checking that a sleep in a schedule won't raise any exception

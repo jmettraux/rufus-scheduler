@@ -7,17 +7,13 @@
 # Sun Oct 29 16:18:25 JST 2006
 #
 
+$:.unshift(File.dirname(__FILE__) + '/../lib')
+
 require 'test/unit'
 require 'openwfe/util/scheduler'
 
 
 class Scheduler3Test < Test::Unit::TestCase
-
-  #def setup
-  #end
-
-  #def teardown
-  #end
 
   #
   # Testing tags

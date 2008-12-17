@@ -7,6 +7,8 @@
 # Sun Jul 13 19:20:27 JST 2008
 #
 
+$:.unshift(File.dirname(__FILE__) + '/../lib')
+
 require 'test/unit'
 require 'rufus/scheduler'
 
@@ -14,14 +16,7 @@ require 'rufus/scheduler'
 #
 # checking if bug #20893 got fixed
 #
-
 class Scheduler7Test < Test::Unit::TestCase
-
-  #def setup
-  #end
-
-  #def teardown
-  #end
 
   def test_0
 

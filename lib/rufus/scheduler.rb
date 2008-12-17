@@ -568,7 +568,7 @@ module Rufus
     #
     def schedule_every (freq, params={}, &block)
 
-      params = prepare_params params
+      params = prepare_params(params)
       params[:every] = freq
 
       first_at = params[:first_at]
@@ -804,15 +804,15 @@ module Rufus
       #
       def do_schedule_at (at, params={}, &block)
 
-        job = params.delete :job
+        job = params.delete(:job)
 
         unless job
 
           jobClass = params[:every] ? EveryJob : AtJob
 
-          b = to_block params, &block
+          b = to_block(params, &block)
 
-          job = jobClass.new self, at_to_f(at), params[:job_id], params, &b
+          job = jobClass.new(self, at_to_f(at), params[:job_id], params, &b)
         end
 
         if jobClass == AtJob && job.at < (Time.new.to_f + @precision)

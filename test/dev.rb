@@ -24,5 +24,5 @@ s.schedule "* * * * *" do
   puts "#{tcurr.to_s} #{tcurr.to_f}  (#{compute_dev(s, tprev, tcurr)})"
 end
 
-s.join 
+s.join
 

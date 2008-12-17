@@ -7,8 +7,9 @@
 # Sun Oct 29 16:18:25 JST 2006
 #
 
-require 'test/unit'
+$:.unshift(File.dirname(__FILE__) + '/../lib')
 
+require 'test/unit'
 require 'rufus/scheduler'
 
 
