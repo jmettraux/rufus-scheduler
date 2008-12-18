@@ -319,7 +319,21 @@ module Rufus
   # will return the thread of the last triggered instance, thus, in case
   # of overlapping executions, you only get the most recent thread.
   #
-  # TODO : document :timeout
+  #
+  # == specifying a :timeout for a job
+  #
+  # rufus-scheduler 1.0.12 introduces a :timeout parameter for jobs.
+  #
+  #   scheduler.every "3h", :timeout => '2h30m' do
+  #     do_that_long_job()
+  #   end
+  #
+  # after 2 hours and half, the 'long job' will get interrupted by a
+  # Rufus::TimeOutError (so that you know what to catch).
+  #
+  # :timeout is applicable to all types of jobs : at, in, every, cron. It
+  # accepts a String value following the "Mdhms" scheme the rufus-scheduler
+  # uses.
   #
   class Scheduler
 
@@ -418,7 +432,7 @@ module Rufus
 
           next if d > @precision
 
-          sleep (@precision - d)
+          sleep(@precision - d)
         end
       end
     end

@@ -3,6 +3,7 @@
 
 == Feedback
 
+- Tim Uckun, :timeout concept
 - K Liu, for the note about CronLine#next_time
 - Xianhang Zhang, find_jobs(tag=nil) patch
 - Yi Wen, for lib/rufus-scheduler.rb

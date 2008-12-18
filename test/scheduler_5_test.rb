@@ -114,25 +114,37 @@ class Scheduler5Test < Test::Unit::TestCase
     $count = 0
     $error = nil
     $jobs = nil
+    $status = :out
 
     def s.log_exception (e)
       $error = e
+      $status = :timedout
     end
 
-    s.every '10s', :first_in => '3s', :timeout => '2s' do
+    s.every '5s', :first_in => '2s', :timeout => '1s' do
+      $status = :in
       Thread.pass # let the timeout job get scheduled
-      $jobs = s.all_jobs.collect { |j| j.tags }.flatten
+      jobs = s.all_jobs
+      $jobs = [ jobs.size, jobs.collect { |j| j.tags }.flatten ]
       $count += 1
-      sleep 5
+      sleep 4
+      $status = :out
     end
 
-    sleep 6
+    sleep 4 # until after 1st timeout
 
     assert_kind_of Rufus::TimeOutError, $error
     assert_equal 1, $count
-    assert_equal [ 'timeout' ], $jobs
+    assert_equal [ 2, [ 'timeout' ] ], $jobs
+    assert_equal :timedout, $status
 
-    assert_equal [], s.all_jobs
+    assert_equal 1, s.all_jobs.size
+
+    sleep 3.5 # right in the middle of the 2nd timeout
+
+    assert_equal :in, $status
+    assert_equal 2, s.all_jobs.size
+    assert_equal [ 'timeout' ], s.all_jobs.collect { |j| j.tags }.flatten
 
     s.stop
   end
