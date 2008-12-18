@@ -1,7 +1,8 @@
 
 = rufus-scheduler CHANGELOG.txt
 
-== rufus-scheduler - 1.0.12    not yet released
+
+== rufus-scheduler - 1.0.12    released 2008/12/18
 
 - todo  #23257 : added :timeout parameter for cron/in/at/every
 - bug   #22546 : added note about CronLine#next_time, K Liu
