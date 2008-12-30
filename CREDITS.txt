@@ -1,6 +1,11 @@
 
 = CREDITS.txt
 
+== Contributors
+
+- TobyH (http://github.com/tobyh), faster and cleaner CronLine#next_time
+
+
 == Feedback
 
 - Tim Uckun, :timeout concept
