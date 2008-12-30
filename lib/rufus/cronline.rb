@@ -90,21 +90,12 @@ module Rufus
 
       time = Time.at(time) unless time.kind_of?(Time)
 
-      return false \
-        if no_match?(time.sec, @seconds)
-        #if precision <= 1 and no_match?(time.sec, @seconds)
-      return false \
-        if no_match?(time.min, @minutes)
-        #if precision <= 60 and no_match?(time.min, @minutes)
-      return false \
-        if no_match?(time.hour, @hours)
-      return false \
-        if no_match?(time.day, @days)
-      return false \
-        if no_match?(time.month, @months)
-      return false \
-        if no_match?(time.wday, @weekdays)
-
+      return false unless sub_match? time.sec,   @seconds
+      return false unless sub_match? time.min,   @minutes
+      return false unless sub_match? time.hour,  @hours
+      return false unless sub_match? time.day,   @days
+      return false unless sub_match? time.month, @months
+      return false unless sub_match? time.wday,  @weekdays
       true
     end
 
@@ -142,59 +133,35 @@ module Rufus
     #
     # (Thanks to K Liu for the note and the examples)
     #
-    def next_time (now = Time.now)
-
-      #
-      # position now to the next cron second
-
-      if @seconds
-        next_sec = @seconds.find { |s| s > now.sec } || 60 + @seconds.first
-        now += next_sec - now.sec
-      else
-        now += 1
-      end
-
-      #
-      # prepare sec jump array
-
-      sjarray = nil
-
-      if @seconds
-
-        sjarray = []
-
-        i = @seconds.index(now.sec)
-        ii = i
-
-        loop do
-          cur = @seconds[ii]
-          ii += 1
-          ii = 0 if ii == @seconds.size
-          nxt = @seconds[ii]
-          nxt += 60 if ii == 0
-          sjarray << (nxt - cur)
-          break if ii == i
-        end
-
-      else
-
-        sjarray = [ 1 ]
-      end
-
-      #
-      # ok, seek...
-
-      i = 0
+    def next_time time=Time.now
+      time -= time.usec * 1e-6
+      time += 1
 
       loop do
-        return now if matches?(now)
-        now += sjarray[i]
-        i += 1
-        i = 0 if i == sjarray.size
-        # danger... potentially no exit...
+        unless date_match? time
+          time += (24 - time.hour) * 3600 - time.min * 60 - time.sec
+          next
+        end
+
+        unless sub_match? time.hour, @hours
+          time += (60 - time.min) * 60 - time.sec
+          next
+        end
+
+        unless sub_match? time.min, @minutes
+          time += 60 - time.sec
+          next
+        end
+
+        unless sub_match? time.sec, @seconds
+          time += 1
+          next
+        end
+
+        break
       end
 
-      nil
+      time
     end
 
     private
@@ -307,15 +274,15 @@ module Rufus
         result
       end
 
-      def no_match? (value, cron_values)
+      def sub_match? value, values
+        values.nil? || values.include?(value)
+      end
 
-        return false if not cron_values
-
-        cron_values.each do |v|
-          return false if value == v # ok, it matches
-        end
-
-        true # no match found
+      def date_match? date
+        return false unless sub_match? date.day,   @days
+        return false unless sub_match? date.month, @months
+        return false unless sub_match? date.wday,  @weekdays
+        true
       end
   end
 
