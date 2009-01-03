@@ -1,3 +1,6 @@
+require 'lib/rufus-scheduler'
+require 'rake'
+
 Gem::Specification.new do |s|
   s.name        = "rufus-scheduler"
   s.version       = Rufus::Scheduler::VERSION
