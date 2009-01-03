@@ -2,6 +2,11 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 1.0.13    not yet released
+
+- patch #23412 : faster CronLine#next_time patch by TobyH
+
+
 == rufus-scheduler - 1.0.12    released 2008/12/18
 
 - todo  #23257 : added :timeout parameter for cron/in/at/every
