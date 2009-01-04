@@ -337,7 +337,7 @@ module Rufus
   #
   class Scheduler
 
-    VERSION = '1.0.12'
+    VERSION = '1.0.13'
 
     #
     # By default, the precision is 0.250, with means the scheduler
