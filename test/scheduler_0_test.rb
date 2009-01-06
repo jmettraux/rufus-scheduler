@@ -179,6 +179,8 @@ class Scheduler0Test < Test::Unit::TestCase
       touched = true
     end
 
+    sleep 0.001 # being kind to JRuby
+
     assert touched
 
     scheduler.sstop
@@ -253,6 +255,8 @@ class Scheduler0Test < Test::Unit::TestCase
     job_id = scheduler.schedule_at Time.now.to_s do
       var = true
     end
+
+    sleep 0.001 # being kind to JRuby
 
     assert_equal var, true
     assert_nil job_id

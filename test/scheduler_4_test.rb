@@ -43,12 +43,13 @@ class Scheduler4Test < Test::Unit::TestCase
     end
     #p Time.now.to_f
 
-    sleep 10.600
+    #sleep 10.600
+    sleep 11.900
 
     s.stop
 
+    assert_nil($exception)
     assert_equal({ :a => 3, :b => 2, :c => 3 }, counters.counters)
-    assert_nil $exception
   end
 
   protected
