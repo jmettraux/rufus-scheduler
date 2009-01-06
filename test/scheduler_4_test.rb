@@ -33,12 +33,12 @@ class Scheduler4Test < Test::Unit::TestCase
 
     counters = Counters.new
 
-    s.schedule_every "2s" do
+    s.schedule_every '2s' do
       counters.inc :a
       sleep 4
       counters.inc :b
     end
-    s.schedule_every "3s" do
+    s.schedule_every '3s' do
       counters.inc :c
     end
     #p Time.now.to_f

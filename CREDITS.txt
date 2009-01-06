@@ -3,12 +3,13 @@
 
 == Contributors
 
-- Ryan Sonnek (http://github.com/wireframe), gemspec
 - TobyH (http://github.com/tobyh), faster and cleaner CronLine#next_time
+- Ryan Sonnek (http://github.com/wireframe), gemspec
 
 
 == Feedback
 
+- Chris Evans, :timeout tests on JRuby
 - Tim Uckun, :timeout concept
 - K Liu, for the note about CronLine#next_time
 - Xianhang Zhang, find_jobs(tag=nil) patch

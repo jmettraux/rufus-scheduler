@@ -123,9 +123,9 @@ class Scheduler5Test < Test::Unit::TestCase
 
     s.every '5s', :first_in => '2s', :timeout => '1s' do
       $status = :in
-      Thread.pass # let the timeout job get scheduled
-      jobs = s.all_jobs
-      $jobs = [ jobs.size, jobs.collect { |j| j.tags }.flatten ]
+      sleep 0.001 # let the timeout job get scheduled
+      aj = s.all_jobs
+      $jobs = [ aj.size, aj.collect { |j| j.tags }.flatten ]
       $count += 1
       sleep 4
       $status = :out

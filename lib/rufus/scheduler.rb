@@ -1,6 +1,6 @@
 #
 #--
-# Copyright (c) 2006-2008, John Mettraux, jmettraux@gmail.com
+# Copyright (c) 2006-2009, John Mettraux, jmettraux@gmail.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -1161,7 +1161,7 @@ module Rufus
       #
       def trigger
 
-        Thread.new do
+        t = Thread.new do
 
           @trigger_thread = Thread.current
             # keeping track of the thread
@@ -1175,23 +1175,17 @@ module Rufus
             @scheduler.send(:log_exception, e)
           end
 
-          #@trigger_thread = nil if @trigger_thread = Thread.current
+          #@trigger_thread = nil if @trigger_thread == Thread.current
           @trigger_thread = nil
             # overlapping executions, what to do ?
         end
 
-        if trigger_thread_alive? and (to = @params[:timeout])
+        if t.alive? and (to = @params[:timeout])
           @scheduler.in(to, :tags => 'timeout') do
-            @trigger_thread.raise(Rufus::TimeOutError) if trigger_thread_alive?
+            @trigger_thread.raise(Rufus::TimeOutError) if t.alive?
           end
         end
       end
-
-      protected
-
-        def trigger_thread_alive?
-          (@trigger_thread && @trigger_thread.alive?)
-        end
     end
 
     #

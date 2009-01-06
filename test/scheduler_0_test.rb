@@ -18,7 +18,7 @@ require 'rufus/scheduler'
 #
 class Scheduler0Test < Test::Unit::TestCase
 
-  def test_scheduler_0
+  def test_0
 
     #Thread.abort_on_exception = true
 
@@ -30,11 +30,11 @@ class Scheduler0Test < Test::Unit::TestCase
 
     assert \
       sid,
-      "scheduler_0 did not return a job id"
+      'scheduler_0 did not return a job id'
 
     assert \
       (not $var),
-      "scheduler_0 is blocking but should not"
+      'scheduler_0 is blocking but should not'
 
     sleep 2.5
 
@@ -47,10 +47,10 @@ class Scheduler0Test < Test::Unit::TestCase
 
     #puts ">#{$var}<"
 
-    assert_equal "ok", $var
+    assert_equal 'ok', $var
   end
 
-  def test_scheduler_1
+  def test_1
 
     $var = nil
 
@@ -58,41 +58,41 @@ class Scheduler0Test < Test::Unit::TestCase
     scheduler.start
 
     sid = scheduler.in('1s') do
-      $var = "ok..1"
+      $var = 'ok..1'
     end
 
     assert \
       sid,
-      "scheduler_1 did not return a job id"
+      'scheduler_1 did not return a job id'
 
     assert \
       (not $var),
-      "scheduler_1 is blocking but should not"
+      'scheduler_1 is blocking but should not'
 
     sleep 2
     scheduler.sstop
 
     #puts ">#{$var}<"
 
-    assert "ok..1", $var
+    assert 'ok..1', $var
   end
 
   #
   # test idea by ara.t.howard on the ruby-talk ml
   #
-  def test_scheduler_2
+  def test_2
 
-    text = ""
+    text = ''
 
     scheduler = Rufus::Scheduler.new()
     scheduler.start
 
-    scheduler.schedule_in("1s") do
-      text << "one"
+    scheduler.schedule_in('1s') do
+      text << 'one'
       sleep(2)
     end
-    scheduler.schedule_in("1s") do
-      text << "two"
+    scheduler.schedule_in('1s') do
+      text << 'two'
     end
 
     sleep(2)
@@ -101,13 +101,13 @@ class Scheduler0Test < Test::Unit::TestCase
 
     #puts text
 
-    assert_equal text, "onetwo"
+    assert_equal text, 'onetwo'
   end
 
   #
   # Testing schedule_every()
   #
-  def test_scheduler_4
+  def test_4
 
     Thread.abort_on_exception = true
 
@@ -118,7 +118,7 @@ class Scheduler0Test < Test::Unit::TestCase
 
     count = 0
 
-    job_id = scheduler.schedule_every("1s") do
+    job_id = scheduler.schedule_every('1s') do
       count += 1
     end
 
@@ -130,7 +130,7 @@ class Scheduler0Test < Test::Unit::TestCase
 
     job = scheduler.get_job job_id
 
-    assert_equal "1s", job.schedule_info
+    assert_equal '1s', job.schedule_info
 
     assert_job_count scheduler, 0, 0, 1
 
@@ -139,7 +139,7 @@ class Scheduler0Test < Test::Unit::TestCase
 
     es = EverySchedulable.new
 
-    job_id = scheduler.every "500", es
+    job_id = scheduler.every '500', es
 
     #puts "1 job_id : " + job_id.to_s
 
@@ -168,14 +168,14 @@ class Scheduler0Test < Test::Unit::TestCase
   # requests where t < scheduler.frequency.
   # (100ms < 250ms)
   #
-  def test_scheduler_5
+  def test_5
 
     scheduler = Rufus::Scheduler.new
     scheduler.start
 
     touched = false
 
-    scheduler.schedule_in "100" do
+    scheduler.schedule_in '100' do
       touched = true
     end
 
@@ -187,7 +187,7 @@ class Scheduler0Test < Test::Unit::TestCase
   #
   # Testing to see if a second job with the same id discards the first one.
   #
-  def test_scheduler_6
+  def test_6
 
     scheduler = Rufus::Scheduler.new
     scheduler.start
@@ -198,10 +198,10 @@ class Scheduler0Test < Test::Unit::TestCase
 
     value = nil
 
-    scheduler.schedule_in "3s", :job_id => "job" do
+    scheduler.schedule_in '3s', :job_id => 'job' do
       value = 0
     end
-    scheduler.schedule_in "2s", :job_id => "job" do
+    scheduler.schedule_in '2s', :job_id => 'job' do
       value = 1
     end
 
@@ -229,7 +229,7 @@ class Scheduler0Test < Test::Unit::TestCase
   #
   # Testing custom precision.
   #
-  def test_scheduler_7
+  def test_7
 
     scheduler = Rufus::Scheduler.new(:scheduler_precision => 0.100)
 
@@ -268,7 +268,7 @@ class Scheduler0Test < Test::Unit::TestCase
     var = nil
 
     job_id = scheduler.at(Time.now.to_s, :discard_past => true) do
-      var = "something"
+      var = 'something'
     end
 
     assert_nil var
@@ -287,7 +287,7 @@ class Scheduler0Test < Test::Unit::TestCase
 
     value = nil
 
-    scheduler.schedule_in "2s" do
+    scheduler.schedule_in '2s' do
       value = 0
     end
 
@@ -316,7 +316,7 @@ class Scheduler0Test < Test::Unit::TestCase
     rescue Exception => e
     end
 
-    assert_not_nil e, "exception not caught"
+    assert_not_nil e, 'exception not caught'
   end
 
   protected
@@ -325,7 +325,7 @@ class Scheduler0Test < Test::Unit::TestCase
       include Rufus::Schedulable
 
       def trigger (params)
-        $var = "ok"
+        $var = 'ok'
       end
     end
 

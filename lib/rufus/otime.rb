@@ -1,6 +1,6 @@
 #
 #--
-# Copyright (c) 2005-2008, John Mettraux, jmettraux@gmail.com
+# Copyright (c) 2005-2009, John Mettraux, jmettraux@gmail.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ module Rufus
     end
 
     s = date.to_s # this is costly
-    s[10] = " "
+    s[10] = ' '
 
     s
   end
@@ -70,11 +70,11 @@ module Rufus
 
     s = time.getutc().strftime(TIME_FORMAT)
     o = time.utc_offset / 3600
-    o = o.to_s + "00"
-    o = "0" + o if o.length < 4
-    o = "+" + o unless o[0..1] == '-'
+    o = o.to_s + '00'
+    o = '0' + o if o.length < 4
+    o = '+' + o unless o[0..1] == '-'
 
-    s + " " + o.to_s
+    s + ' ' + o.to_s
   end
 
   #
@@ -125,7 +125,7 @@ module Rufus
     index = -1
     result = 0.0
 
-    number = ""
+    number = ''
 
     loop do
 
@@ -139,13 +139,13 @@ module Rufus
       c = string[index, 1]
 
       #if is_digit?(c)
-      if (c >= "0" and c <= "9")
+      if (c >= '0' and c <= '9')
         number = number + c
         next
       end
 
       value = Integer(number)
-      number = ""
+      number = ''
 
       multiplier = DURATIONS[c]
 
@@ -171,7 +171,7 @@ module Rufus
 
     return false if not c.kind_of?(String)
     return false if c.length > 1
-    (c >= "0" and c <= "9")
+    (c >= '0' and c <= '9')
   end
 
   #
@@ -272,7 +272,7 @@ module Rufus
 
     h = to_duration_hash seconds, options
 
-    s = DU_KEYS.inject("") do |r, key|
+    s = DU_KEYS.inject('') do |r, key|
       count = h[key]
       count = nil if count == 0
       r << "#{count}#{key}" if count
@@ -353,16 +353,16 @@ module Rufus
   protected
 
     DURATIONS2M = [
-      [ "y", 365 * 24 * 3600 ],
-      [ "M", 30 * 24 * 3600 ],
-      [ "w", 7 * 24 * 3600 ],
-      [ "d", 24 * 3600 ],
-      [ "h", 3600 ],
-      [ "m", 60 ],
-      [ "s", 1 ]
+      [ 'y', 365 * 24 * 3600 ],
+      [ 'M', 30 * 24 * 3600 ],
+      [ 'w', 7 * 24 * 3600 ],
+      [ 'd', 24 * 3600 ],
+      [ 'h', 3600 ],
+      [ 'm', 60 ],
+      [ 's', 1 ]
     ]
     DURATIONS2 = DURATIONS2M.dup
-    DURATIONS2.delete_at 1
+    DURATIONS2.delete_at(1)
 
     DURATIONS = DURATIONS2M.inject({}) do |r, (k, v)|
       r[k] = v
