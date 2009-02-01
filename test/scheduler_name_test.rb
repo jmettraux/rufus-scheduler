@@ -1,6 +1,6 @@
 
 #
-# Testing Rufus
+# Testing Rufus scheduler
 #
 # John Mettraux at openwfe.org
 #
@@ -27,14 +27,14 @@ class SchedulerNameTest < Test::Unit::TestCase
 
     t = scheduler.instance_variable_get(:@scheduler_thread)
 
-    assert_equal "rufus scheduler", t[:name]
+    assert_equal 'rufus scheduler', t[:name]
 
     scheduler.stop
   end
 
   def test_1
 
-    scheduler = Rufus::Scheduler.new :thread_name => "genjiguruma"
+    scheduler = Rufus::Scheduler.new :thread_name => 'genjiguruma'
     scheduler.start
 
     sleep 0.350 if defined?(JRUBY_VERSION)

@@ -1,18 +1,22 @@
 
-require 'time_0_test'
-require 'time_1_test'
+dir = File.dirname(__FILE__)
 
-require 'scheduler_name_test'
+p dir
 
-require 'scheduler_0_test'
-require 'scheduler_1_test'
-require 'scheduler_2_test'
-require 'scheduler_3_test'
-require 'scheduler_4_test'
-require 'scheduler_5_test'
-require 'scheduler_6_test'
-require 'scheduler_7_test'
+require dir + '/time_0_test'
+require dir + '/time_1_test'
 
-require 'cron_test'
-require 'cronline_test'
+require dir + '/scheduler_name_test'
+
+require dir + '/scheduler_0_test'
+require dir + '/scheduler_1_test'
+require dir + '/scheduler_2_test'
+require dir + '/scheduler_3_test'
+require dir + '/scheduler_4_test'
+require dir + '/scheduler_5_test'
+require dir + '/scheduler_6_test'
+require dir + '/scheduler_7_test'
+
+require dir + '/cron_test'
+require dir + '/cronline_test'
 

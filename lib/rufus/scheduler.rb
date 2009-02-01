@@ -32,6 +32,7 @@ require 'thread'
 require 'rufus/otime'
 require 'rufus/cronline'
 
+
 module Rufus
 
   #
@@ -392,7 +393,7 @@ module Rufus
         # let precision at its default value
       end
 
-      @thread_name = params[:thread_name] || "rufus scheduler"
+      @thread_name = params[:thread_name] || 'rufus scheduler'
 
       #@correction = 0.00045
 
@@ -413,12 +414,14 @@ module Rufus
 
       @scheduler_thread = Thread.new do
 
-        Thread.current[:name] = @thread_name
+        #Thread.current[:name] = @thread_name
+          # doesn't work with Ruby 1.9.1
 
-        if defined?(JRUBY_VERSION)
-          require 'java'
-          java.lang.Thread.current_thread.name = @thread_name
-        end
+        #if defined?(JRUBY_VERSION)
+        #  require 'java'
+        #  java.lang.Thread.current_thread.name = @thread_name
+        #end
+          # not necessary anymore (JRuby 1.1.6)
 
         loop do
 
@@ -435,6 +438,8 @@ module Rufus
           sleep(@precision - d)
         end
       end
+
+      @scheduler_thread[:name] = @thread_name
     end
 
     #
@@ -724,7 +729,7 @@ module Rufus
     #
     def all_jobs
 
-      find_jobs()
+      find_jobs
     end
 
     #
@@ -776,275 +781,275 @@ module Rufus
     #
     def self.is_cron_string (s)
 
-      s.match ".+ .+ .+ .+ .+" # well...
+      s.match('.+ .+ .+ .+ .+') # well...
     end
 
     private
 
-      #
-      # the unschedule work itself.
-      #
-      def do_unschedule (job_id)
+    #
+    # the unschedule work itself.
+    #
+    def do_unschedule (job_id)
 
-        job = get_job job_id
+      job = get_job job_id
 
-        return (@cron_jobs.delete(job_id) != nil) if job.is_a?(CronJob)
+      return (@cron_jobs.delete(job_id) != nil) if job.is_a?(CronJob)
 
-        return false unless job # not found
+      return false unless job # not found
 
-        if job.is_a?(AtJob) # catches AtJob and EveryJob instances
-          @non_cron_jobs.delete(job_id)
-          job.params[:dont_reschedule] = true # for AtJob as well, no worries
+      if job.is_a?(AtJob) # catches AtJob and EveryJob instances
+        @non_cron_jobs.delete(job_id)
+        job.params[:dont_reschedule] = true # for AtJob as well, no worries
+      end
+
+      for i in 0...@pending_jobs.length
+        if @pending_jobs[i].job_id == job_id
+          @pending_jobs.delete_at i
+          return true # asap
         end
+      end
 
-        for i in 0...@pending_jobs.length
-          if @pending_jobs[i].job_id == job_id
-            @pending_jobs.delete_at i
-            return true # asap
-          end
+      true
+    end
+
+    #
+    # Making sure that params is a Hash.
+    #
+    def prepare_params (params)
+
+      params.is_a?(Schedulable) ? { :schedulable => params } : params
+    end
+
+    #
+    # The core method behind schedule_at and schedule_in (and also
+    # schedule_every). It's protected, don't use it directly.
+    #
+    def do_schedule_at (at, params={}, &block)
+
+      job = params.delete(:job)
+
+      unless job
+
+        jobClass = params[:every] ? EveryJob : AtJob
+
+        b = to_block(params, &block)
+
+        job = jobClass.new(self, at_to_f(at), params[:job_id], params, &b)
+      end
+
+      if jobClass == AtJob && job.at < (Time.new.to_f + @precision)
+
+        job.trigger() unless params[:discard_past]
+
+        @non_cron_jobs.delete job.job_id # just to be sure
+
+        return nil
+      end
+
+      @non_cron_jobs[job.job_id] = job
+
+      @schedule_queue << job
+
+      job.job_id
+    end
+
+    #
+    # Ensures an 'at' instance is translated to a float
+    # (to be compared with the float coming from time.to_f)
+    #
+    def at_to_f (at)
+
+      at = Rufus::to_ruby_time(at) if at.kind_of?(String)
+      at = Rufus::to_gm_time(at) if at.kind_of?(DateTime)
+      at = at.to_f if at.kind_of?(Time)
+
+      raise "cannot schedule at : #{at.inspect}" unless at.is_a?(Float)
+
+      at
+    end
+
+    #
+    # Returns a block. If a block is passed, will return it, else,
+    # if a :schedulable is set in the params, will return a block
+    # wrapping a call to it.
+    #
+    def to_block (params, &block)
+
+      return block if block
+
+      schedulable = params.delete(:schedulable)
+
+      return nil unless schedulable
+
+      l = lambda do
+        schedulable.trigger(params)
+      end
+      class << l
+        attr_accessor :schedulable
+      end
+      l.schedulable = schedulable
+
+      l
+    end
+
+    #
+    # Pushes an 'at' job into the pending job list
+    #
+    def push_pending_job (job)
+
+      old = @pending_jobs.find { |j| j.job_id == job.job_id }
+      @pending_jobs.delete(old) if old
+        #
+        # override previous job with same id
+
+      if @pending_jobs.length < 1 or job.at >= @pending_jobs.last.at
+        @pending_jobs << job
+        return
+      end
+
+      for i in 0...@pending_jobs.length
+        if job.at <= @pending_jobs[i].at
+          @pending_jobs[i, 0] = job
+          return # right place found
         end
+      end
+    end
 
-        true
+    #
+    # This is the method called each time the scheduler wakes up
+    # (by default 4 times per second). It's meant to quickly
+    # determine if there are jobs to trigger else to get back to sleep.
+    # 'cron' jobs get executed if necessary then 'at' jobs.
+    #
+    def step
+
+      step_unschedule
+        # unschedules any job in the unschedule queue before
+        # they have a chance to get triggered.
+
+      step_trigger
+        # triggers eligible jobs
+
+      step_schedule
+        # schedule new jobs
+
+      # done.
+    end
+
+    #
+    # unschedules jobs in the unschedule_queue
+    #
+    def step_unschedule
+
+      loop do
+
+        break if @unschedule_queue.empty?
+
+        do_unschedule(@unschedule_queue.pop)
+      end
+    end
+
+    #
+    # adds every job waiting in the @schedule_queue to
+    # either @pending_jobs or @cron_jobs.
+    #
+    def step_schedule
+
+      loop do
+
+        break if @schedule_queue.empty?
+
+        j = @schedule_queue.pop
+
+        if j.is_a?(CronJob)
+
+          @cron_jobs[j.job_id] = j
+
+        else # it's an 'at' job
+
+          push_pending_job j
+        end
+      end
+    end
+
+    #
+    # triggers every eligible pending (at or every) jobs, then every eligible
+    # cron jobs.
+    #
+    def step_trigger
+
+      now = Time.now
+
+      if @exit_when_no_more_jobs && @pending_jobs.size < 1
+
+        @stopped = true
+        return
+      end
+
+      # TODO : eventually consider running cron / pending
+      # job triggering in two different threads
+      #
+      # but well... there's the synchronization issue...
+
+      #
+      # cron jobs
+
+      if now.sec != @last_cron_second
+
+        @last_cron_second = now.sec
+
+        @cron_jobs.each do |cron_id, cron_job|
+          #trigger(cron_job) if cron_job.matches?(now, @precision)
+          cron_job.trigger if cron_job.matches?(now)
+        end
       end
 
       #
-      # Making sure that params is a Hash.
-      #
-      def prepare_params (params)
+      # pending jobs
 
-        params.is_a?(Schedulable) ? { :schedulable => params } : params
-      end
+      now = now.to_f
+        #
+        # that's what at jobs do understand
 
-      #
-      # The core method behind schedule_at and schedule_in (and also
-      # schedule_every). It's protected, don't use it directly.
-      #
-      def do_schedule_at (at, params={}, &block)
+      loop do
 
-        job = params.delete(:job)
+        break if @pending_jobs.length < 1
 
-        unless job
+        job = @pending_jobs[0]
 
-          jobClass = params[:every] ? EveryJob : AtJob
+        break if job.at > now
 
-          b = to_block(params, &block)
-
-          job = jobClass.new(self, at_to_f(at), params[:job_id], params, &b)
-        end
-
-        if jobClass == AtJob && job.at < (Time.new.to_f + @precision)
-
-          job.trigger() unless params[:discard_past]
-
-          @non_cron_jobs.delete job.job_id # just to be sure
-
-          return nil
-        end
-
-        @non_cron_jobs[job.job_id] = job
-
-        @schedule_queue << job
-
-        job.job_id
-      end
-
-      #
-      # Ensures an 'at' instance is translated to a float
-      # (to be compared with the float coming from time.to_f)
-      #
-      def at_to_f (at)
-
-        at = Rufus::to_ruby_time(at) if at.kind_of?(String)
-        at = Rufus::to_gm_time(at) if at.kind_of?(DateTime)
-        at = at.to_f if at.kind_of?(Time)
-
-        raise "cannot schedule at : #{at.inspect}" unless at.is_a?(Float)
-
-        at
-      end
-
-      #
-      # Returns a block. If a block is passed, will return it, else,
-      # if a :schedulable is set in the params, will return a block
-      # wrapping a call to it.
-      #
-      def to_block (params, &block)
-
-        return block if block
-
-        schedulable = params.delete(:schedulable)
-
-        return nil unless schedulable
-
-        l = lambda do
-          schedulable.trigger(params)
-        end
-        class << l
-          attr_accessor :schedulable
-        end
-        l.schedulable = schedulable
-
-        l
-      end
-
-      #
-      # Pushes an 'at' job into the pending job list
-      #
-      def push_pending_job (job)
-
-        old = @pending_jobs.find { |j| j.job_id == job.job_id }
-        @pending_jobs.delete(old) if old
+        #if job.at <= now
           #
-          # override previous job with same id
+          # obviously
 
-        if @pending_jobs.length < 1 or job.at >= @pending_jobs.last.at
-          @pending_jobs << job
-          return
-        end
+        job.trigger
 
-        for i in 0...@pending_jobs.length
-          if job.at <= @pending_jobs[i].at
-            @pending_jobs[i, 0] = job
-            return # right place found
-          end
-        end
+        @pending_jobs.delete_at 0
       end
+    end
 
-      #
-      # This is the method called each time the scheduler wakes up
-      # (by default 4 times per second). It's meant to quickly
-      # determine if there are jobs to trigger else to get back to sleep.
-      # 'cron' jobs get executed if necessary then 'at' jobs.
-      #
-      def step
+    #
+    # If an error occurs in the job, it well get caught and an error
+    # message will be displayed to STDOUT.
+    # If this scheduler provides a lwarn(message) method, it will
+    # be used insted.
+    #
+    # Of course, one can override this method.
+    #
+    def log_exception (e)
 
-        step_unschedule
-          # unschedules any job in the unschedule queue before
-          # they have a chance to get triggered.
+      message =
+        "trigger() caught exception\n" +
+        e.to_s + "\n" +
+        e.backtrace.join("\n")
 
-        step_trigger
-          # triggers eligible jobs
-
-        step_schedule
-          # schedule new jobs
-
-        # done.
+      if self.respond_to?(:lwarn)
+        lwarn { message }
+      else
+        puts message
       end
-
-      #
-      # unschedules jobs in the unschedule_queue
-      #
-      def step_unschedule
-
-        loop do
-
-          break if @unschedule_queue.empty?
-
-          do_unschedule(@unschedule_queue.pop)
-        end
-      end
-
-      #
-      # adds every job waiting in the @schedule_queue to
-      # either @pending_jobs or @cron_jobs.
-      #
-      def step_schedule
-
-        loop do
-
-          break if @schedule_queue.empty?
-
-          j = @schedule_queue.pop
-
-          if j.is_a?(CronJob)
-
-            @cron_jobs[j.job_id] = j
-
-          else # it's an 'at' job
-
-            push_pending_job j
-          end
-        end
-      end
-
-      #
-      # triggers every eligible pending (at or every) jobs, then every eligible
-      # cron jobs.
-      #
-      def step_trigger
-
-        now = Time.now
-
-        if @exit_when_no_more_jobs && @pending_jobs.size < 1
-
-          @stopped = true
-          return
-        end
-
-        # TODO : eventually consider running cron / pending
-        # job triggering in two different threads
-        #
-        # but well... there's the synchronization issue...
-
-        #
-        # cron jobs
-
-        if now.sec != @last_cron_second
-
-          @last_cron_second = now.sec
-
-          @cron_jobs.each do |cron_id, cron_job|
-            #trigger(cron_job) if cron_job.matches?(now, @precision)
-            cron_job.trigger if cron_job.matches?(now)
-          end
-        end
-
-        #
-        # pending jobs
-
-        now = now.to_f
-          #
-          # that's what at jobs do understand
-
-        loop do
-
-          break if @pending_jobs.length < 1
-
-          job = @pending_jobs[0]
-
-          break if job.at > now
-
-          #if job.at <= now
-            #
-            # obviously
-
-          job.trigger
-
-          @pending_jobs.delete_at 0
-        end
-      end
-
-      #
-      # If an error occurs in the job, it well get caught and an error
-      # message will be displayed to STDOUT.
-      # If this scheduler provides a lwarn(message) method, it will
-      # be used insted.
-      #
-      # Of course, one can override this method.
-      #
-      def log_exception (e)
-
-        message =
-          "trigger() caught exception\n" +
-          e.to_s + "\n" +
-          e.backtrace.join("\n")
-
-        if self.respond_to?(:lwarn)
-          lwarn { message }
-        else
-          puts message
-        end
-      end
+    end
   end
 
   #
@@ -1070,302 +1075,313 @@ module Rufus
 
   protected
 
-    JOB_ID_LOCK = Mutex.new
+  JOB_ID_LOCK = Mutex.new
+    #
+    # would it be better to use a Mutex instead of a full-blown
+    # Monitor ?
+
+  #
+  # The parent class for scheduled jobs.
+  #
+  class Job
+
+    @@last_given_id = 0
       #
-      # would it be better to use a Mutex instead of a full-blown
-      # Monitor ?
+      # as a scheduler is fully transient, no need to
+      # have persistent ids, a simple counter is sufficient
 
     #
-    # The parent class for scheduled jobs.
+    # The identifier for the job
     #
-    class Job
+    attr_accessor :job_id
 
-      @@last_given_id = 0
-        #
-        # as a scheduler is fully transient, no need to
-        # have persistent ids, a simple counter is sufficient
+    #
+    # An array of tags
+    #
+    attr_accessor :tags
 
-      #
-      # The identifier for the job
-      #
-      attr_accessor :job_id
+    #
+    # The block to execute at trigger time
+    #
+    attr_accessor :block
 
-      #
-      # An array of tags
-      #
-      attr_accessor :tags
+    #
+    # A reference to the scheduler
+    #
+    attr_reader :scheduler
 
-      #
-      # The block to execute at trigger time
-      #
-      attr_accessor :block
+    #
+    # Keeping a copy of the initialization params of the job.
+    #
+    attr_reader :params
 
-      #
-      # A reference to the scheduler
-      #
-      attr_reader :scheduler
-
-      #
-      # Keeping a copy of the initialization params of the job.
-      #
-      attr_reader :params
-
-      #
-      # if the job is currently executing, this field points to
-      # the 'trigger thread'
-      #
-      attr_reader :trigger_thread
+    #
+    # if the job is currently executing, this field points to
+    # the 'trigger thread'
+    #
+    attr_reader :trigger_thread
 
 
-      def initialize (scheduler, job_id, params, &block)
+    def initialize (scheduler, job_id, params, &block)
 
-        @scheduler = scheduler
-        @block = block
+      @scheduler = scheduler
+      @block = block
 
-        if job_id
-          @job_id = job_id
-        else
-          JOB_ID_LOCK.synchronize do
-            @job_id = @@last_given_id
-            @@last_given_id = @job_id + 1
-          end
+      if job_id
+        @job_id = job_id
+      else
+        JOB_ID_LOCK.synchronize do
+          @job_id = @@last_given_id
+          @@last_given_id = @job_id + 1
+        end
+      end
+
+      @params = params
+
+      #@tags = Array(tags).collect { |tag| tag.to_s }
+        # making sure we have an array of String tags
+
+      @tags = Array(params[:tags])
+        # any tag is OK
+    end
+
+    #
+    # Returns true if this job sports the given tag
+    #
+    def has_tag? (tag)
+
+      @tags.include?(tag)
+    end
+
+    #
+    # Removes (cancels) this job from its scheduler.
+    #
+    def unschedule
+
+      @scheduler.unschedule(@job_id)
+    end
+
+    #
+    # Triggers the job (in a dedicated thread).
+    #
+    def trigger
+
+      t = Thread.new do
+
+        @trigger_thread = Thread.current
+          # keeping track of the thread
+
+        begin
+
+          do_trigger
+
+        rescue Exception => e
+
+          @scheduler.send(:log_exception, e)
         end
 
-        @params = params
-
-        #@tags = Array(tags).collect { |tag| tag.to_s }
-          # making sure we have an array of String tags
-
-        @tags = Array(params[:tags])
-          # any tag is OK
+        #@trigger_thread = nil if @trigger_thread == Thread.current
+        @trigger_thread = nil
+          # overlapping executions, what to do ?
       end
 
-      #
-      # Returns true if this job sports the given tag
-      #
-      def has_tag? (tag)
-
-        @tags.include?(tag)
-      end
-
-      #
-      # Removes (cancels) this job from its scheduler.
-      #
-      def unschedule
-
-        @scheduler.unschedule(@job_id)
-      end
-
-      #
-      # Triggers the job (in a dedicated thread).
-      #
-      def trigger
-
-        t = Thread.new do
-
-          @trigger_thread = Thread.current
-            # keeping track of the thread
-
-          begin
-
-            do_trigger
-
-          rescue Exception => e
-
-            @scheduler.send(:log_exception, e)
-          end
-
-          #@trigger_thread = nil if @trigger_thread == Thread.current
-          @trigger_thread = nil
-            # overlapping executions, what to do ?
-        end
-
-        if t.alive? and (to = @params[:timeout])
-          @scheduler.in(to, :tags => 'timeout') do
-            @trigger_thread.raise(Rufus::TimeOutError) if t.alive?
-          end
+      if t.alive? and (to = @params[:timeout])
+        @scheduler.in(to, :tags => 'timeout') do
+          @trigger_thread.raise(Rufus::TimeOutError) if t.alive?
         end
       end
     end
 
+    def call_block
+
+      args = case @block.arity
+        when 0 then []
+        when 1 then [ @params ]
+        when 2 then [ @job_id, @params ]
+        else [ @job_id, schedule_info, @params ]
+      end
+
+      @block.call(*args)
+    end
+  end
+
+  #
+  # An 'at' job.
+  #
+  class AtJob < Job
+
     #
-    # An 'at' job.
+    # The float representation (Time.to_f) of the time at which
+    # the job should be triggered.
     #
-    class AtJob < Job
-
-      #
-      # The float representation (Time.to_f) of the time at which
-      # the job should be triggered.
-      #
-      attr_accessor :at
+    attr_accessor :at
 
 
-      def initialize (scheduler, at, at_id, params, &block)
+    def initialize (scheduler, at, at_id, params, &block)
 
-        super(scheduler, at_id, params, &block)
-        @at = at
-      end
-
-      #
-      # Returns the Time instance at which this job is scheduled.
-      #
-      def schedule_info
-
-        Time.at(@at)
-      end
-
-      #
-      # next_time is last_time (except for EveryJob instances). Returns
-      # a Time instance.
-      #
-      def next_time
-
-        schedule_info
-      end
-
-      protected
-
-        #
-        # Triggers the job (calls the block)
-        #
-        def do_trigger
-
-          @block.call @job_id, @at
-
-          @scheduler.instance_variable_get(:@non_cron_jobs).delete @job_id
-        end
+      super(scheduler, at_id, params, &block)
+      @at = at
     end
 
     #
-    # An 'every' job is simply an extension of an 'at' job.
+    # Returns the Time instance at which this job is scheduled.
     #
-    class EveryJob < AtJob
+    def schedule_info
 
-      #
-      # Returns the frequency string used to schedule this EveryJob,
-      # like for example "3d" or "1M10d3h".
-      #
-      def schedule_info
-
-        @params[:every]
-      end
-
-      protected
-
-        #
-        # triggers the job, then reschedules it if necessary
-        #
-        def do_trigger
-
-          hit_exception = false
-
-          begin
-
-            @block.call @job_id, @at, @params
-
-          rescue Exception => e
-
-            @scheduler.send(:log_exception, e)
-
-            hit_exception = true
-          end
-
-          if \
-            @scheduler.instance_variable_get(:@exit_when_no_more_jobs) or
-            (@params[:dont_reschedule] == true) or
-            (hit_exception and @params[:try_again] == false)
-
-            @scheduler.instance_variable_get(:@non_cron_jobs).delete(job_id)
-              # maybe it'd be better to wipe that reference from here anyway...
-
-            return
-          end
-
-          #
-          # ok, reschedule ...
-
-
-          params[:job] = self
-
-          @at = @at + Rufus.duration_to_f(params[:every])
-
-          @scheduler.send(:do_schedule_at, @at, params)
-        end
+      Time.at(@at)
     end
 
     #
-    # A cron job.
+    # next_time is last_time (except for EveryJob instances). Returns
+    # a Time instance.
     #
-    class CronJob < Job
+    def next_time
 
-      #
-      # The CronLine instance representing the times at which
-      # the cron job has to be triggered.
-      #
-      attr_accessor :cron_line
-
-      def initialize (scheduler, cron_id, line, params, &block)
-
-        super(scheduler, cron_id, params, &block)
-
-        if line.is_a?(String)
-
-          @cron_line = CronLine.new(line)
-
-        elsif line.is_a?(CronLine)
-
-          @cron_line = line
-
-        else
-
-          raise \
-            "Cannot initialize a CronJob " +
-            "with a param of class #{line.class}"
-        end
-      end
-
-      #
-      # This is the method called by the scheduler to determine if it
-      # has to fire this CronJob instance.
-      #
-      def matches? (time)
-      #def matches? (time, precision)
-
-        #@cron_line.matches?(time, precision)
-        @cron_line.matches?(time)
-      end
-
-      #
-      # Returns the original cron tab string used to schedule this
-      # Job. Like for example "60/3 * * * Sun".
-      #
-      def schedule_info
-
-        @cron_line.original
-      end
-
-      #
-      # Returns a Time instance : the next time this cron job is
-      # supposed to "fire".
-      #
-      # 'from' is used to specify the starting point for determining
-      # what will be the next time. Defaults to now.
-      #
-      def next_time (from=Time.now)
-
-        @cron_line.next_time(from)
-      end
-
-      protected
-
-        #
-        # As the name implies.
-        #
-        def do_trigger
-
-          @block.call @job_id, @cron_line, @params
-        end
+      schedule_info
     end
+
+    protected
+
+    #
+    # Triggers the job (calls the block)
+    #
+    def do_trigger
+
+      call_block
+
+      @scheduler.instance_variable_get(:@non_cron_jobs).delete(@job_id)
+    end
+  end
+
+  #
+  # An 'every' job is simply an extension of an 'at' job.
+  #
+  class EveryJob < AtJob
+
+    #
+    # Returns the frequency string used to schedule this EveryJob,
+    # like for example "3d" or "1M10d3h".
+    #
+    def schedule_info
+
+      @params[:every]
+    end
+
+    protected
+
+    #
+    # triggers the job, then reschedules it if necessary
+    #
+    def do_trigger
+
+      hit_exception = false
+
+      begin
+
+        call_block
+
+      rescue Exception => e
+
+        @scheduler.send(:log_exception, e)
+
+        hit_exception = true
+      end
+
+      if \
+        @scheduler.instance_variable_get(:@exit_when_no_more_jobs) or
+        (@params[:dont_reschedule] == true) or
+        (hit_exception and @params[:try_again] == false)
+
+        @scheduler.instance_variable_get(:@non_cron_jobs).delete(job_id)
+          # maybe it'd be better to wipe that reference from here anyway...
+
+        return
+      end
+
+      #
+      # ok, reschedule ...
+
+      params[:job] = self
+
+      @at = @at + Rufus.duration_to_f(params[:every])
+
+      @scheduler.send(:do_schedule_at, @at, params)
+    end
+  end
+
+  #
+  # A cron job.
+  #
+  class CronJob < Job
+
+    #
+    # The CronLine instance representing the times at which
+    # the cron job has to be triggered.
+    #
+    attr_accessor :cron_line
+
+    def initialize (scheduler, cron_id, line, params, &block)
+
+      super(scheduler, cron_id, params, &block)
+
+      if line.is_a?(String)
+
+        @cron_line = CronLine.new(line)
+
+      elsif line.is_a?(CronLine)
+
+        @cron_line = line
+
+      else
+
+        raise(
+          "Cannot initialize a CronJob " +
+          "with a param of class #{line.class}")
+      end
+    end
+
+    #
+    # This is the method called by the scheduler to determine if it
+    # has to fire this CronJob instance.
+    #
+    def matches? (time)
+    #def matches? (time, precision)
+
+      #@cron_line.matches?(time, precision)
+      @cron_line.matches?(time)
+    end
+
+    #
+    # Returns the original cron tab string used to schedule this
+    # Job. Like for example "60/3 * * * Sun".
+    #
+    def schedule_info
+
+      @cron_line.original
+    end
+
+    #
+    # Returns a Time instance : the next time this cron job is
+    # supposed to "fire".
+    #
+    # 'from' is used to specify the starting point for determining
+    # what will be the next time. Defaults to now.
+    #
+    def next_time (from=Time.now)
+
+      @cron_line.next_time(from)
+    end
+
+    protected
+
+    #
+    # As the name implies.
+    #
+    def do_trigger
+
+      call_block
+    end
+  end
 
 end
 

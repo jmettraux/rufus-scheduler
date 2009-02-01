@@ -2,8 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 1.0.13    not yet released
+== rufus-scheduler - 1.0.13    released 2009/02/01
 
+- todo  #23774 : adapted to Ruby 1.9.1
 - todo  #23483 : removed gemspec from Rakefile
 - bug   #23458 : :timeout not working on JRuby (reported by Chris Evans). Fixed.
 - patch #23430 : gemspec patch by Ryan Sonnek
