@@ -1,16 +1,13 @@
 
 #
-# Testing Rufus
+# Testing the rufus-scheduler
 #
 # John Mettraux at openwfe.org
 #
 # Fri Feb 29 11:18:48 JST 2008
 #
 
-$:.unshift(File.dirname(__FILE__) + '/../lib')
-
-require 'test/unit'
-require 'rufus/otime'
+require File.dirname(__FILE__) + '/test_base'
 
 
 #
@@ -20,26 +17,26 @@ class Time1Test < Test::Unit::TestCase
 
   def test_0
 
-    tts 0, "0s"
-    tts 0, "0m", { :drop_seconds => true }
-    tts 60, "1m"
-    tts 61, "1m1s"
-    tts 3661, "1h1m1s"
-    tts 24 * 3600, "1d"
-    tts 7 * 24 * 3600 + 1, "1w1s"
-    tts 30 * 24 * 3600 + 1, "4w2d1s"
+    tts 0, '0s'
+    tts 0, '0m', { :drop_seconds => true }
+    tts 60, '1m'
+    tts 61, '1m1s'
+    tts 3661, '1h1m1s'
+    tts 24 * 3600, '1d'
+    tts 7 * 24 * 3600 + 1, '1w1s'
+    tts 30 * 24 * 3600 + 1, '4w2d1s'
   end
 
   def test_1
 
-    tts 30 * 24 * 3600 + 1, "1M1s", { :months => true }
+    tts 30 * 24 * 3600 + 1, '1M1s', { :months => true }
   end
 
   def test_2
 
     tts 0.120 + 30 * 24 * 3600 + 1, "4w2d1s120"
-    tts 0.130, "130"
-    tts 61.127, "1m", { :drop_seconds => true }
+    tts 0.130, '130'
+    tts 61.127, '1m', { :drop_seconds => true }
   end
 
   def test_3

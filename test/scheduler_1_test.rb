@@ -1,16 +1,13 @@
 
 #
-# Testing Rufus
+# Testing the rufus-scheduler
 #
 # John Mettraux at openwfe.org
 #
 # Sun Oct 29 16:18:25 JST 2006
 #
 
-$:.unshift(File.dirname(__FILE__) + '/../lib')
-
-require 'test/unit'
-require 'openwfe/util/scheduler'
+require File.dirname(__FILE__) + '/test_base'
 
 
 #
@@ -23,7 +20,7 @@ class Scheduler1Test < Test::Unit::TestCase
     scheduler = Rufus::Scheduler.new
     scheduler.start
 
-    job_id = scheduler.schedule_every "500", :tags => "Avery" do
+    job_id = scheduler.schedule_every '500', :tags => 'Avery' do
       # don't do a thing
     end
 
@@ -54,7 +51,7 @@ class Scheduler1Test < Test::Unit::TestCase
     count = 1
 
     200_000.times do
-      count = scheduler.find_jobs("Avery").size
+      count = scheduler.find_jobs('Avery').size
       #p scheduler.instance_variable_get(:@non_cron_jobs).keys if count != 1
       break if count != 1
     end
@@ -71,7 +68,7 @@ class Scheduler1Test < Test::Unit::TestCase
 
     scheduler = Rufus::Scheduler.start_new
     last = nil
-    job_id = scheduler.schedule_every "1s" do
+    job_id = scheduler.schedule_every '1s' do
       t = Time.now
       puts t.to_f
     end

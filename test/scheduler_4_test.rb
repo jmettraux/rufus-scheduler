@@ -1,16 +1,13 @@
 
 #
-# Testing the 'rufus-scheduler'
+# Testing the rufus-scheduler
 #
 # John Mettraux at openwfe.org
 #
 # Tue Jan  8 13:46:17 JST 2008
 #
 
-$:.unshift(File.dirname(__FILE__) + '/../lib')
-
-require 'test/unit'
-require 'rufus/scheduler'
+require File.dirname(__FILE__) + '/test_base'
 
 
 class Scheduler4Test < Test::Unit::TestCase

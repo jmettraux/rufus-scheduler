@@ -1,11 +1,8 @@
 
-require 'lib/rufus/scheduler'
-require 'rake' # for FileList
-
 $gemspec = Gem::Specification.new do |s|
 
   s.name = 'rufus-scheduler'
-  s.version = Rufus::Scheduler::VERSION
+  s.version = '1.0.13'
   s.authors = [ 'John Mettraux' ]
   s.email = 'jmettraux@gmail.com'
   s.homepage = 'http://openwferu.rubyforge.org/scheduler.html'
@@ -18,9 +15,6 @@ $gemspec = Gem::Specification.new do |s|
   s.extra_rdoc_files = [ 'README.txt', 'CHANGELOG.txt', 'CREDITS.txt' ]
   s.rubyforge_project = 'rufus'
 
-  files = FileList[ '{bin,docs,lib,test}/**/*' ]
-  files.exclude('rdoc')
-  files.exclude('extras')
-  s.files = files.to_a
+  s.files = Dir['lib/**/*.rb'] + Dir['*.txt']
 end
 

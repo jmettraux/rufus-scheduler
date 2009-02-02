@@ -1,8 +1,6 @@
 
 dir = File.dirname(__FILE__)
 
-p dir
-
 require dir + '/time_0_test'
 require dir + '/time_1_test'
 

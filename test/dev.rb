@@ -1,6 +1,5 @@
 
-#require 'rubygems'
-require 'rufus/scheduler'
+require File.dirname(__FILE__) + '/test_base'
 
 s = Rufus::Scheduler.new
 s.precision = 1.250

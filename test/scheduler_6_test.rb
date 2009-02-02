@@ -1,16 +1,13 @@
 
 #
-# Testing the 'rufus-scheduler'
+# Testing the rufus-scheduler
 #
 # John Mettraux at openwfe.org
 #
 # Thu Feb 14 08:19:10 JST 2008
 #
 
-$:.unshift(File.dirname(__FILE__) + '/../lib')
-
-require 'test/unit'
-require 'rufus/scheduler'
+require File.dirname(__FILE__) + '/test_base'
 
 
 class Scheduler6Test < Test::Unit::TestCase
@@ -23,24 +20,24 @@ class Scheduler6Test < Test::Unit::TestCase
     s = Rufus::Scheduler.new
     s.start
 
-    st = ""
+    st = ''
     s0 = -1
     s1 = -2
 
     t = Time.now + 2
 
     s.schedule_at t do
-      st << "0"
+      st << '0'
       s0 = Time.now.to_i % 60
     end
     s.schedule_at t do
-      st << "1"
+      st << '1'
       s1 = Time.now.to_i % 60
     end
 
     sleep 2.5
 
-    assert_equal "01", st
+    assert_equal '01', st
     assert_equal s0, s1
 
     s.stop
