@@ -65,7 +65,7 @@ Apart from scheduling, There are also two interesting methods in this gem, they 
     Rufus.to_time_string 7 * 24 * 3600        # => '1w'
 
 
-Something about the rufus-scheduler, threads and ActiveRecord connections :
+Something about the rufus-scheduler, threads and ActiveRecord connections (warning : I'm mostly clueless about Rails) :
 
 http://jmettraux.wordpress.com/2008/09/14/the-scheduler-and-the-active_record/
 
