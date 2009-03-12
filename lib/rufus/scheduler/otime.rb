@@ -80,9 +80,9 @@ module Rufus
   #
   # Returns a Ruby time
   #
-  def Rufus.to_ruby_time (iso_date)
+  def Rufus.to_ruby_time (sdate)
 
-    DateTime.parse(iso_date)
+    DateTime.parse(sdate)
   end
 
   #def Rufus.parse_date (date)

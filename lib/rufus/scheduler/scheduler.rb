@@ -842,7 +842,7 @@ module Rufus
 
         job.trigger() unless params[:discard_past]
 
-        @non_cron_jobs.delete job.job_id # just to be sure
+        @non_cron_jobs.delete(job.job_id) # just to be sure
 
         return nil
       end

@@ -5,8 +5,10 @@ require 'rake'
 require 'rake/clean'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
-require 'rake/rdoctask'
 require 'rake/testtask'
+
+#require 'rake/rdoctask'
+require 'hanna/rdoctask'
 
 
 #$: << 'lib'
@@ -15,7 +17,7 @@ load 'rufus-scheduler.gemspec'
 #
 # tasks
 
-CLEAN.include('pkg', 'html', 'rdoc')
+CLEAN.include('pkg', 'html')
 
 task :default => [ :clean, :repackage ]
 
@@ -58,32 +60,31 @@ end
 #
 # DOCUMENTATION
 
-#ALLISON=`allison --path`
-ALLISON='/Library/Ruby/Gems/1.8/gems/allison-2.0.3/lib/allison.rb'
-
 Rake::RDocTask.new do |rd|
 
   rd.main = 'README.txt'
-
   rd.rdoc_dir = 'html/rufus-scheduler'
-
   rd.rdoc_files.include(
-    'README.txt', 'CHANGELOG.txt', 'LICENSE.txt', 'CREDITS.txt',
+    'README.txt',
+    'CHANGELOG.txt',
+    'LICENSE.txt',
+    'CREDITS.txt',
     'lib/**/*.rb')
-
+  #rd.rdoc_files.exclude('lib/tokyotyrant.rb')
   rd.title = 'rufus-scheduler rdoc'
-
   rd.options << '-N' # line numbers
   rd.options << '-S' # inline source
+end
 
-  rd.template = ALLISON if File.exist?(ALLISON)
+task :rrdoc => :rdoc do
+  FileUtils.cp('doc/rdoc-style.css', 'html/rufus-scheduler/')
 end
 
 
 #
 # WEBSITE
 
-task :upload_website => [ :clean, :rdoc ] do
+task :upload_website => [ :clean, :rrdoc ] do
 
   account = 'jmettraux@rubyforge.org'
   webdir = '/var/www/gforge-projects/rufus'

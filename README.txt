@@ -17,6 +17,8 @@ http://rubyforge.org/frs/?group_id=4812
 
 == usage
 
+(the rdoc is at http://rufus.rubyforge.org/rufus-scheduler/)
+
 some examples :
 
     require 'rubygems'
