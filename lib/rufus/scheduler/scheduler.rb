@@ -334,7 +334,7 @@ module Rufus
   #
   class Scheduler
 
-    VERSION = '1.0.13'
+    VERSION = '1.0.14'
 
     #
     # By default, the precision is 0.250, with means the scheduler
@@ -375,7 +375,7 @@ module Rufus
 
       # @schedule_queue = Queue.new
       # @unschedule_queue = Queue.new
-      
+
       @edit_queue = Queue.new
         #
         # sync between the step() method and the [un]schedule
@@ -675,7 +675,6 @@ module Rufus
     #
     def unschedule (job_id)
 
-      # @unschedule_queue << job_id
       @edit_queue << [ :unschedule, job_id ]
     end
 
@@ -850,7 +849,6 @@ module Rufus
       # change to @non_cron_jobs must be executed on scheduler thread (in step_schedule)
       # @non_cron_jobs[job.job_id] = job
 
-      # @schedule_queue << job
       @edit_queue << [ :schedule, job ]
 
       job.job_id
@@ -928,21 +926,15 @@ module Rufus
 
       step_edit
         # handle ops in the edit_queue
-        # this ensures that schedule and unschedule requests are processed in order
-        
-      # step_unschedule
-        # unschedules any job in the unschedule queue before
-        # they have a chance to get triggered.
+        # this ensures that schedule and unschedule requests are processed
+        # in order
 
       step_trigger
         # triggers eligible jobs
 
-      # step_schedule
-        # schedule new jobs
-
       # done.
     end
-    
+
     #
     # schedules or unschedules job in the edit_queue
     # schedule's and unschedule are processed in order
@@ -977,38 +969,12 @@ module Rufus
     # unschedules jobs in the unschedule_queue
     #
     # def step_unschedule
-    # 
+    #
     #   loop do
-    # 
+    #
     #     break if @unschedule_queue.empty?
-    # 
+    #
     #     do_unschedule(@unschedule_queue.pop)
-    #   end
-    # end
-
-    #
-    # adds every job waiting in the @schedule_queue to
-    # either @pending_jobs or @cron_jobs.
-    #
-    # def step_schedule
-    # 
-    #   loop do
-    # 
-    #     break if @schedule_queue.empty?
-    # 
-    #     j = @schedule_queue.pop
-    # 
-    #     if j.is_a?(CronJob)
-    # 
-    #       @cron_jobs[j.job_id] = j
-    # 
-    #     else # it's an 'at' job
-    #       
-    #       # add job to @non_cron_jobs
-    #       @non_cron_jobs[j.job_id] = j
-    #       push_pending_job j
-    # 
-    #     end
     #   end
     # end
 
