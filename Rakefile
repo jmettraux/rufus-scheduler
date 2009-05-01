@@ -11,7 +11,7 @@ require 'rake/testtask'
 #require 'rake/rdoctask'
 require 'hanna/rdoctask'
 
-gemspec = File.read('rufus-scheduler-em.gemspec')
+gemspec = File.read('rufus-scheduler.gemspec')
 eval "gemspec = #{gemspec}"
 
 #

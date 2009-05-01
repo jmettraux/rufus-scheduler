@@ -36,3 +36,6 @@
     EmScheduler < Scheduler
     FiberScheduler < Scheduler
 
+[ ] :blocking => 'blockname' idea, mutex = @mutexes['blockname'] ...
+[ ] eventually, make sleep frequency customizable
+

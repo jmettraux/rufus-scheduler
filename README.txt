@@ -1,14 +1,5 @@
 
-= rufus-scheduler-em
-
-A rewrite of rufus-scheduler leveraging EventMachine.
-
-http://github.com/jmettraux/rufus-scheduler
-
-http://rubyeventmachine.com/
-
-Rufus-scheduler-em (rufus-scem for short) uses eventmachine timers to do its scheduling work. If, when started, it doesn't find an EventMachine, it will start one (probably not what you want).
-
+= rufus-scheduler
 
 == alternatives
 
@@ -19,7 +10,7 @@ http://github.com/yakischloba/em-timers/
 
 == installation
 
-  sudo gem install rufus-scheduler-em
+  sudo gem install rufus-scheduler
 
 
 == usage
@@ -27,7 +18,7 @@ http://github.com/yakischloba/em-timers/
 The usage is similar to the one of the old rufus-scheduler. There are a few differences though.
 
   require 'rubygems'
-  require 'rufus/scheduler/em'
+  require 'rufus/scheduler'
 
   scheduler = Rufus::Scheduler.start_new
 

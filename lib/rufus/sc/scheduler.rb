@@ -23,17 +23,17 @@
 #++
 
 
-require 'rufus/scem/rtime'
-require 'rufus/scem/cronline'
-require 'rufus/scem/jobs'
-require 'rufus/scem/jobqueues'
+require 'rufus/sc/rtime'
+require 'rufus/sc/cronline'
+require 'rufus/sc/jobs'
+require 'rufus/sc/jobqueues'
 
 
-module Rufus::Scem
+module Rufus::Scheduler
 
   # This gem's version
   #
-  VERSION = '1.0.0'
+  VERSION = '2.0.0'
 
   # Legacy from the previous version of Rufus-Scheduler.
   #
@@ -60,41 +60,9 @@ module Rufus::Scem
   end
 
   #
-  # This is a rewrite of rufus-scheduler. This version leverages EventMachine.
-  #
-  # http://github.com/jmettraux/rufus-scheduler
-  # http://rubyeventmachine.com/
-  #
-  # == basic usage
-  #
-  #   require 'rubygems'
-  #   require 'rufus/scheduler/em'
-  #
-  #   scheduler = Rufus::Scheduler.start_new
-  #
-  #   scheduler.in '20m' do
-  #     puts "order ristretto"
-  #   end
-  #
-  #   scheduler.at 'Thu Mar 26 07:31:43 +0900 2009' do
-  #     puts 'order pizza'
-  #   end
-  #
-  #   scheduler.cron '0 22 * * 1-5' do
-  #     # every day of the week at 00:22
-  #     puts 'enable security system'
-  #   end
-  #
-  #   # ...
-  #
-  #   scheduler.stop
-  #
-  #
-  # == scheduling options
-  #
-  #
-  # == exceptions in jobs
-  #
+  # The core of a rufus-scheduler. See implementations like
+  # Rufus::Scheduler::PlainScheduler and Rufus::Scheduler::EmScheduler for
+  # directly usable stuff.
   #
   class SchedulerCore
 
@@ -104,15 +72,15 @@ module Rufus::Scem
     #
     def initialize (opts={})
 
-      @jobs = Rufus::Scem::JobQueue.new
-      @cron_jobs = Rufus::Scem::CronJobQueue.new
+      @jobs = JobQueue.new
+      @cron_jobs = CronJobQueue.new
     end
 
     # Instantiates and starts a new Rufus::Scheduler.
     #
-    def self.start_new
+    def self.start_new (opts={})
 
-      s = self.new
+      s = self.new(opts)
       s.start
       s
     end
@@ -125,7 +93,7 @@ module Rufus::Scem
     #
     def in (t, opts={}, &block)
 
-      add_job(Rufus::Scem::InJob.new(self, t, opts, &block))
+      add_job(InJob.new(self, t, opts, &block))
     end
     alias :schedule_in :in
 
@@ -133,7 +101,7 @@ module Rufus::Scem
     #
     def at (t, opts={}, &block)
 
-      add_job(Rufus::Scem::AtJob.new(self, t, opts, &block))
+      add_job(AtJob.new(self, t, opts, &block))
     end
     alias :schedule_at :at
 
@@ -141,7 +109,7 @@ module Rufus::Scem
     #
     def every (t, opts={}, &block)
 
-      add_job(Rufus::Scem::EveryJob.new(self, t, opts, &block))
+      add_job(EveryJob.new(self, t, opts, &block))
     end
     alias :schedule_every :every
 
@@ -149,7 +117,7 @@ module Rufus::Scem
     #
     def cron (cronstring, opts={}, &block)
 
-      add_cron_job(Rufus::Scem::CronJob.new(self, cronstring, opts, &block))
+      add_cron_job(CronJob.new(self, cronstring, opts, &block))
     end
     alias :schedule :cron
 
@@ -276,7 +244,7 @@ module Rufus::Scem
 
       @thread = Thread.new do
         loop do
-          sleep 0.330
+          sleep(0.330)
           self.step
         end
       end

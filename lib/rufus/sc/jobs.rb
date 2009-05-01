@@ -24,7 +24,7 @@
 
 
 module Rufus
-module Scem
+module Scheduler
 
   #
   # The base class for all types of jobs.

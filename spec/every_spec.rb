@@ -20,7 +20,7 @@ describe "#{SCHEDULER_CLASS}#every" do
   it 'should have job ids with the class name in it' do
 
     j0 = @s.every(1) {}
-    j0.job_id.should.match(/Rufus::Scem::EveryJob/)
+    j0.job_id.should.match(/Rufus::Scheduler::EveryJob/)
   end
 
   it 'should compute frequency' do

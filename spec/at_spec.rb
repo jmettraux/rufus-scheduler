@@ -20,7 +20,7 @@ describe "#{SCHEDULER_CLASS}#schedule_at" do
   it 'should have job ids with the class name in it' do
 
     j0 = @s.at(Time.now + 1) {}
-    j0.job_id.should.match(/Rufus::Scem::AtJob/)
+    j0.job_id.should.match(/Rufus::Scheduler::AtJob/)
   end
 
   it "should accept integers as 'at'" do

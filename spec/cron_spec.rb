@@ -20,7 +20,7 @@ describe "#{SCHEDULER_CLASS}#cron" do
   it 'should have job ids with the class name in it' do
 
     j0 = @s.cron('7 10-12 * * * *') {}
-    j0.job_id.should.match(/Rufus::Scem::CronJob/)
+    j0.job_id.should.match(/Rufus::Scheduler::CronJob/)
   end
 
   it 'should cron every second' do

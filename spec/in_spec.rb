@@ -20,7 +20,7 @@ describe "#{SCHEDULER_CLASS}#in" do
   it 'should have job ids with the class name in it' do
 
     j0 = @s.in(1) {}
-    j0.job_id.should.match(/Rufus::Scem::InJob/)
+    j0.job_id.should.match(/Rufus::Scheduler::InJob/)
   end
 
   it 'should track scheduled in jobs' do

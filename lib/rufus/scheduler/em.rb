@@ -1,3 +1,0 @@
-
-require 'rufus/scem/scheduler'
-

@@ -29,9 +29,9 @@ Bacon.summary_on_exit
 
 # EM or plain ?
 
-$plain = ARGV.include?('--plain')
+$plain = ! ARGV.include?('--em')
 
-require 'rufus/scheduler/em'
+require 'rufus/scheduler'
 
 if ( ! $plain)
 
@@ -45,7 +45,8 @@ if ( ! $plain)
 end
 
 SCHEDULER_CLASS = $plain ?
-  Rufus::Scem::PlainScheduler : Rufus::Scem::EmScheduler
+  Rufus::Scheduler::PlainScheduler :
+  Rufus::Scheduler::EmScheduler
 
 #
 # helper methods

@@ -27,7 +27,7 @@ require 'thread'
 
 
 module Rufus
-module Scem
+module Scheduler
 
   #
   # Tracking at/in/every jobs.
@@ -39,9 +39,9 @@ module Scem
     # Mapping :at|:in|:every to their respective job classes.
     #
     JOB_TYPES = {
-      :at => Rufus::Scem::AtJob,
-      :in => Rufus::Scem::InJob,
-      :every => Rufus::Scem::EveryJob
+      :at => Rufus::Scheduler::AtJob,
+      :in => Rufus::Scheduler::InJob,
+      :every => Rufus::Scheduler::EveryJob
     }
 
     def initialize
