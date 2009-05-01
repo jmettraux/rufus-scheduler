@@ -1,4 +1,3 @@
-#
 #--
 # Copyright (c) 2005-2009, John Mettraux, jmettraux@gmail.com
 #
@@ -19,14 +18,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+#
+# Hecho en Costa Rica.
 #++
-#
 
-#
-# "hecho en Costa Rica"
-#
-# john.mettraux@openwfe.org
-#
 
 require 'date'
 #require 'parsedate'
@@ -162,17 +157,17 @@ module Rufus
     alias_method :parse_duration_string, :parse_time_string
   end
 
-  #
+  #--
   # Returns true if the character c is a digit
   #
   # (probably better served by a regex)
   #
-  def Rufus.is_digit? (c)
-
-    return false if not c.kind_of?(String)
-    return false if c.length > 1
-    (c >= '0' and c <= '9')
-  end
+  #def Rufus.is_digit? (c)
+  #  return false if not c.kind_of?(String)
+  #  return false if c.length > 1
+  #  (c >= '0' and c <= '9')
+  #end
+  #++
 
   #
   # conversion methods between Date[Time] and Time
@@ -352,24 +347,24 @@ module Rufus
 
   protected
 
-    DURATIONS2M = [
-      [ 'y', 365 * 24 * 3600 ],
-      [ 'M', 30 * 24 * 3600 ],
-      [ 'w', 7 * 24 * 3600 ],
-      [ 'd', 24 * 3600 ],
-      [ 'h', 3600 ],
-      [ 'm', 60 ],
-      [ 's', 1 ]
-    ]
-    DURATIONS2 = DURATIONS2M.dup
-    DURATIONS2.delete_at(1)
+  DURATIONS2M = [
+    [ 'y', 365 * 24 * 3600 ],
+    [ 'M', 30 * 24 * 3600 ],
+    [ 'w', 7 * 24 * 3600 ],
+    [ 'd', 24 * 3600 ],
+    [ 'h', 3600 ],
+    [ 'm', 60 ],
+    [ 's', 1 ]
+  ]
+  DURATIONS2 = DURATIONS2M.dup
+  DURATIONS2.delete_at(1)
 
-    DURATIONS = DURATIONS2M.inject({}) do |r, (k, v)|
-      r[k] = v
-      r
-    end
+  DURATIONS = DURATIONS2M.inject({}) do |r, (k, v)|
+    r[k] = v
+    r
+  end
 
-    DU_KEYS = DURATIONS2M.collect { |k, v| k.to_sym }
+  DU_KEYS = DURATIONS2M.collect { |k, v| k.to_sym }
 
 end
 

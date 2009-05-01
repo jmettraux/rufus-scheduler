@@ -50,19 +50,19 @@ class Time1Test < Test::Unit::TestCase
 
   protected
 
-    def tts (seconds, time_string, options={})
+  def tts (seconds, time_string, options={})
 
-      assert_equal(
-        time_string,
-        Rufus::to_time_string(seconds, options),
-        "#{seconds} seconds did not map to '#{time_string}'")
-    end
+    assert_equal(
+      time_string,
+      Rufus::to_time_string(seconds, options),
+      "#{seconds} seconds did not map to '#{time_string}'")
+  end
 
-    def tdh (seconds, time_hash, options={})
+  def tdh (seconds, time_hash, options={})
 
-      assert_equal(
-        time_hash,
-        Rufus::to_duration_hash(seconds, options))
-    end
+    assert_equal(
+      time_hash,
+      Rufus::to_duration_hash(seconds, options))
+  end
 
 end

@@ -1,6 +1,5 @@
-#
 #--
-# Copyright (c) 2006-2008, John Mettraux, jmettraux@gmail.com
+# Copyright (c) 2006-2009, John Mettraux, jmettraux@gmail.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,14 +18,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+#
+# Made in Japan.
 #++
-#
 
-#
-# "made in Japan"
-#
-# John Mettraux at openwfe.org
-#
 
 module Rufus
 
@@ -166,124 +161,124 @@ module Rufus
 
     private
 
-      #--
-      # adjust values to Ruby
+    #--
+    # adjust values to Ruby
+    #
+    #def adjust_arrays()
+    #  @hours = @hours.collect { |h|
+    #    if h == 24
+    #      0
+    #    else
+    #      h
+    #    end
+    #  } if @hours
+    #  @weekdays = @weekdays.collect { |wd|
+    #    wd - 1
+    #  } if @weekdays
+    #end
       #
-      #def adjust_arrays()
-      #  @hours = @hours.collect { |h|
-      #    if h == 24
-      #      0
-      #    else
-      #      h
-      #    end
-      #  } if @hours
-      #  @weekdays = @weekdays.collect { |wd|
-      #    wd - 1
-      #  } if @weekdays
-      #end
-        #
-        # dead code, keeping it as a reminder
-      #++
+      # dead code, keeping it as a reminder
+    #++
 
-      WDS = [ "sun", "mon", "tue", "wed", "thu", "fri", "sat" ]
-        #
-        # used by parse_weekday()
+    WDS = %w[ sun mon tue wed thu fri sat ]
+      #
+      # used by parse_weekday()
 
-      def parse_weekdays (item)
+    def parse_weekdays (item)
 
-        item = item.downcase
+      item = item.downcase
 
-        WDS.each_with_index do |day, index|
-          item = item.gsub day, "#{index}"
+      WDS.each_with_index do |day, index|
+        item = item.gsub day, "#{index}"
+      end
+
+      r = parse_item item, 0, 7
+
+      return r unless r.is_a?(Array)
+
+      r.collect { |e| e == 7 ? 0 : e }.uniq
+    end
+
+    def parse_item (item, min, max)
+
+      return nil \
+        if item == "*"
+      return parse_list(item, min, max) \
+        if item.index(",")
+      return parse_range(item, min, max) \
+        if item.index("*") or item.index("-")
+
+      i = Integer(item)
+
+      i = min if i < min
+      i = max if i > max
+
+      [ i ]
+    end
+
+    def parse_list (item, min, max)
+
+      items = item.split(",")
+
+      items.inject([]) { |r, i| r.push(parse_range(i, min, max)) }.flatten
+    end
+
+    def parse_range (item, min, max)
+
+      i = item.index("-")
+      j = item.index("/")
+
+      return item.to_i if (not i and not j)
+
+      inc = 1
+
+      inc = Integer(item[j+1..-1]) if j
+
+      istart = -1
+      iend = -1
+
+      if i
+
+        istart = Integer(item[0..i-1])
+
+        if j
+          iend = Integer(item[i+1..j])
+        else
+          iend = Integer(item[i+1..-1])
         end
 
-        r = parse_item item, 0, 7
+      else # case */x
 
-        return r unless r.is_a?(Array)
-
-        r.collect { |e| e == 7 ? 0 : e }.uniq
+        istart = min
+        iend = max
       end
 
-      def parse_item (item, min, max)
+      istart = min if istart < min
+      iend = max if iend > max
 
-        return nil \
-          if item == "*"
-        return parse_list(item, min, max) \
-          if item.index(",")
-        return parse_range(item, min, max) \
-          if item.index("*") or item.index("-")
+      result = []
 
-        i = Integer(item)
+      value = istart
+      loop do
 
-        i = min if i < min
-        i = max if i > max
-
-        [ i ]
+        result << value
+        value = value + inc
+        break if value > iend
       end
 
-      def parse_list (item, min, max)
+      result
+    end
 
-        items = item.split(",")
+    def sub_match? value, values
+      values.nil? || values.include?(value)
+    end
 
-        items.inject([]) { |r, i| r.push(parse_range(i, min, max)) }.flatten
-      end
-
-      def parse_range (item, min, max)
-
-        i = item.index("-")
-        j = item.index("/")
-
-        return item.to_i if (not i and not j)
-
-        inc = 1
-
-        inc = Integer(item[j+1..-1]) if j
-
-        istart = -1
-        iend = -1
-
-        if i
-
-          istart = Integer(item[0..i-1])
-
-          if j
-            iend = Integer(item[i+1..j])
-          else
-            iend = Integer(item[i+1..-1])
-          end
-
-        else # case */x
-
-          istart = min
-          iend = max
-        end
-
-        istart = min if istart < min
-        iend = max if iend > max
-
-        result = []
-
-        value = istart
-        loop do
-
-          result << value
-          value = value + inc
-          break if value > iend
-        end
-
-        result
-      end
-
-      def sub_match? value, values
-        values.nil? || values.include?(value)
-      end
-
-      def date_match? date
-        return false unless sub_match? date.day,   @days
-        return false unless sub_match? date.month, @months
-        return false unless sub_match? date.wday,  @weekdays
-        true
-      end
+    def date_match? date
+      return false unless sub_match? date.day,   @days
+      return false unless sub_match? date.month, @months
+      return false unless sub_match? date.wday,  @weekdays
+      true
+    end
   end
 
 end

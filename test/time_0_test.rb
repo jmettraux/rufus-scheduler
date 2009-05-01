@@ -40,7 +40,7 @@ class Time0Test < Test::Unit::TestCase
       'iso8601 date parsing failed')
   end
 
-  def test_is_digit
+  def _test_is_digit
 
     for i in 0...9
       si = "#{i}"
@@ -69,12 +69,12 @@ class Time0Test < Test::Unit::TestCase
 
   protected
 
-    def pts (time_string, seconds)
+  def pts (time_string, seconds)
 
-      assert_equal(
-        seconds,
-        Rufus::parse_time_string(time_string),
-        "'#{time_string}' did not map to #{seconds} seconds")
-    end
+    assert_equal(
+      seconds,
+      Rufus::parse_time_string(time_string),
+      "'#{time_string}' did not map to #{seconds} seconds")
+  end
 
 end
