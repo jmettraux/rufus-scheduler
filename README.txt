@@ -40,6 +40,25 @@ The usage is similar to the one of the old rufus-scheduler. There are a few diff
   scheduler.stop
 
 
+== usage with EventMachine
+
+rufus-scheduler 2.0 can be used in conjunction with EventMachine (http://github.com/eventmachine/eventmachine/).
+
+More and more ruby applications are using EventMachine. This flavour of the scheduler relies on EventMachine, thus it doesn't require a separate thread like the PlainScheduler does.
+
+  require 'rubygems'
+  require 'eventmachine'
+
+  EM.run {
+
+    scheduler = Rufus::Scheduler::EmScheduler.start_new
+
+    scheduler.in '20m' do
+      puts "order ristretto"
+    end
+  }
+
+
 == tested with
 
 ruby 1.8.6, ruby 1.9.1p0
@@ -48,7 +67,7 @@ on jruby 1.2.0 it has some tiny issues (spec/blocking_spec.rb)
 
 == dependencies
 
-the ruby gem 'eventmachine'
+the ruby gem 'eventmachine' if you use Rufus::Scheduler::EmScheduler, else no other dependencies.
 
 
 == mailing list
