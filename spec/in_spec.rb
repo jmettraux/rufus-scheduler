@@ -118,7 +118,7 @@ describe "#{SCHEDULER_CLASS}#in" do
 
 end
 
-describe 'Rufus::Scem::InJob' do
+describe Rufus::Scheduler::InJob do
 
   before do
     @s = start_scheduler

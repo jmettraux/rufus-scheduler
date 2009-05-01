@@ -72,7 +72,7 @@ describe "#{SCHEDULER_CLASS}#schedule_at" do
 
 end
 
-describe 'Rufus::Scem::AtJob' do
+describe Rufus::Scheduler::AtJob do
 
   before do
     @s = start_scheduler
