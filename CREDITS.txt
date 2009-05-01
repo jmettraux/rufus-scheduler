@@ -9,7 +9,7 @@
 
 == Feedback
 
-- Klass Jan Wierenga, at/every/in stress tests
+- Klaas Jan Wierenga, at/every/in stress tests
 - Chris Evans, :timeout tests on JRuby
 - Tim Uckun, :timeout concept
 - K Liu, for the note about CronLine#next_time

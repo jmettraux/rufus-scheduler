@@ -373,8 +373,10 @@ module Rufus
       @cron_jobs = {}
       @non_cron_jobs = {}
 
-      @schedule_queue = Queue.new
-      @unschedule_queue = Queue.new
+      # @schedule_queue = Queue.new
+      # @unschedule_queue = Queue.new
+      
+      @edit_queue = Queue.new
         #
         # sync between the step() method and the [un]schedule
         # methods is done via these queues, no more mutex
@@ -650,7 +652,8 @@ module Rufus
       b = to_block(params, &block)
       job = CronJob.new(self, cron_id, cron_line, params, &b)
 
-      @schedule_queue << job
+      # @schedule_queue << job
+      @edit_queue << [ :schedule, job ]
 
       job.job_id
     end
@@ -672,7 +675,8 @@ module Rufus
     #
     def unschedule (job_id)
 
-      @unschedule_queue << job_id
+      # @unschedule_queue << job_id
+      @edit_queue << [ :unschedule, job_id ]
     end
 
     #
@@ -837,14 +841,17 @@ module Rufus
 
         job.trigger() unless params[:discard_past]
 
-        @non_cron_jobs.delete(job.job_id) # just to be sure
+        # change to @non_cron_jobs must be executed on scheduler thread (in step_schedule)
+        # @non_cron_jobs.delete(job.job_id) # just to be sure
 
         return nil
       end
 
-      @non_cron_jobs[job.job_id] = job
+      # change to @non_cron_jobs must be executed on scheduler thread (in step_schedule)
+      # @non_cron_jobs[job.job_id] = job
 
-      @schedule_queue << job
+      # @schedule_queue << job
+      @edit_queue << [ :schedule, job ]
 
       job.job_id
     end
@@ -919,54 +926,91 @@ module Rufus
     #
     def step
 
-      step_unschedule
+      step_edit
+        # handle ops in the edit_queue
+        # this ensures that schedule and unschedule requests are processed in order
+        
+      # step_unschedule
         # unschedules any job in the unschedule queue before
         # they have a chance to get triggered.
 
       step_trigger
         # triggers eligible jobs
 
-      step_schedule
+      # step_schedule
         # schedule new jobs
 
       # done.
+    end
+    
+    #
+    # schedules or unschedules job in the edit_queue
+    # schedule's and unschedule are processed in order
+    #
+    def step_edit
+      loop do
+        break if @edit_queue.empty?
+        op, j = @edit_queue.pop
+
+        case op
+        when :schedule
+          if j.is_a?(CronJob)
+
+            @cron_jobs[j.job_id] = j
+
+          else # it's an 'at' job
+
+            # add job to @non_cron_jobs
+            @non_cron_jobs[j.job_id] = j
+            push_pending_job j
+
+          end
+        when :unschedule
+          do_unschedule(j)
+        else
+          raise ArgumentError
+        end
+      end
     end
 
     #
     # unschedules jobs in the unschedule_queue
     #
-    def step_unschedule
-
-      loop do
-
-        break if @unschedule_queue.empty?
-
-        do_unschedule(@unschedule_queue.pop)
-      end
-    end
+    # def step_unschedule
+    # 
+    #   loop do
+    # 
+    #     break if @unschedule_queue.empty?
+    # 
+    #     do_unschedule(@unschedule_queue.pop)
+    #   end
+    # end
 
     #
     # adds every job waiting in the @schedule_queue to
     # either @pending_jobs or @cron_jobs.
     #
-    def step_schedule
-
-      loop do
-
-        break if @schedule_queue.empty?
-
-        j = @schedule_queue.pop
-
-        if j.is_a?(CronJob)
-
-          @cron_jobs[j.job_id] = j
-
-        else # it's an 'at' job
-
-          push_pending_job j
-        end
-      end
-    end
+    # def step_schedule
+    # 
+    #   loop do
+    # 
+    #     break if @schedule_queue.empty?
+    # 
+    #     j = @schedule_queue.pop
+    # 
+    #     if j.is_a?(CronJob)
+    # 
+    #       @cron_jobs[j.job_id] = j
+    # 
+    #     else # it's an 'at' job
+    #       
+    #       # add job to @non_cron_jobs
+    #       @non_cron_jobs[j.job_id] = j
+    #       push_pending_job j
+    # 
+    #     end
+    #   end
+    # end
 
     #
     # triggers every eligible pending (at or every) jobs, then every eligible
