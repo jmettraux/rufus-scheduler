@@ -2,7 +2,7 @@
 $gemspec = Gem::Specification.new do |s|
 
   s.name = 'rufus-scheduler'
-  s.version = '1.0.13'
+  s.version = '1.0.14'
   s.authors = [ 'John Mettraux' ]
   s.email = 'jmettraux@gmail.com'
   s.homepage = 'http://openwferu.rubyforge.org/scheduler.html'
