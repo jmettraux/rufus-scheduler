@@ -1,0 +1,38 @@
+
+[o] spec for jobs in the past (in and at)
+[o] :discard_past
+
+[o] every
+[o] cron
+
+[o] CHECK every and unschedule !!!
+
+[o] :tags
+[ ] timeout feature (at/in/every/cron) in Job class
+
+[ ] :first_in, :first_at
+[ ] :dont_reschedule (or block returns false ?)
+
+[ ] document :blocking
+[ ] CHECK :blocking and every (reschedule blocking...)
+
+[ ] [get_]jobs methods
+[ ] find methods
+
+[ ] CTRL-C during tests : allow, trap_int...
+
+[o] 1.9
+[o] j1.2.0
+
+[ ] revise trigger block arity
+[ ] Schedulable
+  #
+  # don't try to be 'backward compatible' for those two maybe
+
+
+[o] synchronize @cron_jobs ?
+
+[o] why not : make it work even if EM is not present
+    EmScheduler < Scheduler
+    FiberScheduler < Scheduler
+

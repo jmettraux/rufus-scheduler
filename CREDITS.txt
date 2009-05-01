@@ -1,0 +1,30 @@
+
+= CREDITS.txt
+
+
+== Contributors
+
+- TobyH (http://github.com/tobyh), faster and cleaner CronLine#next_time
+
+
+== Feedback
+
+- Klass Jan Wierenga, at/every/in stress tests
+- Chris Evans, :timeout tests on JRuby
+- Tim Uckun, :timeout concept
+- K Liu, for the note about CronLine#next_time
+- Xianhang Zhang, find_jobs(tag=nil) patch
+- Yi Wen, for lib/rufus-scheduler.rb
+- Adam Green and Rael Dornfest for the Taskr breaking issue feedback
+- Sean Liu, unschedule_every issue
+- Manfred Usselman (no cronjobs on sundays bug)
+- Michael Goth, tests with precision > 1s
+
+* many people gave feedback previously, see
+  http://openwferu.rubyforge.org/svn/trunk/openwfe-ruby/CREDITS.txt
+
+
+== and finally
+
+- many thanks to the EventMachine team (especially Aman Gupta)
+
