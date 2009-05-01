@@ -68,9 +68,15 @@ module Rufus::Scheduler
 
     include LegacyMethods
 
+    # classical options hash
+    #
+    attr_reader :options
+
     # Instantiates a Rufus::Scheduler.
     #
     def initialize (opts={})
+
+      @options = opts
 
       @jobs = JobQueue.new
       @cron_jobs = CronJobQueue.new
@@ -248,6 +254,10 @@ module Rufus::Scheduler
           self.step
         end
       end
+
+      @thread[:name] =
+        @options[:thread_name] ||
+        "#{self.class} - #{Rufus::Scheduler::VERSION}"
     end
 
     def stop (opts={})

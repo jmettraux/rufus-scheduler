@@ -51,8 +51,8 @@ SCHEDULER_CLASS = $plain ?
 #
 # helper methods
 
-def start_scheduler
-  SCHEDULER_CLASS.start_new
+def start_scheduler (opts={})
+  SCHEDULER_CLASS.start_new(opts)
 end
 
 def stop_scheduler (s)

@@ -39,3 +39,6 @@
 [ ] :blocking => 'blockname' idea, mutex = @mutexes['blockname'] ...
 [ ] eventually, make sleep frequency customizable
 
+[o] PlainScheduler : name thread
+[ ] document :thread_name scheduler option
+

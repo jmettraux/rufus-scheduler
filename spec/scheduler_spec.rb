@@ -24,5 +24,21 @@ describe SCHEDULER_CLASS do
     var.should.be.nil
   end
 
+  unless SCHEDULER_CLASS == Rufus::Scheduler::EmScheduler
+
+    it 'should set a default scheduler thread name' do
+
+      s = start_scheduler
+
+      s.instance_variable_get(:@thread)['name'].should.match(
+        /Rufus::Scheduler::.*Scheduler - \d+\.\d+\.\d+/)
+    end
+
+    it 'should set the scheduler thread name' do
+      s = start_scheduler(:thread_name => 'nada')
+      s.instance_variable_get(:@thread)['name'].should.equal('nada')
+    end
+  end
+
 end
 
