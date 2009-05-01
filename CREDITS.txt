@@ -3,13 +3,13 @@
 
 == Contributors
 
+- Klaas Jan Wierenga, at/every/in stress tests, stress patch
 - TobyH (http://github.com/tobyh), faster and cleaner CronLine#next_time
 - Ryan Sonnek (http://github.com/wireframe), gemspec
 
 
 == Feedback
 
-- Klaas Jan Wierenga, at/every/in stress tests
 - Chris Evans, :timeout tests on JRuby
 - Tim Uckun, :timeout concept
 - K Liu, for the note about CronLine#next_time

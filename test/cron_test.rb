@@ -68,7 +68,7 @@ class CronTest < Test::Unit::TestCase
     scheduler.stop
 
     #assert_equal 10, counter
-    assert [ 9, 10 ].include?(counter), "not 9 or 10 but #{counter}"
+    assert [ 9, 10, 11 ].include?(counter), "not 9 or 10 but #{counter}"
     assert (not has_gone_wrong)
   end
 

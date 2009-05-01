@@ -39,7 +39,7 @@ Rake::GemPackageTask.new($gemspec) do |pkg|
   #pkg.need_tar = true
 end
 
-Rake::PackageTask.new('rufus-scheduler', '1.0.13') do |pkg|
+Rake::PackageTask.new('rufus-scheduler', '1.0.14') do |pkg|
 
   pkg.need_zip = true
   pkg.package_files = FileList[
