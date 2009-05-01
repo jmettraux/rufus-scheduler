@@ -1,11 +1,22 @@
 
 = rufus-scheduler
 
-== alternatives
+rufus-scheduler is a Ruby gem for scheduling pieces of code (jobs). It understands running a job AT a certain time, IN a certain time, EVERY x time or simply via a CRON statement.
 
-I recommend you have a look at Jake Douglas' em-timers, it's a set of helper methods for timers in EventMachine. It's simpler than rufus-scheduler-em and has a better Ruby feel.
+rufus-scheduler is no replacement for cron/at since it runs inside of Ruby.
 
+
+== alternatives / complements
+
+A list of related Ruby projects :
+
+http://github.com/javan/whenever
 http://github.com/yakischloba/em-timers/
+
+More like complements :
+
+http://github.com/mojombo/chronic/
+http://github.com/hpoydar/chronic_duration
 
 
 == installation
@@ -35,9 +46,38 @@ The usage is similar to the one of the old rufus-scheduler. There are a few diff
     puts 'enable security system'
   end
 
+  scheduler.every '5m' do
+    puts 'check blood pressure'
+  end
+
   # ...
 
   scheduler.stop
+
+
+== the time strings understood by rufus-scheduler
+
+  require 'rubygems'
+  require 'rufus/scheduler'
+
+  p Rufus.parse_time_string '500'      # => 0.5
+  p Rufus.parse_time_string '1000'     # => 1.0
+  p Rufus.parse_time_string '1h'       # => 3600.0
+  p Rufus.parse_time_string '1h10s'    # => 3610.0
+  p Rufus.parse_time_string '1w2d'     # => 777600.0
+
+  p Rufus.to_time_string 60              # => "1m"
+  p Rufus.to_time_string 3661            # => "1h1m1s"
+  p Rufus.to_time_string 7 * 24 * 3600   # => "1w"
+
+
+== looking up jobs
+
+== tags
+
+== unscheduling jobs
+
+== exceptions in jobs
 
 
 == usage with EventMachine
@@ -84,21 +124,19 @@ http://rubyforge.org/tracker/?atid=18584&group_id=4812&func=browse
 
 == irc
 
-irc.freenode.net #ruote
+  irc.freenode.net #ruote
 
 
 == source
 
-http://github.com/jmettraux/rufus-scheduler-em
+http://github.com/jmettraux/rufus-scheduler
 
-  git clone git://github.com/jmettraux/rufus-scheduler-em.git
+  git clone git://github.com/jmettraux/rufus-scheduler.git
 
 
 == credits
 
-many thanks to the authors of eventmachine
-
-http://rubyeventmachine.com
+http://github.com/jmettraux/rufus-scheduler/blob/master/CREDITS.txt
 
 
 == authors
