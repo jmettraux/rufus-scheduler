@@ -2,6 +2,12 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 1.0.14    released 2009/05/01
+
+- bug   #25746 : at/every/in scheduling stress issue.
+                 Fixed by Klaas Jan Wierenga
+
+
 == rufus-scheduler - 1.0.13    released 2009/02/02
 
 - todo  #23779 : removed lib/openwfe/ and restructured to lib/rufus/scheduler/
