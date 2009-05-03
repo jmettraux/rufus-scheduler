@@ -42,5 +42,6 @@
 [o] PlainScheduler : name thread
 [ ] document :thread_name scheduler option
 
-[ ] REAME.md ?
+[o] README.rdoc
+[ ] fix jruby120 --em
 

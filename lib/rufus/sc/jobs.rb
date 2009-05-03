@@ -119,9 +119,9 @@ module Scheduler
         # Note that #trigger_job is protected, hence the #send
         # (Only jobs know about this method of the scheduler)
 
-        begin
+        @job_thread = Thread.current
 
-          @job_thread = Thread.current
+        begin
 
           args = prepare_args
 
@@ -138,7 +138,7 @@ module Scheduler
       # note that add_job and add_cron_job ensured that :blocking is
       # not used along :timeout
 
-      if @job_thread and @job_thread.alive? and to = @params[:timeout]
+      if to = @params[:timeout]
 
         @scheduler.in(to, :tags => 'timeout') do
 

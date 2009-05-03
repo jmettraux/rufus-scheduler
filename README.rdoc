@@ -76,6 +76,8 @@ This code summons a plain version of the scheduler, this can be made more explic
   p Rufus.to_time_string 7 * 24 * 3600   # => "1w"
 
 
+== :blocking
+
 == looking up jobs
 
 == unscheduling jobs
