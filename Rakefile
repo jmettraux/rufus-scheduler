@@ -42,8 +42,8 @@ task :test => :spec
 task :change_version do
 
   version = ARGV.pop
-  `sedip "s/VERSION = '.*'/VERSION = '#{version}'/" lib/rufus/scheduler-em/scheduler.rb`
-  `sedip "s/s.version = '.*'/s.version = '#{version}'/" rufus-scheduler-em.gemspec`
+  `sedip "s/VERSION = '.*'/VERSION = '#{version}'/" lib/rufus/sc/scheduler.rb`
+  `sedip "s/s.version = '.*'/s.version = '#{version}'/" rufus-scheduler.gemspec`
   exit 0 # prevent rake from triggering other tasks
 end
 
@@ -55,7 +55,7 @@ Rake::GemPackageTask.new(gemspec) do |pkg|
   #pkg.need_tar = true
 end
 
-Rake::PackageTask.new('rufus-scheduler-em', gemspec.version) do |pkg|
+Rake::PackageTask.new('rufus-scheduler', gemspec.version) do |pkg|
 
   pkg.need_zip = true
   pkg.package_files = FileList[
@@ -79,22 +79,22 @@ end
 
 Rake::RDocTask.new do |rd|
 
-  rd.main = 'README.txt'
-  rd.rdoc_dir = 'html/rufus-scheduler-em'
+  rd.main = 'README.md'
+  rd.rdoc_dir = 'html/rufus-scheduler'
   rd.rdoc_files.include(
-    'README.txt',
+    'README.md',
     'CHANGELOG.txt',
     'LICENSE.txt',
     'CREDITS.txt',
     'lib/**/*.rb')
   #rd.rdoc_files.exclude('lib/tokyotyrant.rb')
-  rd.title = 'rufus-scheduler-em rdoc'
+  rd.title = 'rufus-scheduler rdoc'
   rd.options << '-N' # line numbers
   rd.options << '-S' # inline source
 end
 
 task :rrdoc => :rdoc do
-  FileUtils.cp('doc/rdoc-style.css', 'html/rufus-scheduler-em/')
+  FileUtils.cp('doc/rdoc-style.css', 'html/rufus-scheduler/')
 end
 
 
