@@ -81,6 +81,21 @@ This code summons a plain version of the scheduler, this can be made more explic
 
 == tags
 
+You can specify tags at schedule time :
+
+  scheduler.in '2d', :tags => 'admin' do
+    run_backlog_cleaning()
+  end
+  scheduler.every '3m', :tags => 'production' do
+    check_order_log()
+  end
+
+And later query the scheduler for those jobs :
+
+  admin_jobs = scheduler.find_by_tag('admin')
+  production_jobs = scheduler.find_by_tag('production')
+
+
 == unscheduling jobs
 
 == exceptions in jobs

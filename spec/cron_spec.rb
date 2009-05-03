@@ -70,5 +70,16 @@ describe "#{SCHEDULER_CLASS}#cron" do
     @s.cron_jobs.keys.sort.should.equal([ j0.job_id, j1.job_id ].sort)
   end
 
+  it 'should accept tags for jobs' do
+
+    job = @s.cron '* * * * * *', :tags => 'spec' do
+    end
+
+    wait_next_tick
+
+    @s.find_by_tag('spec').size.should.equal(1)
+    @s.find_by_tag('spec').first.job_id.should.equal(job.job_id)
+  end
+
 end
 

@@ -89,7 +89,7 @@ module Scheduler
     #
     def tags
 
-      @param[:tags]
+      @params[:tags]
     end
 
     # Sets the list of tags attached to the job (Usually they are set

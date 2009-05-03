@@ -80,5 +80,16 @@ describe "#{SCHEDULER_CLASS}#every" do
     var.should.equal(2)
   end
 
+  it 'should accept tags for jobs' do
+
+    job = @s.every '1s', :tags => 'spec' do
+    end
+
+    wait_next_tick
+
+    @s.find_by_tag('spec').size.should.equal(1)
+    @s.find_by_tag('spec').first.job_id.should.equal(job.job_id)
+  end
+
 end
 

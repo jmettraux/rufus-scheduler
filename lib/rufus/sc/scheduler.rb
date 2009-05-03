@@ -178,8 +178,18 @@ module Rufus::Scheduler
       jobs.merge(cron_jobs)
     end
 
+    # Returns a list of jobs with the given tag
+    #
+    def find_by_tag (tag)
+
+      all_jobs.values.select { |j| j.tags.include?(tag) }
+    end
+
     protected
 
+    # The method that does the "wake up and trigger any job that should get
+    # triggered.
+    #
     def step
       cron_step
       at_step
@@ -348,6 +358,12 @@ module Rufus::Scheduler
 
       EM.send(m) { block.call }
     end
+  end
+
+  #
+  # This error is thrown when the :timeout attribute triggers
+  #
+  class TimeOutError < RuntimeError
   end
 end
 

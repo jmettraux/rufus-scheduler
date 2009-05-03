@@ -68,6 +68,19 @@ describe "#{SCHEDULER_CLASS}#schedule_at" do
     @s.jobs.size.should.equal(1)
 
     @s.unschedule(job.job_id)
+
+    @s.jobs.size.should.equal(0)
+  end
+
+  it 'should accept tags for jobs' do
+
+    job = @s.at Time.now + 3 * 3600, :tags => 'spec' do
+    end
+
+    wait_next_tick
+
+    @s.find_by_tag('spec').size.should.equal(1)
+    @s.find_by_tag('spec').first.job_id.should.equal(job.job_id)
   end
 
 end
