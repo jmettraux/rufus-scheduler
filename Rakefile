@@ -79,10 +79,10 @@ end
 
 Rake::RDocTask.new do |rd|
 
-  rd.main = 'README.md'
+  rd.main = 'README.rdoc'
   rd.rdoc_dir = 'html/rufus-scheduler'
   rd.rdoc_files.include(
-    'README.md',
+    'README.rdoc',
     'CHANGELOG.txt',
     'LICENSE.txt',
     'CREDITS.txt',
