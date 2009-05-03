@@ -1,6 +1,6 @@
 
 #
-# Specifying rufus-scheduler-em
+# Specifying rufus-scheduler
 #
 # Sat Mar 21 17:43:23 JST 2009
 #
