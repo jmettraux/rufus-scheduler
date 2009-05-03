@@ -8,7 +8,7 @@
 [o] CHECK every and unschedule !!!
 
 [o] :tags
-[ ] timeout feature (at/in/every/cron) in Job class
+[o] timeout feature (at/in/every/cron) in Job class
 
 [ ] :first_in, :first_at
 [ ] :dont_reschedule (or block returns false ?)
@@ -16,8 +16,8 @@
 [ ] document :blocking
 [ ] CHECK :blocking and every (reschedule blocking...)
 
-[ ] [get_]jobs methods
-[ ] find methods
+[o] [get_]jobs methods
+[o] find methods
 
 [ ] CTRL-C during tests : allow, trap_int...
 
@@ -41,4 +41,6 @@
 
 [o] PlainScheduler : name thread
 [ ] document :thread_name scheduler option
+
+[ ] REAME.md ?
 

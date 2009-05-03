@@ -134,6 +134,18 @@ module Scheduler
           @scheduler.log_exception(e)
         end
       end
+
+      # note that add_job and add_cron_job ensured that :blocking is
+      # not used along :timeout
+
+      if @job_thread and @job_thread.alive? and to = @params[:timeout]
+
+        @scheduler.in(to, :tags => 'timeout') do
+
+          @job_thread.raise(Rufus::Scheduler::TimeOutError) \
+            if @job_thread and @job_thread.alive?
+        end
+      end
     end
 
     # Unschedules this job.

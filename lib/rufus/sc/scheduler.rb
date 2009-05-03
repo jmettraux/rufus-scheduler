@@ -41,8 +41,8 @@ module Rufus::Scheduler
   #
   module LegacyMethods
 
-    def find_jobs
-      all_jobs.values
+    def find_jobs (tag=nil)
+      tag ? find_by_tag(tag) : all_jobs.values
     end
     def at_job_count
       @jobs.select(:at).size +
@@ -217,6 +217,8 @@ module Rufus::Scheduler
 
     def add_job (job)
 
+      complain_if_blocking_and_timeout(job)
+
       return if job.params[:discard_past] && Time.now.to_f >= job.at
 
       @jobs << job
@@ -226,9 +228,20 @@ module Rufus::Scheduler
 
     def add_cron_job (job)
 
+      complain_if_blocking_and_timeout(job)
+
       @cron_jobs << job
 
       job
+    end
+
+    # Raises an error if the job has the params :blocking and :timeout set
+    #
+    def complain_if_blocking_and_timeout (job)
+
+      raise(
+        ArgumentError.new('cannot set a :timeout on a :blocking job')
+      ) if job.params[:blocking] and job.params[:timeout]
     end
 
     # The default, plain, implementation. If 'blocking' is true, will simply

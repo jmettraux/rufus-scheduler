@@ -60,7 +60,6 @@ This code summons a plain version of the scheduler, this can be made more explic
   scheduler = Rufus::Scheduler::PlainScheduler.start_new
 
 
-
 == the time strings understood by rufus-scheduler
 
   require 'rubygems'
@@ -79,6 +78,8 @@ This code summons a plain version of the scheduler, this can be made more explic
 
 == looking up jobs
 
+== unscheduling jobs
+
 == tags
 
 You can specify tags at schedule time :
@@ -96,9 +97,25 @@ And later query the scheduler for those jobs :
   production_jobs = scheduler.find_by_tag('production')
 
 
-== unscheduling jobs
+== timeout
+
+One can specify a timeout for the triggering of a job.
+
+  scheduler.every '2d', :timeout => '40m' do
+    begin
+      run_backlog_cleaning()
+    rescue Rufus::Scheduler::TimeOutError => toe
+      # timeout occurred
+    end
+  end
+
+This job will run every two days. If a run takes more than 40 minutes it will timeout (its thread will receive a TimeOutError).
+
+This timeout feature relies on an 'in' job scheduled at the moment the main job gets triggered, hence the '40m' time string format.
+
 
 == exceptions in jobs
+
 
 == frequency
 
