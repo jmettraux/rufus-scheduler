@@ -13,13 +13,13 @@ JOB_IDS = (1..JOB_COUNT).to_a
 NUM_RESCHEDULES = 5 # 10
 TRIGGER_DELAY = 4 # 15
 
-describe Rufus::Scheduler do
+describe SCHEDULER_CLASS do
 
 # helper methods
 
 #
 # Wait for a variable to become a certain value.
-# This method returns a block which loops waiting for the passed in 
+# This method returns a block which loops waiting for the passed in
 # block paramter to have value 'target'.
 #
 def eventually(timeout = TRIGGER_DELAY * 2, precision = 1)
@@ -47,7 +47,8 @@ def benchmark
   end
 end
 
-def schedule_unschedule_same_ids_spec(mode, scheduler)
+def schedule_unschedule_same_ids_spec (mode)
+  scheduler = SCHEDULER_CLASS.start_new
   benchmark { schedule_unschedule(scheduler, mode, NUM_RESCHEDULES) }
   JOB_COUNT.should.satisfy &eventually { scheduler.all_jobs.size }
   JOB_IDS.sort.should.equal(scheduler.find_jobs.map{ |job| job.job_id }.sort)
@@ -56,7 +57,8 @@ def schedule_unschedule_same_ids_spec(mode, scheduler)
   scheduler.stop
 end
 
-def schedule_unschedule_unique_ids_spec(mode, scheduler)
+def schedule_unschedule_unique_ids_spec (mode)
+  scheduler = SCHEDULER_CLASS.start_new
   job_ids = []
   benchmark { job_ids = schedule_unschedule(scheduler, mode, NUM_RESCHEDULES, true) }
   JOB_COUNT.should.satisfy &eventually { scheduler.all_jobs.size }
@@ -125,52 +127,28 @@ after do #(:each) do
   @trigger_queue = nil
 end
 
-it "(Plain) should sustain frequent schedule/unschedule 'cron' jobs with same ids" do
-  schedule_unschedule_same_ids_spec(:cron, Rufus::Scheduler::PlainScheduler.start_new)
+it "should sustain frequent schedule/unschedule 'cron' jobs with same ids" do
+  schedule_unschedule_same_ids_spec(:cron)
 end
 
-it "(Plain) should sustain frequent schedule/unschedule 'at' jobs with same ids" do
-  schedule_unschedule_same_ids_spec(:at, Rufus::Scheduler::PlainScheduler.start_new)
+it "should sustain frequent schedule/unschedule 'at' jobs with same ids" do
+  schedule_unschedule_same_ids_spec(:at)
 end
 
-it "(Plain) should sustain frequent schedule/unschedule 'every' jobs same ids" do
-  schedule_unschedule_same_ids_spec(:every,Rufus::Scheduler::PlainScheduler.start_new)
+it "should sustain frequent schedule/unschedule 'every' jobs same ids" do
+  schedule_unschedule_same_ids_spec(:every)
 end
 
-it "(Plain) should sustain frequent schedule/unschedule 'cron' jobs with unique ids" do
-  schedule_unschedule_unique_ids_spec(:cron, Rufus::Scheduler::PlainScheduler.start_new)
+it "should sustain frequent schedule/unschedule 'cron' jobs with unique ids" do
+  schedule_unschedule_unique_ids_spec(:cron)
 end
 
-it "(Plain) should sustain frequent schedule/unschedule 'at' jobs with unique ids" do
-  schedule_unschedule_unique_ids_spec(:at, Rufus::Scheduler::PlainScheduler.start_new)
+it "should sustain frequent schedule/unschedule 'at' jobs with unique ids" do
+  schedule_unschedule_unique_ids_spec(:at)
 end
 
-it "(Plain) should sustain frequent schedule/unschedule 'every' jobs unique ids" do
-  schedule_unschedule_unique_ids_spec(:every, Rufus::Scheduler::PlainScheduler.start_new)
-end
-
-it "(EM) should sustain frequent schedule/unschedule 'cron' jobs with same ids" do
-  schedule_unschedule_same_ids_spec(:cron, Rufus::Scheduler::EmScheduler.start_new)
-end
-
-it "(EM) should sustain frequent schedule/unschedule 'at' jobs with same ids" do
-  schedule_unschedule_same_ids_spec(:at, Rufus::Scheduler::EmScheduler.start_new)
-end
-
-it "(EM) should sustain frequent schedule/unschedule 'every' jobs same ids" do
-  schedule_unschedule_same_ids_spec(:every, Rufus::Scheduler::EmScheduler.start_new)
-end
-
-it "(EM) should sustain frequent schedule/unschedule 'cron' jobs with unique ids" do
-  schedule_unschedule_unique_ids_spec(:cron, Rufus::Scheduler::EmScheduler.start_new)
-end
-
-it "(EM) should sustain frequent schedule/unschedule 'at' jobs with unique ids" do
-  schedule_unschedule_unique_ids_spec(:at, Rufus::Scheduler::EmScheduler.start_new)
-end
-
-it "(EM) should sustain frequent schedule/unschedule 'every' jobs unique ids" do
-  schedule_unschedule_unique_ids_spec(:every, Rufus::Scheduler::EmScheduler.start_new)
+it "should sustain frequent schedule/unschedule 'every' jobs unique ids" do
+  schedule_unschedule_unique_ids_spec(:every)
 end
 
 end
