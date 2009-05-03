@@ -55,6 +55,12 @@ The usage is similar to the one of the old rufus-scheduler. There are a few diff
   scheduler.stop
 
 
+This code summons a plain version of the scheduler, this can be made more explicit via :
+
+  scheduler = Rufus::Scheduler::PlainScheduler.start_new
+
+
+
 == the time strings understood by rufus-scheduler
 
   require 'rubygems'
@@ -78,6 +84,18 @@ The usage is similar to the one of the old rufus-scheduler. There are a few diff
 == unscheduling jobs
 
 == exceptions in jobs
+
+== frequency
+
+The default frequency for the scheduler is 0.330 seconds. This means that the usual scheduler implementation will wake up, trigger jobs that are to be triggered and then go back to sleep for 0.330 seconds. Note that this doesn't mean that the scheduler will wake up very 0.330 seconds (checking and triggering do take time).
+
+You can set a different frequency when starting / initializing the scheduler :
+
+  require 'rubygems'
+  require 'rufus/scheduler'
+
+  scheduler = Rufus::Scheduler.start_new(:frequency => 60.0)
+    # for a lazy scheduler that only wakes up every 60 seconds
 
 
 == usage with EventMachine

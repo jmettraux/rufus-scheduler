@@ -40,5 +40,23 @@ describe SCHEDULER_CLASS do
     end
   end
 
+  it 'should accept a custom frequency' do
+
+    var = nil
+
+    s = start_scheduler(:frequency => 10.0)
+
+    s.in('10s') { var = true }
+
+    sleep 1
+    var.should.be.nil
+
+    sleep 5
+    var.should.be.nil
+
+    sleep 6
+    var.should.be.true
+  end
+
 end
 

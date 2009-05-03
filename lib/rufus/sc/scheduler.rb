@@ -80,6 +80,8 @@ module Rufus::Scheduler
 
       @jobs = JobQueue.new
       @cron_jobs = CronJobQueue.new
+
+      @frequency = @options[:frequency] || 0.330
     end
 
     # Instantiates and starts a new Rufus::Scheduler.
@@ -250,7 +252,7 @@ module Rufus::Scheduler
 
       @thread = Thread.new do
         loop do
-          sleep(0.330)
+          sleep(@frequency)
           self.step
         end
       end
@@ -309,7 +311,7 @@ module Rufus::Scheduler
       #  Thread.stop # EM will wake us up when it's ready
       #end
 
-      @timer = EM::PeriodicTimer.new(0.330) { step }
+      @timer = EM::PeriodicTimer.new(@frequency) { step }
     end
 
     # Stops the scheduler.
