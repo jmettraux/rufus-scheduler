@@ -91,5 +91,35 @@ describe "#{SCHEDULER_CLASS}#every" do
     @s.find_by_tag('spec').first.job_id.should.equal(job.job_id)
   end
 
+  it 'should honour :first_at' do
+
+    counter = 0
+
+    job = @s.every '1s', :first_at => Time.now + 2 do
+      counter += 1
+    end
+
+    sleep 1
+    counter.should.equal(0)
+
+    sleep 2.5
+    counter.should.equal(2)
+  end
+
+  it 'should honour :first_in' do
+
+    counter = 0
+
+    job = @s.every '1s', :first_in => 2 do
+      counter += 1
+    end
+
+    sleep 1
+    counter.should.equal(0)
+
+    sleep 2.5
+    counter.should.equal(2)
+  end
+
 end
 

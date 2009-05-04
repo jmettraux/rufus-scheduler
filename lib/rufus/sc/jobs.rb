@@ -249,9 +249,19 @@ module Scheduler
       return unless @frequency
 
       @last = @at
+        # the first time, @last will be nil
 
-      #@at = Time.now.to_f + @frequency
-      @at = (@last || Time.now.to_f) + @frequency
+      @at = if @last
+        @last + @frequency
+      else
+        if fi = @params[:first_in]
+          Time.now.to_f + Rufus.duration_to_f(fi)
+        elsif fa = @params[:first_at]
+          Rufus.at_to_f(fa)
+        else
+          Time.now.to_f + @frequency
+        end
+      end
     end
 
     def schedule_next

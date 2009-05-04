@@ -78,6 +78,29 @@ This code summons a plain version of the scheduler, this can be made more explic
 
 == :blocking
 
+== 'every' jobs and :first_at / :first_in
+
+This job will execute every 3 days, but first time will be in 5 days from now :
+
+  scheduler.every '3d', :first_in => '5d' do
+    # do something
+  end
+
+This job will execute every 3 days, starting from Christmas Eve at noon :
+
+  scheduler.every '3d', :first_at => '2009/12/24 12:00' do
+    # do something
+  end
+
+The chronic gem may help (http://chronic.rubyforge.org/) :
+
+  require 'chronic' # sudo gem install chronic
+
+  scheduler.every '3h', :first_at => Chronic.parse('this tuesday 5:00') do
+    # do something starting this tueday
+  end
+
+
 == looking up jobs
 
 == unscheduling jobs

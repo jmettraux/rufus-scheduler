@@ -72,6 +72,11 @@ describe 'rufus/otime#at_to_f' do
   it 'should turn String at values to float' do
 
     atf('Sat Mar 21 20:08:01 +0900 2009').should.equal(1237633681.0)
+    atf('Sat Mar 21 20:08:01 -0900 2009').should.equal(1237698481.0)
+    atf('Sat Mar 21 20:08:01 +0000 2009').should.equal(1237666081.0)
+    atf('Sat Mar 21 20:08:01 2009').should.equal(1237666081.0)
+    atf('Mar 21 20:08:01 2009').should.equal(1237666081.0)
+    atf('2009/03/21 20:08').should.equal(1237666080.0)
   end
 
   it 'should accept integers' do

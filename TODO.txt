@@ -10,7 +10,7 @@
 [o] :tags
 [o] timeout feature (at/in/every/cron) in Job class
 
-[ ] :first_in, :first_at
+[o] :first_in, :first_at
 [ ] :dont_reschedule (or block returns false ?)
 
 [ ] document :blocking
