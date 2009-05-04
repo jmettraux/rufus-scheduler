@@ -266,6 +266,8 @@ module Scheduler
 
     def schedule_next
 
+      return if @params[:dont_reschedule]
+
       determine_at
 
       @scheduler.send(:add_job, self)

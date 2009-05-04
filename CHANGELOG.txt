@@ -1,8 +1,8 @@
 
-= rufus-scheduler-em CHANGELOG.txt
+= rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler-em - 1.0.0    not yet released
+== rufus-scheduler - 2.0.0    not yet released
 
 - initial release
 

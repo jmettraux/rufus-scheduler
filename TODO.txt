@@ -25,6 +25,8 @@
 [o] j1.2.0
 
 [ ] revise trigger block arity
+    use a compatibility switch ????
+
 [ ] Schedulable
   #
   # don't try to be 'backward compatible' for those two maybe

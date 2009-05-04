@@ -116,6 +116,11 @@ The chronic gem may help (http://chronic.rubyforge.org/) :
   end
 
 
+== 'every' jobs and :dont_reschedule
+
+TODO
+
+
 == looking up jobs
 
   scheduler.jobs
@@ -199,6 +204,8 @@ For backward compatibility, overriding #log_exception is still OK :
   def scheduler.log_exception (exception)
     puts "caught exception '#{exception}'"
   end
+
+Note that an every job or a cron job will stay scheduled even if it experiences an exception.
 
 
 == frequency
