@@ -45,3 +45,5 @@
 [o] README.rdoc
 [ ] fix jruby120 --em
 
+[ ] handle_exception (job, e)
+

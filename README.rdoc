@@ -118,7 +118,33 @@ The chronic gem may help (http://chronic.rubyforge.org/) :
 
 == looking up jobs
 
+  scheduler.jobs
+    # returns a map job_id => job of at/in/every jobs
+
+  scheduler.cron_jobs
+    # idem for cron jobs
+
+  scheduler.all_jobs
+    # idem but for every/at/in/cron jobs (all of them)
+
+  scheduler.find_by_tag(t)
+    # returns all the jobs with a given tag (passed at schedule time with :tags)
+
+
 == unscheduling jobs
+
+The 'scheduling' methods always return an instance of Rufus::Scheduler::Job. This object can be used for unscheduling :
+
+  job = scheduler.in '2d', :tags => 'admin' do
+    run_backlog_cleaning()
+  end
+
+  # later ...
+
+  job.unschedule
+    # or
+  scheduler.unschedule(job.job_id)
+
 
 == tags
 
@@ -155,6 +181,12 @@ This timeout feature relies on an 'in' job scheduled at the moment the main job 
 
 
 == exceptions in jobs
+
+By default, when exception occur when a job performs, the error message will be output to the STDOUT.
+
+It's easy to customize that behaviour :
+
+  TODO : continue !!
 
 
 == frequency
