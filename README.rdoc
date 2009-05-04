@@ -78,6 +78,21 @@ This code summons a plain version of the scheduler, this can be made more explic
 
 == :blocking
 
+Jobs will, by default, trigger in their own thread. This is usually desirable since one expects the scheduler to continue scheduling even if a job is currently running.
+
+Jobs scheduled with the :blocking parameter will run in the thread of the scheduler, blocking it.
+
+  scheduler.in '20m', :blocking => true do
+    puts "order ristretto"
+    sleep 2 * 60
+  end
+  scheduler.in '21m' do
+    puts "order espresso"
+  end
+
+Hence, our espresso wil come in 22 minutes instead of 21.
+
+
 == 'every' jobs and :first_at / :first_in
 
 This job will execute every 3 days, but first time will be in 5 days from now :
