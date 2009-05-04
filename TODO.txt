@@ -50,3 +50,5 @@
 
 [o] handle_exception (job, e)
 
+[ ] Rufus::Scheduler.start_new() : autodetect EM ?
+
