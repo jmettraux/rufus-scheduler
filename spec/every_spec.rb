@@ -125,10 +125,10 @@ describe "#{SCHEDULER_CLASS}#every" do
 
     stack = []
 
-    @s.every 0.400 do |params|
+    @s.every 0.400 do |job|
       if stack.size > 3
         stack << 'done'
-        params[:dont_reschedule] = true
+        job.params[:dont_reschedule] = true
       else
         stack << 'ok'
       end

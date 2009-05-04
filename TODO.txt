@@ -11,9 +11,8 @@
 [o] timeout feature (at/in/every/cron) in Job class
 
 [o] :first_in, :first_at
-[ ] :dont_reschedule (or block returns false ?)
 
-[o] document :blocking
+[ ] :dont_reschedule (or block returns false ?)
 [ ] CHECK :blocking and every (reschedule blocking...)
 
 [o] [get_]jobs methods
@@ -24,8 +23,8 @@
 [o] 1.9
 [o] j1.2.0
 
-[ ] revise trigger block arity
-    use a compatibility switch ????
+[o] revise trigger block arity
+    use a compatibility switch ? yes
 
 [ ] Schedulable
   #
@@ -42,6 +41,8 @@
 [o] eventually, make sleep frequency customizable
 
 [o] PlainScheduler : name thread
+
+[o] document :blocking
 [ ] document :thread_name scheduler option
 
 [o] README.rdoc

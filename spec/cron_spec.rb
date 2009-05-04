@@ -27,7 +27,7 @@ describe "#{SCHEDULER_CLASS}#cron" do
 
     seconds = []
 
-    job = @s.cron '* * * * * *'  do |job_id, job, params|
+    job = @s.cron '* * * * * *'  do |job|
       seconds << job.last.sec
     end
     sleep 4.990
@@ -41,7 +41,7 @@ describe "#{SCHEDULER_CLASS}#cron" do
 
     second = nil
 
-    job = @s.cron '* * * * * *'  do |job_id, job, params|
+    job = @s.cron '* * * * * *'  do |job|
       second = job.last.sec
     end
 

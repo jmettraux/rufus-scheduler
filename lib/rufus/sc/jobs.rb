@@ -163,12 +163,16 @@ module Scheduler
     #
     def prepare_args
 
-      args = case @block.arity
-        when 0 then []
-        when 1 then [ @params ]
-        when 2 then [ @job_id, @params ]
-        #else [ @job_id, schedule_info, @params ]
-        else [ @job_id, self, @params ]
+      if @scheduler.options[:onezero_block_arity]
+        case @block.arity
+          when 0 then []
+          when 1 then [ @params ]
+          when 2 then [ @job_id, @params ]
+          #else [ @job_id, schedule_info, @params ]
+          else [ @job_id, self, @params ]
+        end
+      else
+        [ self ]
       end
     end
   end

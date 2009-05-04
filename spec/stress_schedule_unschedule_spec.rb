@@ -120,7 +120,7 @@ before do #(:each) do
   @cron_trigger = ((Time.now.to_i%60) + TRIGGER_DELAY) % 60 # 30 seconds from now
   @at_trigger = Time.now + TRIGGER_DELAY
   @every_trigger = "#{TRIGGER_DELAY}s"
-  @trigger_proc = lambda { |params| @trigger_queue << params[:job_id] }
+  @trigger_proc = lambda { |job| @trigger_queue << job.job_id }
 end
 
 after do #(:each) do

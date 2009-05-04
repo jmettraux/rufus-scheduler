@@ -60,6 +60,23 @@ This code summons a plain version of the scheduler, this can be made more explic
   scheduler = Rufus::Scheduler::PlainScheduler.start_new
 
 
+== block parameters
+
+Scheduled blocks accept 0 or 1 parameter (this unique parameter is the job
+instance itself).
+
+  scheduler.every '5m' do
+    puts 'check blood pressure'
+  end
+  scheduler.every '1y' do |job|
+    puts "check cholesterol levels (#{job.job_id})"
+  end
+
+See the class Job for more details :
+
+http://rufus.rubyforge.org/rufus-scheduler/classes/Rufus/Scheduler/Job.html
+
+
 == the time strings understood by rufus-scheduler
 
   require 'rubygems'
@@ -119,6 +136,16 @@ The chronic gem may help (http://chronic.rubyforge.org/) :
 == 'every' jobs and :dont_reschedule
 
 TODO
+
+  scheduler.every '3d' do |job|
+    l = determine_crop_maturity_level()
+    if l >= 7
+      puts "crop is ready."
+      job.params[:dont_reschedule] = true
+    else
+      puts "crop not yet ready..."
+    end
+  end
 
 
 == looking up jobs
