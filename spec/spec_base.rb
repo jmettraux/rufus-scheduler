@@ -37,10 +37,18 @@ if ( ! $plain)
 
   require 'eventmachine'
 
-  unless( ! EM.reactor_running?)
+  unless (EM.reactor_running?)
+
     Thread.new { EM.run { } }
+
     sleep 0.200
-    #p [ :reactor_running?, EM.reactor_running? ]
+    while (not EM.reactor_running?)
+      Thread.pass
+    end
+      #
+      # all this waiting, especially for the JRuby eventmachine, which seems
+      # rather 'diesel'
+
   end
 end
 

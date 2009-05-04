@@ -142,6 +142,8 @@ module Scheduler
 
         @scheduler.in(to, :tags => 'timeout') do
 
+          # at this point, @job_thread might be set
+
           @job_thread.raise(Rufus::Scheduler::TimeOutError) \
             if @job_thread and @job_thread.alive?
         end
