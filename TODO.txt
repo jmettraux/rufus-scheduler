@@ -13,13 +13,13 @@
 [o] :first_in, :first_at
 [ ] :dont_reschedule (or block returns false ?)
 
-[ ] document :blocking
+[o] document :blocking
 [ ] CHECK :blocking and every (reschedule blocking...)
 
 [o] [get_]jobs methods
 [o] find methods
 
-[ ] CTRL-C during tests : allow, trap_int...
+[x] CTRL-C during tests : allow, trap_int...
 
 [o] 1.9
 [o] j1.2.0
@@ -43,7 +43,7 @@
 [ ] document :thread_name scheduler option
 
 [o] README.rdoc
-[ ] fix jruby120 --em
+[o] fix jruby120 --em
 
-[ ] handle_exception (job, e)
+[o] handle_exception (job, e)
 

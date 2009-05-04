@@ -186,7 +186,19 @@ By default, when exception occur when a job performs, the error message will be 
 
 It's easy to customize that behaviour :
 
-  TODO : continue !!
+  scheduler = Rufus::Scheduler::PlainScheduler.start_new
+    # or
+  #scheduler = Rufus::Scheduler::EmScheduler.start_new
+
+  def scheduler.handle_exception (job, exception)
+    puts "job #{job.job_id} caught exception '#{exception}'"
+  end
+
+For backward compatibility, overriding #log_exception is still OK :
+
+  def scheduler.log_exception (exception)
+    puts "caught exception '#{exception}'"
+  end
 
 
 == frequency

@@ -131,7 +131,7 @@ module Scheduler
 
         rescue Exception => e
 
-          @scheduler.log_exception(e)
+          @scheduler.handle_exception(self, e)
         end
       end
 

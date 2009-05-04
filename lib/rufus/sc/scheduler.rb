@@ -143,13 +143,18 @@ module Rufus::Scheduler
     #++
 
     # Feel free to override this method. The default implementation simply
-    # dumps the error details to STDOUT.
+    # outputs the error message to STDOUT
     #
-    def log_exception (e)
+    def handle_exception (job, exception)
+
+      log_exception(exception)
+    end
+
+    def log_exception (exception)
 
       puts '=' * 80
-      puts "exception caught by #{self.class} :"
-      puts e
+      puts "scheduler caught exception :"
+      puts exception
       puts '=' * 80
     end
 
