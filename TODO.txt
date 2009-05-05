@@ -13,7 +13,6 @@
 [o] :first_in, :first_at
 
 [x] :dont_reschedule (or block returns false ?)
-[ ] CHECK :blocking and every (reschedule blocking...)
 
 [o] [get_]jobs methods
 [o] find methods
@@ -25,11 +24,6 @@
 
 [o] revise trigger block arity
     use a compatibility switch ? yes
-
-[ ] Schedulable
-  #
-  # don't try to be 'backward compatible' for those two maybe
-
 
 [o] synchronize @cron_jobs ?
 
@@ -43,12 +37,16 @@
 [o] PlainScheduler : name thread
 
 [o] document :blocking
-[ ] document :thread_name scheduler option
 
 [o] README.rdoc
 [o] fix jruby120 --em
 
 [o] handle_exception (job, e)
 
+[ ] Schedulable
+  # don't try to be 'backward compatible' for those two maybe
+
+[ ] CHECK :blocking and every (reschedule blocking...)
 [ ] Rufus::Scheduler.start_new() : autodetect EM ?
+[ ] document :thread_name scheduler option
 
