@@ -47,5 +47,5 @@
 
 [o] Rufus::Scheduler.start_new() : autodetect EM ?
 [o] check :blocking and every (reschedule blocking...)
-[ ] document :thread_name scheduler option
+[o] document :thread_name scheduler option
 

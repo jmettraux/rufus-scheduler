@@ -59,6 +59,12 @@ This code summons a plain version of the scheduler, this can be made more explic
 
   scheduler = Rufus::Scheduler::PlainScheduler.start_new
 
+This PlainScheduler accepts a :thread_name option :
+
+  scheduler = Rufus::Scheduler::PlainScheduler.start_new(:thread_name => 'my scheduler')
+
+might be helpful when tracking threads.
+
 
 Note that is there is EventMachine present and running,
 
