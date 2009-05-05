@@ -147,15 +147,19 @@ module Rufus::Scheduler
     #
     def handle_exception (job, exception)
 
-      log_exception(exception)
-    end
+      if self.respond_to?(:log_exception)
+        #
+        # some kind of backward compatibility
 
-    def log_exception (exception)
+        log_exception(exception)
 
-      puts '=' * 80
-      puts "scheduler caught exception :"
-      puts exception
-      puts '=' * 80
+      else
+
+        puts '=' * 80
+        puts "scheduler caught exception :"
+        puts exception
+        puts '=' * 80
+      end
     end
 
     #--
