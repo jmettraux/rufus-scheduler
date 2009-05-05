@@ -155,5 +155,19 @@ describe "#{SCHEDULER_CLASS}#every" do
     stack.should.equal(%w[ ok ok ok ok done ])
   end
 
+  it 'should respect :blocking => true' do
+
+    stack = []
+
+    @s.every '1s', :blocking => true do |job|
+      stack << 'ok'
+      sleep 2
+    end
+
+    sleep 5
+
+    stack.should.equal(%w[ ok ok ])
+  end
+
 end
 
