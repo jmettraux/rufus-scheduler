@@ -76,7 +76,11 @@ module Scheduler
       @scheduler = scheduler
       @t = t
       @params = params
-      @block = block
+      @block = block || params[:schedulable]
+
+      raise ArgumentError.new(
+        'no block or :schedulable passed, nothing to schedule'
+      ) unless @block
 
       @params[:tags] = Array(@params[:tags])
 
@@ -124,8 +128,12 @@ module Scheduler
         begin
 
           #args = prepare_args
-          #block.call(*args)
-          block.call(self)
+          #@block.call(*args)
+
+          #@block.call(self)
+
+          @block.respond_to?(:call) ?
+            @block.call(self) : @block.trigger(@params)
 
           @job_thread = nil
 

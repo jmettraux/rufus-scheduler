@@ -43,8 +43,7 @@
 
 [o] handle_exception (job, e)
 
-[ ] Schedulable
-  # don't try to be 'backward compatible' for those two maybe
+[o] Schedulable
 
 [ ] CHECK :blocking and every (reschedule blocking...)
 [ ] Rufus::Scheduler.start_new() : autodetect EM ?

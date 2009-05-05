@@ -150,6 +150,27 @@ The chronic gem may help (http://chronic.rubyforge.org/) :
 In this example, the 'every' job will unschedule itself when the crop is ready.
 
 
+== schedulables
+
+Sometimes passing a block isn't that convenient :
+
+  class JobThing
+    def initialize (relevant_info)
+      @ri = relevant_info
+    end
+    def call (job)
+      do_something_about_it
+    end
+  end
+
+  # ...
+
+  scheduler.in '3d', JobThing.new('http://news.example.com/data_xyz')
+  scheduler.in '1w', JobThing.new('http://news.example.com/data_abc'), :timeout => '1d'
+
+rufus-scheduler accepts anything that responds to a call method with a unique parameter (it will pass the job) as a 'schedulable'.
+
+
 == looking up jobs
 
   scheduler.jobs

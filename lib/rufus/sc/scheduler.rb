@@ -35,6 +35,29 @@ module Rufus::Scheduler
   #
   VERSION = '2.0.0'
 
+  #
+  # It's OK to pass an object responding to :trigger when scheduling a job
+  # (instead of passing a block).
+  #
+  # This is simply a helper module. The rufus-scheduler will check if scheduled
+  # object quack (respond to :trigger anyway).
+  #
+  module Schedulable
+    def call (job)
+      trigger(job.params)
+    end
+    def trigger (params)
+      raise NotImplementedError.new('implementation is missing')
+    end
+  end
+
+  #
+  # For backward compatibility
+  #
+  module ::Rufus::Schedulable
+    extend ::Rufus::Scheduler::Schedulable
+  end
+
   # Legacy from the previous version of Rufus-Scheduler.
   #
   # Consider all methods here as 'deprecated'.
@@ -99,33 +122,33 @@ module Rufus::Scheduler
 
     # Schedules a job in a given amount of time.
     #
-    def in (t, opts={}, &block)
+    def in (t, s=nil, opts={}, &block)
 
-      add_job(InJob.new(self, t, opts, &block))
+      add_job(InJob.new(self, t, combine_opts(s, opts), &block))
     end
     alias :schedule_in :in
 
     # Schedules a job at a given point in time.
     #
-    def at (t, opts={}, &block)
+    def at (t, s=nil, opts={}, &block)
 
-      add_job(AtJob.new(self, t, opts, &block))
+      add_job(AtJob.new(self, t, combine_opts(s, opts), &block))
     end
     alias :schedule_at :at
 
     # Schedules a recurring job every t.
     #
-    def every (t, opts={}, &block)
+    def every (t, s=nil, opts={}, &block)
 
-      add_job(EveryJob.new(self, t, opts, &block))
+      add_job(EveryJob.new(self, t, combine_opts(s, opts), &block))
     end
     alias :schedule_every :every
 
     # Schedules a job given a cron string.
     #
-    def cron (cronstring, opts={}, &block)
+    def cron (cronstring, s=nil, opts={}, &block)
 
-      add_cron_job(CronJob.new(self, cronstring, opts, &block))
+      add_cron_job(CronJob.new(self, cronstring, combine_opts(s, opts), &block))
     end
     alias :schedule :cron
 
@@ -195,6 +218,20 @@ module Rufus::Scheduler
     end
 
     protected
+
+    def combine_opts (schedulable, opts)
+
+      if schedulable.respond_to?(:trigger)
+
+        opts[:schedulable] = schedulable
+
+      elsif schedulable != nil
+
+        opts = schedulable.merge(opts)
+      end
+
+      opts
+    end
 
     # The method that does the "wake up and trigger any job that should get
     # triggered.
