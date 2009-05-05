@@ -44,5 +44,9 @@ module Rufus::Scheduler
       PlainScheduler.start_new(opts)
     end
   end
+
+  def is_cron_string (s)
+    # TODO : continue me
+  end
 end
 

@@ -80,6 +80,9 @@ module Rufus::Scheduler
     def pending_job_count
       @jobs.size
     end
+    def precision
+      @frequency
+    end
   end
 
   #
