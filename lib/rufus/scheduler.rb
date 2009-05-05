@@ -45,8 +45,11 @@ module Rufus::Scheduler
     end
   end
 
-  def is_cron_string (s)
-    # TODO : continue me
+  # Returns true if the given string seems to be a cron string.
+  #
+  def self.is_cron_string (s)
+
+    s.match('.+ .+ .+ .+ .+') # well...
   end
 end
 
