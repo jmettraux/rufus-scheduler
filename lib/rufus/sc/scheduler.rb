@@ -122,6 +122,12 @@ module Rufus::Scheduler
 
     # Schedules a job in a given amount of time.
     #
+    #   scheduler.in '20m' do
+    #     puts "order ristretto"
+    #   end
+    #
+    # will order an espresso (well sort of) in 20 minutes.
+    #
     def in (t, s=nil, opts={}, &block)
 
       add_job(InJob.new(self, t, combine_opts(s, opts), &block))
@@ -129,6 +135,12 @@ module Rufus::Scheduler
     alias :schedule_in :in
 
     # Schedules a job at a given point in time.
+    #
+    #   scheduler.at 'Thu Mar 26 19:30:00 2009' do
+    #     puts 'order pizza'
+    #   end
+    #
+    # pizza is for Thursday at 2000 (if the shop brochure is right).
     #
     def at (t, s=nil, opts={}, &block)
 
@@ -138,6 +150,12 @@ module Rufus::Scheduler
 
     # Schedules a recurring job every t.
     #
+    #   scheduler.every '5m1w' do
+    #     puts 'check blood pressure'
+    #   end
+    #
+    # checking blood pressure every 5 months and 1 week.
+    #
     def every (t, s=nil, opts={}, &block)
 
       add_job(EveryJob.new(self, t, combine_opts(s, opts), &block))
@@ -145,6 +163,11 @@ module Rufus::Scheduler
     alias :schedule_every :every
 
     # Schedules a job given a cron string.
+    #
+    #   scheduler.cron '0 22 * * 1-5' do
+    #     # every day of the week at 00:22
+    #     puts 'activate security system'
+    #   end
     #
     def cron (cronstring, s=nil, opts={}, &block)
 

@@ -43,7 +43,7 @@ The usage is similar to the one of the old rufus-scheduler. There are a few diff
 
   scheduler.cron '0 22 * * 1-5' do
     # every day of the week at 00:22
-    puts 'enable security system'
+    puts 'activate security system'
   end
 
   scheduler.every '5m' do
