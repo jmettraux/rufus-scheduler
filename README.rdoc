@@ -133,19 +133,21 @@ The chronic gem may help (http://chronic.rubyforge.org/) :
   end
 
 
-== 'every' jobs and :dont_reschedule
+== self unschedule for 'cron' and 'every' jobs
 
-TODO
+'at' and 'in' jobs fire once only. 'cron' and 'every' jobs do fire repeatedly, so it might be useful to stop them.
 
   scheduler.every '3d' do |job|
     l = determine_crop_maturity_level()
     if l >= 7
       puts "crop is ready."
-      job.params[:dont_reschedule] = true
+      job.unschedule
     else
       puts "crop not yet ready..."
     end
   end
+
+In this example, the 'every' job will unschedule itself when the crop is ready.
 
 
 == looking up jobs

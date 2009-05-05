@@ -121,14 +121,29 @@ describe "#{SCHEDULER_CLASS}#every" do
     counter.should.equal(2)
   end
 
-  it 'should honour :dont_reschedule' do
+  #it 'should honour :dont_reschedule' do
+  #  stack = []
+  #  @s.every 0.400 do |job|
+  #    if stack.size > 3
+  #      stack << 'done'
+  #      job.params[:dont_reschedule] = true
+  #    else
+  #      stack << 'ok'
+  #    end
+  #  end
+  #  sleep 4
+  #  @s.jobs.size.should.equal(0)
+  #  stack.should.equal(%w[ ok ok ok ok done ])
+  #end
+
+  it 'should accept job.unschedule within the job' do
 
     stack = []
 
     @s.every 0.400 do |job|
       if stack.size > 3
         stack << 'done'
-        job.params[:dont_reschedule] = true
+        job.unschedule
       else
         stack << 'ok'
       end

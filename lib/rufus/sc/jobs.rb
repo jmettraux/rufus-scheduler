@@ -123,9 +123,9 @@ module Scheduler
 
         begin
 
-          args = prepare_args
-
-          block.call(*args)
+          #args = prepare_args
+          #block.call(*args)
+          block.call(self)
 
           @job_thread = nil
 
@@ -157,24 +157,25 @@ module Scheduler
       @scheduler.unschedule(self.job_id)
     end
 
-    protected
-
+    #--
+    #protected
+    #
     # Prepare the args given the triggered block arity.
     #
-    def prepare_args
-
-      if @scheduler.options[:onezero_block_arity]
-        case @block.arity
-          when 0 then []
-          when 1 then [ @params ]
-          when 2 then [ @job_id, @params ]
-          #else [ @job_id, schedule_info, @params ]
-          else [ @job_id, self, @params ]
-        end
-      else
-        [ self ]
-      end
-    end
+    #def prepare_args
+    #  if @scheduler.options[:onezero_block_arity]
+    #    case @block.arity
+    #      when 0 then []
+    #      when 1 then [ @params ]
+    #      when 2 then [ @job_id, @params ]
+    #      #else [ @job_id, schedule_info, @params ]
+    #      else [ @job_id, self, @params ]
+    #    end
+    #  else
+    #    [ self ]
+    #  end
+    #end
+    #++
   end
 
   #
@@ -235,9 +236,12 @@ module Scheduler
     #
     def trigger
 
+      schedule_next
+
       super
 
-      schedule_next
+      #unschedule if @params[:dont_reschedule]
+        # obsolete
     end
 
     protected
@@ -268,9 +272,9 @@ module Scheduler
       end
     end
 
+    # It's an every job, have to schedule next time it occurs...
+    #
     def schedule_next
-
-      return if @params[:dont_reschedule]
 
       determine_at
 

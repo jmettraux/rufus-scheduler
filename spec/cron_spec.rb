@@ -81,5 +81,24 @@ describe "#{SCHEDULER_CLASS}#cron" do
     @s.find_by_tag('spec').first.job_id.should.equal(job.job_id)
   end
 
+  it 'should accept job.unschedule within the job' do
+
+    stack = []
+
+    @s.cron '* * * * * *' do |job|
+      if stack.size > 2
+        stack << 'done'
+        job.unschedule
+      else
+        stack << 'ok'
+      end
+    end
+
+    sleep 4
+
+    @s.jobs.size.should.equal(0)
+    stack.should.equal(%w[ ok ok ok done ])
+  end
+
 end
 

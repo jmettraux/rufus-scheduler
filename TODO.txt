@@ -12,7 +12,7 @@
 
 [o] :first_in, :first_at
 
-[ ] :dont_reschedule (or block returns false ?)
+[x] :dont_reschedule (or block returns false ?)
 [ ] CHECK :blocking and every (reschedule blocking...)
 
 [o] [get_]jobs methods
@@ -37,7 +37,7 @@
     EmScheduler < Scheduler
     FiberScheduler < Scheduler
 
-[ ] :blocking => 'blockname' idea, mutex = @mutexes['blockname'] ...
+[x] :blocking => 'blockname' idea, mutex = @mutexes['blockname'] ...
 [o] eventually, make sleep frequency customizable
 
 [o] PlainScheduler : name thread
