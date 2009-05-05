@@ -28,14 +28,21 @@ require 'rufus/sc/scheduler'
 
 module Rufus::Scheduler
 
-  # A quick way to get a plain scheduler up an running
+  # A quick way to get a scheduler up an running
   #
   #   require 'rubygems'
   #   s = Rufus::Scheduler.start_new
   #
+  # If EventMachine is present and running will create an EmScheduler, else
+  # it will create a PlainScheduler instance.
+  #
   def self.start_new (opts={})
 
-    PlainScheduler.start_new(opts)
+    if defined?(EM) and EM.reactor_running?
+      EmScheduler.start_new(opts)
+    else
+      PlainScheduler.start_new(opts)
+    end
   end
 end
 

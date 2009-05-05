@@ -32,11 +32,16 @@ describe SCHEDULER_CLASS do
 
       s.instance_variable_get(:@thread)['name'].should.match(
         /Rufus::Scheduler::.*Scheduler - \d+\.\d+\.\d+/)
+
+      stop_scheduler(s)
     end
 
     it 'should set the scheduler thread name' do
+
       s = start_scheduler(:thread_name => 'nada')
       s.instance_variable_get(:@thread)['name'].should.equal('nada')
+
+      stop_scheduler(s)
     end
   end
 
@@ -44,19 +49,33 @@ describe SCHEDULER_CLASS do
 
     var = nil
 
-    s = start_scheduler(:frequency => 10.0)
+    s = start_scheduler(:frequency => 3.0)
 
-    s.in('10s') { var = true }
+    s.in('1s') { var = true }
 
     sleep 1
     var.should.be.nil
 
-    sleep 5
+    sleep 1
     var.should.be.nil
 
-    sleep 6
+    sleep 2
     var.should.be.true
+
+    stop_scheduler(s)
   end
 
+end
+
+describe 'Rufus::Scheduler#start_new' do
+
+  it 'should piggyback EM if present and running' do
+
+    s = Rufus::Scheduler.start_new
+
+    s.class.should.equal(SCHEDULER_CLASS)
+
+    stop_scheduler(s)
+  end
 end
 

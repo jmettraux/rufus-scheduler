@@ -60,6 +60,13 @@ This code summons a plain version of the scheduler, this can be made more explic
   scheduler = Rufus::Scheduler::PlainScheduler.start_new
 
 
+Note that is there is EventMachine present and running,
+
+  scheduler = Rufus::Scheduler.start_new
+
+will return an instance of Rufus::Scheduler::EmScheduler (leveraging EventMachine).
+
+
 == block parameters
 
 Scheduled blocks accept 0 or 1 parameter (this unique parameter is the job
