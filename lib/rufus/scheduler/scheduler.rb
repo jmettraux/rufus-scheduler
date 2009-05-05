@@ -1069,7 +1069,7 @@ module Rufus
     end
 
     def reschedule (scheduler)
-      raise "reschedule() implentation is missing"
+      raise "reschedule() implementation is missing"
     end
   end
 
