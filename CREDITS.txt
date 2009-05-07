@@ -4,12 +4,13 @@
 
 == Contributors
 
+- Klaas Jan Wierenga, at/every/in stress tests (1.0 and 2.0)
 - TobyH (http://github.com/tobyh), faster and cleaner CronLine#next_time
 
 
 == Feedback
 
-- Klaas Jan Wierenga, at/every/in stress tests
+- Kenneth Kalmer (daemon-kit)
 - Chris Evans, :timeout tests on JRuby
 - Tim Uckun, :timeout concept
 - K Liu, for the note about CronLine#next_time
