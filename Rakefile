@@ -106,6 +106,6 @@ task :upload_website => [ :clean, :rrdoc ] do
   account = 'jmettraux@rubyforge.org'
   webdir = '/var/www/gforge-projects/rufus'
 
-  sh "rsync -azv -e ssh html/rufus-scheduler-em #{account}:#{webdir}/"
+  sh "rsync -azv -e ssh html/rufus-scheduler #{account}:#{webdir}/"
 end
 
