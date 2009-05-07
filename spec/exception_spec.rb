@@ -25,17 +25,18 @@ describe SCHEDULER_CLASS do
     s = StringIO.new
     $stdout = s
 
-    @s.in 0.100 do
+    @s.in 0.400 do
       raise 'Houston we have a problem'
     end
 
     sleep 0.500
+    sleep 0.500
     $stdout = stdout
-
     s.close
 
     s.string.should.match(/Houston we have a problem/)
   end
+  }
 
   it 'should accept custom handling of exceptions' do
 
@@ -45,10 +46,11 @@ describe SCHEDULER_CLASS do
       $job = j
     end
 
-    @s.in 0.100 do
+    @s.in 0.400 do
       raise 'Houston we have a problem'
     end
 
+    sleep 0.500
     sleep 0.500
 
     $job.class.should.equal(Rufus::Scheduler::InJob)
@@ -62,10 +64,11 @@ describe SCHEDULER_CLASS do
       $e = e
     end
 
-    @s.in 0.100 do
+    @s.in 0.400 do
       raise 'Houston we have a problem'
     end
 
+    sleep 0.500
     sleep 0.500
 
     $e.to_s.should.equal('Houston we have a problem')
