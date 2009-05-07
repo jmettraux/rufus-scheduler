@@ -201,6 +201,13 @@ module Scheduler
 
       @at = Rufus.at_to_f(@t)
     end
+
+    # Returns the next time (or the unique time) this job is meant to trigger
+    #
+    def next_time
+
+      Time.at(@at)
+    end
   end
 
   #
@@ -325,6 +332,13 @@ module Scheduler
     def trigger_if_matches (time)
 
       trigger(time) if @cron_line.matches?(time)
+    end
+
+    # Returns the next time this job is meant to trigger
+    #
+    def next_time (from=Time.now)
+
+      @cron_line.next_time(from)
     end
 
     protected

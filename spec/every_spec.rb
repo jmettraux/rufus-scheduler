@@ -171,3 +171,23 @@ describe "#{SCHEDULER_CLASS}#every" do
 
 end
 
+describe Rufus::Scheduler::EveryJob do
+
+  before do
+    @s = start_scheduler
+  end
+  after do
+    stop_scheduler(@s)
+  end
+
+  it 'should respond to #next_time' do
+
+    t = Time.now + 3 * 3600
+
+    job = @s.every '3h' do
+    end
+
+    job.next_time.to_i.should.equal(t.to_i)
+  end
+end
+

@@ -151,5 +151,15 @@ describe Rufus::Scheduler::InJob do
 
     @s.jobs.size.should.equal(0)
   end
+
+  it 'should respond to #next_time' do
+
+    t = Time.now + 3 * 3600
+
+    job = @s.in '3h' do
+    end
+
+    job.next_time.to_i.should.equal(t.to_i)
+  end
 end
 

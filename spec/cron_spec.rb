@@ -102,3 +102,21 @@ describe "#{SCHEDULER_CLASS}#cron" do
 
 end
 
+describe Rufus::Scheduler::CronJob do
+
+  before do
+    @s = start_scheduler
+  end
+  after do
+    stop_scheduler(@s)
+  end
+
+  it 'should respond to #next_time' do
+
+    job = @s.cron '* * * * *' do
+    end
+
+    (job.next_time.to_i - Time.now.to_i).should.satisfy { |v| v < 60 }
+  end
+end
+
