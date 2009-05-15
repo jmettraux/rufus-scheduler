@@ -39,6 +39,7 @@ describe Rufus::Scheduler::Schedulable do
     sleep 1.5
 
     j.value.class.should.equal(Hash)
+    j.value[:job].class.should.equal(Rufus::Scheduler::InJob)
   end
 
   it 'should honour schedulables that reply to :call' do

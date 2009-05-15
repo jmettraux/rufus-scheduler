@@ -36,7 +36,6 @@ describe SCHEDULER_CLASS do
 
     s.string.should.match(/Houston we have a problem/)
   end
-  }
 
   it 'should accept custom handling of exceptions' do
 

@@ -133,7 +133,7 @@ module Scheduler
           #@block.call(self)
 
           @block.respond_to?(:call) ?
-            @block.call(self) : @block.trigger(@params)
+            @block.call(self) : @block.trigger(@params.merge(:job => self))
 
           @job_thread = nil
 

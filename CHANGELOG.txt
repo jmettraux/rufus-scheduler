@@ -1,7 +1,12 @@
 
 = rufus-scheduler CHANGELOG.txt
 
+== rufus-scheduler - 2.0.2    not yet released
 
+- passing :job => job among Schedulable trigger parameters
+
+
+== rufus-scheduler - 2.0.1    released 2009/05/07
 == rufus-scheduler - 2.0.0    released 2009/05/07
 
 - initial release
