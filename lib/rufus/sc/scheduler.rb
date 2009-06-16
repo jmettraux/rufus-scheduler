@@ -104,10 +104,8 @@ module Rufus::Scheduler
 
       @options = opts
 
-      @jobs = (
-        opts[:job_queue_class] || Rufus::Scheduler::JobQueue).new(opts)
-      @cron_jobs = (
-        opts[:cron_job_queue_class] || Rufus::Scheduler::CronJobQueue).new(opts)
+      @jobs = queue_class(:at, opts).new(opts)
+      @cron_jobs = queue_class(:cron, opts).new(opts)
 
       @frequency = @options[:frequency] || 0.330
     end
@@ -246,6 +244,19 @@ module Rufus::Scheduler
     end
 
     protected
+
+    # Returns the class meant to store the queued jobs.
+    #
+    # (made it into a method for easy override)
+    #
+    def queue_class (type, opts)
+
+      if type == :cron
+        opts[:cron_job_queue_class] || Rufus::Scheduler::CronJobQueue
+      else
+        opts[:job_queue_class] || Rufus::Scheduler::JobQueue
+      end
+    end
 
     def combine_opts (schedulable, opts)
 
