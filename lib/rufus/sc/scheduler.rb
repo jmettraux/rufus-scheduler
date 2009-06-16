@@ -390,6 +390,27 @@ module Rufus::Scheduler
   #end
 
   #
+  # A rufus-scheduler that steps only when the ruby process receives the
+  # 10 / USR1 signal.
+  #
+  class SignalScheduler < SchedulerCore
+
+    def initialize (opts={})
+
+      super(opts)
+
+      trap(@options[:signal] || 10) do
+        step
+      end
+    end
+
+    def stop
+
+      trap(@options[:signal] || 10)
+    end
+  end
+
+  #
   # A rufus-scheduler that uses an EventMachine periodic timer instead of a
   # loop.
   #
