@@ -44,7 +44,7 @@ module Scheduler
       :every => Rufus::Scheduler::EveryJob
     }
 
-    def initialize
+    def initialize (opts)
 
       @mutex = Mutex.new
       @jobs = []
@@ -126,7 +126,7 @@ module Scheduler
   #
   class CronJobQueue
 
-    def initialize
+    def initialize (opts)
 
       @mutex = Mutex.new
       @jobs = {}

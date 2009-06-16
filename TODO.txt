@@ -50,5 +50,5 @@
 [o] document :thread_name scheduler option
 
 [o] unify cron_jobs#trigger_matching_jobs(now) and jobs#job_to_trigger
-[ ] pluggable job queues ?
+[o] pluggable job queues
 

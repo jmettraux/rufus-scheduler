@@ -104,8 +104,10 @@ module Rufus::Scheduler
 
       @options = opts
 
-      @jobs = JobQueue.new
-      @cron_jobs = CronJobQueue.new
+      @jobs = (
+        opts[:job_queue_class] || Rufus::Scheduler::JobQueue).new(opts)
+      @cron_jobs = (
+        opts[:cron_job_queue_class] || Rufus::Scheduler::CronJobQueue).new(opts)
 
       @frequency = @options[:frequency] || 0.330
     end
@@ -388,7 +390,7 @@ module Rufus::Scheduler
         'EventMachine missing, "require \'eventmachine\'" might help'
       ) unless defined?(EM)
 
-      super
+      super(opts)
     end
 
     def start
