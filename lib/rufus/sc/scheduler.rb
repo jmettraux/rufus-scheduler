@@ -263,6 +263,7 @@ module Rufus::Scheduler
     # triggered.
     #
     def step
+
       cron_step
       at_step
     end
@@ -282,9 +283,10 @@ module Rufus::Scheduler
 
     def at_step
 
-      while job = @jobs.job_to_trigger
-        job.trigger
-      end
+      #while job = @jobs.job_to_trigger
+      #  job.trigger
+      #end
+      @jobs.trigger_matching_jobs(Time.now)
     end
 
     def add_job (job)

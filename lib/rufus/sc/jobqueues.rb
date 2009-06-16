@@ -50,16 +50,12 @@ module Scheduler
       @jobs = []
     end
 
-    # Returns the next job to trigger. Returns nil if none eligible.
+    # Triggers all the jobs that are scheduled for 'now'.
     #
-    def job_to_trigger
+    def trigger_matching_jobs (now)
 
-      @mutex.synchronize do
-        if @jobs.size > 0 && Time.now.to_f >= @jobs.first.at
-          @jobs.shift
-        else
-          nil
-        end
+      while job = job_to_trigger(now)
+        job.trigger
       end
     end
 
@@ -107,6 +103,19 @@ module Scheduler
       j = @jobs.find { |j| j.job_id == job_id }
       @jobs.delete(j) if j
       j
+    end
+
+    # Returns the next job to trigger. Returns nil if none eligible.
+    #
+    def job_to_trigger (now)
+
+      @mutex.synchronize do
+        if @jobs.size > 0 && now.to_f >= @jobs.first.at
+          @jobs.shift
+        else
+          nil
+        end
+      end
     end
   end
 
