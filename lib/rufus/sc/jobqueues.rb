@@ -44,7 +44,7 @@ module Scheduler
       :every => Rufus::Scheduler::EveryJob
     }
 
-    def initialize (opts)
+    def initialize
 
       @mutex = Mutex.new
       @jobs = []
@@ -100,8 +100,10 @@ module Scheduler
     protected
 
     def delete (job_id)
+
       j = @jobs.find { |j| j.job_id == job_id }
       @jobs.delete(j) if j
+
       j
     end
 
@@ -126,7 +128,7 @@ module Scheduler
   #
   class CronJobQueue
 
-    def initialize (opts)
+    def initialize
 
       @mutex = Mutex.new
       @jobs = {}
