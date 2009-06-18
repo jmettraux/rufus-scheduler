@@ -3,6 +3,7 @@
 
 == rufus-scheduler - 2.0.2    not yet released
 
+- #trigger_block method for easier override
 - passing :job => job among Schedulable trigger parameters
 
 

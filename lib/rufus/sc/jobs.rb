@@ -127,13 +127,7 @@ module Scheduler
 
         begin
 
-          #args = prepare_args
-          #@block.call(*args)
-
-          #@block.call(self)
-
-          @block.respond_to?(:call) ?
-            @block.call(self) : @block.trigger(@params.merge(:job => self))
+          trigger_block
 
           @job_thread = nil
 
@@ -156,6 +150,15 @@ module Scheduler
             if @job_thread and @job_thread.alive?
         end
       end
+    end
+
+    # Simply encapsulating the block#call/trigger operation, for easy
+    # override.
+    #
+    def trigger_block
+
+      @block.respond_to?(:call) ?
+        @block.call(self) : @block.trigger(@params.merge(:job => self))
     end
 
     # Unschedules this job.

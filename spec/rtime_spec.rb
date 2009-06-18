@@ -26,6 +26,7 @@ describe 'rufus/otime' do
 
     pts('500').should.equal(0.5)
     pts('1000').should.equal(1.0)
+    pts('1s').should.equal(1.0)
     pts('1h').should.equal(3600.0)
     pts('1h10s').should.equal(3610.0)
     pts('1w2d').should.equal(777600.0)
