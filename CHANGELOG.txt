@@ -1,8 +1,11 @@
 
 = rufus-scheduler CHANGELOG.txt
 
+
 == rufus-scheduler - 2.0.2    not yet released
 
+- unified JobQueue and CronJobQueue, and handed @last_second management to the
+  latter
 - #trigger_block method for easier override
 - passing :job => job among Schedulable trigger parameters
 

@@ -52,7 +52,9 @@ module Scheduler
 
     # Triggers all the jobs that are scheduled for 'now'.
     #
-    def trigger_matching_jobs (now)
+    def trigger_matching_jobs
+
+      now = Time.now
 
       while job = job_to_trigger(now)
         job.trigger
@@ -124,42 +126,28 @@ module Scheduler
   #
   # Tracking cron jobs.
   #
-  # (mostly synchronizing access to the map of cron jobs)
-  #
-  class CronJobQueue
+  class CronJobQueue < JobQueue
 
-    def initialize
+    def trigger_matching_jobs
 
-      @mutex = Mutex.new
-      @jobs = {}
-    end
+      now = Time.now
 
-    def unschedule (job_id)
+      return if now.sec == @last_cron_second
+      @last_cron_second = now.sec
+        #
+        # ensuring the crons are checked within 1 second (not 1.2 second)
 
-      @mutex.synchronize { @jobs.delete(job_id) }
-    end
+      jobs = @mutex.synchronize { @jobs.dup }
 
-    def trigger_matching_jobs (now)
-
-      js = @mutex.synchronize { @jobs.values }
-        # maybe this sync is a bit paranoid
-
-      js.each { |job| job.trigger_if_matches(now) }
+      jobs.each { |job| job.trigger_if_matches(now) }
     end
 
     def << (job)
 
-      @mutex.synchronize { @jobs[job.job_id] = job }
-    end
-
-    def size
-
-      @jobs.size
-    end
-
-    def to_h
-
-      @jobs.dup
+      @mutex.synchronize do
+        delete(job.job_id)
+        @jobs << job
+      end
     end
   end
 

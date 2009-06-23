@@ -277,29 +277,8 @@ module Rufus::Scheduler
     #
     def step
 
-      cron_step
-      at_step
-    end
-
-    # calls every second
-    #
-    def cron_step
-
-      now = Time.now
-      return if now.sec == @last_cron_second
-      @last_cron_second = now.sec
-        #
-        # ensuring the crons are checked within 1 second (not 1.2 second)
-
-      @cron_jobs.trigger_matching_jobs(now)
-    end
-
-    def at_step
-
-      #while job = @jobs.job_to_trigger
-      #  job.trigger
-      #end
-      @jobs.trigger_matching_jobs(Time.now)
+      @cron_jobs.trigger_matching_jobs
+      @jobs.trigger_matching_jobs
     end
 
     def add_job (job)
