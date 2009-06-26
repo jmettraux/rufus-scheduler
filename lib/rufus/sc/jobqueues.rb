@@ -105,8 +105,6 @@ module Scheduler
 
       j = @jobs.find { |j| j.job_id == job_id }
       @jobs.delete(j) if j
-
-      j
     end
 
     # Returns the next job to trigger. Returns nil if none eligible.
