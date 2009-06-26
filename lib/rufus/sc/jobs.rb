@@ -33,7 +33,7 @@ module Scheduler
 
     # A reference to the scheduler owning this job
     #
-    attr_reader :scheduler
+    attr_accessor :scheduler
 
     # The initial, raw, scheduling info (at / in / every / cron)
     #

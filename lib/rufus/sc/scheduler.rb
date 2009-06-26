@@ -252,11 +252,15 @@ module Rufus::Scheduler
     #
     def get_queue (type, opts)
 
-      if type == :cron
+      q = if type == :cron
         opts[:cron_job_queue] || Rufus::Scheduler::CronJobQueue.new
       else
         opts[:job_queue] || Rufus::Scheduler::JobQueue.new
       end
+
+      q.scheduler = self if q.respond_to?(:scheduler=)
+
+      q
     end
 
     def combine_opts (schedulable, opts)
