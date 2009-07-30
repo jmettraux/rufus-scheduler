@@ -50,10 +50,6 @@ The usage is similar to the one of the old rufus-scheduler. There are a few diff
     puts 'check blood pressure'
   end
 
-  # ...
-
-  scheduler.stop
-
 
 This code summons a plain version of the scheduler, this can be made more explicit via :
 
