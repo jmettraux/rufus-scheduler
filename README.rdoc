@@ -42,7 +42,7 @@ The usage is similar to the one of the old rufus-scheduler. There are a few diff
   end
 
   scheduler.cron '0 22 * * 1-5' do
-    # every day of the week at 00:22
+    # every day of the week at 22:00 (10pm)
     puts 'activate security system'
   end
 
