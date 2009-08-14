@@ -8,8 +8,6 @@ require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/testtask'
 
-#require 'rake/rdoctask'
-require 'hanna/rdoctask'
 
 gemspec = File.read('rufus-scheduler.gemspec')
 eval "gemspec = #{gemspec}"
@@ -77,31 +75,35 @@ end
 #
 # DOCUMENTATION
 
-Rake::RDocTask.new do |rd|
-
-  rd.main = 'README.rdoc'
-  rd.rdoc_dir = 'html/rufus-scheduler'
-  rd.rdoc_files.include(
-    'README.rdoc',
-    'CHANGELOG.txt',
-    'LICENSE.txt',
-    'CREDITS.txt',
-    'lib/**/*.rb')
-  #rd.rdoc_files.exclude('lib/tokyotyrant.rb')
-  rd.title = 'rufus-scheduler rdoc'
-  rd.options << '-N' # line numbers
-  rd.options << '-S' # inline source
-end
-
-task :rrdoc => :rdoc do
-  FileUtils.cp('doc/rdoc-style.css', 'html/rufus-scheduler/')
+#Rake::RDocTask.new do |rd|
+#  rd.main = 'README.rdoc'
+#  rd.rdoc_dir = 'html/rufus-scheduler'
+#  rd.rdoc_files.include(
+#    'README.rdoc',
+#    'CHANGELOG.txt',
+#    'LICENSE.txt',
+#    'CREDITS.txt',
+#    'lib/**/*.rb')
+#  #rd.rdoc_files.exclude('lib/tokyotyrant.rb')
+#  rd.title = 'rufus-scheduler rdoc'
+#  rd.options << '-N' # line numbers
+#  rd.options << '-S' # inline source
+#end
+#task :rrdoc => :rdoc do
+#  FileUtils.cp('doc/rdoc-style.css', 'html/rufus-scheduler/')
+#end
+task :rdoc do
+  sh %{
+    rm -fR html
+    yardoc 'lib/**/*.rb' -o html/rufus-scheduler --title 'rufus-scheduler' --files CHANGELOG.txt,LICENSE.txt,CREDITS.txt
+  }
 end
 
 
 #
 # WEBSITE
 
-task :upload_website => [ :clean, :rrdoc ] do
+task :upload_website => [ :clean, :rdoc ] do
 
   account = 'jmettraux@rubyforge.org'
   webdir = '/var/www/gforge-projects/rufus'
