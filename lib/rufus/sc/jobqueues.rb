@@ -126,6 +126,12 @@ module Scheduler
   #
   class CronJobQueue < JobQueue
 
+    def initialize
+
+      super
+      @last_cron_second = nil
+    end
+
     def trigger_matching_jobs
 
       now = Time.now

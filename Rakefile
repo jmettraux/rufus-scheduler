@@ -75,23 +75,6 @@ end
 #
 # DOCUMENTATION
 
-#Rake::RDocTask.new do |rd|
-#  rd.main = 'README.rdoc'
-#  rd.rdoc_dir = 'html/rufus-scheduler'
-#  rd.rdoc_files.include(
-#    'README.rdoc',
-#    'CHANGELOG.txt',
-#    'LICENSE.txt',
-#    'CREDITS.txt',
-#    'lib/**/*.rb')
-#  #rd.rdoc_files.exclude('lib/tokyotyrant.rb')
-#  rd.title = 'rufus-scheduler rdoc'
-#  rd.options << '-N' # line numbers
-#  rd.options << '-S' # inline source
-#end
-#task :rrdoc => :rdoc do
-#  FileUtils.cp('doc/rdoc-style.css', 'html/rufus-scheduler/')
-#end
 task :rdoc do
   sh %{
     rm -fR html
