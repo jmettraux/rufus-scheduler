@@ -179,6 +179,16 @@ Sometimes passing a block isn't that convenient :
 
 rufus-scheduler accepts anything that responds to a call method with a unique parameter (it will pass the job) as a 'schedulable'.
 
+For compatibility with older (1.x) versions, schedulables with a trigger methods are accepted :
+
+  class JobThing
+    def trigger (params)
+      job = params[:job]
+    end
+  end
+
+The 'params' correspond to the scheduler job params, and the key :job points to the rufus-scheduler job for the schedulable that is passed to a 'call schedulable'.
+
 
 == looking up jobs
 

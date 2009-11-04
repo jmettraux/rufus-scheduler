@@ -265,7 +265,7 @@ module Rufus::Scheduler
 
     def combine_opts (schedulable, opts)
 
-      if schedulable.respond_to?(:trigger)
+      if schedulable.respond_to?(:trigger) || schedulable.respond_to?(:call)
 
         opts[:schedulable] = schedulable
 

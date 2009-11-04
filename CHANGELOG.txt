@@ -2,7 +2,13 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 2.0.2    not yet released
+== rufus-scheduler - 2.0.3    not yet released
+
+- made sure Schedulables with a call(job) method were OK when passed as second
+  parameter (thanks Nate Wiger)
+
+
+== rufus-scheduler - 2.0.2    released 2009/10/31
 
 - unified JobQueue and CronJobQueue, and handed @last_second management to the
   latter

@@ -10,6 +10,7 @@
 
 == Feedback
 
+- Nate Wiger (Schedulable call/trigger issue)
 - Aldric (readme errors)
 - Kenneth Kalmer (daemon-kit)
 - Chris Evans, :timeout tests on JRuby

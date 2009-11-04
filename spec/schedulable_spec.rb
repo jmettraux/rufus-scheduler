@@ -36,7 +36,7 @@ describe Rufus::Scheduler::Schedulable do
 
     @s.in '1s', :schedulable => j
 
-    sleep 1.5
+    sleep 1.4
 
     j.value.class.should.equal(Hash)
     j.value[:job].class.should.equal(Rufus::Scheduler::InJob)
@@ -48,10 +48,32 @@ describe Rufus::Scheduler::Schedulable do
 
     @s.in '1s', :schedulable => j
 
-    sleep 1.5
+    sleep 1.4
 
     j.value.class.should.equal(Rufus::Scheduler::InJob)
   end
 
+  it 'should accept trigger schedulables as second param' do
+
+    j = JobAlpha.new
+
+    @s.in '1s', j
+
+    sleep 1.4
+
+    j.value.class.should.equal(Hash)
+    j.value[:job].class.should.equal(Rufus::Scheduler::InJob)
+  end
+
+  it 'should accept call schedulables as second param' do
+
+    j = JobBravo.new
+
+    @s.in '1s', j
+
+    sleep 1.4
+
+    j.value.class.should.equal(Rufus::Scheduler::InJob)
+  end
 end
 
