@@ -47,9 +47,11 @@ describe "#{SCHEDULER_CLASS}#schedule_at" do
 
     var = nil
 
-    @s.at Time.now - 2 do
+    j = @s.at Time.now - 2 do
       var = true
     end
+
+    j.should.not.be.nil
 
     #wait_next_tick
     sleep 0.500

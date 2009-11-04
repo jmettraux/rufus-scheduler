@@ -49,7 +49,7 @@ module Rufus::Scheduler
   #
   def self.is_cron_string (s)
 
-    s.match('.+ .+ .+ .+ .+') # well...
+    s.match(/.+ .+ .+ .+ .+/) # well...
   end
 end
 

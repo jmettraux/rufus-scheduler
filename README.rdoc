@@ -21,7 +21,7 @@ http://github.com/hpoydar/chronic_duration
 
 == installation
 
-  sudo gem install rufus-scheduler
+  sudo gem install rufus-scheduler --source http://gemcutter.org
 
 
 == usage
