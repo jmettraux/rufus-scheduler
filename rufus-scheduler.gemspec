@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.summary = 'job scheduler for Ruby (at, cron, in and every jobs)'
 
-  s.descrption = %{
+  s.description = %{
     job scheduler for Ruby (at, cron, in and every jobs).
 
     By default uses a Ruby thread, if EventMachine is present, it will rely on it.
