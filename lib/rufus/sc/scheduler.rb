@@ -33,7 +33,7 @@ module Rufus::Scheduler
 
   # This gem's version
   #
-  VERSION = '2.0.2'
+  VERSION = '2.0.3'
 
   #
   # It's OK to pass an object responding to :trigger when scheduling a job
