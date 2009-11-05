@@ -5,9 +5,15 @@ Gem::Specification.new do |s|
   s.version = '2.0.3'
   s.authors = [ 'John Mettraux' ]
   s.email = 'jmettraux@gmail.com'
-  s.homepage = 'http://rufus.rubyforge.org/'
+  s.homepage = 'http://github.com/jmettraux/rufus-scheduler'
   s.platform = Gem::Platform::RUBY
   s.summary = 'job scheduler for Ruby (at, cron, in and every jobs)'
+
+  s.descrption = %{
+    job scheduler for Ruby (at, cron, in and every jobs).
+
+    By default uses a Ruby thread, if EventMachine is present, it will rely on it.
+  }
 
   s.require_path = 'lib'
   s.test_file = 'spec/spec.rb'
