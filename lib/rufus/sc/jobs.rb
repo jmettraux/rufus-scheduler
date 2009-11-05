@@ -41,7 +41,6 @@ module Scheduler
 
     # When the job is actually running, this attribute will hold the
     # thread in which the job is running.
-    # Can be used to determine if a job is actually running.
     #
     attr_reader :job_thread
 

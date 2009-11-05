@@ -69,6 +69,29 @@ Note that is there is EventMachine present and running,
 will return an instance of Rufus::Scheduler::EmScheduler (leveraging EventMachine).
 
 
+== scheduler.join
+
+Note that if you have a tiny script like this one :
+
+  require 'rubygems'; require 'rufus-scheduler'
+
+  scheduler = Rufus::Scheduler.start_new
+
+  scheduler.at 'Thu Mar 26 07:31:43 +0900 2009' do
+    puts 'order pizza'
+  end
+
+And you run it, it will exit immediately.
+
+If you place
+
+  scheduler.join
+
+at then end of it will make the current (main) thread join the scheduler and prevent the Ruby runtime from exiting.
+
+You shouldn't be exposed to this issue when using EventMachine, since while running EM, your runtime won't exit.
+
+
 == block parameters
 
 Scheduled blocks accept 0 or 1 parameter (this unique parameter is the job
