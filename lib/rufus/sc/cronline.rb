@@ -97,6 +97,7 @@ module Rufus
     # Returns the next time that this cron line is supposed to 'fire'
     #
     # This is raw, 3 secs to iterate over 1 year on my macbook :( brutal.
+    # (Well, I was wrong, takes 0.001 sec on 1.8.7 and 1.9.1)
     #
     # This method accepts an optional Time parameter. It's the starting point
     # for the 'search'. By default, it's Time.now
