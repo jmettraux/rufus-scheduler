@@ -1,92 +1,76 @@
 
 require 'rubygems'
-
-require 'fileutils'
 require 'rake'
+
+
+load 'lib/rufus/sc/scheduler.rb'
+
+
+#
+# CLEAN
+
 require 'rake/clean'
-require 'rake/packagetask'
-require 'rake/gempackagetask'
-require 'rake/testtask'
-
-
-gemspec = File.read('rufus-scheduler.gemspec')
-eval "gemspec = #{gemspec}"
-
-#
-# tasks
-
 CLEAN.include('pkg', 'tmp', 'html')
-
-task :default => [ :clean, :repackage ]
+task :default => [ :clean ]
 
 
 #
-# SPECING
+# GEM
 
-task :spec do
-  load File.dirname(__FILE__) + '/spec/spec.rb'
+require 'jeweler'
+
+Jeweler::Tasks.new do |gem|
+
+  gem.version = Rufus::Scheduler::VERSION
+  gem.name = 'rufus-scheduler'
+  gem.summary = 'job scheduler for Ruby (at, cron, in and every jobs)'
+
+  gem.description = %{
+    job scheduler for Ruby (at, cron, in and every jobs).
+
+    By default uses a Ruby thread, if EventMachine is present, it will rely on it.
+  }
+  gem.email = 'jmettraux@gmail.com'
+  gem.homepage = 'http://github.com/jmettraux/rufus-scheduler/'
+  gem.authors = [ 'John Mettraux' ]
+  gem.rubyforge_project = 'rufus'
+
+  gem.test_file = 'spec/spec.rb'
+
+  #gem.add_dependency 'yajl-ruby'
+  gem.add_development_dependency 'yard', '>= 0'
+
+  # gemspec spec : http://www.rubygems.org/read/chapter/20
 end
+Jeweler::GemcutterTasks.new
 
 
 #
-# TESTING
+# DOC
 
-task :test => :spec
+begin
 
+  require 'yard'
 
-#
-# VERSION
+  YARD::Rake::YardocTask.new do |doc|
+    doc.options = [
+      '-o', 'html/rufus-scheduler', '--title',
+      "rufus-scheduler #{Rufus::Scheduler::VERSION}"
+    ]
+  end
 
-task :change_version do
+rescue LoadError
 
-  version = ARGV.pop
-  `sedip "s/VERSION = '.*'/VERSION = '#{version}'/" lib/rufus/sc/scheduler.rb`
-  `sedip "s/s.version = '.*'/s.version = '#{version}'/" rufus-scheduler.gemspec`
-  exit 0 # prevent rake from triggering other tasks
-end
-
-
-#
-# PACKAGING
-
-Rake::GemPackageTask.new(gemspec) do |pkg|
-  #pkg.need_tar = true
-end
-
-Rake::PackageTask.new('rufus-scheduler', gemspec.version) do |pkg|
-
-  pkg.need_zip = true
-  pkg.package_files = FileList[
-    'Rakefile',
-    '*.txt',
-    'lib/**/*',
-    'spec/**/*',
-    'test/**/*'
-  ].to_a
-  #pkg.package_files.delete("MISC.txt")
-  class << pkg
-    def package_name
-      "#{@name}-#{@version}-src"
-    end
+  task :yard do
+    abort "YARD is not available : sudo gem install yard"
   end
 end
 
 
 #
-# DOCUMENTATION
+# TO THE WEB
 
-task :rdoc do
-  sh %{
-    rm -fR html
-    yardoc 'lib/**/*.rb' -o html/rufus-scheduler --title 'rufus-scheduler' --files CHANGELOG.txt,LICENSE.txt,CREDITS.txt
-  }
-end
-
-
-#
-# WEBSITE
-
-task :upload_website => [ :clean, :rdoc ] do
+task :upload_website => [ :clean, :yard ] do
 
   account = 'jmettraux@rubyforge.org'
   webdir = '/var/www/gforge-projects/rufus'
