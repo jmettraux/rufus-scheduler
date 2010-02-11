@@ -80,5 +80,24 @@ describe "#{SCHEDULER_CLASS} timeouts" do
     @s.jobs.size.should.equal(0)
     timedout.should.be.false
   end
+
+  it 'should not timeout other jobs (in case of every)' do
+
+    timeouts = []
+
+    @s.every '1s', :timeout => '1s500' do
+      start = Time.now
+      begin
+        sleep 2.0
+      rescue Rufus::Scheduler::TimeOutError => e
+        timeouts << (Time.now - start)
+      end
+    end
+
+    sleep 5
+
+    timeouts.size.should.equal(3)
+    timeouts.each { |to| (to * 10).to_i.should.equal(16) }
+  end
 end
 

@@ -39,10 +39,10 @@ module Scheduler
     #
     attr_reader :t
 
-    # When the job is actually running, this attribute will hold the
-    # thread in which the job is running.
+    # Returns the thread instance of the last triggered job.
+    # May be null (especially before the first trigger).
     #
-    attr_reader :job_thread
+    attr_reader :last_job_thread
 
     # The job parameters (passed via the schedule method)
     #
@@ -116,19 +116,21 @@ module Scheduler
     def trigger (t=Time.now)
 
       @last = t
+      job_thread = nil
 
       @scheduler.send(:trigger_job, @params[:blocking]) do
         #
         # Note that #trigger_job is protected, hence the #send
         # (Only jobs know about this method of the scheduler)
 
-        @job_thread = Thread.current
+        job_thread = Thread.current
+        @last_job_thread = job_thread
 
         begin
 
           trigger_block
 
-          @job_thread = nil
+          job_thread = nil
 
         rescue Exception => e
 
@@ -145,8 +147,8 @@ module Scheduler
 
           # at this point, @job_thread might be set
 
-          @job_thread.raise(Rufus::Scheduler::TimeOutError) \
-            if @job_thread and @job_thread.alive?
+          job_thread.raise(Rufus::Scheduler::TimeOutError) \
+            if job_thread && job_thread.alive?
         end
       end
     end

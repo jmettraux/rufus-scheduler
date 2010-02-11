@@ -2,7 +2,12 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 2.0.3    not yet released
+== rufus-scheduler - 2.0.4    not yet released
+
+- addressing issue with every and timeout, thanks Tony Day
+
+
+== rufus-scheduler - 2.0.3    released 2009/11/04
 
 - made sure Schedulables with a call(job) method were OK when passed as second
   parameter (thanks Nate Wiger)
