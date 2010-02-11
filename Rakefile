@@ -39,6 +39,8 @@ Jeweler::Tasks.new do |gem|
 
   #gem.add_dependency 'yajl-ruby'
   gem.add_development_dependency 'yard', '>= 0'
+  gem.add_development_dependency 'bacon', '>= 0'
+  gem.add_development_dependency 'jeweler', '>= 0'
 
   # gemspec spec : http://www.rubygems.org/read/chapter/20
 end
