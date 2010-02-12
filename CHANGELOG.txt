@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 2.0.4    not yet released
+== rufus-scheduler - 2.0.4    released 2010/02/12
 
 - addressing issue with every and timeout, thanks Tony Day
 
