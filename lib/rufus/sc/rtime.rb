@@ -80,6 +80,8 @@ module Rufus
     (Time.new.to_f * 1000).to_i
   end
 
+  FLOAT_DURATION = /^\d*\.\d*$/
+
   # Turns a string like '1m10s' into a float like '70.0', more formally,
   # turns a time duration expressed as a string into a Float instance
   # (millisecond count).
@@ -95,6 +97,7 @@ module Rufus
   #
   # Some examples :
   #
+  #   Rufus.parse_time_string "0.5"    # => 0.5
   #   Rufus.parse_time_string "500"    # => 0.5
   #   Rufus.parse_time_string "1000"     # => 1.0
   #   Rufus.parse_time_string "1h"     # => 3600.0
@@ -102,6 +105,8 @@ module Rufus
   #   Rufus.parse_time_string "1w2d"     # => 777600.0
   #
   def Rufus.parse_time_string (string)
+
+    return string.to_f if FLOAT_DURATION.match(string)
 
     string = string.strip
 

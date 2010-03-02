@@ -24,8 +24,13 @@ describe 'rufus/otime' do
 
   it 'should parse duration strings' do
 
+    pts('5.0').should.equal(5.0)
+    pts('0.5').should.equal(0.5)
+    pts('.5').should.equal(0.5)
+    pts('5.').should.equal(5.0)
     pts('500').should.equal(0.5)
     pts('1000').should.equal(1.0)
+    pts('1').should.equal(0.001)
     pts('1s').should.equal(1.0)
     pts('1h').should.equal(3600.0)
     pts('1h10s').should.equal(3610.0)

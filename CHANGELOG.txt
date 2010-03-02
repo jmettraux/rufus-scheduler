@@ -2,6 +2,11 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 2.0.5    released 2010/03/02
+
+- fixed parse_time_string(s) issue, thanks Gonzalo Suarez
+
+
 == rufus-scheduler - 2.0.4    released 2010/02/12
 
 - addressing issue with every and timeout, thanks Tony Day
