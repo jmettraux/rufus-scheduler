@@ -60,7 +60,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{rufus}
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{job scheduler for Ruby (at, cron, in and every jobs)}
   s.test_files = [
     "spec/spec.rb"
