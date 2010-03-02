@@ -23,6 +23,7 @@
 #++
 
 
+require 'rufus/sc/version'
 require 'rufus/sc/rtime'
 require 'rufus/sc/cronline'
 require 'rufus/sc/jobs'
@@ -30,10 +31,6 @@ require 'rufus/sc/jobqueues'
 
 
 module Rufus::Scheduler
-
-  # This gem's version
-  #
-  VERSION = '2.0.4'
 
   #
   # It's OK to pass an object responding to :trigger when scheduling a job

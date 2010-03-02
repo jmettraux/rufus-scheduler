@@ -3,7 +3,7 @@ require 'rubygems'
 require 'rake'
 
 
-load 'lib/rufus/sc/scheduler.rb'
+load 'lib/rufus/sc/version.rb'
 
 
 #
