@@ -117,6 +117,7 @@ module Scheduler
 
       @last = t
       job_thread = nil
+      to_job = nil
 
       @scheduler.send(:trigger_job, @params[:blocking]) do
         #
@@ -131,6 +132,7 @@ module Scheduler
           trigger_block
 
           job_thread = nil
+          to_job.unschedule if to_job
 
         rescue Exception => e
 
@@ -143,12 +145,13 @@ module Scheduler
 
       if to = @params[:timeout]
 
-        @scheduler.in(to, :tags => 'timeout') do
+        to_job = @scheduler.in(to, :parent => self, :tags => 'timeout') do
 
           # at this point, @job_thread might be set
 
-          job_thread.raise(Rufus::Scheduler::TimeOutError) \
-            if job_thread && job_thread.alive?
+          if job_thread && job_thread.alive?
+            job_thread.raise(Rufus::Scheduler::TimeOutError)
+          end
         end
       end
     end
@@ -168,26 +171,6 @@ module Scheduler
 
       @scheduler.unschedule(self.job_id)
     end
-
-    #--
-    #protected
-    #
-    # Prepare the args given the triggered block arity.
-    #
-    #def prepare_args
-    #  if @scheduler.options[:onezero_block_arity]
-    #    case @block.arity
-    #      when 0 then []
-    #      when 1 then [ @params ]
-    #      when 2 then [ @job_id, @params ]
-    #      #else [ @job_id, schedule_info, @params ]
-    #      else [ @job_id, self, @params ]
-    #    end
-    #  else
-    #    [ self ]
-    #  end
-    #end
-    #++
   end
 
   #
@@ -218,6 +201,16 @@ module Scheduler
   # Job that occurs once, in a certain amount of time.
   #
   class InJob < SimpleJob
+
+    # If this InJob is a timeout job, parent points to the job that
+    # is subject to the timeout.
+    #
+    attr_reader :parent
+
+    def initialize (scheduler, t, params)
+      @parent = params[:parent]
+      super
+    end
 
     protected
 
@@ -258,9 +251,6 @@ module Scheduler
       schedule_next
 
       super
-
-      #unschedule if @params[:dont_reschedule]
-        # obsolete
     end
 
     protected

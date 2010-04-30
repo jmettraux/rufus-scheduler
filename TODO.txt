@@ -52,3 +52,6 @@
 [o] unify cron_jobs#trigger_matching_jobs(now) and jobs#job_to_trigger
 [o] pluggable job queues
 
+[ ] Joel's complaint about timeout jobs gone ballistic
+[x] move trigger_job out of the scheduler
+

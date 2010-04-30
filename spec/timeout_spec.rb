@@ -99,5 +99,27 @@ describe "#{SCHEDULER_CLASS} timeouts" do
     timeouts.size.should.equal(3)
     timeouts.each { |to| (to * 10).to_i.should.equal(16) }
   end
+
+  it 'should point to their "parent" job' do
+
+    @s.in '1s', :timeout => '3s', :job_id => 'nada' do
+      sleep 4
+    end
+
+    sleep 2
+
+    @s.jobs.values.first.parent.job_id.should.equal('nada')
+  end
+
+  it 'should not survive their job' do
+
+    @s.in '1s', :timeout => '3s' do
+      sleep 0.100
+    end
+
+    sleep 2
+
+    @s.jobs.size.should.equal(0)
+  end
 end
 
