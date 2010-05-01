@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 2.0.6    not yet released
+== rufus-scheduler - 2.0.6    released 2010/05/01
 
 - timeout jobs not outliving their parent job anymore, thanks Joel Wood
 
