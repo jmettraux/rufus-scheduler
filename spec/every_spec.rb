@@ -189,5 +189,33 @@ describe Rufus::Scheduler::EveryJob do
 
     job.next_time.to_i.should.equal(t.to_i)
   end
+
+
+  it 'should not allow a job to overlap execution if set !allow_overlapping' do
+    stack = []
+
+    @s.every '1s', :allow_overlapping => false do |job|
+      stack << 'ok'
+      sleep 2
+    end
+
+    sleep 5
+
+    stack.size.should.equal(2)
+  end
+
+  it 'should allow a job to overlap execution (backward compatability?)' do
+    stack = []
+
+    @s.every '1s' do |job|
+      stack << 'ok'
+      sleep 2
+    end
+
+    sleep 5
+
+    stack.size.should.equal(4)
+  end
+
 end
 

@@ -67,6 +67,7 @@ module Scheduler
     #
     attr_reader :job_id
 
+    attr_accessor :running
 
     # Instantiating the job.
     #
@@ -76,6 +77,12 @@ module Scheduler
       @t = t
       @params = params
       @block = block || params[:schedulable]
+
+      @running = false
+      @allow_overlapping = true
+      if !params[:allow_overlapping].nil?
+        @allow_overlapping = params[:allow_overlapping]
+      end
 
       raise ArgumentError.new(
         'no block or :schedulable passed, nothing to schedule'
@@ -119,6 +126,9 @@ module Scheduler
       job_thread = nil
       to_job = nil
 
+      return if @running && !@allow_overlapping
+
+      @running = true
       @scheduler.send(:trigger_job, @params[:blocking]) do
         #
         # Note that #trigger_job is protected, hence the #send
@@ -133,6 +143,8 @@ module Scheduler
 
           job_thread = nil
           to_job.unschedule if to_job
+
+          @running = false
 
         rescue Exception => e
 
@@ -154,6 +166,7 @@ module Scheduler
           end
         end
       end
+
     end
 
     # Simply encapsulating the block#call/trigger operation, for easy
