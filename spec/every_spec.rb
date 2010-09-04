@@ -5,7 +5,7 @@
 # Sun Mar 22 12:26:07 JST 2009
 #
 
-require File.dirname(__FILE__) + '/spec_base'
+require File.join(File.dirname(__FILE__), 'spec_base')
 
 
 describe "#{SCHEDULER_CLASS}#every" do
@@ -169,6 +169,15 @@ describe "#{SCHEDULER_CLASS}#every" do
     stack.should.equal(%w[ ok ok ])
   end
 
+  it 'should list the "trigger threads"' do
+
+    @s.every '1s' do
+      sleep 10
+    end
+    sleep 5
+
+    @s.trigger_threads.size.should.equal(4)
+  end
 end
 
 describe Rufus::Scheduler::EveryJob do
@@ -216,6 +225,5 @@ describe Rufus::Scheduler::EveryJob do
 
     stack.size.should.equal(4)
   end
-
 end
 

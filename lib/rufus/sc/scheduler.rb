@@ -241,6 +241,14 @@ module Rufus::Scheduler
       all_jobs.values.select { |j| j.tags.include?(tag) }
     end
 
+    # Returns the current list of trigger threads (threads) dedicated to
+    # the execution of jobs.
+    #
+    def trigger_threads
+
+      Thread.list.select { |t| t['rufus_scheduler__trigger_thread'] == true }
+    end
+
     protected
 
     # Returns a job queue instance.
