@@ -246,7 +246,9 @@ module Rufus::Scheduler
     #
     def trigger_threads
 
-      Thread.list.select { |t| t['rufus_scheduler__trigger_thread'] == true }
+      Thread.list.select { |t|
+        t["rufus_scheduler__trigger_thread__#{self.object_id}"] == true
+      }
     end
 
     protected
