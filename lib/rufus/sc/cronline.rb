@@ -96,7 +96,7 @@ module Rufus
     #
     def to_array
 
-      [ @seconds, @minutes, @hours, @days, @months, @weekdays, @zone ]
+      [ @seconds, @minutes, @hours, @days, @months, @weekdays, (@zone.name if @zone) ]
     end
 
     #
@@ -126,6 +126,11 @@ module Rufus
     #
     def next_time (time=Time.now)
 
+if @zone
+  utc = time.utc?
+  time = time.getutc unless utc
+  time = @zone.utc_to_local time
+end
       time -= time.usec * 1e-6
       time += 1
 
@@ -153,6 +158,11 @@ module Rufus
 
         break
       end
+
+if @zone
+  time = @zone.local_to_utc time
+  time = time.getlocal unless utc
+end
 
       time
     end
@@ -241,7 +251,7 @@ module Rufus
     end
 
     def parse_zone zone
-      zone if ActiveSupport::TimeZone[zone]
+      TZInfo::Timezone.get(zone) rescue nil
     end
 
     def sub_match?(value, values)

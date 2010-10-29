@@ -6,7 +6,7 @@
 #
 
 require File.dirname(__FILE__) + '/spec_base'
-
+require 'tzinfo'
 
 def cl (cronline_string)
   Rufus::CronLine.new(cronline_string)
@@ -51,42 +51,62 @@ describe 'Rufus::CronLine#next_time' do
 
   it 'should compute next occurence correctly' do
 
-    now = Time.at(0).utc # Thu Jan 01 00:00:00 UTC 1970
+    now = Time.utc(1970,1,1) # Time.at(0).utc # Thu Jan 01 00:00:00 UTC 1970
 
-    cl('* * * * *').next_time(now).should.equal(now + 60)
-    cl('* * * * sun').next_time(now).should.equal(now + 259200)
-    cl('* * * * * *').next_time(now).should.equal(now + 1)
-    cl('* * 13 * fri').next_time(now).should.equal(now + 3715200)
+    cl('* * * * *').next_time(now).should.equal( Time.utc(1970,1,1,0,1) )
+    cl('* * * * sun').next_time(now).should.equal( Time.utc(1970,1,4) )
+    cl('* * * * * *').next_time(now).should.equal( Time.utc(1970,1,1,0,0,1) )
+    cl('* * 13 * fri').next_time(now).should.equal( Time.utc(1970,2,13) )
 
-    cl('10 12 13 12 *').next_time(now).should.equal(now + 29938200)
+    cl('10 12 13 12 *').next_time(now).should.equal( Time.utc(1970,12,13,12,10) )
       # this one is slow (1 year == 3 seconds)
+    cl('* * 1 6 *').next_time(now).should.equal( Time.utc(1970,6,1) )
 
-    cl('0 0 * * thu').next_time(now).should.equal(now + 604800)
+    cl('0 0 * * thu').next_time(now).should.equal( Time.utc(1970,1,8) )
 
-    now = Time.local(2008, 12, 31, 23, 59, 59, 0)
+    now = Time.local(1970,1,1)
 
-    cl('* * * * *').next_time(now).should.equal(now + 1)
+    cl('* * * * *').next_time(now).should.equal( Time.local(1970,1,1,0,1) )
+    cl('* * * * sun').next_time(now).should.equal( Time.local(1970,1,4) )
+    cl('* * * * * *').next_time(now).should.equal( Time.local(1970,1,1,0,0,1) )
+    cl('* * 13 * fri').next_time(now).should.equal( Time.local(1970,2,13) )
+
+    cl('10 12 13 12 *').next_time(now).should.equal( Time.local(1970,12,13,12,10) )
+      # this one is slow (1 year == 3 seconds)
+    cl('* * 1 6 *').next_time(now).should.equal( Time.local(1970,6,1) )
+
+    cl('0 0 * * thu').next_time(now).should.equal( Time.local(1970,1,8) )
   end
-=begin
+
   it 'should compute next occurence correctly with timezones' do
-    zone = 'Stockholm'
-    offset = Time.at(0).utc.utc_offset - Time.at(0).in_time_zone(zone).utc_offset
-    now = Time.at(0).utc # Thu Jan 01 00:00:00 UTC 1970
+    zone = 'Europe/Stockholm'
+    tz = TZInfo::Timezone.get(zone)
+    now = tz.local_to_utc(Time.utc(1970,1,1)).utc # Midnight in zone, UTC
 
-    cl('* * * * * : Stockholm').next_time(now).should.equal(now + 60 + offset)
-    cl('* * * * sun : Stockholm').next_time(now).should.equal(now + 259200 + offset)
-    cl('* * * * * * : Stockholm').next_time(now).should.equal(now + 1 + offset)
-    cl('* * 13 * fri : Stockholm').next_time(now).should.equal(now + 3715200 + offset)
+    cl("* * * * * : #{zone}").next_time(now).should.equal( Time.utc(1969,12,31,23,1) )
+    cl("* * * * sun : #{zone}").next_time(now).should.equal( Time.utc(1970,1,3,23) )
+    cl("* * * * * * : #{zone}").next_time(now).should.equal( Time.utc(1969,12,31,23,0,1) )
+    cl("* * 13 * fri : #{zone}").next_time(now).should.equal( Time.utc(1970,2,12,23) )
 
-    cl('10 12 13 12 * : Stockholm').next_time(now).should.equal(now + 29938200 + offset)
+    cl("10 12 13 12 * : #{zone}").next_time(now).should.equal( Time.utc(1970,12,13,11,10) )
       # this one is slow (1 year == 3 seconds)
+    cl("* * 1 6 * : #{zone}").next_time(now).should.equal( Time.utc(1970,5,31,23) )
 
-    cl('0 0 * * thu : Stockholm').next_time(now).should.equal(now + 604800 + offset)
+    cl("0 0 * * thu : #{zone}").next_time(now).should.equal( Time.utc(1970,1,7,23) )
 
-    now = Time.local(2008, 12, 31, 23, 59, 59, 0)
+    now = tz.local_to_utc(Time.utc(1970,1,1)).localtime # Midnight in zone, local time
+puts "---"
+    cl("* * * * * : #{zone}").next_time(now).should.equal( Time.local(1969,12,31,18,1) )
+    cl("* * * * sun : #{zone}").next_time(now).should.equal( Time.local(1970,1,3,18) )
+    cl("* * * * * * : #{zone}").next_time(now).should.equal( Time.local(1969,12,31,18,0,1) )
+    cl("* * 13 * fri : #{zone}").next_time(now).should.equal( Time.local(1970,2,12,18) )
 
-    cl('* * * * * : Stockholm').next_time(now).should.equal(now + 1)
+    cl("10 12 13 12 * : #{zone}").next_time(now).should.equal( Time.local(1970,12,13,6,10) )
+      # this one is slow (1 year == 3 seconds)
+    cl("* * 1 6 * : #{zone}").next_time(now).should.equal( Time.local(1970,5,31,18) )
+
+    cl("0 0 * * thu : #{zone}").next_time(now).should.equal( Time.local(1970,1,7,18) )
   end
-=end
+
 end
 
