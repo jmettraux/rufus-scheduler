@@ -22,6 +22,8 @@
 # Made in Japan.
 #++
 
+require 'tzinfo'
+require 'active_support/time'
 
 module Rufus
 
@@ -42,7 +44,8 @@ module Rufus
       :hours,
       :days,
       :months,
-      :weekdays
+      :weekdays,
+      :zone
 
     def initialize (line)
 
@@ -50,9 +53,10 @@ module Rufus
 
       @original = line
 
-      items = line.split
+      times, zone = line.split(' : ')
+      items = times.split
 
-      unless items.length == 5 or items.length == 6
+      unless items.length == 5 or items.length == 6 
         raise(
           "cron '#{line}' string should hold 5 or 6 items, not #{items.length}")
       end
@@ -65,6 +69,8 @@ module Rufus
       @days = parse_item(items[2 + offset], 1, 31)
       @months = parse_item(items[3 + offset], 1, 12)
       @weekdays = parse_weekdays(items[4 + offset])
+
+      @zone = parse_zone(zone.to_s)
     end
 
     #
@@ -90,7 +96,7 @@ module Rufus
     #
     def to_array
 
-      [ @seconds, @minutes, @hours, @days, @months, @weekdays ]
+      [ @seconds, @minutes, @hours, @days, @months, @weekdays, @zone ]
     end
 
     #
@@ -232,6 +238,10 @@ module Rufus
       end
 
       result
+    end
+
+    def parse_zone zone
+      zone if ActiveSupport::TimeZone[zone]
     end
 
     def sub_match?(value, values)
