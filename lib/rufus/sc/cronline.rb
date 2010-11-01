@@ -23,7 +23,6 @@
 #++
 
 require 'tzinfo'
-require 'active_support/time'
 
 module Rufus
 
@@ -76,9 +75,17 @@ module Rufus
     #
     # Returns true if the given time matches this cron line.
     #
-    def matches? (time)
+    def matches? (t)
+
+      time = t.dup # Don't want to change original time
 
       time = Time.at(time) unless time.kind_of?(Time)
+
+      if @zone
+        utc = time.utc?
+        time = time.getutc unless utc
+        time = @zone.utc_to_local time
+      end
 
       return false unless sub_match?(time.sec, @seconds)
       return false unless sub_match?(time.min, @minutes)
@@ -126,11 +133,12 @@ module Rufus
     #
     def next_time (time=Time.now)
 
-if @zone
-  utc = time.utc?
-  time = time.getutc unless utc
-  time = @zone.utc_to_local time
-end
+      if @zone
+        utc = time.utc?
+        time = time.getutc unless utc
+        time = @zone.utc_to_local time
+      end
+
       time -= time.usec * 1e-6
       time += 1
 
@@ -159,10 +167,10 @@ end
         break
       end
 
-if @zone
-  time = @zone.local_to_utc time
-  time = time.getlocal unless utc
-end
+      if @zone
+        time = @zone.local_to_utc time
+        time = time.getlocal unless utc
+      end
 
       time
     end

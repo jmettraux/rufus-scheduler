@@ -95,7 +95,7 @@ describe 'Rufus::CronLine#next_time' do
     cl("0 0 * * thu : #{zone}").next_time(now).should.equal( Time.utc(1970,1,7,23) )
 
     now = tz.local_to_utc(Time.utc(1970,1,1)).localtime # Midnight in zone, local time
-puts "---"
+
     cl("* * * * * : #{zone}").next_time(now).should.equal( Time.local(1969,12,31,18,1) )
     cl("* * * * sun : #{zone}").next_time(now).should.equal( Time.local(1970,1,3,18) )
     cl("* * * * * * : #{zone}").next_time(now).should.equal( Time.local(1969,12,31,18,0,1) )
@@ -103,10 +103,60 @@ puts "---"
 
     cl("10 12 13 12 * : #{zone}").next_time(now).should.equal( Time.local(1970,12,13,6,10) )
       # this one is slow (1 year == 3 seconds)
-    cl("* * 1 6 * : #{zone}").next_time(now).should.equal( Time.local(1970,5,31,18) )
+    cl("* * 1 6 * : #{zone}").next_time(now).should.equal( Time.local(1970,5,31,19) )
 
     cl("0 0 * * thu : #{zone}").next_time(now).should.equal( Time.local(1970,1,7,18) )
   end
 
 end
 
+describe "Rufus::Cronline#matches?" do
+
+  it 'should match occurrences' do
+
+    cl('* * * * *').matches?( Time.utc(1970,1,1,0,1) ).should.equal true
+    cl('* * * * sun').matches?( Time.utc(1970,1,4) ).should.equal true
+    cl('* * * * * *').matches?( Time.utc(1970,1,1,0,0,1) ).should.equal true
+    cl('* * 13 * fri').matches?( Time.utc(1970,2,13) ).should.equal true
+
+    cl('10 12 13 12 *').matches?( Time.utc(1970,12,13,12,10) ).should.equal true
+    cl('* * 1 6 *').matches?( Time.utc(1970,6,1) ).should.equal true
+
+    cl('0 0 * * thu').matches?( Time.utc(1970,1,8) ).should.equal true
+
+    cl('* * * * *').matches?( Time.local(1970,1,1,0,1) ).should.equal true
+    cl('* * * * sun').matches?( Time.local(1970,1,4) ).should.equal true
+    cl('* * * * * *').matches?( Time.local(1970,1,1,0,0,1) ).should.equal true
+    cl('* * 13 * fri').matches?( Time.local(1970,2,13) ).should.equal true
+
+    cl('10 12 13 12 *').matches?( Time.local(1970,12,13,12,10) ).should.equal true
+    cl('* * 1 6 *').matches?( Time.local(1970,6,1) ).should.equal true
+
+    cl('0 0 * * thu').matches?( Time.local(1970,1,8) ).should.equal true
+  end
+
+  it 'should match occurrences with timezones' do
+    zone = 'Europe/Stockholm'
+
+    cl("* * * * * : #{zone}").matches?( Time.utc(1969,12,31,23,1) ).should.equal true
+    cl("* * * * sun : #{zone}").matches?( Time.utc(1970,1,3,23) ).should.equal true
+    cl("* * * * * * : #{zone}").matches?( Time.utc(1969,12,31,23,0,1) ).should.equal true
+    cl("* * 13 * fri : #{zone}").matches?( Time.utc(1970,2,12,23) ).should.equal true
+
+    cl("10 12 13 12 * : #{zone}").matches?( Time.utc(1970,12,13,11,10) ).should.equal true
+    cl("* * 1 6 * : #{zone}").matches?( Time.utc(1970,5,31,23) ).should.equal true
+
+    cl("0 0 * * thu : #{zone}").matches?( Time.utc(1970,1,7,23) ).should.equal true
+
+    cl("* * * * * : #{zone}").matches?( Time.local(1969,12,31,18,1) ).should.equal true
+    cl("* * * * sun : #{zone}").matches?( Time.local(1970,1,3,18) ).should.equal true
+    cl("* * * * * * : #{zone}").matches?( Time.local(1969,12,31,18,0,1) ).should.equal true
+    cl("* * 13 * fri : #{zone}").matches?( Time.local(1970,2,12,18) ).should.equal true
+
+    cl("10 12 13 12 * : #{zone}").matches?( Time.local(1970,12,13,6,10) ).should.equal true
+    cl("* * 1 6 * : #{zone}").matches?( Time.local(1970,5,31,19) ).should.equal true
+
+    cl("0 0 * * thu : #{zone}").matches?( Time.local(1970,1,7,18) ).should.equal true
+  end
+
+end
