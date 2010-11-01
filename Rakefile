@@ -43,7 +43,6 @@ Jeweler::Tasks.new do |gem|
   gem.add_development_dependency 'bacon'
   gem.add_development_dependency 'jeweler'
   gem.add_development_dependency 'tzinfo'
-  gem.add_development_dependency 'activesupport'
 
   # gemspec spec : http://www.rubygems.org/read/chapter/20
 end
