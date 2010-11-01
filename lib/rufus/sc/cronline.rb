@@ -76,9 +76,7 @@ module Rufus
     # Returns true if the given time matches this cron line.
     #
     def matches? (t)
-
-      time = t.dup # Don't want to change original time
-
+      time = t.dup
       time = Time.at(time) unless time.kind_of?(Time)
 
       if @zone
@@ -87,13 +85,14 @@ module Rufus
         time = @zone.utc_to_local time
       end
 
-      return false unless sub_match?(time.sec, @seconds)
-      return false unless sub_match?(time.min, @minutes)
-      return false unless sub_match?(time.hour, @hours)
-      return false unless sub_match?(time.day, @days)
-      return false unless sub_match?(time.month, @months)
-      return false unless sub_match?(time.wday, @weekdays)
-      true
+      match = [
+        sub_match?(time.sec, @seconds),
+        sub_match?(time.min, @minutes),
+        sub_match?(time.hour, @hours),
+        sub_match?(time.day, @days),
+        sub_match?(time.month, @months),
+        sub_match?(time.wday, @weekdays)
+      ].all?
     end
 
     #
