@@ -54,6 +54,12 @@ module Rufus
 
       times, zone = line.split(' : ')
       items = times.split
+      
+      @zone = parse_zone(zone.to_s)
+
+      if zone && !@zone
+        raise "zone '#{zone}' is an invalid timezone"
+      end
 
       unless items.length == 5 or items.length == 6 
         raise(
@@ -69,7 +75,6 @@ module Rufus
       @months = parse_item(items[3 + offset], 1, 12)
       @weekdays = parse_weekdays(items[4 + offset])
 
-      @zone = parse_zone(zone.to_s)
     end
 
     #

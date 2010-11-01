@@ -41,9 +41,10 @@ describe Rufus::CronLine do
     should '1-5 * * * * *', [ [1,2,3,4,5], nil, nil, nil, nil, nil, nil ]
 
     should '* * * * * : EST', [ [0], nil, nil, nil, nil, nil, 'EST' ]
-    should '* * * * * : NotATimeZone', [ [0], nil, nil, nil, nil, nil, nil ]
     should '* * * * * * : EST', [ nil, nil, nil, nil, nil, nil, 'EST' ]
-    should '* * * * * * : NotATimeZone', [ nil, nil, nil, nil, nil, nil, nil ]
+    
+    lambda{cl('* * * * * : NotATimeZone')}.should.raise
+    lambda{cl('* * * * * * : NotATimeZone')}.should.raise
   end
 end
 
