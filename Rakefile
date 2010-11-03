@@ -11,7 +11,17 @@ load 'lib/rufus/sc/version.rb'
 
 require 'rake/clean'
 CLEAN.include('pkg', 'tmp', 'html')
-task :default => [ :clean ]
+
+
+#
+# TEST / SPEC
+
+task :spec do
+  ruby 'spec/spec.rb'
+end
+task :test => :spec
+
+task :default => :spec
 
 
 #
