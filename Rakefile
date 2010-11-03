@@ -10,7 +10,7 @@ load 'lib/rufus/sc/version.rb'
 # CLEAN
 
 require 'rake/clean'
-CLEAN.include('pkg', 'tmp', 'html')
+CLEAN.include('pkg', 'tmp', 'html', 'rdoc')
 
 
 #
@@ -61,33 +61,47 @@ Jeweler::GemcutterTasks.new
 #
 # DOC
 
-begin
+#begin
+#
+#  require 'yard'
+#
+#  YARD::Rake::YardocTask.new do |doc|
+#    doc.options = [
+#      '-o', 'html/rufus-scheduler', '--title',
+#      "rufus-scheduler #{Rufus::Scheduler::VERSION}"
+#    ]
+#  end
+#
+#rescue LoadError
+#
+#  task :yard do
+#    abort "YARD is not available : sudo gem install yard"
+#  end
+#end
 
-  require 'yard'
+#
+# make sure to have rdoc 2.5.x to run that
+#
+require 'rake/rdoctask'
+Rake::RDocTask.new do |rd|
 
-  YARD::Rake::YardocTask.new do |doc|
-    doc.options = [
-      '-o', 'html/rufus-scheduler', '--title',
-      "rufus-scheduler #{Rufus::Scheduler::VERSION}"
-    ]
-  end
+  rd.main = 'README.rdoc'
+  rd.rdoc_dir = 'rdoc/rufus-scheduler'
+  rd.title = "volute #{Rufus::Scheduler::VERSION}"
 
-rescue LoadError
-
-  task :yard do
-    abort "YARD is not available : sudo gem install yard"
-  end
+  rd.rdoc_files.include(
+    'README.rdoc', 'CHANGELOG.txt', 'LICENSE.txt', 'CREDITS.txt', 'lib/**/*.rb')
 end
 
 
 #
 # TO THE WEB
 
-task :upload_website => [ :clean, :yard ] do
+task :upload_rdoc => [ :clean, :rdoc ] do
 
   account = 'jmettraux@rubyforge.org'
   webdir = '/var/www/gforge-projects/rufus'
 
-  sh "rsync -azv -e ssh html/rufus-scheduler #{account}:#{webdir}/"
+  sh "rsync -azv -e ssh rdoc/rufus-scheduler #{account}:#{webdir}/"
 end
 
