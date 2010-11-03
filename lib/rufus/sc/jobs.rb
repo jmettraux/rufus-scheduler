@@ -335,7 +335,8 @@ module Scheduler
         when String then CronLine.new(@t)
         when CronLine then @t
 
-        else raise "cannot initialize a CronJob out of #{@t.inspect}"
+        else raise ArgumentError.new(
+          "cannot initialize a CronJob out of #{@t.inspect}")
       end
     end
 

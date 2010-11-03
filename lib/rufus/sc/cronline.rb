@@ -51,10 +51,9 @@ module Rufus
 
       items = line.split
 
-      unless items.length == 5 or items.length == 6
-        raise(
-          "cron '#{line}' string should hold 5 or 6 items, not #{items.length}")
-      end
+      raise ArgumentError.new(
+        "cron '#{line}' string should hold 5 or 6 items, not #{items.length}"
+      ) unless items.length == 5 or items.length == 6
 
       offset = items.length - 5
 

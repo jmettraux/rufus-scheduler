@@ -135,7 +135,7 @@ module Rufus
 
       multiplier = DURATIONS[c]
 
-      raise "unknown time char '#{c}'" unless multiplier
+      raise ArgumentError.new("unknown time char '#{c}'") unless multiplier
 
       result = result + (value * multiplier)
     end
