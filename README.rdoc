@@ -10,14 +10,14 @@ rufus-scheduler is no replacement for cron/at since it runs inside of Ruby.
 
 A list of related Ruby projects :
 
-http://github.com/javan/whenever
-http://github.com/yakischloba/em-timers
-http://github.com/adamwiggins/clockwork
+* http://github.com/javan/whenever
+* http://github.com/yakischloba/em-timers
+* http://github.com/adamwiggins/clockwork
 
 More like complements :
 
-http://github.com/mojombo/chronic
-http://github.com/hpoydar/chronic_duration
+* http://github.com/mojombo/chronic
+* http://github.com/hpoydar/chronic_duration
 
 
 == installation

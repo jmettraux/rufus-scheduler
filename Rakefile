@@ -87,7 +87,7 @@ Rake::RDocTask.new do |rd|
 
   rd.main = 'README.rdoc'
   rd.rdoc_dir = 'rdoc/rufus-scheduler'
-  rd.title = "volute #{Rufus::Scheduler::VERSION}"
+  rd.title = "rufus-scheduler #{Rufus::Scheduler::VERSION}"
 
   rd.rdoc_files.include(
     'README.rdoc', 'CHANGELOG.txt', 'LICENSE.txt', 'CREDITS.txt', 'lib/**/*.rb')
