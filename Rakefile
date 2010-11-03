@@ -49,7 +49,6 @@ Jeweler::Tasks.new do |gem|
 
   #gem.add_dependency 'yajl-ruby'
   gem.add_development_dependency 'rake'
-  gem.add_development_dependency 'yard'
   gem.add_development_dependency 'bacon'
   gem.add_development_dependency 'jeweler'
 
@@ -60,24 +59,6 @@ Jeweler::GemcutterTasks.new
 
 #
 # DOC
-
-#begin
-#
-#  require 'yard'
-#
-#  YARD::Rake::YardocTask.new do |doc|
-#    doc.options = [
-#      '-o', 'html/rufus-scheduler', '--title',
-#      "rufus-scheduler #{Rufus::Scheduler::VERSION}"
-#    ]
-#  end
-#
-#rescue LoadError
-#
-#  task :yard do
-#    abort "YARD is not available : sudo gem install yard"
-#  end
-#end
 
 #
 # make sure to have rdoc 2.5.x to run that
