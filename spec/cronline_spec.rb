@@ -8,14 +8,14 @@
 require File.dirname(__FILE__) + '/spec_base'
 
 
-def cl (cronline_string)
+def cl(cronline_string)
   Rufus::CronLine.new(cronline_string)
 end
 
 
 describe Rufus::CronLine do
 
-  def should (line, array)
+  def should(line, array)
 
     cl(line).to_array.should.equal(array)
   end

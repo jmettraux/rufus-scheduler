@@ -41,7 +41,7 @@ describe SCHEDULER_CLASS do
 
     $job = nil
 
-    def @s.handle_exception (j, e)
+    def @s.handle_exception(j, e)
       $job = j
     end
 
@@ -59,7 +59,7 @@ describe SCHEDULER_CLASS do
 
     $e = nil
 
-    def @s.log_exception (e)
+    def @s.log_exception(e)
       $e = e
     end
 

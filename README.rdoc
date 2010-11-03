@@ -187,10 +187,10 @@ In this example, the 'every' job will unschedule itself when the crop is ready.
 Sometimes passing a block isn't that convenient :
 
   class JobThing
-    def initialize (relevant_info)
+    def initialize(relevant_info)
       @ri = relevant_info
     end
-    def call (job)
+    def call(job)
       do_something_about_it
     end
   end
@@ -205,7 +205,7 @@ rufus-scheduler accepts anything that responds to a call method with a unique pa
 For compatibility with older (1.x) versions, schedulables with a trigger methods are accepted :
 
   class JobThing
-    def trigger (params)
+    def trigger(params)
       job = params[:job]
     end
   end
@@ -287,13 +287,13 @@ It's easy to customize that behaviour :
     # or
   #scheduler = Rufus::Scheduler::EmScheduler.start_new
 
-  def scheduler.handle_exception (job, exception)
+  def scheduler.handle_exception(job, exception)
     puts "job #{job.job_id} caught exception '#{exception}'"
   end
 
 For backward compatibility, overriding #log_exception is still OK :
 
-  def scheduler.log_exception (exception)
+  def scheduler.log_exception(exception)
     puts "caught exception '#{exception}'"
   end
 

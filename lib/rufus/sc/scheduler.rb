@@ -40,10 +40,10 @@ module Rufus::Scheduler
   # object quack (respond to :trigger anyway).
   #
   module Schedulable
-    def call (job)
+    def call(job)
       trigger(job.params)
     end
-    def trigger (params)
+    def trigger(params)
       raise NotImplementedError.new('implementation is missing')
     end
   end
@@ -61,7 +61,7 @@ module Rufus::Scheduler
   #
   module LegacyMethods
 
-    def find_jobs (tag=nil)
+    def find_jobs(tag=nil)
       tag ? find_by_tag(tag) : all_jobs.values
     end
     def at_job_count
@@ -97,7 +97,7 @@ module Rufus::Scheduler
 
     # Instantiates a Rufus::Scheduler.
     #
-    def initialize (opts={})
+    def initialize(opts={})
 
       @options = opts
 
@@ -109,7 +109,7 @@ module Rufus::Scheduler
 
     # Instantiates and starts a new Rufus::Scheduler.
     #
-    def self.start_new (opts={})
+    def self.start_new(opts={})
 
       s = self.new(opts)
       s.start
@@ -128,7 +128,7 @@ module Rufus::Scheduler
     #
     # will order an espresso (well sort of) in 20 minutes.
     #
-    def in (t, s=nil, opts={}, &block)
+    def in(t, s=nil, opts={}, &block)
 
       add_job(InJob.new(self, t, combine_opts(s, opts), &block))
     end
@@ -142,7 +142,7 @@ module Rufus::Scheduler
     #
     # pizza is for Thursday at 2000 (if the shop brochure is right).
     #
-    def at (t, s=nil, opts={}, &block)
+    def at(t, s=nil, opts={}, &block)
 
       add_job(AtJob.new(self, t, combine_opts(s, opts), &block))
     end
@@ -156,7 +156,7 @@ module Rufus::Scheduler
     #
     # checking blood pressure every 5 months and 1 week.
     #
-    def every (t, s=nil, opts={}, &block)
+    def every(t, s=nil, opts={}, &block)
 
       add_job(EveryJob.new(self, t, combine_opts(s, opts), &block))
     end
@@ -169,7 +169,7 @@ module Rufus::Scheduler
     #     puts 'activate security system'
     #   end
     #
-    def cron (cronstring, s=nil, opts={}, &block)
+    def cron(cronstring, s=nil, opts={}, &block)
 
       add_cron_job(CronJob.new(self, cronstring, combine_opts(s, opts), &block))
     end
@@ -179,7 +179,7 @@ module Rufus::Scheduler
     #
     # Returns the job that got unscheduled.
     #
-    def unschedule (job_id)
+    def unschedule(job_id)
 
       @jobs.unschedule(job_id) || @cron_jobs.unschedule(job_id)
     end
@@ -191,7 +191,7 @@ module Rufus::Scheduler
     # Feel free to override this method. The default implementation simply
     # outputs the error message to STDOUT
     #
-    def handle_exception (job, exception)
+    def handle_exception(job, exception)
 
       if self.respond_to?(:log_exception)
         #
@@ -236,7 +236,7 @@ module Rufus::Scheduler
 
     # Returns a list of jobs with the given tag
     #
-    def find_by_tag (tag)
+    def find_by_tag(tag)
 
       all_jobs.values.select { |j| j.tags.include?(tag) }
     end
@@ -257,7 +257,7 @@ module Rufus::Scheduler
     #
     # (made it into a method for easy override)
     #
-    def get_queue (type, opts)
+    def get_queue(type, opts)
 
       q = if type == :cron
         opts[:cron_job_queue] || Rufus::Scheduler::CronJobQueue.new
@@ -270,7 +270,7 @@ module Rufus::Scheduler
       q
     end
 
-    def combine_opts (schedulable, opts)
+    def combine_opts(schedulable, opts)
 
       if schedulable.respond_to?(:trigger) || schedulable.respond_to?(:call)
 
@@ -293,7 +293,7 @@ module Rufus::Scheduler
       @jobs.trigger_matching_jobs
     end
 
-    def add_job (job)
+    def add_job(job)
 
       complain_if_blocking_and_timeout(job)
 
@@ -304,7 +304,7 @@ module Rufus::Scheduler
       job
     end
 
-    def add_cron_job (job)
+    def add_cron_job(job)
 
       complain_if_blocking_and_timeout(job)
 
@@ -315,7 +315,7 @@ module Rufus::Scheduler
 
     # Raises an error if the job has the params :blocking and :timeout set
     #
-    def complain_if_blocking_and_timeout (job)
+    def complain_if_blocking_and_timeout(job)
 
       raise(
         ArgumentError.new('cannot set a :timeout on a :blocking job')
@@ -329,7 +329,7 @@ module Rufus::Scheduler
     # TODO : clarify, the blocking here blocks the whole scheduler, while
     # EmScheduler blocking triggers for the next tick. Not the same thing ...
     #
-    def trigger_job (blocking, &block)
+    def trigger_job(blocking, &block)
 
       if blocking
         block.call
@@ -363,7 +363,7 @@ module Rufus::Scheduler
         "#{self.class} - #{Rufus::Scheduler::VERSION}"
     end
 
-    def stop (opts={})
+    def stop(opts={})
 
       @thread.exit
     end
@@ -386,7 +386,7 @@ module Rufus::Scheduler
   #
   class SignalScheduler < SchedulerCore
 
-    def initialize (opts={})
+    def initialize(opts={})
 
       super(opts)
 
@@ -407,7 +407,7 @@ module Rufus::Scheduler
   #
   class EmScheduler < SchedulerCore
 
-    def initialize (opts={})
+    def initialize(opts={})
 
       raise LoadError.new(
         'EventMachine missing, "require \'eventmachine\'" might help'
@@ -441,7 +441,7 @@ module Rufus::Scheduler
     # If the :stop_em option is passed and set to true, it will stop the
     # EventMachine (but only if it started the EM by itself !).
     #
-    def stop (opts={})
+    def stop(opts={})
 
       @timer.cancel
 
@@ -461,7 +461,7 @@ module Rufus::Scheduler
     # If 'blocking' is set to true, the block will get called at the
     # 'next_tick'. Else the block will get called via 'defer' (own thread).
     #
-    def trigger_job (blocking, &block)
+    def trigger_job(blocking, &block)
 
       m = blocking ? :next_tick : :defer
         #

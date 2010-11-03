@@ -10,15 +10,15 @@ require File.dirname(__FILE__) + '/spec_base'
 
 describe 'rufus/otime' do
 
-  def pts (s)
+  def pts(s)
     Rufus.parse_time_string(s)
   end
 
-  def tts (f, opts={})
+  def tts(f, opts={})
     Rufus.to_time_string(f, opts)
   end
 
-  def tdh (f, opts={})
+  def tdh(f, opts={})
     Rufus.to_duration_hash(f, opts)
   end
 
@@ -63,7 +63,7 @@ end
 
 describe 'rufus/otime#at_to_f' do
 
-  def atf (o)
+  def atf(o)
     Rufus.at_to_f(o)
   end
 

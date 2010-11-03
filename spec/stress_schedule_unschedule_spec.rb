@@ -17,7 +17,6 @@ describe SCHEDULER_CLASS do
 
 # helper methods
 
-#
 # Wait for a variable to become a certain value.
 # This method returns a block which loops waiting for the passed in
 # block paramter to have value 'target'.
@@ -47,7 +46,7 @@ def benchmark
   end
 end
 
-def schedule_unschedule_same_ids_spec (mode)
+def schedule_unschedule_same_ids_spec(mode)
   scheduler = SCHEDULER_CLASS.start_new
   benchmark { schedule_unschedule(scheduler, mode, NUM_RESCHEDULES) }
   JOB_COUNT.should.satisfy &eventually { scheduler.all_jobs.size }
@@ -57,7 +56,7 @@ def schedule_unschedule_same_ids_spec (mode)
   scheduler.stop
 end
 
-def schedule_unschedule_unique_ids_spec (mode)
+def schedule_unschedule_unique_ids_spec(mode)
   scheduler = SCHEDULER_CLASS.start_new
   job_ids = []
   benchmark { job_ids = schedule_unschedule(scheduler, mode, NUM_RESCHEDULES, true) }
@@ -91,17 +90,23 @@ def schedule_jobs(scheduler, mode, generate_ids = false)
   JOB_IDS.each do |job_id|
     case mode
     when :cron
-      job_ids << scheduler.cron("%d * * * * *" % @cron_trigger,
-                                { :job_id => (generate_ids ? nil : job_id) },
-                                &@trigger_proc).job_id
+      job_ids << scheduler.cron(
+        "%d * * * * *" % @cron_trigger,
+        { :job_id => (generate_ids ? nil : job_id) },
+        &@trigger_proc
+      ).job_id
     when :at
-      job_ids << scheduler.at(@at_trigger,
-                              { :job_id => (generate_ids ? nil : job_id) },
-                              &@trigger_proc).job_id
+      job_ids << scheduler.at(
+        @at_trigger,
+        { :job_id => (generate_ids ? nil : job_id) },
+        &@trigger_proc
+      ).job_id
     when :every
-      job_ids << scheduler.every(@every_trigger,
-                                 { :job_id => (generate_ids ? nil : job_id) },
-                                 &@trigger_proc).job_id
+      job_ids << scheduler.every(
+        @every_trigger,
+        { :job_id => (generate_ids ? nil : job_id) },
+        &@trigger_proc
+      ).job_id
     else
       raise ArgumentError
     end

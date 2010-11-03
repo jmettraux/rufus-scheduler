@@ -36,15 +36,14 @@ module Rufus
     #
     attr_reader :original
 
-    attr_reader \
-      :seconds,
-      :minutes,
-      :hours,
-      :days,
-      :months,
-      :weekdays
+    attr_reader :seconds
+    attr_reader :minutes
+    attr_reader :hours
+    attr_reader :days
+    attr_reader :months
+    attr_reader :weekdays
 
-    def initialize (line)
+    def initialize(line)
 
       super()
 
@@ -70,7 +69,7 @@ module Rufus
     #
     # Returns true if the given time matches this cron line.
     #
-    def matches? (time)
+    def matches?(time)
 
       time = Time.at(time) unless time.kind_of?(Time)
 
@@ -107,18 +106,21 @@ module Rufus
     # be passed if no start time is specified (search start time set to
     # Time.now))
     #
-    #   >> Rufus::CronLine.new('30 7 * * *').next_time( Time.mktime(2008,10,24,7,29) )
-    #   => Fri Oct 24 07:30:00 -0500 2008
+    #   Rufus::CronLine.new('30 7 * * *').next_time(
+    #     Time.mktime(2008, 10, 24, 7, 29))
+    #   #=> Fri Oct 24 07:30:00 -0500 2008
     #
-    #   >> Rufus::CronLine.new('30 7 * * *').next_time( Time.utc(2008,10,24,7,29) )
-    #   => Fri Oct 24 07:30:00 UTC 2008
+    #   Rufus::CronLine.new('30 7 * * *').next_time(
+    #     Time.utc(2008, 10, 24, 7, 29))
+    #   #=> Fri Oct 24 07:30:00 UTC 2008
     #
-    #   >> Rufus::CronLine.new('30 7 * * *').next_time( Time.utc(2008,10,24,7,29)  ).localtime
-    #   => Fri Oct 24 02:30:00 -0500 2008
+    #   Rufus::CronLine.new('30 7 * * *').next_time(
+    #     Time.utc(2008, 10, 24, 7, 29)).localtime
+    #   #=> Fri Oct 24 02:30:00 -0500 2008
     #
     # (Thanks to K Liu for the note and the examples)
     #
-    def next_time (time=Time.now)
+    def next_time(time=Time.now)
 
       time -= time.usec * 1e-6
       time += 1
@@ -154,10 +156,9 @@ module Rufus
     private
 
     WDS = %w[ sun mon tue wed thu fri sat ]
-      #
       # used by parse_weekday()
 
-    def parse_weekdays (item)
+    def parse_weekdays(item)
 
       item = item.downcase
 
@@ -170,7 +171,7 @@ module Rufus
         r
     end
 
-    def parse_item (item, min, max)
+    def parse_item(item, min, max)
 
       return nil if item == '*'
       return parse_list(item, min, max) if item.index(',')
@@ -184,14 +185,14 @@ module Rufus
       [ i ]
     end
 
-    def parse_list (item, min, max)
+    def parse_list(item, min, max)
 
       item.split(',').inject([]) { |r, i|
         r.push(parse_range(i, min, max))
       }.flatten
     end
 
-    def parse_range (item, min, max)
+    def parse_range(item, min, max)
 
       i = item.index('-')
       j = item.index('/')
@@ -235,10 +236,12 @@ module Rufus
     end
 
     def sub_match?(value, values)
+
       values.nil? || values.include?(value)
     end
 
     def date_match?(date)
+
       return false unless sub_match?(date.day, @days)
       return false unless sub_match?(date.month, @months)
       return false unless sub_match?(date.wday, @weekdays)

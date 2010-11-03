@@ -59,11 +59,11 @@ SCHEDULER_CLASS = $plain ?
 #
 # helper methods
 
-def start_scheduler (opts={})
+def start_scheduler(opts={})
   SCHEDULER_CLASS.start_new(opts)
 end
 
-def stop_scheduler (s)
+def stop_scheduler(s)
   #s.stop(:stop_em => true)
   #sleep 0.200 # give time to the EM to stop
   s.stop

@@ -63,7 +63,7 @@ module Scheduler
 
     # Adds this job to the map.
     #
-    def << (job)
+    def <<(job)
 
       @mutex.synchronize do
         delete(job.job_id)
@@ -74,7 +74,7 @@ module Scheduler
 
     # Removes a job (given its id). Returns nil if the job was not found.
     #
-    def unschedule (job_id)
+    def unschedule(job_id)
 
       @mutex.synchronize { delete(job_id) }
     end
@@ -88,7 +88,7 @@ module Scheduler
 
     # Returns a list of jobs of the given type (:at|:in|:every)
     #
-    def select (type)
+    def select(type)
 
       type = JOB_TYPES[type]
       @jobs.select { |j| j.is_a?(type) }
@@ -101,7 +101,7 @@ module Scheduler
 
     protected
 
-    def delete (job_id)
+    def delete(job_id)
 
       j = @jobs.find { |j| j.job_id == job_id }
       @jobs.delete(j) if j
@@ -109,7 +109,7 @@ module Scheduler
 
     # Returns the next job to trigger. Returns nil if none eligible.
     #
-    def job_to_trigger (now)
+    def job_to_trigger(now)
 
       @mutex.synchronize do
         if @jobs.size > 0 && now.to_f >= @jobs.first.at
@@ -146,7 +146,7 @@ module Scheduler
       jobs.each { |job| job.trigger_if_matches(now) }
     end
 
-    def << (job)
+    def <<(job)
 
       @mutex.synchronize do
         delete(job.job_id)
@@ -154,7 +154,6 @@ module Scheduler
       end
     end
   end
-
 end
 end
 

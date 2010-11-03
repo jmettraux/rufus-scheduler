@@ -36,7 +36,7 @@ module Rufus::Scheduler
   # If EventMachine is present and running will create an EmScheduler, else
   # it will create a PlainScheduler instance.
   #
-  def self.start_new (opts={})
+  def self.start_new(opts={})
 
     if defined?(EM) and EM.reactor_running?
       EmScheduler.start_new(opts)
@@ -47,7 +47,7 @@ module Rufus::Scheduler
 
   # Returns true if the given string seems to be a cron string.
   #
-  def self.is_cron_string (s)
+  def self.is_cron_string(s)
 
     s.match(/.+ .+ .+ .+ .+/) # well...
   end

@@ -71,7 +71,7 @@ module Scheduler
 
     # Instantiating the job.
     #
-    def initialize (scheduler, t, params, &block)
+    def initialize(scheduler, t, params, &block)
 
       @scheduler = scheduler
       @t = t
@@ -105,7 +105,7 @@ module Scheduler
     # Sets the list of tags attached to the job (Usually they are set
     # via the schedule every/at/in/cron method).
     #
-    def tags= (tags)
+    def tags=(tags)
 
       @params[:tags] = Array(tags)
     end
@@ -120,7 +120,7 @@ module Scheduler
 
     # Triggers the job.
     #
-    def trigger (t=Time.now)
+    def trigger(t=Time.now)
 
       @last = t
       job_thread = nil
@@ -223,7 +223,7 @@ module Scheduler
     #
     attr_reader :parent
 
-    def initialize (scheduler, t, params)
+    def initialize(scheduler, t, params)
       @parent = params[:parent]
       super
     end
@@ -254,7 +254,7 @@ module Scheduler
     #
     attr_reader :frequency
 
-    def initialize (scheduler, t, params, &block)
+    def initialize(scheduler, t, params, &block)
       super
       determine_frequency
       determine_at
@@ -326,7 +326,7 @@ module Scheduler
 
     # Creates a new CronJob instance.
     #
-    def initialize (scheduler, cron_string, params, &block)
+    def initialize(scheduler, cron_string, params, &block)
 
       super
 
@@ -339,14 +339,14 @@ module Scheduler
       end
     end
 
-    def trigger_if_matches (time)
+    def trigger_if_matches(time)
 
       trigger(time) if @cron_line.matches?(time)
     end
 
     # Returns the next time this job is meant to trigger
     #
-    def next_time (from=Time.now)
+    def next_time(from=Time.now)
 
       @cron_line.next_time(from)
     end
@@ -354,10 +354,10 @@ module Scheduler
     protected
 
     def determine_at
+
       # empty
     end
   end
-
 end
 end
 

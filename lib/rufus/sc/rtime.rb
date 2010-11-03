@@ -24,7 +24,6 @@
 
 
 require 'date'
-#require 'parsedate'
 
 
 module Rufus
@@ -38,7 +37,7 @@ module Rufus
 
   # As the name implies.
   #
-  def Rufus.to_iso8601_date (date)
+  def Rufus.to_iso8601_date(date)
 
     date = case date
       when Date then date
@@ -55,7 +54,7 @@ module Rufus
 
   # the old method we used to generate our ISO datetime strings
   #
-  def Rufus.time_to_iso8601_date (time)
+  def Rufus.time_to_iso8601_date(time)
 
     s = time.getutc().strftime(TIME_FORMAT)
     o = time.utc_offset / 3600
@@ -68,7 +67,7 @@ module Rufus
 
   # Returns a Ruby time
   #
-  def Rufus.to_ruby_time (sdate)
+  def Rufus.to_ruby_time(sdate)
 
     DateTime.parse(sdate)
   end
@@ -99,12 +98,12 @@ module Rufus
   #
   #   Rufus.parse_time_string "0.5"    # => 0.5
   #   Rufus.parse_time_string "500"    # => 0.5
-  #   Rufus.parse_time_string "1000"     # => 1.0
+  #   Rufus.parse_time_string "1000"   # => 1.0
   #   Rufus.parse_time_string "1h"     # => 3600.0
-  #   Rufus.parse_time_string "1h10s"    # => 3610.0
-  #   Rufus.parse_time_string "1w2d"     # => 777600.0
+  #   Rufus.parse_time_string "1h10s"  # => 3610.0
+  #   Rufus.parse_time_string "1w2d"   # => 777600.0
   #
-  def Rufus.parse_time_string (string)
+  def Rufus.parse_time_string(string)
 
     return string.to_f if FLOAT_DURATION.match(string)
 
@@ -159,7 +158,7 @@ module Rufus
 
   # Converts a Time instance to a DateTime one
   #
-  def Rufus.to_datetime (time)
+  def Rufus.to_datetime(time)
 
     s = time.sec + Rational(time.usec, 10**6)
     o = Rational(time.utc_offset, 3600 * 24)
@@ -188,17 +187,17 @@ module Rufus
     end
   end
 
-  def Rufus.to_gm_time (dtime)
+  def Rufus.to_gm_time(dtime)
 
     to_ttime(dtime.new_offset, :gm)
   end
 
-  def Rufus.to_local_time (dtime)
+  def Rufus.to_local_time(dtime)
 
     to_ttime(dtime.new_offset(DateTime.now.offset-offset), :local)
   end
 
-  def Rufus.to_ttime (d, method)
+  def Rufus.to_ttime(d, method)
 
     usec = (d.sec_fraction * 3600 * 24 * (10**6)).to_i
     Time.send(method, d.year, d.month, d.day, d.hour, d.min, d.sec, usec)
@@ -238,7 +237,7 @@ module Rufus
   # * :drop_seconds, if set to true, seconds and milliseconds will be trimmed
   #   from the result
   #
-  def Rufus.to_duration_string (seconds, options={})
+  def Rufus.to_duration_string(seconds, options={})
 
     return (options[:drop_seconds] ? '0m' : '0s') if seconds <= 0
 
@@ -280,7 +279,7 @@ module Rufus
   # * :drop_seconds, if set to true, seconds and milliseconds will be trimmed
   #   from the result
   #
-  def Rufus.to_duration_hash (seconds, options={})
+  def Rufus.to_duration_hash(seconds, options={})
 
     h = {}
 
@@ -313,7 +312,7 @@ module Rufus
   #
   # will yield 10.0
   #
-  def Rufus.duration_to_f (s)
+  def Rufus.duration_to_f(s)
 
     return s if s.kind_of?(Float)
     return parse_time_string(s) if s.kind_of?(String)
@@ -324,7 +323,7 @@ module Rufus
   # Ensures an 'at' value is translated to a float
   # (to be compared with the float coming from time.to_f)
   #
-  def Rufus.at_to_f (at)
+  def Rufus.at_to_f(at)
 
     # TODO : use chronic if present
 
@@ -360,6 +359,5 @@ module Rufus
   end
 
   DU_KEYS = DURATIONS2M.collect { |k, v| k.to_sym }
-
 end
 

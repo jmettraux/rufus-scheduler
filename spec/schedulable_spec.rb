@@ -19,13 +19,13 @@ describe Rufus::Scheduler::Schedulable do
 
   class JobAlpha
     attr_reader :value
-    def trigger (params)
+    def trigger(params)
       @value = params
     end
   end
   class JobBravo
     attr_reader :value
-    def call (job)
+    def call(job)
       @value = job
     end
   end
