@@ -17,7 +17,7 @@ describe Rufus::CronLine do
 
   def should(line, array)
 
-    cl(line).to_array.should.equal(array)
+    cl(line).to_array.should == array
   end
 
   it 'should interpret cron strings correctly' do
@@ -48,20 +48,19 @@ describe 'Rufus::CronLine#next_time' do
 
     now = Time.at(0).utc # Thu Jan 01 00:00:00 UTC 1970
 
-    cl('* * * * *').next_time(now).should.equal(now + 60)
-    cl('* * * * sun').next_time(now).should.equal(now + 259200)
-    cl('* * * * * *').next_time(now).should.equal(now + 1)
-    cl('* * 13 * fri').next_time(now).should.equal(now + 3715200)
+    cl('* * * * *').next_time(now).should == now + 60
+    cl('* * * * sun').next_time(now).should == now + 259200
+    cl('* * * * * *').next_time(now).should == now + 1
+    cl('* * 13 * fri').next_time(now).should == now + 3715200
 
-    cl('10 12 13 12 *').next_time(now).should.equal(now + 29938200)
+    cl('10 12 13 12 *').next_time(now).should == now + 29938200
       # this one is slow (1 year == 3 seconds)
 
-    cl('0 0 * * thu').next_time(now).should.equal(now + 604800)
+    cl('0 0 * * thu').next_time(now).should == now + 604800
 
     now = Time.local(2008, 12, 31, 23, 59, 59, 0)
 
-    cl('* * * * *').next_time(now).should.equal(now + 1)
+    cl('* * * * *').next_time(now).should == now + 1
   end
-
 end
 

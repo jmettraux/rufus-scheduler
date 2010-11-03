@@ -5,15 +5,15 @@
 # Sat Mar 21 17:36:36 JST 2009
 #
 
-require File.dirname(__FILE__) + '/spec_base'
+require File.join(File.dirname(__FILE__), 'spec_base')
 
 
 describe SCHEDULER_CLASS do
 
-  before do
+  before(:each) do
     @s = start_scheduler
   end
-  after do
+  after(:each) do
     stop_scheduler(@s)
   end
 
@@ -29,7 +29,7 @@ describe SCHEDULER_CLASS do
     end
   end
 
-  it 'should not block when :blocking => nil' do
+  it "doesn't block when :blocking => nil" do
 
     $var = []
     @s.in('1s') { JOB.call(1) }
@@ -37,10 +37,10 @@ describe SCHEDULER_CLASS do
 
     sleep 5.0
 
-    [ %w{ a1 a2 b1 b2 }, %w{ a1 a2 b2 b1 } ].should.include($var)
+    [ %w{ a1 a2 b1 b2 }, %w{ a1 a2 b2 b1 } ].should include($var)
   end
 
-  it 'should block when :blocking => true' do
+  it 'blocks when :blocking => true' do
 
     $var = []
     @s.in('1s', :blocking => true) { JOB.call(8) }
@@ -48,7 +48,7 @@ describe SCHEDULER_CLASS do
 
     sleep 4.5
 
-    $var.should.equal(%w{ a8 b8 a9 b9 })
+    $var.should == %w[ a8 b8 a9 b9 ]
   end
 end
 

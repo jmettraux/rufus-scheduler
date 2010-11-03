@@ -5,12 +5,12 @@
 # Sat Mar 21 17:43:23 JST 2009
 #
 
-require File.dirname(__FILE__) + '/spec_base'
+require File.join(File.dirname(__FILE__), 'spec_base')
 
 
 describe SCHEDULER_CLASS do
 
-  it 'should stop' do
+  it 'stops' do
 
     var = nil
 
@@ -19,33 +19,33 @@ describe SCHEDULER_CLASS do
 
     stop_scheduler(s)
 
-    var.should.be.nil
+    var.should == nil
     sleep 4
-    var.should.be.nil
+    var.should == nil
   end
 
   unless SCHEDULER_CLASS == Rufus::Scheduler::EmScheduler
 
-    it 'should set a default scheduler thread name' do
+    it 'sets a default scheduler thread name' do
 
       s = start_scheduler
 
-      s.instance_variable_get(:@thread)['name'].should.match(
+      s.instance_variable_get(:@thread)['name'].should match(
         /Rufus::Scheduler::.*Scheduler - \d+\.\d+\.\d+/)
 
       stop_scheduler(s)
     end
 
-    it 'should set the scheduler thread name' do
+    it 'sets the scheduler thread name' do
 
       s = start_scheduler(:thread_name => 'nada')
-      s.instance_variable_get(:@thread)['name'].should.equal('nada')
+      s.instance_variable_get(:@thread)['name'].should == 'nada'
 
       stop_scheduler(s)
     end
   end
 
-  it 'should accept a custom frequency' do
+  it 'accepts a custom frequency' do
 
     var = nil
 
@@ -54,26 +54,25 @@ describe SCHEDULER_CLASS do
     s.in('1s') { var = true }
 
     sleep 1
-    var.should.be.nil
+    var.should == nil
 
     sleep 1
-    var.should.be.nil
+    var.should == nil
 
     sleep 2
-    var.should.be.true
+    var.should == true
 
     stop_scheduler(s)
   end
-
 end
 
 describe 'Rufus::Scheduler#start_new' do
 
-  it 'should piggyback EM if present and running' do
+  it 'piggybacks EM if present and running' do
 
     s = Rufus::Scheduler.start_new
 
-    s.class.should.equal(SCHEDULER_CLASS)
+    s.class.should == SCHEDULER_CLASS
 
     stop_scheduler(s)
   end

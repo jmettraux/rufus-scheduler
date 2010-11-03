@@ -10,14 +10,14 @@ load 'lib/rufus/sc/version.rb'
 # CLEAN
 
 require 'rake/clean'
-CLEAN.include('pkg', 'tmp', 'html', 'rdoc')
+CLEAN.include('pkg', 'tmp', 'rdoc')
 
 
 #
 # TEST / SPEC
 
 task :spec do
-  ruby 'spec/spec.rb'
+  sh 'rspec spec/'
 end
 task :test => :spec
 
@@ -49,7 +49,7 @@ Jeweler::Tasks.new do |gem|
 
   #gem.add_dependency 'yajl-ruby'
   gem.add_development_dependency 'rake'
-  gem.add_development_dependency 'bacon'
+  gem.add_development_dependency 'rspec'
   gem.add_development_dependency 'jeweler'
 
   # gemspec spec : http://www.rubygems.org/read/chapter/20

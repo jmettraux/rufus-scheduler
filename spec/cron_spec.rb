@@ -5,25 +5,25 @@
 # Sun Mar 22 19:59:12 JST 2009
 #
 
-require File.dirname(__FILE__) + '/spec_base'
+require File.join(File.dirname(__FILE__), 'spec_base')
 
 
 describe "#{SCHEDULER_CLASS}#cron" do
 
-  before do
+  before(:each) do
     @s = start_scheduler
   end
-  after do
+  after(:each) do
     stop_scheduler(@s)
   end
 
-  it 'should have job ids with the class name in it' do
+  it 'has job ids with the class name in it' do
 
     j0 = @s.cron('7 10-12 * * * *') {}
-    j0.job_id.should.match(/Rufus::Scheduler::CronJob/)
+    j0.job_id.should match(/Rufus::Scheduler::CronJob/)
   end
 
-  it 'should cron every second' do
+  it 'crons every second' do
 
     seconds = []
 
@@ -34,10 +34,10 @@ describe "#{SCHEDULER_CLASS}#cron" do
 
     job.unschedule
 
-    seconds.uniq.size.should.equal(seconds.size)
+    seconds.uniq.size.should == seconds.size
   end
 
-  it 'should unschedule' do
+  it 'unschedules' do
 
     second = nil
 
@@ -45,11 +45,11 @@ describe "#{SCHEDULER_CLASS}#cron" do
       second = job.last.sec
     end
 
-    second.should.be.nil
+    second.should == nil
 
     sleep 2
 
-    second.should.not.be.nil
+    second.should_not == nil
 
     job.unschedule
 
@@ -57,31 +57,31 @@ describe "#{SCHEDULER_CLASS}#cron" do
 
     sleep 2
 
-    second.should.equal(after)
+    second.should == after
   end
 
-  it 'should keep track of cron jobs' do
+  it 'keeps track of cron jobs' do
 
     j0 = @s.cron '7 10-12 * * * *' do
     end
     j1 = @s.cron '7 10-12 * * * *' do
     end
 
-    @s.cron_jobs.keys.sort.should.equal([ j0.job_id, j1.job_id ].sort)
+    @s.cron_jobs.keys.sort.should == [ j0.job_id, j1.job_id ].sort
   end
 
-  it 'should accept tags for jobs' do
+  it 'accepts tags for jobs' do
 
     job = @s.cron '* * * * * *', :tags => 'spec' do
     end
 
     wait_next_tick
 
-    @s.find_by_tag('spec').size.should.equal(1)
-    @s.find_by_tag('spec').first.job_id.should.equal(job.job_id)
+    @s.find_by_tag('spec').size.should == 1
+    @s.find_by_tag('spec').first.job_id.should == job.job_id
   end
 
-  it 'should accept job.unschedule within the job' do
+  it 'accepts job.unschedule within the job' do
 
     stack = []
 
@@ -96,27 +96,27 @@ describe "#{SCHEDULER_CLASS}#cron" do
 
     sleep 4
 
-    @s.jobs.size.should.equal(0)
-    stack.should.equal(%w[ ok ok ok done ])
+    @s.jobs.size.should == 0
+    stack.should == %w[ ok ok ok done ]
   end
 
 end
 
 describe Rufus::Scheduler::CronJob do
 
-  before do
+  before(:each) do
     @s = start_scheduler
   end
-  after do
+  after(:each) do
     stop_scheduler(@s)
   end
 
-  it 'should respond to #next_time' do
+  it 'responds to #next_time' do
 
     job = @s.cron '* * * * *' do
     end
 
-    (job.next_time.to_i - Time.now.to_i).should.satisfy { |v| v < 60 }
+    (job.next_time.to_i - Time.now.to_i).should satisfy { |v| v < 60 }
   end
 end
 

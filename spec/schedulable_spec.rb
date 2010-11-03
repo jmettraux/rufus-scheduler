@@ -5,15 +5,15 @@
 # Tue May  5 14:47:16 JST 2009
 #
 
-require File.dirname(__FILE__) + '/spec_base'
+require File.join(File.dirname(__FILE__), '/spec_base')
 
 
 describe Rufus::Scheduler::Schedulable do
 
-  before do
+  before(:each) do
     @s = start_scheduler
   end
-  after do
+  after(:each) do
     stop_scheduler(@s)
   end
 
@@ -30,7 +30,7 @@ describe Rufus::Scheduler::Schedulable do
     end
   end
 
-  it 'should schedule via :schedulable' do
+  it 'schedules via :schedulable' do
 
     j = JobAlpha.new
 
@@ -38,11 +38,11 @@ describe Rufus::Scheduler::Schedulable do
 
     sleep 1.4
 
-    j.value.class.should.equal(Hash)
-    j.value[:job].class.should.equal(Rufus::Scheduler::InJob)
+    j.value.class.should == Hash
+    j.value[:job].class.should == Rufus::Scheduler::InJob
   end
 
-  it 'should honour schedulables that reply to :call' do
+  it 'honours schedulables that reply to :call' do
 
     j = JobBravo.new
 
@@ -50,10 +50,10 @@ describe Rufus::Scheduler::Schedulable do
 
     sleep 1.4
 
-    j.value.class.should.equal(Rufus::Scheduler::InJob)
+    j.value.class.should == Rufus::Scheduler::InJob
   end
 
-  it 'should accept trigger schedulables as second param' do
+  it 'accepts trigger schedulables as second param' do
 
     j = JobAlpha.new
 
@@ -61,11 +61,11 @@ describe Rufus::Scheduler::Schedulable do
 
     sleep 1.4
 
-    j.value.class.should.equal(Hash)
-    j.value[:job].class.should.equal(Rufus::Scheduler::InJob)
+    j.value.class.should == Hash
+    j.value[:job].class.should == Rufus::Scheduler::InJob
   end
 
-  it 'should accept call schedulables as second param' do
+  it 'accepts call schedulables as second param' do
 
     j = JobBravo.new
 
@@ -73,7 +73,7 @@ describe Rufus::Scheduler::Schedulable do
 
     sleep 1.4
 
-    j.value.class.should.equal(Rufus::Scheduler::InJob)
+    j.value.class.should == Rufus::Scheduler::InJob
   end
 end
 

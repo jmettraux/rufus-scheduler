@@ -5,19 +5,19 @@
 # Mon May  4 17:07:17 JST 2009
 #
 
-require File.dirname(__FILE__) + '/spec_base'
+require File.join(File.dirname(__FILE__), '/spec_base')
 
 
 describe SCHEDULER_CLASS do
 
-  before do
+  before(:each) do
     @s = start_scheduler
   end
-  after do
+  after(:each) do
     stop_scheduler(@s)
   end
 
-  it 'should emit exception messages to stdout' do
+  it 'emits exception messages to stdout' do
 
     require 'stringio' unless defined?(StringIO) # ruby 1.9
 
@@ -34,10 +34,10 @@ describe SCHEDULER_CLASS do
     $stdout = stdout
     s.close
 
-    s.string.should.match(/Houston we have a problem/)
+    s.string.should match(/Houston we have a problem/)
   end
 
-  it 'should accept custom handling of exceptions' do
+  it 'accepts custom handling of exceptions' do
 
     $job = nil
 
@@ -52,10 +52,10 @@ describe SCHEDULER_CLASS do
     sleep 0.500
     sleep 0.500
 
-    $job.class.should.equal(Rufus::Scheduler::InJob)
+    $job.class.should == Rufus::Scheduler::InJob
   end
 
-  it 'should accept overriding #log_exception' do
+  it 'accepts overriding #log_exception' do
 
     $e = nil
 
@@ -70,8 +70,7 @@ describe SCHEDULER_CLASS do
     sleep 0.500
     sleep 0.500
 
-    $e.to_s.should.equal('Houston we have a problem')
+    $e.to_s.should == 'Houston we have a problem'
   end
-
 end
 

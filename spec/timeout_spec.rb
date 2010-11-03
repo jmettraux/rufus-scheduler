@@ -5,42 +5,42 @@
 # Sun May  3 15:44:28 JST 2009
 #
 
-require File.dirname(__FILE__) + '/spec_base'
+require File.join(File.dirname(__FILE__), '/spec_base')
 
 
 describe "#{SCHEDULER_CLASS} timeouts" do
 
-  before do
+  before(:each) do
     @s = start_scheduler
   end
-  after do
+  after(:each) do
     stop_scheduler(@s)
   end
 
-  it 'should should refuse to schedule a job with :timeout and :blocking' do
+  it 'refuses to schedule a job with :timeout and :blocking' do
 
     lambda {
       @s.in '1s', :timeout => '3s', :blocking => true do
       end
-    }.should.raise(ArgumentError)
+    }.should raise_error(ArgumentError)
   end
 
-  it 'should schedule a dedicated job for the timeout' do
+  it 'schedules a dedicated job for the timeout' do
 
     @s.in '1s', :timeout => '3s' do
       sleep 5
     end
 
-    @s.jobs.size.should.equal(1)
+    @s.jobs.size.should == 1
 
     # the timeout job is left
 
     sleep 2
-    @s.jobs.size.should.equal(1)
-    @s.find_by_tag('timeout').size.should.equal(1)
+    @s.jobs.size.should == 1
+    @s.find_by_tag('timeout').size.should == 1
   end
 
-  it 'should time out' do
+  it 'times out' do
 
     var = nil
     timedout = false
@@ -56,12 +56,12 @@ describe "#{SCHEDULER_CLASS} timeouts" do
 
     sleep 4
 
-    var.should.be.nil
-    @s.jobs.size.should.equal(0)
-    timedout.should.be.true
+    var.should == nil
+    @s.jobs.size.should == 0
+    timedout.should == true
   end
 
-  it 'should die silently if job finished before timeout' do
+  it 'dies silently if job finished before timeout' do
 
     var = nil
     timedout = false
@@ -76,12 +76,12 @@ describe "#{SCHEDULER_CLASS} timeouts" do
 
     sleep 3
 
-    var.should.be.true
-    @s.jobs.size.should.equal(0)
-    timedout.should.be.false
+    var.should == true
+    @s.jobs.size.should == 0
+    timedout.should == false
   end
 
-  it 'should not timeout other jobs (in case of every)' do
+  it 'does not timeout other jobs (in case of every)' do
 
     timeouts = []
 
@@ -96,11 +96,11 @@ describe "#{SCHEDULER_CLASS} timeouts" do
 
     sleep 5
 
-    timeouts.size.should.equal(3)
-    timeouts.each { |to| (to * 10).to_i.should.equal(16) }
+    timeouts.size.should == 3
+    timeouts.each { |to| (to * 10).to_i.should == 16 }
   end
 
-  it 'should point to their "parent" job' do
+  it 'points to their "parent" job' do
 
     @s.in '1s', :timeout => '3s', :job_id => 'nada' do
       sleep 4
@@ -108,10 +108,10 @@ describe "#{SCHEDULER_CLASS} timeouts" do
 
     sleep 2
 
-    @s.jobs.values.first.parent.job_id.should.equal('nada')
+    @s.jobs.values.first.parent.job_id.should == 'nada'
   end
 
-  it 'should not survive their job' do
+  it 'does not survive their job' do
 
     @s.in '1s', :timeout => '3s' do
       sleep 0.100
@@ -119,7 +119,7 @@ describe "#{SCHEDULER_CLASS} timeouts" do
 
     sleep 2
 
-    @s.jobs.size.should.equal(0)
+    @s.jobs.size.should == 0
   end
 end
 

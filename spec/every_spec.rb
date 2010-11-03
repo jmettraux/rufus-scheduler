@@ -10,27 +10,27 @@ require File.join(File.dirname(__FILE__), 'spec_base')
 
 describe "#{SCHEDULER_CLASS}#every" do
 
-  before do
+  before(:each) do
     @s = start_scheduler
   end
-  after do
+  after(:each) do
     stop_scheduler(@s)
   end
 
-  it 'should have job ids with the class name in it' do
+  it 'has job ids with the class name in it' do
 
     j0 = @s.every(1) {}
-    j0.job_id.should.match(/Rufus::Scheduler::EveryJob/)
+    j0.job_id.should match(/Rufus::Scheduler::EveryJob/)
   end
 
-  it 'should compute frequency' do
+  it 'computes frequency' do
 
     job = @s.every '2h1m' do
     end
-    job.frequency.should.equal(7260)
+    job.frequency.should == 7260
   end
 
-  it 'should schedule every 1s' do
+  it 'schedules every 1s' do
 
     var = 0
 
@@ -40,10 +40,10 @@ describe "#{SCHEDULER_CLASS}#every" do
 
     sleep 3.7
 
-    var.should.equal(3)
+    var.should == 3
   end
 
-  it 'should be punctilious' do
+  it 'is punctilious' do
 
     hits = []
 
@@ -58,10 +58,10 @@ describe "#{SCHEDULER_CLASS}#every" do
     hits.each { |h| f = h; deltas << (f - hh) if hh; hh = f }
 
     #puts; p deltas
-    deltas.max.should.satisfy { |d| d < 1.200 }
+    deltas.max.should satisfy { |d| d < 1.200 }
   end
 
-  it 'should unschedule' do
+  it 'unschedules' do
 
     var = 0
 
@@ -73,25 +73,25 @@ describe "#{SCHEDULER_CLASS}#every" do
 
     @s.unschedule(job.job_id)
 
-    var.should.equal(2)
+    var.should == 2
 
     sleep 1.7
 
-    var.should.equal(2)
+    var.should == 2
   end
 
-  it 'should accept tags for jobs' do
+  it 'accepts tags for jobs' do
 
     job = @s.every '1s', :tags => 'spec' do
     end
 
     wait_next_tick
 
-    @s.find_by_tag('spec').size.should.equal(1)
-    @s.find_by_tag('spec').first.job_id.should.equal(job.job_id)
+    @s.find_by_tag('spec').size.should == 1
+    @s.find_by_tag('spec').first.job_id.should == job.job_id
   end
 
-  it 'should honour :first_at' do
+  it 'honours :first_at' do
 
     counter = 0
 
@@ -100,13 +100,13 @@ describe "#{SCHEDULER_CLASS}#every" do
     end
 
     sleep 1
-    counter.should.equal(0)
+    counter.should == 0
 
     sleep 2.5
-    counter.should.equal(2)
+    counter.should == 2
   end
 
-  it 'should honour :first_in' do
+  it 'honours :first_in' do
 
     counter = 0
 
@@ -115,13 +115,13 @@ describe "#{SCHEDULER_CLASS}#every" do
     end
 
     sleep 1
-    counter.should.equal(0)
+    counter.should == 0
 
     sleep 2.5
-    counter.should.equal(2)
+    counter.should == 2
   end
 
-  #it 'should honour :dont_reschedule' do
+  #it 'honours :dont_reschedule' do
   #  stack = []
   #  @s.every 0.400 do |job|
   #    if stack.size > 3
@@ -136,7 +136,7 @@ describe "#{SCHEDULER_CLASS}#every" do
   #  stack.should.equal(%w[ ok ok ok ok done ])
   #end
 
-  it 'should accept job.unschedule within the job' do
+  it 'accepts job.unschedule within the job' do
 
     stack = []
 
@@ -151,11 +151,11 @@ describe "#{SCHEDULER_CLASS}#every" do
 
     sleep 4
 
-    @s.jobs.size.should.equal(0)
-    stack.should.equal(%w[ ok ok ok ok done ])
+    @s.jobs.size.should == 0
+    stack.should == %w[ ok ok ok ok done ]
   end
 
-  it 'should respect :blocking => true' do
+  it 'respects :blocking => true' do
 
     stack = []
 
@@ -166,41 +166,42 @@ describe "#{SCHEDULER_CLASS}#every" do
 
     sleep 5
 
-    stack.should.equal(%w[ ok ok ])
+    stack.should == %w[ ok ok ]
   end
 
-  it 'should list the "trigger threads"' do
+  it 'lists the "trigger threads"' do
 
     @s.every '1s' do
       sleep 10
     end
     sleep 5
 
-    @s.trigger_threads.size.should.equal(4)
+    @s.trigger_threads.size.should == 4
   end
 end
 
 describe Rufus::Scheduler::EveryJob do
 
-  before do
+  before(:each) do
     @s = start_scheduler
   end
-  after do
+  after(:each) do
     stop_scheduler(@s)
   end
 
-  it 'should respond to #next_time' do
+  it 'responds to #next_time' do
 
     t = Time.now + 3 * 3600
 
     job = @s.every '3h' do
     end
 
-    job.next_time.to_i.should.equal(t.to_i)
+    job.next_time.to_i.should == t.to_i
   end
 
 
-  it 'should not allow a job to overlap execution if set !allow_overlapping' do
+  it 'does not allow a job to overlap execution if set !allow_overlapping' do
+
     stack = []
 
     @s.every '1s', :allow_overlapping => false do |job|
@@ -210,10 +211,11 @@ describe Rufus::Scheduler::EveryJob do
 
     sleep 5
 
-    stack.size.should.equal(2)
+    stack.size.should == 2
   end
 
-  it 'should allow a job to overlap execution (backward compatability?)' do
+  it 'allows a job to overlap execution (backward compatability?)' do
+
     stack = []
 
     @s.every '1s' do |job|
@@ -223,7 +225,7 @@ describe Rufus::Scheduler::EveryJob do
 
     sleep 5
 
-    stack.size.should.equal(4)
+    stack.size.should == 4
   end
 end
 

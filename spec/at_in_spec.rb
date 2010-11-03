@@ -5,20 +5,20 @@
 # Sun Mar 22 16:47:28 JST 2009
 #
 
-require File.dirname(__FILE__) + '/spec_base'
+require File.join(File.dirname(__FILE__), 'spec_base')
 
 
 describe SCHEDULER_CLASS do
 
-  before do
+  before(:each) do
     @s = start_scheduler
   end
-  after do
+  after(:each) do
     stop_scheduler(@s)
   end
 
 
-  it 'should override jobs with the same id' do
+  it 'overrides jobs with the same id' do
 
     hits = []
 
@@ -33,16 +33,15 @@ describe SCHEDULER_CLASS do
     end
 
     wait_next_tick
-    @s.jobs.size.should.equal(1)
+    @s.jobs.size.should == 1
 
-    hits.should.be.empty
+    hits.should == []
 
     sleep 1.5
 
-    hits.should.equal([ 1 ])
+    hits.should == [ 1 ]
 
-    @s.jobs.size.should.equal(0)
+    @s.jobs.size.should == 0
   end
-
 end
 
