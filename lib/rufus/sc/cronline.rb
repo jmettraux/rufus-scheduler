@@ -119,7 +119,7 @@ module Rufus
       time = @timezone ? @timezone.utc_to_local(now.getutc) : now
 
       time = time - time.usec * 1e-6 + 1
-        # little of adjustment before starting
+        # little adjustment before starting
 
       loop do
 

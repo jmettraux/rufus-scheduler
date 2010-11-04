@@ -214,7 +214,7 @@ describe Rufus::Scheduler::EveryJob do
     stack.size.should == 2
   end
 
-  it 'allows a job to overlap execution (backward compatability?)' do
+  it 'allows a job to overlap execution (backward compatibility?)' do
 
     stack = []
 
