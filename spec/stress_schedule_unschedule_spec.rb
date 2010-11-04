@@ -1,17 +1,17 @@
 
-$LOAD_PATH << 'lib'
-require 'rufus/sc/scheduler'
+#
+# a spec by Klaas Jan Wierenga
+#
 
-require 'rubygems'
-require 'eventmachine'
-
-#require 'spec/autorun'
 require File.join(File.dirname(__FILE__), '/spec_base')
+
+
 
 JOB_COUNT = 500 # 1000
 JOB_IDS = (1..JOB_COUNT).to_a
 NUM_RESCHEDULES = 5 # 10
 TRIGGER_DELAY = 4 # 15
+
 
 describe SCHEDULER_CLASS do
 

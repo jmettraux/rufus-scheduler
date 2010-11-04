@@ -335,8 +335,12 @@ More and more ruby applications are using EventMachine. This flavour of the sche
 
 == tested with
 
-ruby 1.8.6, ruby 1.9.1p0
-on jruby 1.2.0 it has some tiny issues (spec/blocking_spec.rb)
+* 1.8.7-p249
+* 1.9.1-p378
+* 1.9.2-p0
+* jruby-1.5.1
+
+on Mac OS X (Snow Leopard).
 
 
 == dependencies
