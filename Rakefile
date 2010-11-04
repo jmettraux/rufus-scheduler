@@ -47,7 +47,7 @@ Jeweler::Tasks.new do |gem|
 
   gem.test_file = 'spec/spec.rb'
 
-  #gem.add_dependency 'yajl-ruby'
+  gem.add_dependency 'tzinfo'
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec'
   gem.add_development_dependency 'jeweler'

@@ -51,7 +51,7 @@ describe 'rufus/otime' do
     tts(30 * 24 * 3600 + 1, :months => true).should == '1M1s'
   end
 
-  it 'should compute duration hashes' do
+  it 'computes duration hashes' do
 
     tdh(0).should == {}
     tdh(0.128).should == { :ms => 128 }

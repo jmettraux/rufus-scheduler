@@ -22,6 +22,8 @@
 # Made in Japan.
 #++
 
+require 'tzinfo'
+
 
 module Rufus
 
@@ -31,7 +33,6 @@ module Rufus
   #
   class CronLine
 
-    #
     # The string used for creating this cronline instance.
     #
     attr_reader :original
@@ -42,6 +43,7 @@ module Rufus
     attr_reader :days
     attr_reader :months
     attr_reader :weekdays
+    attr_reader :timezone
 
     def initialize(line)
 
@@ -51,8 +53,11 @@ module Rufus
 
       items = line.split
 
+      @timezone = (TZInfo::Timezone.get(items.last) rescue nil)
+      items.pop if @timezone
+
       raise ArgumentError.new(
-        "cron '#{line}' string should hold 5 or 6 items, not #{items.length}"
+        "not a valid cronline : '#{line}'"
       ) unless items.length == 5 or items.length == 6
 
       offset = items.length - 5
@@ -65,12 +70,13 @@ module Rufus
       @weekdays = parse_weekdays(items[4 + offset])
     end
 
-    #
     # Returns true if the given time matches this cron line.
     #
     def matches?(time)
 
       time = Time.at(time) unless time.kind_of?(Time)
+
+      time = @timezone.utc_to_local(time.getutc) if @timezone
 
       return false unless sub_match?(time.sec, @seconds)
       return false unless sub_match?(time.min, @minutes)
@@ -81,17 +87,6 @@ module Rufus
       true
     end
 
-    #
-    # Returns an array of 6 arrays (seconds, minutes, hours, days,
-    # months, weekdays).
-    # This method is used by the cronline unit tests.
-    #
-    def to_array
-
-      [ @seconds, @minutes, @hours, @days, @months, @weekdays ]
-    end
-
-    #
     # Returns the next time that this cron line is supposed to 'fire'
     #
     # This is raw, 3 secs to iterate over 1 year on my macbook :( brutal.
@@ -119,10 +114,12 @@ module Rufus
     #
     # (Thanks to K Liu for the note and the examples)
     #
-    def next_time(time=Time.now)
+    def next_time(now=Time.now)
 
-      time -= time.usec * 1e-6
-      time += 1
+      time = @timezone ? @timezone.utc_to_local(now.getutc) : now
+
+      time = time - time.usec * 1e-6 + 1
+        # little of adjustment before starting
 
       loop do
 
@@ -130,17 +127,14 @@ module Rufus
           time += (24 - time.hour) * 3600 - time.min * 60 - time.sec
           next
         end
-
         unless sub_match?(time.hour, @hours)
           time += (60 - time.min) * 60 - time.sec
           next
         end
-
         unless sub_match?(time.min, @minutes)
           time += 60 - time.sec
           next
         end
-
         unless sub_match?(time.sec, @seconds)
           time += 1
           next
@@ -149,7 +143,29 @@ module Rufus
         break
       end
 
+      if @timezone
+        time = @timezone.local_to_utc(time)
+        time = time.getlocal unless now.utc?
+      end
+
       time
+    end
+
+    # Returns an array of 6 arrays (seconds, minutes, hours, days,
+    # months, weekdays).
+    # This method is used by the cronline unit tests.
+    #
+    def to_array
+
+      [
+        @seconds,
+        @minutes,
+        @hours,
+        @days,
+        @months,
+        @weekdays,
+        @timezone ? @timezone.name : nil
+      ]
     end
 
     private
@@ -247,6 +263,5 @@ module Rufus
       true
     end
   end
-
 end
 

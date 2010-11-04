@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Tanzeeb Khalili (http://github.com/tanzeeb) cron and timezones
 - Adam Davies (http://github.com/adz), @allow_overlap = false
 - Klaas Jan Wierenga, at/every/in stress tests (1.0 and 2.0)
 - TobyH (http://github.com/tobyh), faster and cleaner CronLine#next_time
