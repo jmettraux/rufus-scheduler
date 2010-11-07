@@ -28,11 +28,28 @@ require 'date'
 
 module Rufus
 
+  #--
+  #
+  # keeping that as a note.
+  #
+  #require 'tzinfo'
+  #def time_zone(time)
+  #  offset = time.utc_offset / 3600
+  #  offset = offset < 0 ? offset.to_s : "+#{offset}"
+  #  TZInfo::Timezone.get("Etc/GMT#{offset}")
+  #end
+  #def timeshift(time, tz)
+  #  tz = TZInfo::Timezone.get(tz) unless tz.is_a?(TZInfo::Timezone)
+  #  t = tz.utc_to_local(time.getutc)
+  #  Time.parse(t.to_s[0..-5])
+  #end
+  #++
+
   # Returns the current time as an ISO date string
   #
   def Rufus.now
 
-    to_iso8601_date(Time.new())
+    to_iso8601_date(Time.new)
   end
 
   # As the name implies.
@@ -56,7 +73,7 @@ module Rufus
   #
   def Rufus.time_to_iso8601_date(time)
 
-    s = time.getutc().strftime(TIME_FORMAT)
+    s = time.getutc.strftime(TIME_FORMAT)
     o = time.utc_offset / 3600
     o = "#{o}00"
     o = "0#{o}" if o.length < 4
@@ -147,8 +164,9 @@ module Rufus
     alias_method :parse_duration_string, :parse_time_string
   end
 
-  #
+  #--
   # conversion methods between Date[Time] and Time
+  #++
 
   #--
   # Ruby Cookbook 1st edition p.111
@@ -165,14 +183,7 @@ module Rufus
 
     begin
 
-      DateTime.new(
-        time.year,
-        time.month,
-        time.day,
-        time.hour,
-        time.min,
-        s,
-        o)
+      DateTime.new(time.year, time.month, time.day, time.hour, time.min, s, o)
 
     rescue Exception => e
 
@@ -205,10 +216,10 @@ module Rufus
 
   # Turns a number of seconds into a a time string
   #
-  #   Rufus.to_duration_string 0          # => '0s'
-  #   Rufus.to_duration_string 60           # => '1m'
-  #   Rufus.to_duration_string 3661         # => '1h1m1s'
-  #   Rufus.to_duration_string 7 * 24 * 3600    # => '1w'
+  #   Rufus.to_duration_string 0                    # => '0s'
+  #   Rufus.to_duration_string 60                   # => '1m'
+  #   Rufus.to_duration_string 3661                 # => '1h1m1s'
+  #   Rufus.to_duration_string 7 * 24 * 3600        # => '1w'
   #   Rufus.to_duration_string 30 * 24 * 3600 + 1   # => "4w2d1s"
   #
   # It goes from seconds to the year. Months are not counted (as they
@@ -224,8 +235,8 @@ module Rufus
   # If a Float value is passed, milliseconds will be displayed without
   # 'marker'
   #
-  #   Rufus.to_duration_string 0.051             # =>"51"
-  #   Rufus.to_duration_string 7.051             # =>"7s51"
+  #   Rufus.to_duration_string 0.051                       # =>"51"
+  #   Rufus.to_duration_string 7.051                       # =>"7s51"
   #   Rufus.to_duration_string 0.120 + 30 * 24 * 3600 + 1  # =>"4w2d1s120"
   #
   # (this behaviour mirrors the one found for parse_time_string()).
@@ -243,12 +254,12 @@ module Rufus
 
     h = to_duration_hash seconds, options
 
-    s = DU_KEYS.inject('') do |r, key|
+    s = DU_KEYS.inject('') { |r, key|
       count = h[key]
       count = nil if count == 0
       r << "#{count}#{key}" if count
       r
-    end
+    }
 
     ms = h[:ms]
     s << ms.to_s if ms
@@ -319,7 +330,6 @@ module Rufus
     Float(s.to_s)
   end
 
-  #
   # Ensures an 'at' value is translated to a float
   # (to be compared with the float coming from time.to_f)
   #
