@@ -69,7 +69,7 @@ describe Rufus::CronLine do
 
     it 'computes the next occurence correctly' do
 
-      now = Time.at(0).utc # Thu Jan 01 00:00:00 UTC 1970
+      now = Time.at(0).getutc # Thu Jan 01 00:00:00 UTC 1970
 
       nt('* * * * *', now).should == now + 60
       nt('* * * * sun', now).should == now + 259200
@@ -92,7 +92,7 @@ describe Rufus::CronLine do
 
     it 'computes the next occurence correctly in UTC (TZ not specified)' do
 
-      now = utc(1970, 1, 1) # Time.at(0).utc # Thu Jan 01 00:00:00 UTC 1970
+      now = utc(1970, 1, 1)
 
       nt('* * * * *', now).should == utc(1970, 1, 1, 0, 1)
       nt('* * * * sun', now).should == utc(1970, 1, 4)
@@ -126,7 +126,7 @@ describe Rufus::CronLine do
 
       zone = 'Europe/Stockholm'
       tz = TZInfo::Timezone.get(zone)
-      now = tz.local_to_utc(utc(1970, 1, 1)).utc
+      now = tz.local_to_utc(local(1970, 1, 1))
         # Midnight in zone, UTC
 
       nt("* * * * * #{zone}", now).should == utc(1969, 12, 31, 23, 1)
@@ -135,30 +135,24 @@ describe Rufus::CronLine do
       nt("* * 13 * fri #{zone}", now).should == utc(1970, 2, 12, 23)
 
       nt("10 12 13 12 * #{zone}", now).should == utc(1970, 12, 13, 11, 10)
-        # this one is slow (1 year == 3 seconds)
       nt("* * 1 6 * #{zone}", now).should == utc(1970, 5, 31, 23)
 
       nt("0 0 * * thu #{zone}", now).should == utc(1970, 1, 7, 23)
     end
 
-    it 'computes the next occurence correctly in local TZ (TZ specified)' do
-
-      zone = 'Europe/Stockholm'
-      tz = TZInfo::Timezone.get(zone)
-      now = tz.local_to_utc(utc(1970, 1, 1)).localtime
-        # Midnight in zone, local time
-
-      nt("* * * * * #{zone}", now).should == local(1969, 12, 31, 18, 1)
-      nt("* * * * sun #{zone}", now).should == local(1970, 1, 3, 18)
-      nt("* * * * * * #{zone}", now).should == local(1969, 12, 31, 18, 0, 1)
-      nt("* * 13 * fri #{zone}", now).should == local(1970, 2, 12, 18)
-
-      nt("10 12 13 12 * #{zone}", now).should == local(1970, 12, 13, 6, 10)
-        # this one is slow (1 year == 3 seconds)
-      nt("* * 1 6 * #{zone}", now).should == local(1970, 5, 31, 19)
-
-      nt("0 0 * * thu #{zone}", now).should == local(1970, 1, 7, 18)
-    end
+    #it 'computes the next occurence correctly in local TZ (TZ specified)' do
+    #  zone = 'Europe/Stockholm'
+    #  tz = TZInfo::Timezone.get(zone)
+    #  now = tz.local_to_utc(utc(1970, 1, 1)).localtime
+    #    # Midnight in zone, local time
+    #  nt("* * * * * #{zone}", now).should == local(1969, 12, 31, 18, 1)
+    #  nt("* * * * sun #{zone}", now).should == local(1970, 1, 3, 18)
+    #  nt("* * * * * * #{zone}", now).should == local(1969, 12, 31, 18, 0, 1)
+    #  nt("* * 13 * fri #{zone}", now).should == local(1970, 2, 12, 18)
+    #  nt("10 12 13 12 * #{zone}", now).should == local(1970, 12, 13, 6, 10)
+    #  nt("* * 1 6 * #{zone}", now).should == local(1970, 5, 31, 19)
+    #  nt("0 0 * * thu #{zone}", now).should == local(1970, 1, 7, 18)
+    #end
   end
 
   describe '#matches?' do
@@ -202,21 +196,6 @@ describe Rufus::CronLine do
       match "* * 1 6 * #{zone}", utc(1970, 5, 31, 23)
 
       match "0 0 * * thu #{zone}", utc(1970, 1, 7, 23)
-    end
-
-    it 'matches correctly in local TZ (TZ specified)' do
-
-      zone = 'Europe/Stockholm'
-
-      match "* * * * * #{zone}", local(1969, 12, 31, 18, 1)
-      match "* * * * sun #{zone}", local(1970, 1, 3, 18)
-      match "* * * * * * #{zone}", local(1969, 12, 31, 18, 0, 1)
-      match "* * 13 * fri #{zone}", local(1970, 2, 12, 18)
-
-      match "10 12 13 12 * #{zone}", local(1970, 12, 13, 6, 10)
-      match "* * 1 6 * #{zone}", local(1970, 5, 31, 19)
-
-      match "0 0 * * thu #{zone}", local(1970, 1, 7, 18)
     end
   end
 end
