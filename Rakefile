@@ -45,7 +45,7 @@ Jeweler::Tasks.new do |gem|
   gem.authors = [ 'John Mettraux' ]
   gem.rubyforge_project = 'rufus'
 
-  gem.test_file = 'spec/spec.rb'
+  #gem.test_file = 'spec/spec.rb'
 
   gem.add_dependency 'tzinfo'
   gem.add_development_dependency 'rake'
