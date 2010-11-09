@@ -70,6 +70,32 @@ Note that is there is EventMachine present and running,
 will return an instance of Rufus::Scheduler::EmScheduler (leveraging EventMachine).
 
 
+== a note about cron jobs
+
+This is a classical cron :
+
+  scheduler.cron '0 22 * * 1-5' do
+    # every day of the week at 22:00 (10pm)
+  end
+
+Rufus-scheduler supports two variants to that notation : seconds and timezones.
+
+  scheduler.cron '13 0 22 * * 1-5' do
+    # every day of the week at 22:00:13
+  end
+
+  scheduler.cron '0 22 * * 1-5 Europe/Paris' do
+    # every day of the week when it's 22:00 in Paris
+  end
+  scheduler.cron '0 22 * * 1-5 Etc/GMT+2' do
+    # every day of the week when it's 22:00 in GMT+2
+  end
+
+The timezones are the ones supported by the 'tzinfo' rubygem (http://tzinfo.rubyforge.org/).
+
+The timezone support was contributed by Tanzeeb Khalili.
+
+
 == scheduler.join
 
 Note that if you have a tiny script like this one :
@@ -345,7 +371,9 @@ on Mac OS X (Snow Leopard).
 
 == dependencies
 
-the ruby gem 'eventmachine' if you use Rufus::Scheduler::EmScheduler, else no other dependencies.
+The 'tzinfo' rubygem.
+
+The ruby gem 'eventmachine' if you use Rufus::Scheduler::EmScheduler, else no other dependencies.
 
 
 == mailing list
