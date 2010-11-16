@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Chris Kampemeier (http://github.com/chrisk) rspec 2.0 refinements
 - Tanzeeb Khalili (http://github.com/tanzeeb) cron and timezones
 - Adam Davies (http://github.com/adz), @allow_overlap = false
 - Klaas Jan Wierenga, at/every/in stress tests (1.0 and 2.0)
