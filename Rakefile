@@ -49,7 +49,7 @@ Jeweler::Tasks.new do |gem|
 
   gem.add_dependency 'tzinfo'
   gem.add_development_dependency 'rake'
-  gem.add_development_dependency 'rspec'
+  gem.add_development_dependency 'rspec', "~> 2.0"
   gem.add_development_dependency 'jeweler'
 
   # gemspec spec : http://www.rubygems.org/read/chapter/20
