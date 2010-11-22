@@ -2,6 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 2.0.8    not yet released
+
+
 == rufus-scheduler - 2.0.7    released 2010/11/09
 
 - cron and timezones, thanks Tanzeeb Khalili
