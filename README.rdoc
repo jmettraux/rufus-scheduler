@@ -359,6 +359,13 @@ More and more ruby applications are using EventMachine. This flavour of the sche
   }
 
 
+== with Passenger
+
+"it terminates for no apparent reason !"
+
+https://github.com/jmettraux/rufus-scheduler/issues/issue/10
+
+
 == tested with
 
 * 1.8.7-p249
