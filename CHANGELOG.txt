@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 2.0.8    not yet released
 
+- issue with cron '0 7-23/2 * * *' fixed. Thanks Pickerel
+
 
 == rufus-scheduler - 2.0.7    released 2010/11/09
 

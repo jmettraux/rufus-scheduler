@@ -59,6 +59,19 @@ describe Rufus::CronLine do
       lambda { cl '* * * * * NotATimeZone' }.should raise_error
       lambda { cl '* * * * * * NotATimeZone' }.should raise_error
     end
+
+    it 'interprets cron strings with / (slashes) correctly' do
+
+      to_a(
+        '0 */2 * * *',
+        [[0], [0], [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24], nil, nil, nil, nil])
+      to_a(
+        '0 7-23/2 * * *',
+        [[0], [0], [7, 9, 11, 13, 15, 17, 19, 21, 23], nil, nil, nil, nil])
+      to_a(
+        '*/10 * * * *',
+        [[0], [0, 10, 20, 30, 40, 50], nil, nil, nil, nil, nil])
+    end
   end
 
   describe '#next_time' do

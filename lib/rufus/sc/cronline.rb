@@ -224,7 +224,7 @@ module Rufus
         istart = Integer(item[0..i - 1])
 
         if j
-          iend = Integer(item[i + 1..j])
+          iend = Integer(item[i + 1..j - 1])
         else
           iend = Integer(item[i + 1..-1])
         end
