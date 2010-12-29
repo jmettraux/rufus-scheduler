@@ -1,22 +1,24 @@
 
+$:.unshift('.') # 1.9.2
+
 require 'rubygems'
+
 require 'rake'
-
-
-load 'lib/rufus/sc/version.rb'
-
-
-#
-# CLEAN
-
 require 'rake/clean'
-CLEAN.include('pkg', 'tmp', 'rdoc')
+require 'rake/rdoctask'
 
 
 #
-# TEST / SPEC
+# clean
 
-task :spec => :check_dependencies do
+CLEAN.include('pkg', 'rdoc')
+
+
+#
+# test / spec
+
+#task :spec => :check_dependencies do
+task :spec do
   sh 'rspec spec/'
 end
 task :test => :spec
@@ -25,64 +27,59 @@ task :default => :spec
 
 
 #
-# GEM
+# gem
 
-require 'jeweler'
+GEMSPEC_FILE = Dir['*.gemspec'].first
+GEMSPEC = eval(File.read(GEMSPEC_FILE))
+GEMSPEC.validate
 
-Jeweler::Tasks.new do |gem|
 
-  gem.version = Rufus::Scheduler::VERSION
-  gem.name = 'rufus-scheduler'
-  gem.summary = 'job scheduler for Ruby (at, cron, in and every jobs)'
+desc %{
+  builds the gem and places it in pkg/
+}
+task :build do
 
-  gem.description = %{
-    job scheduler for Ruby (at, cron, in and every jobs).
-
-    By default uses a Ruby thread, if EventMachine is present, it will rely on it.
-  }
-  gem.email = 'jmettraux@gmail.com'
-  gem.homepage = 'http://github.com/jmettraux/rufus-scheduler/'
-  gem.authors = [ 'John Mettraux' ]
-  gem.rubyforge_project = 'rufus'
-
-  #gem.test_file = 'spec/spec.rb'
-
-  gem.add_dependency 'tzinfo'
-  gem.add_development_dependency 'rake'
-  gem.add_development_dependency 'rspec', "~> 2.0"
-  gem.add_development_dependency 'jeweler'
-
-  # gemspec spec : http://www.rubygems.org/read/chapter/20
+  sh "gem build #{GEMSPEC_FILE}"
+  sh "mkdir pkg" rescue nil
+  sh "mv #{GEMSPEC.name}-#{GEMSPEC.version}.gem pkg/"
 end
-Jeweler::GemcutterTasks.new
+
+desc %{
+  builds the gem and pushes it to rubygems.org
+}
+task :push => :build do
+
+  sh "gem push pkg/#{GEMSPEC.name}-#{GEMSPEC.version}.gem"
+end
 
 
 #
-# DOC
-
+# rdoc
 #
 # make sure to have rdoc 2.5.x to run that
-#
-require 'rake/rdoctask'
+
 Rake::RDocTask.new do |rd|
 
-  rd.main = 'README.rdoc'
-  rd.rdoc_dir = 'rdoc/rufus-scheduler'
-  rd.title = "rufus-scheduler #{Rufus::Scheduler::VERSION}"
+  rd.main = 'README.txt'
+  rd.rdoc_dir = "rdoc/#{GEMSPEC.name}"
 
-  rd.rdoc_files.include(
-    'README.rdoc', 'CHANGELOG.txt', 'LICENSE.txt', 'CREDITS.txt', 'lib/**/*.rb')
+  rd.rdoc_files.include('README.rdoc', 'CHANGELOG.txt', 'lib/**/*.rb')
+
+  rd.title = "#{GEMSPEC.name} #{GEMSPEC.version}"
 end
 
 
 #
-# TO THE WEB
+# upload_rdoc
 
+desc %{
+  upload the rdoc to rubyforge
+}
 task :upload_rdoc => [ :clean, :rdoc ] do
 
   account = 'jmettraux@rubyforge.org'
-  webdir = '/var/www/gforge-projects/rufus'
+  webdir = "/var/www/gforge-projects/rufus"
 
-  sh "rsync -azv -e ssh rdoc/rufus-scheduler #{account}:#{webdir}/"
+  sh "rsync -azv -e ssh rdoc/#{GEMSPEC.name} #{account}:#{webdir}/"
 end
 
