@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 2.0.8    not yet released
+== rufus-scheduler - 2.0.8    released 2010/12/31
 
 - issue with cron '0 7-23/2 * * *' fixed. Thanks Pickerel
 
