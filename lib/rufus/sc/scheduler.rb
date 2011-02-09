@@ -184,6 +184,16 @@ module Rufus::Scheduler
       @jobs.unschedule(job_id) || @cron_jobs.unschedule(job_id)
     end
 
+    # Given a tag, unschedules all the jobs that bear that tag.
+    #
+    def unschedule_by_tag(tag)
+
+      jobs = find_by_tag(tag)
+      jobs.each { |job| unschedule(job.job_id) }
+
+      jobs
+    end
+
     #--
     # MISC
     #++

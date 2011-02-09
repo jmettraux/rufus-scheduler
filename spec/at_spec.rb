@@ -84,6 +84,21 @@ describe "#{SCHEDULER_CLASS}#schedule_at" do
     @s.find_by_tag('spec').size.should == 1
     @s.find_by_tag('spec').first.job_id.should == job.job_id
   end
+
+  it 'accepts unschedule_by_tag' do
+
+    3.times do
+      @s.at Time.now + 3 * 3600, :tags => 'spec' do
+      end
+    end
+
+    sleep 0.500
+
+    r = @s.unschedule_by_tag('spec')
+
+    r.size.should == 3
+    r.first.class.should == Rufus::Scheduler::AtJob
+  end
 end
 
 describe Rufus::Scheduler::AtJob do

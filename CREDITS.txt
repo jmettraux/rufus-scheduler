@@ -13,6 +13,7 @@
 
 == Feedback
 
+- Defusal - unschedule_by_tag
 - pickerel - https://github.com/pickerel
 - Gonzalo Suarez - parse_time_string(s) issue
 - Tony Day - http://github.com/tonyday - every and overlapping timeout issue
