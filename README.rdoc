@@ -166,7 +166,7 @@ Jobs scheduled with the :blocking parameter will run in the thread of the schedu
     puts "order espresso"
   end
 
-Hence, our espresso wil come in 22 minutes instead of 21.
+Hence, our espresso will come in 22 minutes instead of 21.
 
 
 == 'every' jobs and :first_at / :first_in
