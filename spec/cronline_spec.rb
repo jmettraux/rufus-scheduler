@@ -17,6 +17,9 @@ describe Rufus::CronLine do
   def match(line, time)
     cl(line).matches?(time).should == true
   end
+  def no_match(line, time)
+    cl(line).matches?(time).should == false
+  end
   def to_a(line, array)
     cl(line).to_array.should == array
   end
@@ -49,6 +52,8 @@ describe Rufus::CronLine do
       to_a '1 * * * * *', [ [1], nil, nil, nil, nil, nil, nil ]
       to_a '7 10-12 * * * *', [ [7], [10, 11, 12], nil, nil, nil, nil, nil ]
       to_a '1-5 * * * * *', [ [1,2,3,4,5], nil, nil, nil, nil, nil, nil ]
+
+      to_a '0 0 1 1 *', [ [0], [0], [0], [1], [1], nil, nil ]
     end
 
     it 'interprets cron strings with TZ correctly' do
@@ -181,6 +186,9 @@ describe Rufus::CronLine do
       match '* * 1 6 *', utc(1970, 6, 1)
 
       match '0 0 * * thu', utc(1970, 1, 8)
+
+      match '0 0 1 1 *', utc(2012, 1, 1)
+      no_match '0 0 1 1 *', utc(2012, 1, 1, 1, 0)
     end
 
     it 'matches correctly in local TZ (TZ not specified)' do
@@ -194,6 +202,9 @@ describe Rufus::CronLine do
       match '* * 1 6 *', local(1970, 6, 1)
 
       match '0 0 * * thu', local(1970, 1, 8)
+
+      match '0 0 1 1 *', local(2012, 1, 1)
+      no_match '0 0 1 1 *', local(2012, 1, 1, 1, 0)
     end
 
     it 'matches correctly in UTC (TZ specified)' do
