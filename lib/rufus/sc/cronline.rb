@@ -43,6 +43,7 @@ module Rufus
     attr_reader :days
     attr_reader :months
     attr_reader :weekdays
+    attr_reader :monthdays
     attr_reader :timezone
 
     def initialize(line)
@@ -67,7 +68,7 @@ module Rufus
       @hours = parse_item(items[1 + offset], 0, 24)
       @days = parse_item(items[2 + offset], 1, 31)
       @months = parse_item(items[3 + offset], 1, 12)
-      @weekdays = parse_weekdays(items[4 + offset])
+      @weekdays, @monthdays = parse_weekdays(items[4 + offset])
     end
 
     # Returns true if the given time matches this cron line.
@@ -81,9 +82,7 @@ module Rufus
       return false unless sub_match?(time.sec, @seconds)
       return false unless sub_match?(time.min, @minutes)
       return false unless sub_match?(time.hour, @hours)
-      return false unless sub_match?(time.day, @days)
-      return false unless sub_match?(time.month, @months)
-      return false unless sub_match?(time.wday, @weekdays)
+      return false unless date_match?(time)
       true
     end
 
@@ -164,26 +163,47 @@ module Rufus
         @days,
         @months,
         @weekdays,
+        @monthdays,
         @timezone ? @timezone.name : nil
       ]
     end
 
     private
 
-    WDS = %w[ sun mon tue wed thu fri sat ]
-      # used by parse_weekday()
+    WEEKDAYS = %w[ sun mon tue wed thu fri sat ]
 
     def parse_weekdays(item)
 
-      item = item.downcase
+      return nil if item == '*'
 
-      WDS.each_with_index { |day, index| item = item.gsub(day, index.to_s) }
+      items = item.downcase.split(',')
 
-      r = parse_item(item, 0, 7)
+      weekdays = nil
+      monthdays = nil
 
-      r.is_a?(Array) ?
-        r.collect { |e| e == 7 ? 0 : e }.uniq :
-        r
+      items.each do |it|
+
+        if it.match(/#[12345]$/)
+
+          raise ArgumentError.new(
+            "ranges are not supported for monthdays (#{it})"
+          ) if it.index('-')
+
+          (monthdays ||= []) << it
+        else
+
+          WEEKDAYS.each_with_index { |a, i| it.gsub!(/#{a}/, i.to_s) }
+
+          its = it.index('-') ? parse_range(it, 0, 7) : [ Integer(it) ]
+          its = its.collect { |i| i == 7 ? 0 : i }
+
+          (weekdays ||= []).concat(its)
+        end
+      end
+
+      weekdays = weekdays.uniq if weekdays
+
+      [ weekdays, monthdays ]
     end
 
     def parse_item(item, min, max)
@@ -255,12 +275,35 @@ module Rufus
       values.nil? || values.include?(value)
     end
 
+    def monthday_match(monthday, monthdays)
+
+      return true if monthdays == nil
+      return true if monthdays.include?(monthday)
+    end
+
     def date_match?(date)
 
       return false unless sub_match?(date.day, @days)
       return false unless sub_match?(date.month, @months)
       return false unless sub_match?(date.wday, @weekdays)
+      return false unless sub_match?(CronLine.monthday(date), @monthdays)
       true
+    end
+
+    DAY_IN_SECONDS = 7 * 24 * 3600
+
+    def self.monthday(date)
+
+      count = 1
+      date2 = date.dup
+
+      loop do
+        date2 = date2 - DAY_IN_SECONDS
+        break if date2.month != date.month
+        count = count + 1
+      end
+
+      "#{WEEKDAYS[date.wday]}##{count}"
     end
   end
 end
