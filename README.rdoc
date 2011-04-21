@@ -197,6 +197,8 @@ The chronic gem may help (http://chronic.rubyforge.org/) :
     # do something starting this tueday
   end
 
+Note : setting a :first_at/:first_in in the past will get rufus-scheduler to trigger for all the past schedules until now. Adding :discard_past => true will prevent this.
+
 
 == self unschedule for 'cron' and 'every' jobs
 

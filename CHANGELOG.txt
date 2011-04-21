@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 2.0.9    not yet released
 
+- Scheduler#first_at and :discard_past => true. Thanks concept47
 - Scheduler#cron and monthdays (sun#2 or mon#1)
 - Scheduler#unschedule_by_tag(t)
 

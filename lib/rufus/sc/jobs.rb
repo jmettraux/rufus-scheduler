@@ -300,7 +300,9 @@ module Scheduler
         end
       end
 
-      @at = @at < now ? now : @at
+      while @at < now do
+        @at += @frequency
+      end if @params[:discard_past]
     end
 
     # It's an every job, have to schedule next time it occurs...
