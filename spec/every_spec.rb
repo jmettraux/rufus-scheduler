@@ -95,7 +95,7 @@ describe "#{SCHEDULER_CLASS}#every" do
 
     counter = 0
 
-    job = @s.every '1s', :first_at => Time.now + 2 do
+    @s.every '1s', :first_at => Time.now + 2 do
       counter += 1
     end
 
@@ -106,11 +106,23 @@ describe "#{SCHEDULER_CLASS}#every" do
     counter.should == 2
   end
 
+  it 'ignores :first_at if it is in the past' do
+
+    counter = 0
+
+    @s.every '1s', :first_at => Time.now - 2 do
+      counter += 1
+    end
+
+    sleep 1.1
+    counter.should == 1
+  end
+
   it 'honours :first_in' do
 
     counter = 0
 
-    job = @s.every '1s', :first_in => 2 do
+    @s.every '1s', :first_in => 2 do
       counter += 1
     end
 

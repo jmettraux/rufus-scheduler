@@ -255,7 +255,9 @@ module Scheduler
     attr_reader :frequency
 
     def initialize(scheduler, t, params, &block)
+
       super
+
       determine_frequency
       determine_at
     end
@@ -284,17 +286,21 @@ module Scheduler
       @last = @at
         # the first time, @last will be nil
 
+      now = Time.now.to_f
+
       @at = if @last
         @last + @frequency
       else
         if fi = @params[:first_in]
-          Time.now.to_f + Rufus.duration_to_f(fi)
+          now + Rufus.duration_to_f(fi)
         elsif fa = @params[:first_at]
           Rufus.at_to_f(fa)
         else
-          Time.now.to_f + @frequency
+          now + @frequency
         end
       end
+
+      @at = @at < now ? now : @at
     end
 
     # It's an every job, have to schedule next time it occurs...
