@@ -1,9 +1,12 @@
 # encoding: utf-8
 
+load 'lib/rufus/sc/version.rb'
+
+
 Gem::Specification.new do |s|
 
   s.name = 'rufus-scheduler'
-  s.version = File.read('lib/rufus/sc/version.rb').match(/VERSION = '([^']+)'/)[1]
+  s.version = Rufus::Scheduler::VERSION
   s.platform = Gem::Platform::RUBY
   s.authors = [ 'John Mettraux' ]
   s.email = [ 'jmettraux@gmail.com' ]
