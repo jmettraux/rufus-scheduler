@@ -307,7 +307,7 @@ module Rufus::Scheduler
 
       complain_if_blocking_and_timeout(job)
 
-      return if job.params[:discard_past] && Time.now.to_f >= job.at
+      return nil if job.params[:discard_past] && Time.now.to_f >= job.at
 
       @jobs << job
 

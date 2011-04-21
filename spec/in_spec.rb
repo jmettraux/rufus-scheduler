@@ -77,17 +77,26 @@ describe "#{SCHEDULER_CLASS}#in" do
     var.should == true
   end
 
+  it 'returns the new job' do
+
+    r = @s.in '1s' do
+    end
+
+    r.class.should == Rufus::Scheduler::InJob
+  end
+
   it 'triggers [almost] immediately jobs in the past' do
 
     var = nil
 
-    @s.in -2 do
+    r = @s.in -2 do
       var = true
     end
 
     #wait_next_tick
     sleep 0.550
 
+    r.class.should == Rufus::Scheduler::InJob
     var.should == true
     @s.jobs.should == {}
   end
@@ -96,10 +105,11 @@ describe "#{SCHEDULER_CLASS}#in" do
 
     var = nil
 
-    @s.in -2, :discard_past => true do
+    r = @s.in -2, :discard_past => true do
       var = true
     end
 
+    r.should == nil
     var.should == nil
     @s.jobs.should == {}
   end
