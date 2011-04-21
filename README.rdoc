@@ -22,7 +22,7 @@ More like complements :
 
 == installation
 
-  sudo gem install rufus-scheduler --source http://gemcutter.org
+  gem install rufus-scheduler
 
 
 == usage
