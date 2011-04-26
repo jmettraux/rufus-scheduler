@@ -101,35 +101,3 @@ describe "#{SCHEDULER_CLASS}#schedule_at" do
   end
 end
 
-describe Rufus::Scheduler::AtJob do
-
-  before do
-    @s = start_scheduler
-  end
-  after do
-    stop_scheduler(@s)
-  end
-
-  it 'unschedules itself' do
-
-    job = @s.at Time.now + 3 * 3600 do
-    end
-
-    wait_next_tick
-
-    job.unschedule
-
-    @s.jobs.size.should == 0
-  end
-
-  it 'responds to #next_time' do
-
-    t = Time.now + 3 * 3600
-
-    job = @s.at Time.now + 3 * 3600 do
-    end
-
-    job.next_time.to_i.should == t.to_i
-  end
-end
-

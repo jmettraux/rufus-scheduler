@@ -202,27 +202,6 @@ describe "#{SCHEDULER_CLASS}#every" do
 
     @s.trigger_threads.size.should == 4
   end
-end
-
-describe Rufus::Scheduler::EveryJob do
-
-  before(:each) do
-    @s = start_scheduler
-  end
-  after(:each) do
-    stop_scheduler(@s)
-  end
-
-  it 'responds to #next_time' do
-
-    t = Time.now + 3 * 3600
-
-    job = @s.every '3h' do
-    end
-
-    job.next_time.to_i.should == t.to_i
-  end
-
 
   it "doesn't allow overlapped execution if :allow_overlapping => false" do
 

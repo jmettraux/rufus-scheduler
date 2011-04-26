@@ -99,24 +99,5 @@ describe "#{SCHEDULER_CLASS}#cron" do
     @s.jobs.size.should == 0
     stack.should == %w[ ok ok ok done ]
   end
-
-end
-
-describe Rufus::Scheduler::CronJob do
-
-  before(:each) do
-    @s = start_scheduler
-  end
-  after(:each) do
-    stop_scheduler(@s)
-  end
-
-  it 'responds to #next_time' do
-
-    job = @s.cron '* * * * *' do
-    end
-
-    (job.next_time.to_i - Time.now.to_i).should satisfy { |v| v < 60 }
-  end
 end
 
