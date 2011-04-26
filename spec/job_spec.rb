@@ -17,10 +17,64 @@ describe 'job classes' do
     stop_scheduler(@s)
   end
 
-  #describe Rufus::Scheduler::Job do
-  #  describe '#running' do
-  #  end
-  #end
+  describe Rufus::Scheduler::Job do
+
+    describe '#running' do
+
+      it 'returns false when the job is inactive' do
+
+        job = @s.in '2d' do
+        end
+
+        job.running.should == false
+      end
+
+      it 'returns true when the job is active' do
+
+        job = @s.in 0 do
+          sleep(100)
+        end
+
+        wait_next_tick
+
+        job.running.should == true
+      end
+
+      it 'returns true when the job hit some error' do
+        # that's debatable...
+
+        $exception = nil
+
+        def @s.handle_exception(j, e)
+          #p e
+          $exception = e
+        end
+
+        job = @s.in 0 do
+          raise "nada"
+        end
+
+        wait_next_tick
+
+        $exception.should_not == nil
+        job.running.should == true
+      end
+    end
+
+    describe '#running?' do
+
+      it 'is an alias for #running' do
+
+        job = @s.in 0 do
+          sleep(100)
+        end
+
+        wait_next_tick
+
+        job.running?.should == true
+      end
+    end
+  end
 
   describe Rufus::Scheduler::AtJob do
 
