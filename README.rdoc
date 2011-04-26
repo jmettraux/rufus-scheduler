@@ -175,7 +175,7 @@ Jobs scheduled with the :blocking parameter will run in the thread of the schedu
 Hence, our espresso will come in 22 minutes instead of 21.
 
 
-== :allow_overlap => false
+== :allow_overlapping => false
 
 By default, every and cron jobs will "overlap" :
 
@@ -188,7 +188,7 @@ By default, every and cron jobs will "overlap" :
 
 This every job, will have overlaps. To prevent that :
 
-  scheduler.every '3s', :allow_overlap => false do
+  scheduler.every '3s', :allow_overlapping => false do
     4.times do
       puts "hello!"
       sleep 1

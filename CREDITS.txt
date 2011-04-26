@@ -7,7 +7,7 @@
 - concept47 (https://github.com/concept47) every and :discard_past
 - Chris Kampemeier (http://github.com/chrisk) rspec 2.0 refinements
 - Tanzeeb Khalili (http://github.com/tanzeeb) cron and timezones
-- Adam Davies (http://github.com/adz), :allow_overlap => false
+- Adam Davies (http://github.com/adz), :allow_overlapping => false
 - Klaas Jan Wierenga, at/every/in stress tests (1.0 and 2.0)
 - TobyH (http://github.com/tobyh), faster and cleaner CronLine#next_time
 
