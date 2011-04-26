@@ -224,7 +224,7 @@ describe Rufus::Scheduler::EveryJob do
   end
 
 
-  it 'does not allow a job to overlap execution if set !allow_overlapping' do
+  it "doesn't allow overlapped execution if :allow_overlapping => false" do
 
     stack = []
 
@@ -238,7 +238,7 @@ describe Rufus::Scheduler::EveryJob do
     stack.size.should == 2
   end
 
-  it 'allows a job to overlap execution (backward compatibility?)' do
+  it 'allows overlapped execution by default' do
 
     stack = []
 

@@ -16,6 +16,7 @@
 
 == rufus-scheduler - 2.0.7    released 2010/11/09
 
+- :allow_overlap => false, thanks Adam Davies
 - cron and timezones, thanks Tanzeeb Khalili
 - Scheduler#trigger_threads, thanks Tim Uckun
 

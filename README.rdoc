@@ -158,7 +158,7 @@ http://rufus.rubyforge.org/rufus-scheduler/classes/Rufus/Scheduler/Job.html
   p Rufus.to_time_string 7 * 24 * 3600   # => "1w"
 
 
-== :blocking
+== :blocking => true
 
 Jobs will, by default, trigger in their own thread. This is usually desirable since one expects the scheduler to continue scheduling even if a job is currently running.
 
@@ -173,6 +173,27 @@ Jobs scheduled with the :blocking parameter will run in the thread of the schedu
   end
 
 Hence, our espresso will come in 22 minutes instead of 21.
+
+
+== :allow_overlap => false
+
+By default, every and cron jobs will "overlap" :
+
+  scheduler.every '3s' do
+    4.times do
+      puts "hello!"
+      sleep 1
+    end
+  end
+
+This every job, will have overlaps. To prevent that :
+
+  scheduler.every '3s', :allow_overlap => false do
+    4.times do
+      puts "hello!"
+      sleep 1
+    end
+  end
 
 
 == 'every' jobs and :first_at / :first_in

@@ -67,8 +67,6 @@ module Scheduler
     #
     attr_reader :job_id
 
-    attr_accessor :running
-
     # Instantiating the job.
     #
     def initialize(scheduler, t, params, &block)
@@ -79,10 +77,6 @@ module Scheduler
       @block = block || params[:schedulable]
 
       @running = false
-      @allow_overlapping = true
-      if !params[:allow_overlapping].nil?
-        @allow_overlapping = params[:allow_overlapping]
-      end
 
       raise ArgumentError.new(
         'no block or :schedulable passed, nothing to schedule'
@@ -94,6 +88,15 @@ module Scheduler
 
       determine_at
     end
+
+    # Returns true if this job is currently running (in the middle of #trigger)
+    #
+    def running
+
+      @running
+    end
+
+    alias running? running
 
     # Returns the list of tags attached to the job.
     #
@@ -126,9 +129,10 @@ module Scheduler
       job_thread = nil
       to_job = nil
 
-      return if @running && !@allow_overlapping
+      return if @running and (params[:allow_overlapping] == false)
 
       @running = true
+
       @scheduler.send(:trigger_job, @params[:blocking]) do
         #
         # Note that #trigger_job is protected, hence the #send
@@ -169,7 +173,6 @@ module Scheduler
           end
         end
       end
-
     end
 
     # Simply encapsulating the block#call/trigger operation, for easy
