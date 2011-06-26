@@ -14,6 +14,7 @@
 
 == Feedback
 
+- sha1dy - https://github.com/sha1dy - every and overlapping exception issue
 - Defusal - unschedule_by_tag
 - pickerel - https://github.com/pickerel
 - Gonzalo Suarez - parse_time_string(s) issue

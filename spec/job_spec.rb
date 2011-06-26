@@ -40,8 +40,7 @@ describe 'job classes' do
         job.running.should == true
       end
 
-      it 'returns true when the job hit some error' do
-        # that's debatable...
+      it 'returns false when the job hit some error' do
 
         $exception = nil
 
@@ -57,7 +56,7 @@ describe 'job classes' do
         wait_next_tick
 
         $exception.should_not == nil
-        job.running.should == true
+        job.running.should == false
       end
     end
 

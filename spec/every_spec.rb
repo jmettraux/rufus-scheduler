@@ -230,5 +230,22 @@ describe "#{SCHEDULER_CLASS}#every" do
 
     stack.size.should == 4
   end
+
+  it 'schedules anyway when exception and :allow_overlapping => false' do
+
+    $exceptions = []
+
+    def @s.handle_exception(job, exception)
+      $exceptions << exception
+    end
+
+    @s.every '1s', :allow_overlapping => false do
+      raise 'fail'
+    end
+
+    sleep 4
+
+    $exceptions.size.should be > 1
+  end
 end
 

@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 2.0.10    not yet released
 
+- every and allow_overlapping now surviving exceptions. Thanks sha1dy
+
 
 == rufus-scheduler - 2.0.9    released 2010/04/22
 

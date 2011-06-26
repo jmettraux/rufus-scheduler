@@ -151,12 +151,12 @@ module Scheduler
           job_thread = nil
           to_job.unschedule if to_job
 
-          @running = false
-
         rescue Exception => e
 
           @scheduler.handle_exception(self, e)
         end
+
+        @running = false
       end
 
       # note that add_job and add_cron_job ensured that :blocking is
