@@ -2,12 +2,12 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 2.0.10    not yet released
+== rufus-scheduler - 2.0.10    released 2011/06/26
 
 - every and allow_overlapping now surviving exceptions. Thanks sha1dy
 
 
-== rufus-scheduler - 2.0.9    released 2010/04/22
+== rufus-scheduler - 2.0.9    released 2011/04/22
 
 - Scheduler#first_at and :discard_past => true. Thanks concept47
 - Scheduler#cron and monthdays (sun#2 or mon#1)
