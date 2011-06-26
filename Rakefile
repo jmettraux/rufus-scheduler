@@ -20,7 +20,7 @@ CLEAN.include('pkg', 'rdoc')
 
 #task :spec => :check_dependencies do
 task :spec do
-  sh 'rspec spec/'
+  exec 'rspec spec/'
 end
 task :test => :spec
 
