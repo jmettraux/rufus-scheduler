@@ -2,6 +2,11 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 2.0.11    not yet released
+
+- ...
+
+
 == rufus-scheduler - 2.0.10    released 2011/06/26
 
 - every and allow_overlapping now surviving exceptions. Thanks sha1dy

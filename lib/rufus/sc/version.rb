@@ -26,7 +26,7 @@
 module Rufus
 module Scheduler
 
-  VERSION = '2.0.10'
+  VERSION = '2.0.11'
 end
 end
 
