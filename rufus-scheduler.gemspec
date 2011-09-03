@@ -1,13 +1,12 @@
-# encoding: utf-8
-
-require File.join(File.dirname(__FILE__), 'lib/rufus/sc/version')
-  # bundler wants absolute path
-
 
 Gem::Specification.new do |s|
 
   s.name = 'rufus-scheduler'
-  s.version = Rufus::Scheduler::VERSION
+
+  s.version = File.read(
+    File.expand_path('../lib/rufus/sc/version.rb', __FILE__)
+  ).match(/ VERSION *= *['"]([^'"]+)/)[1]
+
   s.platform = Gem::Platform::RUBY
   s.authors = [ 'John Mettraux' ]
   s.email = [ 'jmettraux@gmail.com' ]
