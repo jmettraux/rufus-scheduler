@@ -105,6 +105,7 @@ module Rufus::Scheduler
       @cron_jobs = get_queue(:cron, opts)
 
       @frequency = @options[:frequency] || 0.330
+      @exception_handler = @options[:exception_handler] || Rufus::ExceptionHandlers::Default.new
     end
 
     # Instantiates and starts a new Rufus::Scheduler.
@@ -210,12 +211,7 @@ module Rufus::Scheduler
         log_exception(exception)
 
       else
-
-        puts '=' * 80
-        puts "scheduler caught exception :"
-        puts exception
-        exception.backtrace.each { |l| puts l }
-        puts '=' * 80
+        @exception_handler.handle_exception(job, exception)
       end
     end
 

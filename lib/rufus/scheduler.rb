@@ -24,6 +24,7 @@
 
 
 require 'rufus/sc/scheduler'
+require 'rufus/exception_handlers/default'
 
 
 module Rufus::Scheduler
@@ -37,7 +38,6 @@ module Rufus::Scheduler
   # it will create a PlainScheduler instance.
   #
   def self.start_new(opts={})
-
     if defined?(EM) and EM.reactor_running?
       EmScheduler.start_new(opts)
     else
