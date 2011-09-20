@@ -1,2 +1,4 @@
 .rvmrc
 rdoc
+*.swp
+tags
