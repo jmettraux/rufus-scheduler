@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 2.0.11    not yet released
+== rufus-scheduler - 2.0.11    released 2011/09/30
 
 - require 'rufus-scheduler' works
 
