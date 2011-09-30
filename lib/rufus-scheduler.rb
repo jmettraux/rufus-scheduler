@@ -1,3 +1,3 @@
 
-require 'rufus/sc/scheduler'
+require 'rufus/scheduler'
 
