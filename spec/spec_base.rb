@@ -5,10 +5,13 @@
 # Fri Mar 20 22:53:33 JST 2009
 #
 
-$:.unshift(File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib')))
+$:.unshift(File.expand_path('../../lib', __FILE__))
 
 require 'rubygems'
 require 'fileutils'
+
+
+Thread.abort_on_exception = true
 
 
 #$:.unshift(File.expand_path('~/tmp/bacon/lib')) # my own bacon for a while
@@ -22,7 +25,7 @@ require 'fileutils'
 
 # EM or plain ?
 
-$plain = ! ARGV.include?('--em')
+$plain = ! ENV['EVENTMACHINE']
 
 require 'rufus/scheduler'
 
