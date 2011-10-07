@@ -29,26 +29,32 @@ describe SCHEDULER_CLASS do
     end
   end
 
-  it "doesn't block when :blocking => nil" do
+  context ':blocking => nil' do
 
-    $var = []
-    @s.in('1s') { JOB.call(1) }
-    @s.in('1s') { JOB.call(2) }
+    it "doesn't block" do
 
-    sleep 5.0
+      $var = []
+      @s.in('1s') { JOB.call(1) }
+      @s.in('1s') { JOB.call(2) }
 
-    [ %w{ a1 a2 b1 b2 }, %w{ a1 a2 b2 b1 } ].should include($var)
+      sleep 5.0
+
+      [ %w{ a1 a2 b1 b2 }, %w{ a1 a2 b2 b1 } ].should include($var)
+    end
   end
 
-  it 'blocks when :blocking => true' do
+  context ':blocking => true' do
 
-    $var = []
-    @s.in('1s', :blocking => true) { JOB.call(8) }
-    @s.in('1s', :blocking => true) { JOB.call(9) }
+    it 'blocks' do
 
-    sleep 4.5
+      $var = []
+      @s.in('1s', :blocking => true) { JOB.call(8) }
+      @s.in('1s', :blocking => true) { JOB.call(9) }
 
-    $var.should == %w[ a8 b8 a9 b9 ]
+      sleep 4.5
+
+      $var.should == %w[ a8 b8 a9 b9 ]
+    end
   end
 end
 

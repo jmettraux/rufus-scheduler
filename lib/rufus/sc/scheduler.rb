@@ -105,6 +105,8 @@ module Rufus::Scheduler
       @cron_jobs = get_queue(:cron, opts)
 
       @frequency = @options[:frequency] || 0.330
+
+      @mutexes = {}
     end
 
     # Instantiates and starts a new Rufus::Scheduler.
@@ -339,10 +341,13 @@ module Rufus::Scheduler
     # TODO : clarify, the blocking here blocks the whole scheduler, while
     # EmScheduler blocking triggers for the next tick. Not the same thing ...
     #
-    def trigger_job(blocking, &block)
+    def trigger_job(params, &block)
 
-      if blocking
+      if params[:blocking]
         block.call
+      elsif m = params[:mutex]
+        m = (@mutexes[m.to_s] ||= Mutex.new) unless m.is_a?(Mutex)
+        Thread.new { m.synchronize { block.call } }
       else
         Thread.new { block.call }
       end
@@ -471,14 +476,20 @@ module Rufus::Scheduler
     # If 'blocking' is set to true, the block will get called at the
     # 'next_tick'. Else the block will get called via 'defer' (own thread).
     #
-    def trigger_job(blocking, &block)
+    def trigger_job(params, &block)
 
-      m = blocking ? :next_tick : :defer
-        #
-        # :next_tick monopolizes the EM
-        # :defer executes its block in another thread
+      # :next_tick monopolizes the EM
+      # :defer executes its block in another thread
+      # (if I read the doc carefully...)
 
-      EM.send(m) { block.call }
+      if params[:blocking]
+        EM.next_tick { block.call }
+      elsif m = params[:mutex]
+        m = (@mutexes[m.to_s] ||= Mutex.new) unless m.is_a?(Mutex)
+        EM.defer { m.synchronize { block.call } }
+      else
+        EM.defer { block.call }
+      end
     end
   end
 

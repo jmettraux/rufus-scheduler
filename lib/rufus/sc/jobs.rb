@@ -133,7 +133,7 @@ module Scheduler
 
       @running = true
 
-      @scheduler.send(:trigger_job, @params[:blocking]) do
+      @scheduler.send(:trigger_job, @params) do
         #
         # Note that #trigger_job is protected, hence the #send
         # (Only jobs know about this method of the scheduler)

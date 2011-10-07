@@ -4,7 +4,7 @@
 
 == rufus-scheduler - 2.0.12    not yet released
 
-- ...
+- scheduler.in '1s', :mutex => 'that_mutex_name'
 
 
 == rufus-scheduler - 2.0.11    released 2011/09/30

@@ -183,24 +183,73 @@ Warning, 'cron' behaves a bit differently than 'in' and 'at', if the scheduler i
 If at 4pm the scheduler is in a blocking task, there will be no four o'clock tea.
 
 
+== :mutex => 'that_mutex'
+
+:blocking is nice but it is blocking the whole scheduler. What about something more fine-grained ? And also something that can be used with in, at, every and cron ?
+
+  scheduler.in '20m', :mutex => 'that_mutex' do
+    puts "order ristretto"
+    sleep 2 * 60
+    puts "ah, that was delicious"
+  end
+  scheduler.in '21m' :mutex => 'that_mutex' do
+    puts "order espresso"
+  end
+
+the "order espresso" will only get triggered once the ristretto has been consumed. Rufus-scheduler, will create a 'that_mutex' mutex and keep track of it. Don't go on passing too many different mutex names, rufus-scheduler will keep track of each of them (they won't get garbage collected).
+
+It's OK to use a mutex directly:
+
+  m = Mutex.new
+  # ...
+  scheduler.cron  '0 18 * * *', :mutex => m do
+    # ...
+  end
+  scheduler.in '21m' :mutex => m do
+    # ...
+  end
+
+It can be handy for even more fine-grained control:
+
+  m = Mutex.new
+  # ...
+  scheduler.cron  '0 18 * * *', :mutex => m do
+    # ...
+  end
+  scheduler.in '21m' do
+    # non-critical
+    m.synchronize do
+      # critical
+    end
+    # non-critical
+  end
+
+
 == :allow_overlapping => false
 
-By default, every and cron jobs will "overlap" :
+By default, every and cron jobs will "overlap":
 
   scheduler.every '3s' do
-    4.times do
-      puts "hello!"
+    4.times do |i|
+      puts "hello #{i}"
       sleep 1
     end
   end
 
-This every job, will have overlaps. To prevent that :
+You mind end up with something that looks like
+
+  hello 0
+  hello 1
+  hello 2
+  hello 3
+  hello 3
+  hello 4
+  ...
+
+This every job, will have overlaps. To prevent that:
 
   scheduler.every '3s', :allow_overlapping => false do
-    4.times do
-      puts "hello!"
-      sleep 1
-    end
+    # ...
   end
 
 
@@ -406,8 +455,7 @@ https://github.com/jmettraux/rufus-scheduler/issues/issue/10
 == tested with
 
 * 1.8.7-p249
-* 1.9.1-p378
-* 1.9.2-p0
+* 1.9.2-p290
 * jruby-1.5.1
 
 on Mac OS X (Snow Leopard).
