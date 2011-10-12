@@ -17,13 +17,13 @@ describe SCHEDULER_CLASS do
     stop_scheduler(@s)
   end
 
-  it 'emits exception messages to stdout' do
+  it 'emits exception messages to stderr' do
 
     require 'stringio' unless defined?(StringIO) # ruby 1.9
 
-    stdout = $stdout
+    stderr = $stderr
     s = StringIO.new
-    $stdout = s
+    $stderr = s
 
     @s.in 0.400 do
       raise 'Houston we have a problem'
@@ -31,7 +31,7 @@ describe SCHEDULER_CLASS do
 
     sleep 0.500
     sleep 0.500
-    $stdout = stdout
+    $stderr = stderr
     s.close
 
     s.string.should match(/Houston we have a problem/)
@@ -55,7 +55,7 @@ describe SCHEDULER_CLASS do
     $job.class.should == Rufus::Scheduler::InJob
   end
 
-  it 'accepts overriding #log_exception' do
+  it 'accepts defining #log_exception' do
 
     $e = nil
 
@@ -70,6 +70,27 @@ describe SCHEDULER_CLASS do
     sleep 0.500
     sleep 0.500
 
+    $e.to_s.should == 'Houston we have a problem'
+  end
+
+  it 'accepts defining #on_exception' do
+
+    $j = nil
+    $e = nil
+
+    def @s.on_exception(j, e)
+      $j = j
+      $e = e
+    end
+
+    @s.in 0.400 do
+      raise 'Houston we have a problem'
+    end
+
+    sleep 0.500
+    sleep 0.500
+
+    $j.class.should == Rufus::Scheduler::InJob
     $e.to_s.should == 'Houston we have a problem'
   end
 end

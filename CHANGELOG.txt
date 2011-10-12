@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 2.0.12    not yet released
 
+- hardened exception handling. Thanks Sam Gibson
+- accepting #handle_exception, #log_exception or #on_exception
 - scheduler.in '1s', :mutex => 'that_mutex_name'
 
 

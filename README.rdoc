@@ -404,6 +404,17 @@ It's easy to customize that behaviour :
     puts "job #{job.job_id} caught exception '#{exception}'"
   end
 
+These are OK too:
+
+  def scheduler.on_exception(job, exception)
+    puts "job #{job.job_id} caught exception '#{exception}'"
+  end
+
+  # or
+
+  def scheduler.on_exception(exception)
+    puts "caught exception '#{exception}'"
+
 For backward compatibility, overriding #log_exception is still OK :
 
   def scheduler.log_exception(exception)

@@ -14,6 +14,7 @@
 
 == Feedback
 
+- Sam Gibson - https://github.com/samfoo - exception handling hardening
 - sha1dy - https://github.com/sha1dy - every and overlapping exception issue
 - Defusal - unschedule_by_tag
 - pickerel - https://github.com/pickerel

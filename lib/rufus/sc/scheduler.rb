@@ -200,25 +200,42 @@ module Rufus::Scheduler
     # MISC
     #++
 
-    # Feel free to override this method. The default implementation simply
-    # outputs the error message to STDOUT
+    # Determines if there is #log_exception, #handle_exception or #on_exception
+    # method. If yes, hands the exception to it, else defaults to outputting
+    # details to $stderr.
     #
-    def handle_exception(job, exception)
+    def do_handle_exception(job, exception)
 
-      if self.respond_to?(:log_exception)
-        #
-        # some kind of backward compatibility
+      begin
 
-        log_exception(exception)
+        [ :log_exception, :handle_exception, :on_exception ].each do |m|
 
-      else
+          next unless self.respond_to?(m)
 
-        puts '=' * 80
-        puts "scheduler caught exception :"
-        puts exception
-        exception.backtrace.each { |l| puts l }
-        puts '=' * 80
+          if method(m).arity == 1
+            self.send(m, exception)
+          else
+            self.send(m, job, exception)
+          end
+
+          return
+            # exception was handled successfully
+        end
+
+      rescue Exception => e
+
+        $stderr.puts '*' * 80
+        $stderr.puts 'the exception handling method itself had an issue:'
+        $stderr.puts e
+        $stderr.puts *e.backtrace
+        $stderr.puts '*' * 80
       end
+
+      $stderr.puts '=' * 80
+      $stderr.puts 'scheduler caught exception:'
+      $stderr.puts exception
+      $stderr.puts *exception.backtrace
+      $stderr.puts '=' * 80
     end
 
     #--

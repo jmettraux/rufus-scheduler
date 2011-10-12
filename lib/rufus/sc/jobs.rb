@@ -153,7 +153,7 @@ module Scheduler
 
         rescue Exception => e
 
-          @scheduler.handle_exception(self, e)
+          @scheduler.do_handle_exception(self, e)
         end
 
         @running = false
