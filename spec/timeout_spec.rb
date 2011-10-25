@@ -94,10 +94,10 @@ describe "#{SCHEDULER_CLASS} timeouts" do
       end
     end
 
-    sleep 5
+    sleep 5.5
 
     timeouts.size.should == 3
-    timeouts.each { |to| (to * 10).to_i.should == 16 }
+    timeouts.each { |to| to.should be_within(0.5).of(1.5) }
   end
 
   it 'points to their "parent" job' do

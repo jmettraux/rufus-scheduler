@@ -67,12 +67,12 @@ def stop_scheduler(s)
 end
 
 def wait_next_tick
-  if defined?(EM)
-    t = Thread.current
-    EM.next_tick { t.wakeup }
-    Thread.stop
-  else
-    sleep 0.500
-  end
+  #if defined?(EM)
+  #  t = Thread.current
+  #  EM.next_tick { t.wakeup }
+  #  Thread.stop
+  #else
+  sleep 0.500
+  #end
 end
 
