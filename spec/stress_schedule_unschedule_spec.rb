@@ -3,7 +3,7 @@
 # a spec by Klaas Jan Wierenga
 #
 
-require File.join(File.dirname(__FILE__), '/spec_base')
+require 'spec_base'
 
 
 

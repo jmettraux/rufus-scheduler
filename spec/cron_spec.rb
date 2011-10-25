@@ -5,7 +5,7 @@
 # Sun Mar 22 19:59:12 JST 2009
 #
 
-require File.join(File.dirname(__FILE__), 'spec_base')
+require 'spec_base'
 
 
 describe "#{SCHEDULER_CLASS}#cron" do

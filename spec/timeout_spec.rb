@@ -5,7 +5,7 @@
 # Sun May  3 15:44:28 JST 2009
 #
 
-require File.join(File.dirname(__FILE__), '/spec_base')
+require 'spec_base'
 
 
 describe "#{SCHEDULER_CLASS} timeouts" do

@@ -5,7 +5,7 @@
 # Fri Oct  7 17:30:45 JST 2011
 #
 
-require File.expand_path('../spec_base', __FILE__)
+require 'spec_base'
 
 
 describe SCHEDULER_CLASS do

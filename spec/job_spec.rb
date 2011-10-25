@@ -5,7 +5,7 @@
 # Wed Apr 27 00:51:07 JST 2011
 #
 
-require File.join(File.dirname(__FILE__), 'spec_base')
+require 'spec_base'
 
 
 describe 'job classes' do

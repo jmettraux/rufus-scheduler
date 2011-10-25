@@ -5,7 +5,7 @@
 # Sat Mar 21 12:55:27 JST 2009
 #
 
-require File.join(File.dirname(__FILE__), 'spec_base')
+require 'spec_base'
 
 
 describe Rufus::CronLine do
