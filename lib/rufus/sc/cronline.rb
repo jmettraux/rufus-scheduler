@@ -212,7 +212,7 @@ module Rufus
       return parse_list(item, min, max) if item.index(',')
       return parse_range(item, min, max) if item.index('*') or item.index('-')
 
-      i = Integer(item)
+      i = item.to_i
 
       i = min if i < min
       i = max if i > max
