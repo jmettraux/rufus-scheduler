@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 2.0.12    not yet released
+== rufus-scheduler - 2.0.12    released 2011/10/28
 
 - hardened exception handling. Thanks Sam Gibson
 - accepting #handle_exception, #log_exception or #on_exception
