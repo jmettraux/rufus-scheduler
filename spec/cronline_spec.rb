@@ -84,6 +84,16 @@ describe Rufus::CronLine do
         Rufus::CronLine.new('* * * * sun#1-sun#2')
       }.should raise_error(ArgumentError)
     end
+
+    it 'accepts items with initial 0' do
+
+      to_a '09 * * * *', [ [0], [9], nil, nil, nil, nil, nil, nil ]
+      to_a '09-12 * * * *', [ [0], [9, 10, 11, 12], nil, nil, nil, nil, nil, nil ]
+      to_a '07-08 * * * *', [ [0], [7, 8], nil, nil, nil, nil, nil, nil ]
+      to_a '* */08 * * *', [ [0], nil, [0, 8, 16, 24], nil, nil, nil, nil, nil ]
+      to_a '* 01-09/04 * * *', [ [0], nil, [1, 5, 9], nil, nil, nil, nil, nil ]
+      to_a '* * * * 06', [ [0], nil, nil, nil, nil, [6], nil, nil ]
+    end
   end
 
   describe '#next_time' do

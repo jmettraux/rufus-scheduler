@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Anthony Lewis (https://github.com/anthonylewis) cron lines and 09 issue
 - concept47 (https://github.com/concept47) every and :discard_past
 - Chris Kampemeier (http://github.com/chrisk) rspec 2.0 refinements
 - Tanzeeb Khalili (http://github.com/tanzeeb) cron and timezones

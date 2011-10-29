@@ -190,6 +190,7 @@ module Rufus
           ) if it.index('-')
 
           (monthdays ||= []) << it
+
         else
 
           WEEKDAYS.each_with_index { |a, i| it.gsub!(/#{a}/, i.to_s) }
@@ -234,19 +235,19 @@ module Rufus
 
       return item.to_i if (not i and not j)
 
-      inc = j ? Integer(item[j+1..-1]) : 1
+      inc = j ? item[j + 1..-1].to_i : 1
 
       istart = -1
       iend = -1
 
       if i
 
-        istart = Integer(item[0..i - 1])
+        istart = item[0..i - 1].to_i
 
-        if j
-          iend = Integer(item[i + 1..j - 1])
+        iend = if j
+          item[i + 1..j - 1].to_i
         else
-          iend = Integer(item[i + 1..-1])
+          item[i + 1..-1].to_i
         end
 
       else # case */x
