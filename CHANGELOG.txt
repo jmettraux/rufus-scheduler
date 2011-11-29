@@ -2,6 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 2.0.14    not yet released
+
+
 == rufus-scheduler - 2.0.13    released 2011/11/14
 
 - cron lines now OK with "09". Thanks Anthony Lewis
