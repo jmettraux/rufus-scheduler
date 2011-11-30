@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 2.0.14    not yet released
 
+- Scheduler#unschedule(job_or_job_id)
+
 
 == rufus-scheduler - 2.0.13    released 2011/11/14
 

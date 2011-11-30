@@ -60,16 +60,30 @@ describe "#{SCHEDULER_CLASS}#schedule_at" do
     @s.jobs.should == {}
   end
 
-  it 'unschedules' do
+  it 'unschedules (job_id)' do
 
     job = @s.at Time.now + 3 * 3600 do
     end
 
-    wait_next_tick
+    sleep 0.300
 
     @s.jobs.size.should == 1
 
     @s.unschedule(job.job_id)
+
+    @s.jobs.size.should == 0
+  end
+
+  it 'unschedules (job)' do
+
+    job = @s.at Time.now + 3 * 3600 do
+    end
+
+    sleep 0.300
+
+    @s.jobs.size.should == 1
+
+    @s.unschedule(job)
 
     @s.jobs.size.should == 0
   end

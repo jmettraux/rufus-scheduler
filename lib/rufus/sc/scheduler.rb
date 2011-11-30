@@ -177,11 +177,13 @@ module Rufus::Scheduler
     end
     alias :schedule :cron
 
-    # Unschedules a job (cron or at/every/in job) given its id.
+    # Unschedules a job (cron or at/every/in job).
     #
     # Returns the job that got unscheduled.
     #
-    def unschedule(job_id)
+    def unschedule(job_or_id)
+
+      job_id = job_or_id.respond_to?(:job_id) ? job_or_id.job_id : job_or_id
 
       @jobs.unschedule(job_id) || @cron_jobs.unschedule(job_id)
     end

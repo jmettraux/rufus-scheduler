@@ -37,7 +37,7 @@ describe "#{SCHEDULER_CLASS}#cron" do
     seconds.uniq.size.should == seconds.size
   end
 
-  it 'unschedules' do
+  it 'unschedules (self)' do
 
     second = nil
 
@@ -52,6 +52,29 @@ describe "#{SCHEDULER_CLASS}#cron" do
     second.should_not == nil
 
     job.unschedule
+
+    after = second
+
+    sleep 2
+
+    second.should == after
+  end
+
+  it 'unschedules (job)' do
+
+    second = nil
+
+    job = @s.cron '* * * * * *'  do |job|
+      second = job.last.sec
+    end
+
+    second.should == nil
+
+    sleep 2
+
+    second.should_not == nil
+
+    @s.unschedule(job)
 
     after = second
 
