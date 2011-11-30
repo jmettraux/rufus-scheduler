@@ -388,7 +388,7 @@ module Rufus::Scheduler
       @thread = Thread.new do
         loop do
           sleep(@frequency)
-          self.step
+          step
         end
       end
 
