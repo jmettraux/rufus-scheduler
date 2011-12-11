@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 2.0.14    not yet released
+== rufus-scheduler - 2.0.14    released 2011/12/11
 
 - Job #pause and #resume
 - Scheduler #pause(job_or_job_id) and #resume(job_or_job_id)
