@@ -295,6 +295,49 @@ Note : setting a :first_at/:first_in in the past will get rufus-scheduler to tri
 In this example, the 'every' job will unschedule itself when the crop is ready.
 
 
+== #running?
+
+  job = scheduler.every '3d' do
+    # ...
+  end
+
+  # ...
+
+  p job.running?
+
+Job#running? will return true when the job got triggered and is actually performing.
+
+Please note, that #running? is not related to the #paused? which is detailed in the next section.
+
+
+== #pause, #resume and #paused?
+
+Jobs, as well as the scheduler itself have a pair of #pause and #resume methods.
+
+  job = scheduler.every '2h' do
+    # ...
+  end
+
+  # ...
+
+  job.pause # the job will be scheduled but won't trigger
+
+  # ...
+
+  puts job.paused?
+
+Pausing / resuming a job doesn't affect the scheduling of a job, it merely "silences" it, its block won't get executed. Calling resume will not reset the schedule of the job. If you schedule a job to trigger every 10 minutes at 10am and pause it from 1020 to 1025, it's next triggering time will be 1030 approximately.
+
+One can pause an "at" or "in" job. If it's still paused at trigger time, it will simply become a dud.
+
+As said, the scheduler has a #pause(job_or_job_id) and a #resume(job_or_job_id) pair of methods:
+
+  scheduler.pause(job)
+  scheduler.pause(job_id)
+  scheduler.resume(job)
+  scheduler.resume(job_id)
+
+
 == schedulables
 
 Sometimes passing a block isn't that convenient :

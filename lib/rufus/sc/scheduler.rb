@@ -198,6 +198,22 @@ module Rufus::Scheduler
       jobs
     end
 
+    # Pauses a given job. If the argument is an id (String) and the
+    # corresponding job cannot be found, an ArgumentError will get raised.
+    #
+    def pause(job_or_id)
+
+      find(job_or_id).pause
+    end
+
+    # Resumes a given job. If the argument is an id (String) and the
+    # corresponding job cannot be found, an ArgumentError will get raised.
+    #
+    def resume(job_or_id)
+
+      find(job_or_id).resume
+    end
+
     #--
     # MISC
     #++
@@ -270,6 +286,25 @@ module Rufus::Scheduler
     def find_by_tag(tag)
 
       all_jobs.values.select { |j| j.tags.include?(tag) }
+    end
+
+    # Mostly used to find a job given its id. If the argument is a job, will
+    # simply return it.
+    #
+    # If the argument is an id, and no job with that id is found, it will
+    # raise an ArgumentError.
+    #
+    def find(job_or_id)
+
+      return job_or_id if job_or_id.respond_to?(:job_id)
+
+      job = all_jobs[job_or_id]
+
+      raise ArgumentError.new(
+        "couldn't find job #{job_or_id.inspect}"
+      ) unless job
+
+      job
     end
 
     # Returns the current list of trigger threads (threads) dedicated to

@@ -154,6 +154,40 @@ describe 'job classes' do
         job.next_time.to_i.should == t.to_i
       end
     end
+
+    describe '#paused?' do
+
+      it 'returns false initially' do
+
+        job = @s.every '3h' do; end
+
+        job.paused?.should == false
+      end
+    end
+
+    describe '#pause' do
+
+      it 'pauses the job' do
+
+        job = @s.every '3h' do; end
+
+        job.pause
+
+        job.paused?.should == true
+      end
+    end
+
+    describe '#resume' do
+
+      it 'resumes the job' do
+
+        job = @s.every '3h' do; end
+
+        job.resume
+
+        job.paused?.should == false
+      end
+    end
   end
 
   describe Rufus::Scheduler::CronJob do
@@ -167,6 +201,40 @@ describe 'job classes' do
 
         job.next_time.class.should == Time
         (job.next_time.to_i - Time.now.to_i).should satisfy { |v| v < 60 }
+      end
+    end
+
+    describe '#paused?' do
+
+      it 'returns false initially' do
+
+        job = @s.cron '* * * * *' do; end
+
+        job.paused?.should == false
+      end
+    end
+
+    describe '#pause' do
+
+      it 'pauses the job' do
+
+        job = @s.cron '* * * * *' do; end
+
+        job.pause
+
+        job.paused?.should == true
+      end
+    end
+
+    describe '#resume' do
+
+      it 'resumes the job' do
+
+        job = @s.cron '* * * * *' do; end
+
+        job.resume
+
+        job.paused?.should == false
       end
     end
   end

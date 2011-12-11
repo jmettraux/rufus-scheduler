@@ -64,6 +64,98 @@ describe SCHEDULER_CLASS do
 
     stop_scheduler(s)
   end
+
+  context 'pause/resume' do
+
+    before(:each) do
+      @s = start_scheduler
+    end
+    after(:each) do
+      stop_scheduler(@s)
+    end
+
+    describe '#pause' do
+
+      it 'pauses a job (every)' do
+
+        $count = 0
+
+        j = @s.every '1s' do
+          $count = $count + 1
+        end
+
+        @s.pause(j.job_id)
+
+        sleep 2.5
+
+        j.paused?.should == true
+        $count.should == 0
+      end
+
+      it 'pauses a job (cron)' do
+
+        $count = 0
+
+        j = @s.cron '* * * * * *' do
+          $count = $count + 1
+        end
+
+        @s.pause(j.job_id)
+
+        sleep 2.5
+
+        j.paused?.should == true
+        $count.should == 0
+      end
+    end
+
+    describe '#resume' do
+
+      it 'resumes a job (every)' do
+
+        $count = 0
+
+        j = @s.every '1s' do
+          $count = $count + 1
+        end
+
+        @s.pause(j.job_id)
+
+        sleep 2.5
+
+        c = $count
+
+        @s.resume(j.job_id)
+
+        sleep 1.5
+
+        j.paused?.should == false
+        ($count > c).should == true
+      end
+
+      it 'pauses a job (cron)' do
+
+        $count = 0
+
+        j = @s.cron '* * * * * *' do
+          $count = $count + 1
+        end
+
+        @s.pause(j.job_id)
+
+        sleep 2.5
+
+        c = $count
+
+        @s.resume(j.job_id)
+
+        sleep 1.5
+
+        j.paused?.should == false
+        ($count > c).should == true
+      end
+    end
+  end
 end
 
 describe 'Rufus::Scheduler#start_new' do

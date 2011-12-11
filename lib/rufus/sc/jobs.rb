@@ -77,6 +77,7 @@ module Scheduler
       @block = block || params[:schedulable]
 
       @running = false
+      @paused = false
 
       raise ArgumentError.new(
         'no block or :schedulable passed, nothing to schedule'
@@ -91,12 +92,47 @@ module Scheduler
 
     # Returns true if this job is currently running (in the middle of #trigger)
     #
+    # Note : paused? is not related to running?
+    #
     def running
 
       @running
     end
 
     alias running? running
+
+    # Returns true if this job is paused, false else.
+    #
+    # A paused job is still scheduled, but does not trigger.
+    #
+    # Note : paused? is not related to running?
+    #
+    def paused?
+
+      @paused
+    end
+
+    # Pauses this job (sets the paused flag to true).
+    #
+    # Note that it will not pause the execution of a block currently 'running'.
+    # Future triggering of the job will not occur until #resume is called.
+    #
+    # Note too that, during the pause time, the schedule kept the same. Calling
+    # #resume will not force old triggers in.
+    #
+    def pause
+
+      @paused = true
+    end
+
+    # Resumes this job (sets the paused flag to false).
+    #
+    # This job will trigger again.
+    #
+    def resume
+
+      @paused = false
+    end
 
     # Returns the list of tags attached to the job.
     #
@@ -124,6 +160,8 @@ module Scheduler
     # Triggers the job.
     #
     def trigger(t=Time.now)
+
+      return if @paused
 
       @last = t
       job_thread = nil
@@ -352,6 +390,8 @@ module Scheduler
     end
 
     def trigger_if_matches(time)
+
+      return if @paused
 
       trigger(time) if @cron_line.matches?(time)
     end

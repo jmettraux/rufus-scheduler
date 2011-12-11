@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 2.0.14    not yet released
 
+- Job #pause and #resume
+- Scheduler #pause(job_or_job_id) and #resume(job_or_job_id)
 - Scheduler#unschedule(job_or_job_id)
 
 
