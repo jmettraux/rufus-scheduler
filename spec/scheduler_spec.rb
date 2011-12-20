@@ -156,6 +156,35 @@ describe SCHEDULER_CLASS do
       end
     end
   end
+
+  context 'trigger threads' do
+
+    before(:each) do
+      @s = start_scheduler
+    end
+    after(:each) do
+      stop_scheduler(@s)
+    end
+
+    describe '#trigger_threads' do
+
+      it 'returns an empty list when no jobs are running' do
+
+        @s.trigger_threads.should == []
+      end
+
+      it 'returns a list of the threads of the running jobs' do
+
+        @s.in '1s' do
+          sleep 10
+        end
+
+        sleep 1.5
+
+        @s.trigger_threads.collect { |e| e.class }.should == [ Thread ]
+      end
+    end
+  end
 end
 
 describe 'Rufus::Scheduler#start_new' do
