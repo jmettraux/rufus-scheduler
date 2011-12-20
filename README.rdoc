@@ -338,6 +338,13 @@ As said, the scheduler has a #pause(job_or_job_id) and a #resume(job_or_job_id) 
   scheduler.resume(job_id)
 
 
+== Scheduler#running_jobs
+
+One can get a list of the jobs just triggered (actually running) by doing
+
+  jobs = scheduler.running_jobs
+
+
 == schedulables
 
 Sometimes passing a block isn't that convenient :
