@@ -175,13 +175,28 @@ describe SCHEDULER_CLASS do
 
       it 'returns a list of the threads of the running jobs' do
 
-        @s.in '1s' do
-          sleep 10
-        end
+        @s.in('100') { sleep 10 }
 
-        sleep 1.5
+        sleep 0.5
 
         @s.trigger_threads.collect { |e| e.class }.should == [ Thread ]
+      end
+    end
+
+    describe '#running_jobs' do
+
+      it 'returns an empty list when no jobs are running' do
+
+        @s.running_jobs.should == []
+      end
+
+      it 'returns a list of the currently running jobs' do
+
+        job = @s.in('100') { sleep 10 }
+
+        sleep 0.5
+
+        @s.running_jobs.should == [ job ]
       end
     end
   end

@@ -313,8 +313,18 @@ module Rufus::Scheduler
     def trigger_threads
 
       Thread.list.select { |t|
-        t["rufus_scheduler__trigger_thread__#{self.object_id}"] == true
+        t["rufus_scheduler__trigger_thread__#{self.object_id}"]
       }
+    end
+
+    # Returns the list of the currently running jobs (jobs that just got
+    # triggered and are executing).
+    #
+    def running_jobs
+
+      Thread.list.collect { |t|
+        t["rufus_scheduler__trigger_thread__#{self.object_id}"]
+      }.compact
     end
 
     protected

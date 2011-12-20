@@ -177,9 +177,11 @@ module Scheduler
         # (Only jobs know about this method of the scheduler)
 
         job_thread = Thread.current
+
         job_thread[
           "rufus_scheduler__trigger_thread__#{@scheduler.object_id}"
-        ] = true
+        ] = self
+
         @last_job_thread = job_thread
 
         begin

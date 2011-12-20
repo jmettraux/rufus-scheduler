@@ -15,6 +15,7 @@
 
 == Feedback
 
+- Louis Coilliot - Scheduler#running_jobs
 - Henrique G. Testa - pause/resume concept
 - Sam Gibson - https://github.com/samfoo - exception handling hardening
 - sha1dy - https://github.com/sha1dy - every and overlapping exception issue

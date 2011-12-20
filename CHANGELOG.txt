@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 2.0.15    not yet released
 
+- Scheduler#running_jobs (Thanks Louis Coilliot)
+
 
 == rufus-scheduler - 2.0.14    released 2011/12/11
 
