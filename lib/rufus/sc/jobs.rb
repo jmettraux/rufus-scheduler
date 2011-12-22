@@ -188,7 +188,12 @@ module Scheduler
 
           trigger_block
 
+          job_thread[
+            "rufus_scheduler__trigger_thread__#{@scheduler.object_id}"
+          ] = nil
+
           job_thread = nil
+
           to_job.unschedule if to_job
 
         rescue Exception => e
