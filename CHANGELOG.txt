@@ -2,6 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 2.0.16    not yet released
+
+
 == rufus-scheduler - 2.0.15    released 2011/12/20
 
 - Scheduler#running_jobs (Thanks Louis Coilliot)
