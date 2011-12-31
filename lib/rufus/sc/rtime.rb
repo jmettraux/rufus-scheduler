@@ -122,42 +122,22 @@ module Rufus
   #
   def Rufus.parse_time_string(string)
 
-    return string.to_f if FLOAT_DURATION.match(string)
+    if m = string.match(/^(\d*)\.?(\d*)([A-Za-z])(.*)$/)
 
-    string = string.strip
+      number = "#{m[1]}.#{m[2]}".to_f
+      multiplier = DURATIONS[m[3]]
 
-    index = -1
-    result = 0.0
+      raise ArgumentError.new("unknown time char '#{m[3]}'") unless multiplier
 
-    number = ''
+      return number * multiplier + parse_time_string(m[4])
 
-    loop do
+    else
 
-      index = index + 1
+      return string.to_i / 1000.0 if string.match(/^\d+$/)
+      return string.to_f if string.match(/^\d*\.?\d*$/)
 
-      if index >= string.length
-        result = result + (Float(number) / 1000.0) if number.length > 0
-        break
-      end
-
-      c = string[index, 1]
-
-      if (c >= '0' and c <= '9')
-        number = number + c
-        next
-      end
-
-      value = Integer(number)
-      number = ''
-
-      multiplier = DURATIONS[c]
-
-      raise ArgumentError.new("unknown time char '#{c}'") unless multiplier
-
-      result = result + (value * multiplier)
+      raise ArgumentError.new("cannot parse '#{string}'")
     end
-
-    result
   end
 
   class << self

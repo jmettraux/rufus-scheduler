@@ -8,7 +8,7 @@
 require 'spec_base'
 
 
-describe 'rufus/otime' do
+describe 'rufus/rtime' do
 
   def pts(s)
     Rufus.parse_time_string(s)
@@ -24,6 +24,7 @@ describe 'rufus/otime' do
 
   it 'parses duration strings' do
 
+    pts('').should == 0.0
     pts('5.0').should == 5.0
     pts('0.5').should == 0.5
     pts('.5').should == 0.5
@@ -32,10 +33,12 @@ describe 'rufus/otime' do
     pts('1000').should == 1.0
     pts('1').should == 0.001
     pts('1s').should == 1.0
+    pts('2.5s').should == 2.5
     pts('1h').should == 3600.0
     pts('1h10s').should == 3610.0
     pts('1w2d').should == 777600.0
     pts('1d1w1d').should == 777600.0
+    pts('1.0d1.0w1.0d').should == 777600.0
   end
 
   it 'generates duration strings' do
@@ -61,7 +64,7 @@ describe 'rufus/otime' do
   end
 end
 
-describe 'rufus/otime#at_to_f' do
+describe 'rufus/rtime#at_to_f' do
 
   def atf(o)
     Rufus.at_to_f(o)
