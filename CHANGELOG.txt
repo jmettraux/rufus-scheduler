@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 2.0.16    not yet released
+== rufus-scheduler - 2.0.16    released 2011/12/31
 
 - hardened Rufus.parse_time_string
 - running job thread: getting rid of the job pointer once job is done
