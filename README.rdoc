@@ -124,6 +124,10 @@ at then end of it will make the current (main) thread join the scheduler and pre
 
 You shouldn't be exposed to this issue when using EventMachine, since while running EM, your runtime won't exit.
 
+=== important note about #join
+
+DO NOT CALL this #join method if you're running rufus-scheduler from Rails or Sinatra or any application that's already some kind of 'daemon'. It's not necessary! #join is meant for small standalone scripts.
+
 
 == block parameters
 
