@@ -2,6 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 2.0.17    not yet released
+
+
 == rufus-scheduler - 2.0.16    released 2011/12/31
 
 - hardened Rufus.parse_time_string
