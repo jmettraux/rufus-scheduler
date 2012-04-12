@@ -75,5 +75,23 @@ describe Rufus::Scheduler::Schedulable do
 
     j.value.class.should == Rufus::Scheduler::InJob
   end
+
+  class MySchedulable
+    def self.job
+      @@job
+    end
+    def self.call(job)
+      @@job = job
+    end
+  end
+
+  it 'accepts schedulable classes as second param' do
+
+    @s.in '1s', MySchedulable
+
+    sleep 1.4
+
+    MySchedulable.job.class.should == Rufus::Scheduler::InJob
+  end
 end
 
