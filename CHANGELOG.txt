@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 2.0.17    not yet released
 
+- raises ArgumentError on unknown/unsupported options (Idea Tero Tilus)
+
 
 == rufus-scheduler - 2.0.16    released 2011/12/31
 

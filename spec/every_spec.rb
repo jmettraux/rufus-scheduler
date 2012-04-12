@@ -247,5 +247,13 @@ describe "#{SCHEDULER_CLASS}#every" do
 
     $exceptions.size.should be > 1
   end
+
+  it 'raises on unknown options' do
+
+    lambda {
+      @s.every '1s', :pool => :party do
+      end
+    }.should raise_error(ArgumentError)
+  end
 end
 

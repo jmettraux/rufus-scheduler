@@ -122,5 +122,13 @@ describe "#{SCHEDULER_CLASS}#cron" do
     @s.jobs.size.should == 0
     stack.should == %w[ ok ok ok done ]
   end
+
+  it 'raises on unknown options' do
+
+    lambda {
+      @s.cron '* * * * *', :pool => :party do
+      end
+    }.should raise_error(ArgumentError)
+  end
 end
 

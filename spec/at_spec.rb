@@ -113,5 +113,13 @@ describe "#{SCHEDULER_CLASS}#schedule_at" do
     r.size.should == 3
     r.first.class.should == Rufus::Scheduler::AtJob
   end
+
+  it 'raises on unknown options' do
+
+    lambda {
+      @s.at Time.now + 3600, :first_at => (Time.now + 3600).to_s do
+      end
+    }.should raise_error(ArgumentError)
+  end
 end
 

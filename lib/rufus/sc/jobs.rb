@@ -30,7 +30,7 @@ module Scheduler
   # The base class for all types of jobs.
   #
   class Job
-
+      
     # A reference to the scheduler owning this job
     #
     attr_accessor :scheduler
@@ -75,6 +75,8 @@ module Scheduler
       @t = t
       @params = params
       @block = block || params[:schedulable]
+
+      raise_on_unknown_params
 
       @running = false
       @paused = false
@@ -235,6 +237,39 @@ module Scheduler
 
       @scheduler.unschedule(self.job_id)
     end
+
+    protected
+
+    def known_params
+
+      [ :allow_overlapping,
+        :blocking,
+        :discard_past,
+        :job_id,
+        :mutex,
+        :schedulable,
+        :tags,
+        :timeout ]
+    end
+
+    def self.known_params(*args)
+
+      define_method :known_params do
+        super + args
+      end
+    end
+
+    def raise_on_unknown_params
+
+      rem = @params.keys - known_params
+
+      raise(
+        ArgumentError,
+        "unknown option#{rem.size > 1 ? 's' : '' }: " +
+        "#{rem.map(&:inspect).join(', ')}",
+        caller[3..-1]
+      ) if rem.any?
+    end
   end
 
   #
@@ -246,6 +281,8 @@ module Scheduler
     #
     attr_reader :at
 
+    # Last time it triggered
+    #
     attr_reader :last
 
     def determine_at
@@ -266,12 +303,15 @@ module Scheduler
   #
   class InJob < SimpleJob
 
+    known_params :parent
+
     # If this InJob is a timeout job, parent points to the job that
     # is subject to the timeout.
     #
     attr_reader :parent
 
     def initialize(scheduler, t, params)
+
       @parent = params[:parent]
       super
     end
@@ -298,6 +338,8 @@ module Scheduler
   #
   class EveryJob < SimpleJob
 
+    known_params :first_in, :first_at
+
     # The frequency, in seconds, of this EveryJob
     #
     attr_reader :frequency
@@ -323,8 +365,11 @@ module Scheduler
 
     def determine_frequency
 
-      @frequency = @t.is_a?(Fixnum) || @t.is_a?(Float) ?
-        @t : Rufus.parse_duration_string(@t)
+      @frequency = if @t.is_a?(Fixnum) || @t.is_a?(Float)
+        @t
+      else
+        Rufus.parse_duration_string(@t)
+      end
     end
 
     def determine_at

@@ -15,6 +15,7 @@
 
 == Feedback
 
+- Tero Tilus - raises on unsupported/unknown options
 - Louis Coilliot - Scheduler#running_jobs
 - Henrique G. Testa - pause/resume concept
 - Sam Gibson - https://github.com/samfoo - exception handling hardening
