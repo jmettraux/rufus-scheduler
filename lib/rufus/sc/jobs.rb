@@ -255,7 +255,7 @@ module Scheduler
     def self.known_params(*args)
 
       define_method :known_params do
-        super + args
+        super() + args
       end
     end
 
