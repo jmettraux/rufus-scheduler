@@ -30,7 +30,7 @@ module Scheduler
   # The base class for all types of jobs.
   #
   class Job
-      
+
     # A reference to the scheduler owning this job
     #
     attr_accessor :scheduler
