@@ -56,6 +56,13 @@ describe Rufus::CronLine do
       to_a '0 0 1 1 *', [ [0], [0], [0], [1], [1], nil, nil, nil ]
     end
 
+    it 'rejects invalid weekday expressions' do
+      lambda { cl '0 17 * * MON_FRI' }.should raise_error # underline instead of dash
+      lambda { cl '* * * * 9' }.should raise_error
+      lambda { cl '* * * * 0-12' }.should raise_error
+      lambda { cl '* * * * BLABLA' }.should raise_error
+    end
+
     it 'interprets cron strings with TZ correctly' do
 
       to_a '* * * * * EST', [ [0], nil, nil, nil, nil, nil, nil, 'EST' ]

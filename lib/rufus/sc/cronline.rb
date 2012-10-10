@@ -192,10 +192,14 @@ module Rufus
           (monthdays ||= []) << it
 
         else
+          expr = it.dup
+          WEEKDAYS.each_with_index { |a, i| expr.gsub!(/#{a}/, i.to_s) }
 
-          WEEKDAYS.each_with_index { |a, i| it.gsub!(/#{a}/, i.to_s) }
+          raise ArgumentError.new(
+            "invalid weekday expression (#{it})"
+          ) if expr !~ /^0*[0-7](-0*[0-7])?$/
 
-          its = it.index('-') ? parse_range(it, 0, 7) : [ Integer(it) ]
+          its = expr.index('-') ? parse_range(expr, 0, 7) : [ Integer(expr) ]
           its = its.collect { |i| i == 7 ? 0 : i }
 
           (weekdays ||= []).concat(its)
