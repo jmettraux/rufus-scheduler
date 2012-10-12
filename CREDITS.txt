@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Marcus Brito (https://github.com/pazustep) CronLine proofing
 - André Luis Leal Cardoso Junior (https://github.com/andrehjr) 1.9.3 patch
 - Anthony Lewis (https://github.com/anthonylewis) cron lines and 09 issue
 - concept47 (https://github.com/concept47) every and :discard_past
