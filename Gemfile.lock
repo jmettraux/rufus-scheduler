@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rufus-scheduler (2.0.17)
+    rufus-scheduler (2.0.18)
       tzinfo (>= 0.3.23)
 
 GEM

@@ -2,6 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 2.0.18    not yet released
+
+
 == rufus-scheduler - 2.0.17    released 2012/06/14
 
 - @andrehjr patch to make it work on Ruby 1.9.3
