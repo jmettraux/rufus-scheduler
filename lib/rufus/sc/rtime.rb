@@ -133,8 +133,8 @@ module Rufus
 
     else
 
-      return string.to_i / 1000.0 if string.match(/^\d+$/)
-      return string.to_f if string.match(/^\d*\.?\d*$/)
+      return string.to_i / 1000.0 if string.match(/^-?\d+$/)
+      return string.to_f if string.match(/^-?\d*\.?\d*$/)
 
       raise ArgumentError.new("cannot parse '#{string}'")
     end
