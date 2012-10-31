@@ -24,13 +24,11 @@ describe 'rufus/rtime' do
 
   it 'parses duration strings' do
 
-    pts('-1.0d-1.0w-1.0d').should == -777600.0
-    pts('-1d-1w-1d').should == -777600.0
-    pts('-1w-2d').should == -777600.0
-    pts('-1.0d-1.0w1.0d').should == -604800.0
-    pts('-1d-1w1d').should == -604800.0
-    pts('-1h-10s').should == -3610.0
-    pts('-1h10s').should == -3590.0
+    pts('-1.0d1.0w1.0d').should == -777600.0
+    pts('-1d1w1d').should == -777600.0
+    pts('-1w2d').should == -777600.0
+    pts('-1h10s').should == -3610.0
+    pts('-1h').should == -3600.0
     pts('-5.').should == -5.0
     pts('-2.5s').should == -2.5
     pts('-1s').should == -1.0
