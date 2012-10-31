@@ -122,7 +122,7 @@ module Rufus
   #
   def Rufus.parse_time_string(string)
 
-    if m = string.match(/^(\d*)\.?(\d*)([A-Za-z])(.*)$/)
+    if m = string.match(/^(-?\d*)\.?(\d*)([A-Za-z])(.*)$/)
 
       number = "#{m[1]}.#{m[2]}".to_f
       multiplier = DURATIONS[m[3]]
