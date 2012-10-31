@@ -48,6 +48,21 @@ describe 'rufus/rtime' do
     pts('1w2d').should == 777600.0
     pts('1d1w1d').should == 777600.0
     pts('1.0d1.0w1.0d').should == 777600.0
+
+    pts('.5m').should == 30.0
+    pts('5.m').should == 300.0
+    pts('1m.5s').should == 60.5
+    pts('-.5m').should == -30.0
+  end
+
+  it 'raises on wrong duration strings' do
+
+    lambda { pts('-') }.should raise_error(ArgumentError)
+    lambda { pts('h') }.should raise_error(ArgumentError)
+    lambda { pts('whatever') }.should raise_error(ArgumentError)
+    lambda { pts('hms') }.should raise_error(ArgumentError)
+
+    lambda { pts(' 1h ') }.should raise_error(ArgumentError)
   end
 
   it 'generates duration strings' do

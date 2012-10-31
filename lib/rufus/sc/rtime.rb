@@ -96,8 +96,6 @@ module Rufus
     (Time.new.to_f * 1000).to_i
   end
 
-  FLOAT_DURATION = /^\d*\.\d*$/
-
   # Turns a string like '1m10s' into a float like '70.0', more formally,
   # turns a time duration expressed as a string into a Float instance
   # (millisecond count).
@@ -120,12 +118,35 @@ module Rufus
   #   Rufus.parse_time_string "1h10s"  # => 3610.0
   #   Rufus.parse_time_string "1w2d"   # => 777600.0
   #
-  def Rufus.parse_time_string(string)
-    if m = string.match(/^-(.*)$/)
-      return parse_time_string_recursive(m[1]) * -1.0
-    else
-      return parse_time_string_recursive(string)
+  def self.parse_time_string(string)
+
+    return 0.0 if string == ''
+
+    m = string.match(/^(-?)([\d\.#{DURATION_LETTERS}]+)$/)
+
+    raise ArgumentError.new("cannot parse '#{string}'") unless m
+
+    mod = m[1] == '-' ? -1.0 : 1.0
+    val = 0.0
+
+    s = m[2]
+
+    while s.length > 0
+      m = nil
+      if m = s.match(/^(\d+|\d+\.\d*|\d*\.\d+)([#{DURATION_LETTERS}])(.*)$/)
+        val += m[1].to_f * DURATIONS[m[2]]
+      elsif s.match(/^\d+$/)
+        val += s.to_i / 1000.0
+      elsif s.match(/^\d*\.\d*$/)
+        val += s.to_f
+      else
+        raise ArgumentError.new("cannot parse '#{string}' (especially '#{s}')")
+      end
+      break unless m && m[3]
+      s = m[3]
     end
+
+    mod * val
   end
 
   class << self
@@ -173,7 +194,7 @@ module Rufus
 
   def Rufus.to_local_time(dtime)
 
-    to_ttime(dtime.new_offset(DateTime.now.offset-offset), :local)
+    to_ttime(dtime.new_offset(DateTime.now.offset - offset), :local)
   end
 
   def Rufus.to_ttime(d, method)
@@ -220,7 +241,7 @@ module Rufus
 
     return (options[:drop_seconds] ? '0m' : '0s') if seconds <= 0
 
-    h = to_duration_hash seconds, options
+    h = to_duration_hash(seconds, options)
 
     s = DU_KEYS.inject('') { |r, key|
       count = h[key]
@@ -268,7 +289,7 @@ module Rufus
     end
 
     if options[:drop_seconds]
-      h.delete :ms
+      h.delete(:ms)
       seconds = (seconds - seconds % 60)
     end
 
@@ -305,8 +326,8 @@ module Rufus
 
     # TODO : use chronic if present
 
-    at = Rufus::to_ruby_time(at) if at.is_a?(String)
-    at = Rufus::to_gm_time(at) if at.is_a?(DateTime)
+    at = to_ruby_time(at) if at.is_a?(String)
+    at = to_gm_time(at) if at.is_a?(DateTime)
     #at = at.to_f if at.is_a?(Time)
     at = at.to_f if at.respond_to?(:to_f)
 
@@ -317,27 +338,7 @@ module Rufus
     at
   end
 
-  protected
-
-  def Rufus.parse_time_string_recursive(string)
-
-    if m = string.match(/^(\d*)\.?(\d*)([A-Za-z])(.*)$/)
-    
-      number = "#{m[1]}.#{m[2]}".to_f
-      multiplier = DURATIONS[m[3]]
-
-      raise ArgumentError.new("unknown time char '#{m[3]}'") unless multiplier
-
-      return number * multiplier + parse_time_string_recursive(m[4])
-
-    else
-
-      return string.to_i / 1000.0 if string.match(/^\d+$/)
-      return string.to_f if string.match(/^\d*\.?\d*$/)
-
-      raise ArgumentError.new("cannot parse '#{string}'")
-    end
-  end
+  protected # well, somehow
 
   DURATIONS2M = [
     [ 'y', 365 * 24 * 3600 ],
@@ -351,10 +352,8 @@ module Rufus
   DURATIONS2 = DURATIONS2M.dup
   DURATIONS2.delete_at(1)
 
-  DURATIONS = DURATIONS2M.inject({}) do |r, (k, v)|
-    r[k] = v
-    r
-  end
+  DURATIONS = DURATIONS2M.inject({}) { |r, (k, v)| r[k] = v; r }
+  DURATION_LETTERS = DURATIONS.keys.join
 
   DU_KEYS = DURATIONS2M.collect { |k, v| k.to_sym }
 end
