@@ -121,22 +121,10 @@ module Rufus
   #   Rufus.parse_time_string "1w2d"   # => 777600.0
   #
   def Rufus.parse_time_string(string)
-
-    if m = string.match(/^(\d*)\.?(\d*)([A-Za-z])(.*)$/)
-
-      number = "#{m[1]}.#{m[2]}".to_f
-      multiplier = DURATIONS[m[3]]
-
-      raise ArgumentError.new("unknown time char '#{m[3]}'") unless multiplier
-
-      return number * multiplier + parse_time_string(m[4])
-
+    if m = string.match(/^-(.*)$/)
+      return parse_time_string_recursive(m[1]) * -1.0
     else
-
-      return string.to_i / 1000.0 if string.match(/^\d+$/)
-      return string.to_f if string.match(/^\d*\.?\d*$/)
-
-      raise ArgumentError.new("cannot parse '#{string}'")
+      return parse_time_string_recursive(string)
     end
   end
 
@@ -330,6 +318,26 @@ module Rufus
   end
 
   protected
+
+  def Rufus.parse_time_string_recursive(string)
+
+    if m = string.match(/^(\d*)\.?(\d*)([A-Za-z])(.*)$/)
+    
+      number = "#{m[1]}.#{m[2]}".to_f
+      multiplier = DURATIONS[m[3]]
+
+      raise ArgumentError.new("unknown time char '#{m[3]}'") unless multiplier
+
+      return number * multiplier + parse_time_string_recursive(m[4])
+
+    else
+
+      return string.to_i / 1000.0 if string.match(/^\d+$/)
+      return string.to_f if string.match(/^\d*\.?\d*$/)
+
+      raise ArgumentError.new("cannot parse '#{string}'")
+    end
+  end
 
   DURATIONS2M = [
     [ 'y', 365 * 24 * 3600 ],
