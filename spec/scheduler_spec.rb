@@ -28,6 +28,14 @@ describe Rufus::Scheduler do
 
   describe '#shutdown' do
 
+    it 'blanks the uptime' do
+
+      scheduler = Rufus::Scheduler.new
+      scheduler.shutdown
+
+      scheduler.uptime.should == nil
+    end
+
     it 'terminates the scheduler'
     it 'has a #stop alias'
     it 'has a #close alias ???'

@@ -23,6 +23,30 @@
 #++
 
 
-class Rufus::Scheduler::Job
+class Rufus::Scheduler
+
+  class Job
+
+    attr_reader :id
+
+    def initialize(id)
+
+      @id = id
+    end
+  end
+
+  class AtJob < Job
+
+    def initialize(time, opts)
+
+      super("at_#{Time.now.to_f}_#{time.to_f}_#{opts.hash}")
+    end
+  end
+
+  class InJob < AtJob
+  end
+
+  class CronJob < Job
+  end
 end
 

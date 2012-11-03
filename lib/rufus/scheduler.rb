@@ -22,6 +22,8 @@
 # Made in Japan.
 #++
 
+require 'thread'
+
 require 'rufus/scheduler/version'
 require 'rufus/scheduler/job'
 
@@ -31,14 +33,35 @@ class Rufus::Scheduler
   def initialize
 
     @started_at = Time.now
+    @schedule_queue = Queue.new
   end
 
   def shutdown
+
+    @started_at = nil
   end
 
   def uptime
 
-    Time.now - @started_at
+    @started_at ? Time.now - @started_at : nil
+  end
+
+  #--
+  # scheduling methods
+  #++
+
+  def at(time, opts={}, &block)
+
+    schedule_at(time, opts, &block).id
+  end
+
+  def schedule_at(time, opts={}, &block)
+
+    job = Rufus::Scheduler::AtJob.new(time, opts)
+
+    @schedule_queue << job
+
+    job
   end
 end
 
