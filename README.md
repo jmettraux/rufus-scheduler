@@ -1,7 +1,9 @@
 
 # rufus-scheduler
 
-## not about the 3.0 line
+## note about the 3.0 line
 
 It's a complete rewrite of rufus-scheduler.
+
+There is not EventMachine based scheduler anymore.
 
