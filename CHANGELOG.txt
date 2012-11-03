@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 2.0.18    not yet released
+== rufus-scheduler - 3.0.0    not yet released
 
 
 == rufus-scheduler - 2.0.17    released 2012/06/14
