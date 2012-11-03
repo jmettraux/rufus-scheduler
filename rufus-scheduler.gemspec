@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.name = 'rufus-scheduler'
 
   s.version = File.read(
-    File.expand_path('../lib/rufus/scheduler/version.rb', __FILE__)
+    File.expand_path('../lib/rufus/scheduler.rb', __FILE__)
   ).match(/ VERSION *= *['"]([^'"]+)/)[1]
 
   s.platform = Gem::Platform::RUBY

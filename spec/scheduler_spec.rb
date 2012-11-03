@@ -26,6 +26,15 @@ describe Rufus::Scheduler do
     it 'returns the uptime as a human readable string'
   end
 
+  describe '#join' do
+
+    it 'joins the scheduler thread'
+  end
+
+  #--
+  # management methods
+  #++
+
   describe '#shutdown' do
 
     it 'blanks the uptime' do
@@ -46,8 +55,20 @@ describe Rufus::Scheduler do
   describe '#resume' do
   end
 
+  #--
+  # job methods
+  #++
+
   describe '#jobs' do
+
+    it 'is empty at the beginning' do
+
+      scheduler = Rufus::Scheduler.new
+
+      scheduler.jobs.should == []
+    end
   end
+
   describe '#every_jobs' do
   end
   describe '#at_jobs' do

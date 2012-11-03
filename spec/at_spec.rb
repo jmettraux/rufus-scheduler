@@ -29,7 +29,20 @@ describe Rufus::Scheduler do
       job_id.should match(/^at_/)
     end
 
-    it 'adds a job'
+    it 'adds a job' do
+
+      t = Time.now + 3600
+
+      @scheduler.at(t) do
+      end
+
+      sleep 0.4
+
+      @scheduler.jobs.size.should == 1
+      @scheduler.jobs.first.class.should == Rufus::Scheduler::AtJob
+      @scheduler.jobs.first.time.should == t
+    end
+
     it 'removes the job after execution'
   end
 

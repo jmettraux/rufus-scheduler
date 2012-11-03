@@ -1,4 +1,6 @@
 
+Thread.abort_on_exception = true
+
 require 'rufus-scheduler'
 
 
