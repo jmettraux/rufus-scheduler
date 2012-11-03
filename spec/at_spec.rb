@@ -13,7 +13,12 @@ describe Rufus::Scheduler do
 
   describe '#at' do
 
-    it 'raises if the block to schedule is missing'
+    it 'raises if the block to schedule is missing' do
+
+      lambda {
+        @scheduler.at(Time.now + 3600)
+      }.should raise_error(ArgumentError)
+    end
 
     it 'returns a job id' do
 

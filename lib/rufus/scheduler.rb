@@ -57,7 +57,7 @@ class Rufus::Scheduler
 
   def schedule_at(time, opts={}, &block)
 
-    job = Rufus::Scheduler::AtJob.new(time, opts)
+    job = Rufus::Scheduler::AtJob.new(time, opts, block)
 
     @schedule_queue << job
 

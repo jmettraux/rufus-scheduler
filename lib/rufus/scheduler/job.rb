@@ -29,17 +29,23 @@ class Rufus::Scheduler
 
     attr_reader :id
 
-    def initialize(id)
+    def initialize(id, block)
 
       @id = id
+
+      raise(
+        ArgumentError,
+        "missing block to schedule",
+        caller[2..-1]
+      ) unless block
     end
   end
 
   class AtJob < Job
 
-    def initialize(time, opts)
+    def initialize(time, opts, block)
 
-      super("at_#{Time.now.to_f}_#{time.to_f}_#{opts.hash}")
+      super("at_#{Time.now.to_f}_#{time.to_f}_#{opts.hash}", block)
     end
   end
 
