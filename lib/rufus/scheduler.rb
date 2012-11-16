@@ -147,14 +147,13 @@ module Rufus
     def schedule_jobs
 
       return if @schedule_queue.empty?
-        # TODO: need something like that
 
-      while job = @schedule_queue.pop
+      while @schedule_queue.size > 0
 
-        @jobs << job
+        @jobs << @schedule_queue.pop
       end
 
-      @jobs.sort_by(&:next_time)
+      @jobs.sort!
     end
 
     #--
@@ -171,15 +170,23 @@ module Rufus
         @scheduler = scheduler
         @id = id
         @opts = opts
+        @block = block
 
         raise(
           ArgumentError,
           "missing block to schedule",
           caller[2..-1]
-        ) unless block
+        ) unless @block
       end
 
       alias job_id id
+
+      def trigger(time)
+
+        @block.call
+
+        true
+      end
     end
 
     class AtJob < Job
@@ -204,6 +211,13 @@ module Rufus
     end
 
     class RepeatJob < Job
+
+      def trigger(time)
+
+        super
+
+        false # do not remove job after it got triggered
+      end
     end
 
     class EveryJob < RepeatJob
@@ -241,6 +255,11 @@ module Rufus
       def <<(job)
 
         @mutex.synchronize { @array << job }
+      end
+
+      def sort!
+
+        @mutex.synchronize { @array.sort_by!(&:next_time) }
       end
 
       def to_a

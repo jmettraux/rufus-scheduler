@@ -43,7 +43,15 @@ describe Rufus::Scheduler do
       @scheduler.jobs.first.time.should == t
     end
 
-    it 'removes the job after execution'
+    it 'removes the job after execution' do
+
+      @scheduler.at(Time.now + 0.100) do
+      end
+
+      sleep 0.7
+
+      @scheduler.jobs.size.should == 0
+    end
   end
 
   describe '#schedule_at' do
