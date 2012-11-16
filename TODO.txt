@@ -1,4 +1,14 @@
 
+(3.0)
+
+[ ] merge schedule_queue and unschedule_queue (and merge [un]schedule steps)
+[ ] OR stop using queue, since we've got the thread-safe JobArray
+
+
+################################################################################
+
+(was 2.0)
+
 [o] spec for jobs in the past (in and at)
 [o] :discard_past
 
@@ -54,4 +64,6 @@
 
 [ ] Joel's complaint about timeout jobs gone ballistic
 [x] move trigger_job out of the scheduler
+
+
 

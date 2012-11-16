@@ -43,6 +43,19 @@ describe Rufus::Scheduler do
       @scheduler.jobs.first.time.should == t
     end
 
+    it 'triggers a job' do
+
+      $a = false
+
+      @scheduler.at(Time.now + 0.100) do
+        $a = true
+      end
+
+      sleep 0.7
+
+      $a.should == true
+    end
+
     it 'removes the job after execution' do
 
       @scheduler.at(Time.now + 0.100) do
