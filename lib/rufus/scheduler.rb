@@ -38,7 +38,7 @@ module Rufus
       @unschedule_queue = Queue.new
       @schedule_queue = Queue.new
 
-      @jobs = []
+      @jobs = JobArray.new
 
       @frequency = opts[:frequency] || 0.300
 
@@ -79,7 +79,7 @@ module Rufus
 
     def jobs
 
-      @jobs.dup
+      @jobs.to_a
     end
 
     def at_jobs
@@ -210,6 +210,43 @@ module Rufus
     end
 
     class CronJob < RepeatJob
+    end
+
+    #--
+    # a thread-safe array for Jobs
+    #
+    # JRuby (Quartz-land), Rubinius?, ...
+    #++
+
+    class JobArray
+
+      def initialize
+
+        @mutex = Mutex.new
+        @array = []
+      end
+
+      def each(&block)
+
+        @mutex.synchronize { @array.each(&block) }
+      end
+
+      def -(other)
+
+        @mutex.synchronize { @array = @array - other }
+
+        self
+      end
+
+      def <<(job)
+
+        @mutex.synchronize { @array << job }
+      end
+
+      def to_a
+
+        @mutex.synchronize { @array.dup }
+      end
     end
   end
 end
