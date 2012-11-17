@@ -62,16 +62,41 @@ module Rufus
 
     def at(time, opts={}, &block)
 
-      schedule_at(time, opts, &block).id
+      job = schedule_at(time, opts, &block)
+
+      opts[:job] ? job : job.id
     end
 
     def schedule_at(time, opts={}, &block)
 
-      job = Rufus::Scheduler::AtJob.new(self, time, opts, block)
+      schedule(Rufus::Scheduler::AtJob, time, opts, block)
+    end
+
+    def in(duration, opts={}, &block)
+
+      job = schedule_in(duration, opts, &block)
+
+      opts[:job] ? job : job.id
+    end
+
+    def schedule_in(duration, opts={}, &block)
+
+      schedule(Rufus::Scheduler::InJob, duration, opts, block)
+    end
+
+    def schedule(job_class, t, opts, block)
+
+      job = job_class.new(self, t, opts, block)
 
       @schedule_queue << [ true, job ]
 
       job
+    end
+    protected :schedule
+
+    def unschedule(job_or_job_id)
+
+      @schedule_queue << [ false, job_or_job_id ]
     end
 
     #--
@@ -158,12 +183,13 @@ module Rufus
       attr_reader :id
       attr_reader :opts
 
-      def initialize(scheduler, id, opts, block)
+      def initialize(scheduler, opts, block)
 
         @scheduler = scheduler
-        @id = id
         @opts = opts
         @block = block
+
+        @id = determine_id
 
         raise(
           ArgumentError,
@@ -180,6 +206,11 @@ module Rufus
 
         true
       end
+
+      def unschedule
+
+        @scheduler.unschedule(self)
+      end
     end
 
     class AtJob < Job
@@ -192,15 +223,35 @@ module Rufus
 
         super(
           scheduler,
-          "at_#{Time.now.to_f}_#{time.to_f}_#{opts.hash}", # TODO change me
           opts,
           block)
       end
 
       alias next_time time
+
+      protected
+
+      def determine_id
+
+        [
+          self.class.name.split(':').last.downcase[0..-4],
+          Time.now.to_f.to_s,
+          @time.to_f.to_s,
+          opts.hash.abs.to_s
+        ].join('_')
+      end
     end
 
     class InJob < AtJob
+
+      def initialize(scheduler, duration, opts, block)
+
+        super(
+          scheduler,
+          Time.now + duration,
+          opts,
+          block)
+      end
     end
 
     class RepeatJob < Job
