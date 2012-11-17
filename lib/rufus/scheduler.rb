@@ -35,7 +35,6 @@ module Rufus
 
       @started_at = nil
 
-      @unschedule_queue = Queue.new
       @schedule_queue = Queue.new
 
       @jobs = JobArray.new
@@ -68,7 +67,7 @@ module Rufus
 
       job = Rufus::Scheduler::AtJob.new(self, time, opts, block)
 
-      @schedule_queue << job
+      @schedule_queue << [ true, job ]
 
       job
     end
@@ -112,18 +111,13 @@ module Rufus
 
         while @started_at do
 
-          unschedule_jobs
+          schedule_jobs
 
           trigger_jobs
-
-          schedule_jobs
 
           sleep(@frequency)
         end
       end
-    end
-
-    def unschedule_jobs
     end
 
     def trigger_jobs
@@ -133,12 +127,10 @@ module Rufus
 
       @jobs.each do |job|
 
-        if job.next_time < now
-          remove = job.trigger(now)
-          jobs_to_remove << job if remove
-        else
-          break
-        end
+        break if job.next_time > now
+
+        remove = job.trigger(now)
+        jobs_to_remove << job if remove
       end
 
       @jobs = @jobs - jobs_to_remove
@@ -150,7 +142,9 @@ module Rufus
 
       while @schedule_queue.size > 0
 
-        @jobs << @schedule_queue.pop
+        schedule, job = @schedule_queue.pop
+
+        @jobs.send(schedule ? :push : :delete, job)
       end
 
       @jobs.sort!
@@ -252,9 +246,22 @@ module Rufus
         self
       end
 
-      def <<(job)
+      def push(job)
 
         @mutex.synchronize { @array << job }
+
+        self
+      end
+
+      def delete(job_or_job_id)
+
+        @mutex.synchronize {
+          @array.delete_if { |j|
+            j == job_or_job_id || j.job_id == job_or_job_id
+          }
+        }
+
+        self
       end
 
       def sort!
