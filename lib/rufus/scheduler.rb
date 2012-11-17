@@ -36,6 +36,8 @@ module Rufus
       @started_at = nil
 
       @schedule_queue = Queue.new
+        # using a queue so that schedules/unschedules return immediately
+        # (they don't wait for any mutex shared with the main loop)
 
       @jobs = JobArray.new
 
@@ -112,11 +114,22 @@ module Rufus
         while @started_at do
 
           schedule_jobs
-
           trigger_jobs
 
           sleep(@frequency)
         end
+      end
+    end
+
+    def schedule_jobs
+
+      return if @schedule_queue.empty?
+
+      while @schedule_queue.size > 0
+
+        schedule, job = @schedule_queue.pop
+
+        @jobs.send(schedule ? :push : :delete, job)
       end
     end
 
@@ -134,20 +147,6 @@ module Rufus
       end
 
       @jobs = @jobs - jobs_to_remove
-    end
-
-    def schedule_jobs
-
-      return if @schedule_queue.empty?
-
-      while @schedule_queue.size > 0
-
-        schedule, job = @schedule_queue.pop
-
-        @jobs.send(schedule ? :push : :delete, job)
-      end
-
-      @jobs.sort!
     end
 
     #--
@@ -168,7 +167,7 @@ module Rufus
 
         raise(
           ArgumentError,
-          "missing block to schedule",
+          'missing block to schedule',
           caller[2..-1]
         ) unless @block
       end
@@ -232,11 +231,18 @@ module Rufus
 
         @mutex = Mutex.new
         @array = []
+        @shuffled = false
       end
 
       def each(&block)
 
-        @mutex.synchronize { @array.each(&block) }
+        @mutex.synchronize {
+
+          @array.sort_by!(&:next_time) if @shuffled
+          @shuffled = false
+
+          @array.each(&block)
+        }
       end
 
       def -(other)
@@ -248,7 +254,11 @@ module Rufus
 
       def push(job)
 
-        @mutex.synchronize { @array << job }
+        @mutex.synchronize {
+
+          @shuffled = true
+          @array << job
+        }
 
         self
       end
@@ -256,17 +266,17 @@ module Rufus
       def delete(job_or_job_id)
 
         @mutex.synchronize {
-          @array.delete_if { |j|
-            j == job_or_job_id || j.job_id == job_or_job_id
-          }
+
+          if job_or_job_id.is_a?(Rufus::Scheduler::Job)
+            @array.delete(job_or_job_id)
+          else
+            @array.delete_if { |j| j.job_id == job_or_job_id }
+          end
         }
 
+        # no need to set the @shuffled flag
+
         self
-      end
-
-      def sort!
-
-        @mutex.synchronize { @array.sort_by!(&:next_time) }
       end
 
       def to_a

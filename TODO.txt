@@ -2,7 +2,7 @@
 (3.0)
 
 [o] merge schedule_queue and unschedule_queue (and merge [un]schedule steps)
-[ ] OR stop using queue, since we've got the thread-safe JobArray
+[x] OR stop using queue, since we've got the thread-safe JobArray
 
 
 ################################################################################
