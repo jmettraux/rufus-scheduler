@@ -79,7 +79,7 @@ module Rufus
 
     def schedule_at(time, opts={}, &block)
 
-      schedule(Rufus::Scheduler::AtJob, time, opts, block)
+      do_schedule(Rufus::Scheduler::AtJob, time, opts, block)
     end
 
     def in(duration, opts={}, &block)
@@ -91,18 +91,8 @@ module Rufus
 
     def schedule_in(duration, opts={}, &block)
 
-      schedule(Rufus::Scheduler::InJob, duration, opts, block)
+      do_schedule(Rufus::Scheduler::InJob, duration, opts, block)
     end
-
-    def schedule(job_class, t, opts, block)
-
-      job = job_class.new(self, t, opts, block)
-
-      @schedule_queue << [ true, job ]
-
-      job
-    end
-    protected :schedule
 
     def unschedule(job_or_job_id)
 
@@ -187,6 +177,15 @@ module Rufus
       end
 
       @jobs = @jobs - jobs_to_remove
+    end
+
+    def do_schedule(job_class, t, opts, block)
+
+      job = job_class.new(self, t, opts, block)
+
+      @schedule_queue << [ true, job ]
+
+      job
     end
 
     #--
