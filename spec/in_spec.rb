@@ -46,6 +46,16 @@ describe Rufus::Scheduler do
 
       @scheduler.jobs.size.should == 0
     end
+
+    it 'accepts a number' do
+
+      job = @scheduler.schedule_in(3600) {}
+
+      job.original.should == 3600
+    end
+
+    it 'accepts a duration string'
+    it 'accepts an ActiveSupport .from_now thinggy'
   end
 end
 

@@ -197,10 +197,12 @@ module Rufus
 
       attr_reader :id
       attr_reader :opts
+      attr_reader :original
 
-      def initialize(scheduler, opts, block)
+      def initialize(scheduler, original, opts, block)
 
         @scheduler = scheduler
+        @original = original
         @opts = opts
         @block = block
 
@@ -228,19 +230,9 @@ module Rufus
       end
     end
 
-    class AtJob < Job
+    class OneTimeJob < Job
 
       attr_reader :time
-
-      def initialize(scheduler, time, opts, block)
-
-        @time = time
-
-        super(
-          scheduler,
-          opts,
-          block)
-      end
 
       alias next_time time
 
@@ -250,22 +242,30 @@ module Rufus
 
         [
           self.class.name.split(':').last.downcase[0..-4],
-          Time.now.to_f.to_s,
-          @time.to_f.to_s,
-          opts.hash.abs.to_s
-        ].join('_')
+          Time.now.to_f,
+          @time.to_f,
+          opts.hash.abs
+        ].map(&:to_s).join('_')
       end
     end
 
-    class InJob < AtJob
+    class AtJob < OneTimeJob
+
+      def initialize(scheduler, time, opts, block)
+
+        @time = Rufus::Scheduler.parse_at(time)
+
+        super(scheduler, time, opts, block)
+      end
+    end
+
+    class InJob < OneTimeJob
 
       def initialize(scheduler, duration, opts, block)
 
-        super(
-          scheduler,
-          Time.now + duration,
-          opts,
-          block)
+        @time = Time.now + Rufus::Scheduler.parse_in(duration)
+
+        super(scheduler, duration, opts, block)
       end
     end
 
@@ -355,15 +355,19 @@ module Rufus
     # time and string methods
     #++
 
-    def self.parse(string)
+    def self.parse(o)
 
-      parse_duration(string, :no_error => true) ||
-      parse_datetime(string)
+      parse_in(o) || parse_at(o)
     end
 
-    def self.parse_datetime(string)
+    def self.parse_in(o)
 
-      Time.parse(string)
+      o.is_a?(String) ? parse_duration(o, :no_error => true) : o
+    end
+
+    def self.parse_at(o)
+
+      o.is_a?(Time) ? o : Time.parse(o)
     end
 
     DURATIONS2M = [

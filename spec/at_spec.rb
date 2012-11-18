@@ -73,6 +73,33 @@ describe Rufus::Scheduler do
 
       @scheduler.jobs.size.should == 0
     end
+
+    it 'accepts a Time instance' do
+
+      t = Time.now + 3600
+
+      job = @scheduler.at(t, :job => true) {}
+
+      job.time.should == t
+    end
+
+    it 'accepts a time string' do
+
+      job = @scheduler.at('2100-12-12 20:30', :job => true) {}
+
+      job.time.should == Time.parse('2100-12-12 20:30')
+    end
+
+    it 'accepts a time string with a delta timezone' do
+
+      job = @scheduler.at('2100-12-12 20:30 -0200', :job => true) {}
+
+      job.time.should == Time.parse('2100-12-12 20:30 -0200')
+    end
+
+    it 'accepts a time string with a named timezone'
+    it 'accepts a Chronic time string (if Chronic is present)'
+    it 'accepts an ActiveSupport time thinggy'
   end
 
   describe '#schedule_at' do
