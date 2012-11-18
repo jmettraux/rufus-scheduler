@@ -31,6 +31,8 @@ module Rufus
 
     VERSION = '3.0.0'
 
+    attr_accessor :frequency
+
     def initialize(opts={})
 
       @started_at = nil
@@ -41,7 +43,8 @@ module Rufus
 
       @jobs = JobArray.new
 
-      @frequency = opts[:frequency] || 0.300
+      @opts = opts
+      @frequency = @opts[:frequency] || 0.300
 
       start
     end
@@ -51,9 +54,16 @@ module Rufus
       @started_at = nil
     end
 
+    alias stop shutdown
+
     def uptime
 
       @started_at ? Time.now - @started_at : nil
+    end
+
+    def join
+
+      @thread.join
     end
 
     #--
@@ -144,6 +154,11 @@ module Rufus
           sleep(@frequency)
         end
       end
+
+      @thread[:rufus_scheduler] =
+        self
+      @thread[:name] =
+        @opts[:thread_name] || "rufus_scheduler_#{self.object_id}"
     end
 
     def schedule_jobs

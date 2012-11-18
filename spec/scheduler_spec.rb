@@ -6,9 +6,37 @@ describe Rufus::Scheduler do
 
   describe '#initialize' do
 
-    it 'starts the scheduler thread'
+    it 'starts the scheduler thread' do
 
-    it 'accepts a :frequency option'
+      scheduler = Rufus::Scheduler.new
+
+      t = Thread.list.find { |t|
+        t[:name] == "rufus_scheduler_#{scheduler.object_id}"
+      }
+
+      t[:rufus_scheduler].should == scheduler
+    end
+
+    it 'sets a :rufus_scheduler thread local var' do
+
+      scheduler = Rufus::Scheduler.new
+    end
+
+    it 'accepts a :frequency option' do
+
+      scheduler = Rufus::Scheduler.new(:frequency => 2)
+
+      scheduler.frequency.should == 2
+    end
+
+    it 'accepts a :thread_name option' do
+
+      scheduler = Rufus::Scheduler.new(:thread_name => 'oliphant')
+
+      t = Thread.list.find { |t| t[:name] == 'oliphant' }
+
+      t[:rufus_scheduler].should == scheduler
+    end
   end
 
   describe '#uptime' do
@@ -28,7 +56,12 @@ describe Rufus::Scheduler do
 
   describe '#join' do
 
-    it 'joins the scheduler thread'
+    it 'joins the scheduler thread' do
+
+      scheduler = Rufus::Scheduler.new
+
+      scheduler.respond_to?(:join).should == true # oh, well...
+    end
   end
 
   #--
@@ -45,9 +78,29 @@ describe Rufus::Scheduler do
       scheduler.uptime.should == nil
     end
 
-    it 'terminates the scheduler'
-    it 'has a #stop alias'
-    it 'has a #close alias ???'
+    it 'terminates the scheduler' do
+
+      scheduler = Rufus::Scheduler.new
+      scheduler.shutdown
+
+      sleep 0.100
+
+      t = Thread.list.find { |t|
+        t[:name] == "rufus_scheduler_#{scheduler.object_id}"
+      }
+
+      t.should == nil
+    end
+
+    it 'has a #stop alias' do
+
+      scheduler = Rufus::Scheduler.new
+      scheduler.shutdown
+
+      scheduler.uptime.should == nil
+    end
+
+    #it 'has a #close alias'
   end
 
   describe '#pause' do
