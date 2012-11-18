@@ -349,6 +349,86 @@ module Rufus
         @mutex.synchronize { @array.dup }
       end
     end
+
+    #--
+    # time and string methods
+    #++
+
+    DURATIONS2M = [
+      [ 'y', 365 * 24 * 3600 ],
+      [ 'M', 30 * 24 * 3600 ],
+      [ 'w', 7 * 24 * 3600 ],
+      [ 'd', 24 * 3600 ],
+      [ 'h', 3600 ],
+      [ 'm', 60 ],
+      [ 's', 1 ]
+    ]
+    #DURATIONS2 = DURATIONS2M.dup
+    #DURATIONS2.delete_at(1)
+
+    DURATIONS = DURATIONS2M.inject({}) { |r, (k, v)| r[k] = v; r }
+    DURATION_LETTERS = DURATIONS.keys.join
+
+    #DU_KEYS = DURATIONS2M.collect { |k, v| k.to_sym }
+
+    # Turns a string like '1m10s' into a float like '70.0', more formally,
+    # turns a time duration expressed as a string into a Float instance
+    # (millisecond count).
+    #
+    # w -> week
+    # d -> day
+    # h -> hour
+    # m -> minute
+    # s -> second
+    # M -> month
+    # y -> year
+    # 'nada' -> millisecond
+    #
+    # Some examples:
+    #
+    #   Rufus::Scheduler.parse_duration_string "0.5"    # => 0.5
+    #   Rufus::Scheduler.parse_duration_string "500"    # => 0.5
+    #   Rufus::Scheduler.parse_duration_string "1000"   # => 1.0
+    #   Rufus::Scheduler.parse_duration_string "1h"     # => 3600.0
+    #   Rufus::Scheduler.parse_duration_string "1h10s"  # => 3610.0
+    #   Rufus::Scheduler.parse_duration_string "1w2d"   # => 777600.0
+    #
+    # Negative time strings are OK (Thanks Danny Fullerton):
+    #
+    #   Rufus::Scheduler.parse_duration_string "-0.5"   # => -0.5
+    #   Rufus::Scheduler.parse_duration_string "-1h"    # => -3600.0
+    #
+    def self.parse_duration_string(string)
+
+      return 0.0 if string == ''
+
+      m = string.match(/^(-?)([\d\.#{DURATION_LETTERS}]+)$/)
+
+      raise ArgumentError.new("cannot parse '#{string}'") unless m
+
+      mod = m[1] == '-' ? -1.0 : 1.0
+      val = 0.0
+
+      s = m[2]
+
+      while s.length > 0
+        m = nil
+        if m = s.match(/^(\d+|\d+\.\d*|\d*\.\d+)([#{DURATION_LETTERS}])(.*)$/)
+          val += m[1].to_f * DURATIONS[m[2]]
+        elsif s.match(/^\d+$/)
+          val += s.to_i / 1000.0
+        elsif s.match(/^\d*\.\d*$/)
+          val += s.to_f
+        else
+          raise ArgumentError.new(
+            "cannot parse '#{string}' (especially '#{s}')")
+        end
+        break unless m && m[3]
+        s = m[3]
+      end
+
+      mod * val
+    end
   end
 end
 
