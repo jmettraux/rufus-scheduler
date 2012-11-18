@@ -22,6 +22,7 @@
 # Made in Japan.
 #++
 
+require 'time'
 require 'thread'
 
 
@@ -354,6 +355,17 @@ module Rufus
     # time and string methods
     #++
 
+    def self.parse(string)
+
+      parse_duration(string, :no_error => true) ||
+      parse_datetime(string)
+    end
+
+    def self.parse_datetime(string)
+
+      Time.parse(string)
+    end
+
     DURATIONS2M = [
       [ 'y', 365 * 24 * 3600 ],
       [ 'M', 30 * 24 * 3600 ],
@@ -398,13 +410,14 @@ module Rufus
     #   Rufus::Scheduler.parse_duration_string "-0.5"   # => -0.5
     #   Rufus::Scheduler.parse_duration_string "-1h"    # => -3600.0
     #
-    def self.parse_duration_string(string)
+    def self.parse_duration(string, opts={})
 
       return 0.0 if string == ''
 
       m = string.match(/^(-?)([\d\.#{DURATION_LETTERS}]+)$/)
 
-      raise ArgumentError.new("cannot parse '#{string}'") unless m
+      return nil if m.nil? && opts[:no_error]
+      raise ArgumentError.new("cannot parse '#{string}'") if m.nil?
 
       mod = m[1] == '-' ? -1.0 : 1.0
       val = 0.0
@@ -419,9 +432,10 @@ module Rufus
           val += s.to_i / 1000.0
         elsif s.match(/^\d*\.\d*$/)
           val += s.to_f
+        elsif opts[:no_error]
+          return nil
         else
-          raise ArgumentError.new(
-            "cannot parse '#{string}' (especially '#{s}')")
+          raise ArgumentError.new("cannot parse '#{string}' (especially '#{s}')")
         end
         break unless m && m[3]
         s = m[3]
