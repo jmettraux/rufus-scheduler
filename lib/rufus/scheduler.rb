@@ -62,6 +62,11 @@ module Rufus
       @started_at ? Time.now - @started_at : nil
     end
 
+    def uptime_s
+
+      self.class.to_duration(uptime)
+    end
+
     def join
 
       @thread.join

@@ -51,7 +51,14 @@ describe Rufus::Scheduler do
 
   describe '#uptime_s' do
 
-    it 'returns the uptime as a human readable string'
+    it 'returns the uptime as a human readable string' do
+
+      scheduler = Rufus::Scheduler.new
+
+      sleep 1
+
+      scheduler.uptime_s.should match(/^[12]s\d+$/)
+    end
   end
 
   describe '#join' do
