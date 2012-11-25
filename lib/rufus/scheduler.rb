@@ -382,13 +382,13 @@ module Rufus
       [ 'm', 60 ],
       [ 's', 1 ]
     ]
-    #DURATIONS2 = DURATIONS2M.dup
-    #DURATIONS2.delete_at(1)
+    DURATIONS2 = DURATIONS2M.dup
+    DURATIONS2.delete_at(1)
 
     DURATIONS = DURATIONS2M.inject({}) { |r, (k, v)| r[k] = v; r }
     DURATION_LETTERS = DURATIONS.keys.join
 
-    #DU_KEYS = DURATIONS2M.collect { |k, v| k.to_sym }
+    DU_KEYS = DURATIONS2M.collect { |k, v| k.to_sym }
 
     # Turns a string like '1m10s' into a float like '70.0', more formally,
     # turns a time duration expressed as a string into a Float instance
@@ -449,6 +449,109 @@ module Rufus
       end
 
       mod * val
+    end
+
+    # Turns a number of seconds into a a time string
+    #
+    #   Rufus.to_duration_string 0                    # => '0s'
+    #   Rufus.to_duration_string 60                   # => '1m'
+    #   Rufus.to_duration_string 3661                 # => '1h1m1s'
+    #   Rufus.to_duration_string 7 * 24 * 3600        # => '1w'
+    #   Rufus.to_duration_string 30 * 24 * 3600 + 1   # => "4w2d1s"
+    #
+    # It goes from seconds to the year. Months are not counted (as they
+    # are of variable length). Weeks are counted.
+    #
+    # For 30 days months to be counted, the second parameter of this
+    # method can be set to true.
+    #
+    #   Rufus.to_time_string 30 * 24 * 3600 + 1, true   # => "1M1s"
+    #
+    # (to_time_string is an alias for to_duration_string)
+    #
+    # If a Float value is passed, milliseconds will be displayed without
+    # 'marker'
+    #
+    #   Rufus.to_duration_string 0.051                       # =>"51"
+    #   Rufus.to_duration_string 7.051                       # =>"7s51"
+    #   Rufus.to_duration_string 0.120 + 30 * 24 * 3600 + 1  # =>"4w2d1s120"
+    #
+    # (this behaviour mirrors the one found for parse_time_string()).
+    #
+    # Options are :
+    #
+    # * :months, if set to true, months (M) of 30 days will be taken into
+    #   account when building up the result
+    # * :drop_seconds, if set to true, seconds and milliseconds will be trimmed
+    #   from the result
+    #
+    def self.to_duration(seconds, options={})
+
+      h = to_duration_hash(seconds, options)
+
+      return (options[:drop_seconds] ? '0m' : '0s') if h.empty?
+
+      s = DU_KEYS.inject('') { |r, key|
+        count = h[key]
+        count = nil if count == 0
+        r << "#{count}#{key}" if count
+        r
+      }
+
+      ms = h[:ms]
+      s << ms.to_s if ms
+
+      s
+    end
+
+    class << self
+      alias to_duration_string to_duration
+    end
+
+    # Turns a number of seconds (integer or Float) into a hash like in :
+    #
+    #   Rufus.to_duration_hash 0.051
+    #     # => { :ms => "51" }
+    #   Rufus.to_duration_hash 7.051
+    #     # => { :s => 7, :ms => "51" }
+    #   Rufus.to_duration_hash 0.120 + 30 * 24 * 3600 + 1
+    #     # => { :w => 4, :d => 2, :s => 1, :ms => "120" }
+    #
+    # This method is used by to_duration_string (to_time_string) behind
+    # the scene.
+    #
+    # Options are :
+    #
+    # * :months, if set to true, months (M) of 30 days will be taken into
+    #   account when building up the result
+    # * :drop_seconds, if set to true, seconds and milliseconds will be trimmed
+    #   from the result
+    #
+    def self.to_duration_hash(seconds, options={})
+
+      h = {}
+
+      if seconds.is_a?(Float)
+        h[:ms] = (seconds % 1 * 1000).to_i
+        seconds = seconds.to_i
+      end
+
+      if options[:drop_seconds]
+        h.delete(:ms)
+        seconds = (seconds - seconds % 60)
+      end
+
+      durations = options[:months] ? DURATIONS2M : DURATIONS2
+
+      durations.each do |key, duration|
+
+        count = seconds / duration
+        seconds = seconds % duration
+
+        h[key.to_sym] = count if count > 0
+      end
+
+      h
     end
   end
 end
