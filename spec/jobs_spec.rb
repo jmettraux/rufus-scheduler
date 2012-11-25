@@ -27,6 +27,17 @@ describe Rufus::Scheduler::Job do
         @scheduler.jobs.size.should == 0
       end
     end
+
+    describe '#scheduled_at' do
+
+      it 'returns the Time at which the job got scheduled' do
+
+        job = @scheduler.schedule_at((t = Time.now) + 3600) {}
+
+        job.scheduled_at.to_i.should >= t.to_i - 1
+        job.scheduled_at.to_i.should <= t.to_i + 1
+      end
+    end
   end
 
   describe Rufus::Scheduler::InJob do

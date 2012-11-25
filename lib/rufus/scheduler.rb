@@ -198,6 +198,7 @@ module Rufus
       attr_reader :id
       attr_reader :opts
       attr_reader :original
+      attr_reader :scheduled_at
 
       def initialize(scheduler, original, opts, block)
 
@@ -205,6 +206,8 @@ module Rufus
         @original = original
         @opts = opts
         @block = block
+
+        @scheduled_at = Time.now
 
         @id = determine_id
 
@@ -242,7 +245,7 @@ module Rufus
 
         [
           self.class.name.split(':').last.downcase[0..-4],
-          Time.now.to_f,
+          @scheduled_at.to_f,
           @time.to_f,
           opts.hash.abs
         ].map(&:to_s).join('_')
@@ -263,9 +266,9 @@ module Rufus
 
       def initialize(scheduler, duration, opts, block)
 
-        @time = Time.now + Rufus::Scheduler.parse_in(duration)
-
         super(scheduler, duration, opts, block)
+
+        @time = @scheduled_at + Rufus::Scheduler.parse_in(duration)
       end
     end
 

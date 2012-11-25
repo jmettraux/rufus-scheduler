@@ -46,6 +46,9 @@ describe Rufus::Scheduler do
 
       @scheduler.jobs.size.should == 0
     end
+  end
+
+  describe '#schedule_in' do
 
     it 'accepts a number' do
 
@@ -54,7 +57,15 @@ describe Rufus::Scheduler do
       job.original.should == 3600
     end
 
-    it 'accepts a duration string'
+    it 'accepts a duration string' do
+
+      job = @scheduler.schedule_in('1h') {}
+
+      job.original.should == '1h'
+      job.time.should >= job.scheduled_at + 3509
+      job.time.should <= job.scheduled_at + 3601
+    end
+
     it 'accepts an ActiveSupport .from_now thinggy'
   end
 end
