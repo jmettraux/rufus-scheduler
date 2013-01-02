@@ -1,4 +1,3 @@
-
 = rufus-scheduler
 
 rufus-scheduler is a Ruby gem for scheduling pieces of code (jobs). It understands running a job AT a certain time, IN a certain time, EVERY x time or simply via a CRON statement.
@@ -60,10 +59,10 @@ This PlainScheduler accepts a :thread_name option :
 
   scheduler = Rufus::Scheduler::PlainScheduler.start_new(:thread_name => 'my scheduler')
 
-might be helpful when tracking threads.
+which might be helpful when tracking threads.
 
 
-Note that is there is EventMachine present and running,
+Note that if there is an EventMachine present and running,
 
   scheduler = Rufus::Scheduler.start_new
 
@@ -120,7 +119,7 @@ If you place
 
   scheduler.join
 
-at then end of it will make the current (main) thread join the scheduler and prevent the Ruby runtime from exiting.
+at the end, it will make the current (main) thread join the scheduler and prevent the Ruby runtime from exiting.
 
 You shouldn't be exposed to this issue when using EventMachine, since while running EM, your runtime won't exit.
 
@@ -200,7 +199,7 @@ If at 4pm the scheduler is in a blocking task, there will be no four o'clock tea
     puts "order espresso"
   end
 
-the "order espresso" will only get triggered once the ristretto has been consumed. Rufus-scheduler, will create a 'that_mutex' mutex and keep track of it. Don't go on passing too many different mutex names, rufus-scheduler will keep track of each of them (they won't get garbage collected).
+the "order espresso" will only get triggered once the ristretto has been consumed. Rufus-scheduler will create a 'that_mutex' mutex and keep track of it. Don't go on passing too many different mutex names, rufus-scheduler will keep track of each of them (they won't get garbage collected).
 
 It's OK to use a mutex directly:
 
@@ -240,7 +239,7 @@ By default, every and cron jobs will "overlap":
     end
   end
 
-You mind end up with something that looks like
+You might end up with something that looks like
 
   hello 0
   hello 1
@@ -250,7 +249,7 @@ You mind end up with something that looks like
   hello 4
   ...
 
-This every job, will have overlaps. To prevent that:
+This every job will have overlaps. To prevent that:
 
   scheduler.every '3s', :allow_overlapping => false do
     # ...
@@ -446,7 +445,7 @@ This timeout feature relies on an 'in' job scheduled at the moment the main job 
 
 == exceptions in jobs
 
-By default, when exception occur when a job performs, the error message will be output to the STDOUT.
+By default, when exceptions occur when a job performs, the error messages will be output to the STDOUT.
 
 It's easy to customize that behaviour :
 
@@ -564,7 +563,7 @@ http://github.com/jmettraux/rufus-scheduler/blob/master/CREDITS.txt
 
 == authors
 
-John Mettraux, jmettraux@gmail.com, http://jmettraux.wordpress.com
+John Mettraux, jmettraux@gmail.com, http://jmettraux.github.com
 
 
 == the rest of Rufus
@@ -575,4 +574,3 @@ http://rufus.rubyforge.org
 == license
 
 MIT
-
