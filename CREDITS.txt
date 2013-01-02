@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Stig Kleppe-Jørgensen (https://github.com/stigkj)
 - Danny "northox" Fullerton (https://github.com/northox) negative time strings
 - Marcus Brito (https://github.com/pazustep) CronLine proofing
 - André Luis Leal Cardoso Junior (https://github.com/andrehjr) 1.9.3 patch
