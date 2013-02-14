@@ -41,6 +41,7 @@ module Rufus
     attr_reader :minutes
     attr_reader :hours
     attr_reader :days
+    attr_reader :lastmonthday
     attr_reader :months
     attr_reader :weekdays
     attr_reader :monthdays
@@ -66,7 +67,7 @@ module Rufus
       @seconds = offset == 1 ? parse_item(items[0], 0, 59) : [ 0 ]
       @minutes = parse_item(items[0 + offset], 0, 59)
       @hours = parse_item(items[1 + offset], 0, 24)
-      @days = parse_item(items[2 + offset], 1, 31)
+      @days, @lastmonthday = parse_days(items[2 + offset], 1, 31)
       @months = parse_item(items[3 + offset], 1, 12)
       @weekdays, @monthdays = parse_weekdays(items[4 + offset])
     end
@@ -161,6 +162,7 @@ module Rufus
         @minutes,
         @hours,
         @days,
+        @lastmonthday,
         @months,
         @weekdays,
         @monthdays,
@@ -209,6 +211,31 @@ module Rufus
       weekdays = weekdays.uniq if weekdays
 
       [ weekdays, monthdays ]
+    end
+
+    def parse_days(item, min, max)
+      return [parse_item(item, min, max), nil] unless item.index("L")
+
+      items = item.downcase.split(',')
+      last = items.select {|it| it =~ /l/}
+
+      raise ArgumentError.new(
+        "only one Last is supported for the days field"
+      ) if last.size > 1
+
+      last = last.first
+
+      raise ArgumentError.new(
+        "ranges and increments are not supported for Last (#{ last })"
+      ) if last.index("-") || last.index("/")
+
+      items.delete_if{|it| it =~ /l/}.nil?
+
+      if items.empty?
+        [nil, [true]]
+      else
+        [parse_item(items.join(','), min, max), [true]]
+      end
     end
 
     def parse_item(item, min, max)
@@ -286,9 +313,23 @@ module Rufus
       return true if monthdays.include?(monthday)
     end
 
+    def day_of_month_match?(date)
+      day = date.day
+      last_day = CronLine.last_day_of_month?(date)
+
+      return true if @lastmonthday.nil? && @days.nil?
+      return true if !@days.nil? && sub_match?(day, @days)
+      return true if !@lastmonthday.nil? && sub_match?(last_day, @lastmonthday)
+      false
+    end
+
+    def self.last_day_of_month?(date)
+      Date.new(date.year, date.month, -1).day == date.day
+    end
+
     def date_match?(date)
 
-      return false unless sub_match?(date.day, @days)
+      return false unless day_of_month_match?(date)
       return false unless sub_match?(date.month, @months)
       return false unless sub_match?(date.wday, @weekdays)
       return false unless sub_match?(CronLine.monthday(date), @monthdays)
