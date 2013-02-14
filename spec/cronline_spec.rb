@@ -35,25 +35,25 @@ describe Rufus::CronLine do
 
     it 'interprets cron strings correctly' do
 
-      to_a '* * * * *', [ [0], nil, nil, nil, nil, nil, nil, nil ]
-      to_a '10-12 * * * *', [ [0], [10, 11, 12], nil, nil, nil, nil, nil, nil ]
-      to_a '* * * * sun,mon', [ [0], nil, nil, nil, nil, [0, 1], nil, nil ]
-      to_a '* * * * mon-wed', [ [0], nil, nil, nil, nil, [1, 2, 3], nil, nil ]
-      to_a '* * * * 7', [ [0], nil, nil, nil, nil, [0], nil, nil ]
-      to_a '* * * * 0', [ [0], nil, nil, nil, nil, [0], nil, nil ]
-      to_a '* * * * 0,1', [ [0], nil, nil, nil, nil, [0,1], nil, nil ]
-      to_a '* * * * 7,1', [ [0], nil, nil, nil, nil, [0,1], nil, nil ]
-      to_a '* * * * 7,0', [ [0], nil, nil, nil, nil, [0], nil, nil ]
-      to_a '* * * * sun,2-4', [ [0], nil, nil, nil, nil, [0, 2, 3, 4], nil, nil ]
+      to_a '* * * * *', [ [0], nil, nil, nil, nil, nil, nil, nil, nil ]
+      to_a '10-12 * * * *', [ [0], [10, 11, 12], nil, nil, nil,  nil, nil, nil, nil ]
+      to_a '* * * * sun,mon', [ [0], nil, nil, nil, nil, nil, [0, 1], nil, nil ]
+      to_a '* * * * mon-wed', [ [0], nil, nil, nil, nil, nil, [1, 2, 3], nil, nil ]
+      to_a '* * * * 7', [ [0], nil, nil, nil, nil, nil, [0], nil, nil ]
+      to_a '* * * * 0', [ [0], nil, nil, nil, nil, nil, [0], nil, nil ]
+      to_a '* * * * 0,1', [ [0], nil, nil, nil, nil, nil, [0,1], nil, nil ]
+      to_a '* * * * 7,1', [ [0], nil, nil, nil, nil, nil, [0,1], nil, nil ]
+      to_a '* * * * 7,0', [ [0], nil, nil, nil, nil, nil, [0], nil, nil ]
+      to_a '* * * * sun,2-4', [ [0], nil, nil, nil, nil, nil, [0, 2, 3, 4], nil, nil ]
 
-      to_a '* * * * sun,mon-tue', [ [0], nil, nil, nil, nil, [0, 1, 2], nil, nil ]
+      to_a '* * * * sun,mon-tue', [ [0], nil, nil, nil, nil, nil, [0, 1, 2], nil, nil ]
 
-      to_a '* * * * * *', [ nil, nil, nil, nil, nil, nil, nil, nil ]
-      to_a '1 * * * * *', [ [1], nil, nil, nil, nil, nil, nil, nil ]
-      to_a '7 10-12 * * * *', [ [7], [10, 11, 12], nil, nil, nil, nil, nil, nil ]
-      to_a '1-5 * * * * *', [ [1,2,3,4,5], nil, nil, nil, nil, nil, nil, nil ]
+      to_a '* * * * * *', [ nil, nil, nil, nil, nil, nil, nil, nil, nil ]
+      to_a '1 * * * * *', [ [1], nil, nil, nil, nil, nil, nil, nil, nil ]
+      to_a '7 10-12 * * * *', [ [7], [10, 11, 12], nil, nil, nil, nil, nil, nil, nil ]
+      to_a '1-5 * * * * *', [ [1,2,3,4,5], nil, nil, nil, nil, nil, nil, nil, nil ]
 
-      to_a '0 0 1 1 *', [ [0], [0], [0], [1], [1], nil, nil, nil ]
+      to_a '0 0 1 1 *', [ [0], [0], [0], [1], nil, [1], nil, nil, nil ]
     end
 
     it 'rejects invalid weekday expressions' do
@@ -65,8 +65,8 @@ describe Rufus::CronLine do
 
     it 'interprets cron strings with TZ correctly' do
 
-      to_a '* * * * * EST', [ [0], nil, nil, nil, nil, nil, nil, 'EST' ]
-      to_a '* * * * * * EST', [ nil, nil, nil, nil, nil, nil, nil, 'EST' ]
+      to_a '* * * * * EST', [ [0], nil, nil, nil, nil, nil, nil, nil, 'EST' ]
+      to_a '* * * * * * EST', [ nil, nil, nil, nil, nil, nil, nil, nil, 'EST' ]
 
       lambda { cl '* * * * * NotATimeZone' }.should raise_error
       lambda { cl '* * * * * * NotATimeZone' }.should raise_error
@@ -76,13 +76,13 @@ describe Rufus::CronLine do
 
       to_a(
         '0 */2 * * *',
-        [ [0], [0], (0..12).collect { |e| e * 2 }, nil, nil, nil, nil, nil ])
+        [ [0], [0], (0..12).collect { |e| e * 2 }, nil, nil, nil, nil, nil, nil ])
       to_a(
         '0 7-23/2 * * *',
-        [ [0], [0], (7..23).select { |e| e.odd? }, nil, nil, nil, nil, nil ])
+        [ [0], [0], (7..23).select { |e| e.odd? }, nil, nil, nil, nil, nil, nil ])
       to_a(
         '*/10 * * * *',
-        [ [0], [0, 10, 20, 30, 40, 50], nil, nil, nil, nil, nil, nil ])
+        [ [0], [0, 10, 20, 30, 40, 50], nil, nil, nil, nil, nil, nil, nil ])
     end
 
     it 'does not support ranges for monthdays (sun#1-sun#2)' do
@@ -94,13 +94,29 @@ describe Rufus::CronLine do
 
     it 'accepts items with initial 0' do
 
-      to_a '09 * * * *', [ [0], [9], nil, nil, nil, nil, nil, nil ]
-      to_a '09-12 * * * *', [ [0], [9, 10, 11, 12], nil, nil, nil, nil, nil, nil ]
-      to_a '07-08 * * * *', [ [0], [7, 8], nil, nil, nil, nil, nil, nil ]
-      to_a '* */08 * * *', [ [0], nil, [0, 8, 16, 24], nil, nil, nil, nil, nil ]
-      to_a '* 01-09/04 * * *', [ [0], nil, [1, 5, 9], nil, nil, nil, nil, nil ]
-      to_a '* * * * 06', [ [0], nil, nil, nil, nil, [6], nil, nil ]
+      to_a '09 * * * *', [ [0], [9], nil, nil, nil, nil, nil, nil, nil ]
+      to_a '09-12 * * * *', [ [0], [9, 10, 11, 12], nil, nil, nil, nil, nil, nil, nil ]
+      to_a '07-08 * * * *', [ [0], [7, 8], nil, nil, nil, nil, nil, nil, nil ]
+      to_a '* */08 * * *', [ [0], nil, [0, 8, 16, 24], nil, nil, nil, nil, nil, nil ]
+      to_a '* 01-09/04 * * *', [ [0], nil, [1, 5, 9], nil, nil, nil, nil, nil, nil ]
+      to_a '* * * * 06', [ [0], nil, nil, nil, nil, nil, [6], nil, nil ]
     end
+
+    it 'interprets cron strings with L correctly' do
+      to_a '* * L * *', [[0], nil, nil, nil, [true], nil, nil, nil, nil ]
+      to_a '* * 2-5,L * *', [[0], nil, nil, [2,3,4,5], [true], nil, nil, nil, nil ]
+      to_a '* * */8,L * *', [[0], nil, nil, [1,9,17,25], [true], nil, nil, nil, nil ]
+    end
+
+    it 'does not support ranges for L' do
+      lambda { cl '* * 15-L * *'}.should raise_error(ArgumentError)
+      lambda { cl '* * L/4 * *'}.should raise_error(ArgumentError)
+    end
+
+    it 'does not support multiple Ls' do
+      lambda { cl '* * L,L * *'}.should raise_error(ArgumentError)
+    end
+
   end
 
   describe '#next_time' do
@@ -214,6 +230,17 @@ describe Rufus::CronLine do
 
       nt('* * * * sun#2,sun#3', now).should == local(1970, 1, 18)
     end
+
+   it 'computes the next time correctly when there is a L (last day of month)' do
+
+     nt('* * L * *', local(1970,1,1)).should == local(1970, 1, 31)
+     nt('* * L * *', local(1970,2,1)).should == local(1970, 2, 28)
+     nt('* * L * *', local(1972,2,1)).should == local(1972, 2, 29)
+     nt('* * L * *', local(1970,4,1)).should == local(1970, 4, 30)
+
+   end
+
+
   end
 
   describe '#matches?' do
@@ -269,6 +296,12 @@ describe Rufus::CronLine do
 
       match '* * 13 * fri#2', utc(1970, 2, 13)
       no_match '* * 13 * fri#2', utc(1970, 2, 20)
+    end
+
+    it 'matches correctly when there is a L involved' do
+
+      match '* * L * *', utc(1970, 1, 31)
+      no_match '* * L * *', utc(1970, 1, 30)
     end
 
     it 'matches correctly when there is a sun#2,sun#3 involved' do

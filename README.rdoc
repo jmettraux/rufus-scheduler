@@ -77,10 +77,14 @@ This is a classical cron :
     # every day of the week at 22:00 (10pm)
   end
 
-Rufus-scheduler supports two variants to that notation : seconds and timezones.
+Rufus-scheduler supports three variants to that notation : seconds, last day of month and timezones.
 
   scheduler.cron '13 0 22 * * 1-5' do
     # every day of the week at 22:00:13
+  end
+
+  scheduler.cron '0 22 L * *' do
+    # every month on the last day at 22:00
   end
 
   scheduler.cron '0 22 * * 1-5 Europe/Paris' do
