@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Andrew Davey (https://github.com/asdavey) "L" in cron lines
 - Stig Kleppe-Jørgensen (https://github.com/stigkj)
 - Danny "northox" Fullerton (https://github.com/northox) negative time strings
 - Marcus Brito (https://github.com/pazustep) CronLine proofing
