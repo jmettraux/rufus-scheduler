@@ -66,6 +66,11 @@ describe Rufus::CronLine do
       lambda { cl '* * * * BLABLA' }.should raise_error
     end
 
+    it 'rejects invalid cronlines' do
+
+      lambda { cl '* nada * * 9' }.should raise_error(ArgumentError)
+    end
+
     it 'interprets cron strings with TZ correctly' do
 
       to_a '* * * * * EST', [ [0], nil, nil, nil, nil, nil, nil, 'EST' ]
@@ -121,6 +126,11 @@ describe Rufus::CronLine do
     it 'does not support multiple Ls' do
 
       lambda { cl '* * L,L * *'}.should raise_error(ArgumentError)
+    end
+
+    it 'raises if L is used for something else than days' do
+
+      lambda { cl '* L * * *'}.should raise_error(ArgumentError)
     end
   end
 

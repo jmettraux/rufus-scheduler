@@ -69,6 +69,13 @@ module Rufus
       @days = parse_item(items[2 + offset], 1, 31)
       @months = parse_item(items[3 + offset], 1, 12)
       @weekdays, @monthdays = parse_weekdays(items[4 + offset])
+
+      [ @seconds, @minutes, @hours, @months ].each do |es|
+
+        raise ArgumentError.new(
+          "invalid cronline: '#{line}'"
+        ) if es && es.find { |e| ! e.is_a?(Integer) }
+      end
     end
 
     # Returns true if the given time matches this cron line.
