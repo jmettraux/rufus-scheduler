@@ -41,7 +41,6 @@ module Rufus
     attr_reader :minutes
     attr_reader :hours
     attr_reader :days
-    attr_reader :lastmonthday
     attr_reader :months
     attr_reader :weekdays
     attr_reader :monthdays
@@ -67,7 +66,7 @@ module Rufus
       @seconds = offset == 1 ? parse_item(items[0], 0, 59) : [ 0 ]
       @minutes = parse_item(items[0 + offset], 0, 59)
       @hours = parse_item(items[1 + offset], 0, 24)
-      @days, @lastmonthday = parse_days(items[2 + offset], 1, 31)
+      @days = parse_item(items[2 + offset], 1, 31)
       @months = parse_item(items[3 + offset], 1, 12)
       @weekdays, @monthdays = parse_weekdays(items[4 + offset])
     end
@@ -80,9 +79,9 @@ module Rufus
 
       time = @timezone.utc_to_local(time.getutc) if @timezone
 
-      return false unless sub_match?(time.sec, @seconds)
-      return false unless sub_match?(time.min, @minutes)
-      return false unless sub_match?(time.hour, @hours)
+      return false unless sub_match?(time, :sec, @seconds)
+      return false unless sub_match?(time, :min, @minutes)
+      return false unless sub_match?(time, :hour, @hours)
       return false unless date_match?(time)
       true
     end
@@ -127,15 +126,15 @@ module Rufus
           time += (24 - time.hour) * 3600 - time.min * 60 - time.sec
           next
         end
-        unless sub_match?(time.hour, @hours)
+        unless sub_match?(time, :hour, @hours)
           time += (60 - time.min) * 60 - time.sec
           next
         end
-        unless sub_match?(time.min, @minutes)
+        unless sub_match?(time, :min, @minutes)
           time += 60 - time.sec
           next
         end
-        unless sub_match?(time.sec, @seconds)
+        unless sub_match?(time, :sec, @seconds)
           time += 1
           next
         end
@@ -162,7 +161,6 @@ module Rufus
         @minutes,
         @hours,
         @days,
-        @lastmonthday,
         @months,
         @weekdays,
         @monthdays,
@@ -213,36 +211,12 @@ module Rufus
       [ weekdays, monthdays ]
     end
 
-    def parse_days(item, min, max)
-      return [parse_item(item, min, max), nil] unless item.index("L")
-
-      items = item.downcase.split(',')
-      last = items.select {|it| it =~ /l/}
-
-      raise ArgumentError.new(
-        "only one Last is supported for the days field"
-      ) if last.size > 1
-
-      last = last.first
-
-      raise ArgumentError.new(
-        "ranges and increments are not supported for Last (#{ last })"
-      ) if last.index("-") || last.index("/")
-
-      items.delete_if{|it| it =~ /l/}.nil?
-
-      if items.empty?
-        [nil, [true]]
-      else
-        [parse_item(items.join(','), min, max), [true]]
-      end
-    end
-
     def parse_item(item, min, max)
 
       return nil if item == '*'
+      return [ 'L' ] if item == 'L'
       return parse_list(item, min, max) if item.index(',')
-      return parse_range(item, min, max) if item.index('*') or item.index('-')
+      return parse_range(item, min, max) if item.match(/[*-\/]/)
 
       i = item.to_i
 
@@ -254,32 +228,36 @@ module Rufus
 
     def parse_list(item, min, max)
 
-      item.split(',').inject([]) { |r, i|
-        r.push(parse_range(i, min, max))
-      }.flatten
+      l = item.split(',').collect { |i| parse_range(i, min, max) }.flatten
+
+      raise ArgumentError.new(
+        "found duplicates in #{item.inspect}"
+      ) if l.uniq.size < l.size
+
+      l
     end
 
     def parse_range(item, min, max)
 
-      i = item.index('-')
-      j = item.index('/')
+      dash = item.index('-')
+      slash = item.index('/')
 
-      return item.to_i if (not i and not j)
+      return parse_item(item, min, max) if (not slash) and (not dash)
 
-      inc = j ? item[j + 1..-1].to_i : 1
+      raise ArgumentError.new(
+        "'L' (end of month) is not accepted in ranges, " +
+        "#{item.inspect} is not valid"
+      ) if item.index('L')
+
+      inc = slash ? item[slash + 1..-1].to_i : 1
 
       istart = -1
       iend = -1
 
-      if i
+      if dash
 
-        istart = item[0..i - 1].to_i
-
-        iend = if j
-          item[i + 1..j - 1].to_i
-        else
-          item[i + 1..-1].to_i
-        end
+        istart = item[0..dash - 1].to_i
+        iend = (slash ? item[dash + 1..slash - 1] : item[dash + 1..-1]).to_i
 
       else # case */x
 
@@ -302,36 +280,31 @@ module Rufus
       result
     end
 
-    def sub_match?(value, values)
+    def next_day(time)
 
-      values.nil? || values.include?(value)
+      (time + 24 * 3600).day
     end
 
-    def monthday_match(monthday, monthdays)
+    def sub_match?(time, accessor, values=:none)
 
-      return true if monthdays == nil
-      return true if monthdays.include?(monthday)
-    end
+      value, values =
+        if values == :none
+          [ time, accessor ]
+        else
+          [ time.send(accessor), values ]
+        end
 
-    def day_of_month_match?(date)
-      day = date.day
-      last_day = CronLine.last_day_of_month?(date)
+      return true if values.nil?
+      return true if values.include?('L') && (time + 24 * 3600).day == 1
 
-      return true if @lastmonthday.nil? && @days.nil?
-      return true if !@days.nil? && sub_match?(day, @days)
-      return true if !@lastmonthday.nil? && sub_match?(last_day, @lastmonthday)
-      false
-    end
-
-    def self.last_day_of_month?(date)
-      Date.new(date.year, date.month, -1).day == date.day
+      values.include?(value)
     end
 
     def date_match?(date)
 
-      return false unless day_of_month_match?(date)
-      return false unless sub_match?(date.month, @months)
-      return false unless sub_match?(date.wday, @weekdays)
+      return false unless sub_match?(date, :day, @days)
+      return false unless sub_match?(date, :month, @months)
+      return false unless sub_match?(date, :wday, @weekdays)
       return false unless sub_match?(CronLine.monthday(date), @monthdays)
       true
     end
