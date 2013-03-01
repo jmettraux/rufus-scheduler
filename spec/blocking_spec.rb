@@ -17,17 +17,18 @@ describe SCHEDULER_CLASS do
     stop_scheduler(@s)
   end
 
-  JOB = Proc.new do |x|
-    begin
-      $var << "a#{x}"
-      sleep 0.500
-      $var << "b#{x}"
-    rescue Exception => e
-      puts '=' * 80
-      p e
-      puts '=' * 80
+  JOB =
+    Proc.new do |x|
+      begin
+        $var << "a#{x}"
+        sleep 0.500
+        $var << "b#{x}"
+      rescue Exception => e
+        puts '=' * 80
+        p e
+        puts '=' * 80
+      end
     end
-  end
 
   context ':blocking => nil' do
 
@@ -37,9 +38,12 @@ describe SCHEDULER_CLASS do
       @s.in('1s') { JOB.call(1) }
       @s.in('1s') { JOB.call(2) }
 
-      sleep 5.0
+      sleep 4.0
 
-      [ %w{ a1 a2 b1 b2 }, %w{ a1 a2 b2 b1 } ].should include($var)
+      [
+        %w{ a1 a2 b1 b2 }, %w{ a1 a2 b2 b1 },
+        %w{ a2 a1 b2 b1 }, %w{ a2 a1 b1 b2 }
+      ].should include($var)
     end
   end
 
