@@ -477,9 +477,9 @@ module Rufus
     # If a Float value is passed, milliseconds will be displayed without
     # 'marker'
     #
-    #   Rufus.to_duration_string 0.051                       # =>"51"
-    #   Rufus.to_duration_string 7.051                       # =>"7s51"
-    #   Rufus.to_duration_string 0.120 + 30 * 24 * 3600 + 1  # =>"4w2d1s120"
+    #   Rufus.to_duration_string 0.051                       # => "51"
+    #   Rufus.to_duration_string 7.051                       # => "7s51"
+    #   Rufus.to_duration_string 0.120 + 30 * 24 * 3600 + 1  # => "4w2d1s120"
     #
     # (this behaviour mirrors the one found for parse_time_string()).
     #
@@ -496,12 +496,13 @@ module Rufus
 
       return (options[:drop_seconds] ? '0m' : '0s') if h.empty?
 
-      s = DU_KEYS.inject('') { |r, key|
-        count = h[key]
-        count = nil if count == 0
-        r << "#{count}#{key}" if count
-        r
-      }
+      s =
+        DU_KEYS.inject('') { |r, key|
+          count = h[key]
+          count = nil if count == 0
+          r << "#{count}#{key}" if count
+          r
+        }
 
       ms = h[:ms]
       s << ms.to_s if ms
