@@ -4,6 +4,10 @@
 
 == rufus-scheduler - 2.0.18    not yet released
 
+- support for "L" in cron lines (Thanks Andrew Davey)
+- support for negative time strings (Thanks Danny "northox" Fullerton)
+- reject invalid weekdays (Thanks pazustep)
+
 
 == rufus-scheduler - 2.0.17    released 2012/06/14
 
