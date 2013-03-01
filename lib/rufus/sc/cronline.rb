@@ -280,11 +280,6 @@ module Rufus
       result
     end
 
-    def next_day(time)
-
-      (time + 24 * 3600).day
-    end
-
     def sub_match?(time, accessor, values=:none)
 
       value, values =
