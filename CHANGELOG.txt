@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 2.0.18    not yet released
+== rufus-scheduler - 2.0.18    released 2012/03/06
 
 - support for "L" in cron lines (Thanks Andrew Davey)
 - support for negative time strings (Thanks Danny "northox" Fullerton)
