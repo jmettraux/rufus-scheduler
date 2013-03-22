@@ -231,6 +231,16 @@ It can be handy for even more fine-grained control:
     # non-critical
   end
 
+Please note that a mutex can also be used to prevent overlapping executions of the same job:
+
+  scheduler.every '5m', :mutex => 'the_mutex' do
+    puts "order ristretto"
+    # do something that might take more that 5 minutes...
+    puts "ah, that was delicious"
+  end
+
+But beware the cascades...
+
 
 == :allow_overlapping => false
 
