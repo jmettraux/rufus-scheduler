@@ -40,7 +40,7 @@ describe 'job classes' do
         job.running.should == true
       end
 
-      it 'returns false when the job hit some error' do
+      it 'returns false when the job hits some error' do
 
         $exception = nil
 
