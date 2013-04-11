@@ -420,6 +420,11 @@ module Rufus::Scheduler
       case mutex
       when Mutex
         mutex.synchronize { block.call }
+      when Array
+        mutex.reduce(block) do |memo, m|
+          m = (@mutexes[m.to_s] ||= Mutex.new) unless m.is_a?(Mutex)
+          -> { m.synchronize { memo.call } }
+        end.call
       else
         (@mutexes[mutex.to_s] ||= Mutex.new).synchronize { block.call }
       end

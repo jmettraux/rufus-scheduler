@@ -242,6 +242,36 @@ Please note that a mutex can also be used to prevent overlapping executions of t
 But beware the cascades...
 
 
+== :mutex => ['mutex_a', 'mutex_b', ...]
+
+Multiple mutexes can be used to ensure exlusivity:
+
+  scheduler.in '20m', :mutex => 'mutex_r' do
+    puts "order ristretto"
+    sleep 2 * 60
+  end
+
+  scheduler.in '20m' :mutex => 'mutex_e' do
+    puts "order espresso"
+    sleep 3 * 60
+  end
+
+  scheduler.in '1h' :mutex => ['mutex_r', 'mutex_e'] do
+    puts "code for fun"
+  end
+
+This allow you order ristretto and espresso at same time, but when you coding it ensure you can't order any thing, and when you ordering anything it ensure you can't code.
+
+Sure you can also use array of Mutex object directly:
+
+  mutex_r = Mutex.new
+  mutex_e = Mutex.new
+  # ...
+  scheduler.in '1h' :mutex => [mutex_r, mutex_e] do
+    puts "code for fun"
+  end
+
+
 == :allow_overlapping => false
 
 By default, every and cron jobs will "overlap":
