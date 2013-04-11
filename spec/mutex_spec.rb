@@ -89,5 +89,71 @@ describe SCHEDULER_CLASS do
       @s.instance_variable_get(:@mutexes).size.should == 0
     end
   end
+
+  context ':mutexes => Array of String' do
+
+    it 'ensure exclusivity' do
+
+      $var = ''
+      m0 = 'm0'
+      m1 = 'm1'
+
+      @s.in('1s', :mutex => m0) { MJOB.call(0) }
+      @s.in('1s', :mutex => m1) { MJOB.call(1) }
+      @s.in('1s', :mutex => [m0, m1]) { MJOB.call(2) }
+
+      sleep 4.5
+
+      $var.should include('in2out2')
+    end
+
+    it 'creates new mutexes when the names are first encountered' do
+
+      @s.instance_variable_get(:@mutexes).size.should == 0
+
+      @s.in('1s', :mutex => ['fruit', 'bread']) { sleep 0.1 }
+
+      sleep 1.5
+
+      @s.instance_variable_get(:@mutexes).size.should == 2
+    end
+
+    it 'creates a unique mutex for a given name' do
+
+      @s.in('1s', :mutex => ['fruit', 'bread']) { sleep 0.1 }
+      @s.in('1s', :mutex => ['fruit', 'bread']) { sleep 0.1 }
+
+      sleep 1.5
+
+      @s.instance_variable_get(:@mutexes).size.should == 2
+    end
+  end
+
+  context ':mutexes => Array of Mutex' do
+
+    it 'ensure exclusivity' do
+
+      $var = ''
+      m0 = Mutex.new
+      m1 = Mutex.new
+
+      @s.in('1s', :mutex => m0) { MJOB.call(0) }
+      @s.in('1s', :mutex => m1) { MJOB.call(1) }
+      @s.in('1s', :mutex => [m0, m1]) { MJOB.call(2) }
+
+      sleep 4.5
+
+      $var.should include('in2out2')
+    end
+
+    it 'does not register the mutexes' do
+
+      @s.in('1s', :mutex => [Mutex.new, Mutex.new]) { sleep 0.1 }
+
+      sleep 1.5
+
+      @s.instance_variable_get(:@mutexes).size.should == 0
+    end
+  end
 end
 
