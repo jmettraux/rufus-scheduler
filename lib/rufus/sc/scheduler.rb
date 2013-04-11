@@ -423,7 +423,7 @@ module Rufus::Scheduler
       when Array
         mutex.reduce(block) do |memo, m|
           m = (@mutexes[m.to_s] ||= Mutex.new) unless m.is_a?(Mutex)
-          -> { m.synchronize { memo.call } }
+          lambda { m.synchronize { memo.call } }
         end.call
       else
         (@mutexes[mutex.to_s] ||= Mutex.new).synchronize { block.call }
