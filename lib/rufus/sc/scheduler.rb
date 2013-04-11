@@ -410,10 +410,23 @@ module Rufus::Scheduler
       if params[:blocking]
         block.call
       elsif m = params[:mutex]
-        m = (@mutexes[m.to_s] ||= Mutex.new) unless m.is_a?(Mutex)
-        Thread.new { m.synchronize { block.call } }
+        Thread.new { synchronize_with_mutex(m, &block) }
       else
         Thread.new { block.call }
+      end
+    end
+
+    def synchronize_with_mutex(mutex, &block)
+      case mutex
+      when Mutex
+        mutex.synchronize { block.call }
+      when Array
+        mutex.reduce(block) do |memo, m|
+          m = (@mutexes[m.to_s] ||= Mutex.new) unless m.is_a?(Mutex)
+          -> { m.synchronize { memo.call } }
+        end.call
+      else
+        (@mutexes[mutex.to_s] ||= Mutex.new).synchronize { block.call }
       end
     end
   end
@@ -549,8 +562,7 @@ module Rufus::Scheduler
       if params[:blocking]
         EM.next_tick { block.call }
       elsif m = params[:mutex]
-        m = (@mutexes[m.to_s] ||= Mutex.new) unless m.is_a?(Mutex)
-        EM.defer { m.synchronize { block.call } }
+        EM.defer { synchronize_with_mutex(m, &block) }
       else
         EM.defer { block.call }
       end
