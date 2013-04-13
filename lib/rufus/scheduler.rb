@@ -114,25 +114,10 @@ module Rufus
       @jobs.to_a
     end
 
-    def at_jobs
-
-      jobs.select { |j| j.is_a?(Rufus::Scheduler::AtJob) }
-    end
-
-    def in_jobs
-
-      jobs.select { |j| j.is_a?(Rufus::Scheduler::InJob) }
-    end
-
-    def every_jobs
-
-      jobs.select { |j| j.is_a?(Rufus::Scheduler::EveryJob) }
-    end
-
-    def cron_jobs
-
-      jobs.select { |j| j.is_a?(Rufus::Scheduler::CronJob) }
-    end
+    def at_jobs;    jobs.select { |j| j.is_a?(Rufus::Scheduler::AtJob) }; end
+    def in_jobs;    jobs.select { |j| j.is_a?(Rufus::Scheduler::InJob) }; end
+    def every_jobs; jobs.select { |j| j.is_a?(Rufus::Scheduler::EveryJob) }; end
+    def cron_jobs;  jobs.select { |j| j.is_a?(Rufus::Scheduler::CronJob) }; end
 
     protected
 
@@ -140,16 +125,17 @@ module Rufus
 
       @started_at = Time.now
 
-      @thread = Thread.new do
+      @thread =
+        Thread.new do
 
-        while @started_at do
+          while @started_at do
 
-          schedule_jobs
-          trigger_jobs
+            schedule_jobs
+            trigger_jobs
 
-          sleep(@frequency)
+            sleep(@frequency)
+          end
         end
-      end
 
       @thread[:rufus_scheduler] =
         self
