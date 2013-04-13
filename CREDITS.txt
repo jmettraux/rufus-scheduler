@@ -4,7 +4,7 @@
 
 == Contributors
 
-- Rainux Leo (https://github.com/rainux) multiple mutexes
+- Rainux Luo (https://github.com/rainux) multiple mutexes
 - Andrew Davey (https://github.com/asdavey) "L" in cron lines
 - Stig Kleppe-Jørgensen (https://github.com/stigkj)
 - Danny "northox" Fullerton (https://github.com/northox) negative time strings
