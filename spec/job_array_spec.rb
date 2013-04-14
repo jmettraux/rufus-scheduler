@@ -14,28 +14,28 @@ describe Rufus::Scheduler::JobArray do
 
     it 'pushes jobs' do
 
-      @array.push(DummyJob.new('a', Time.new(0)))
+      @array.push(DummyJob.new('a', Time.local(0)))
 
       @array.to_a.collect(&:id).should == %w[ a ]
     end
 
     it 'pushes jobs and preserve their next_time order' do
 
-      @array.push(DummyJob.new('a', Time.new(0)))
-      @array.push(DummyJob.new('c', Time.new(2)))
-      @array.push(DummyJob.new('b', Time.new(1)))
+      @array.push(DummyJob.new('a', Time.local(0)))
+      @array.push(DummyJob.new('c', Time.local(2)))
+      @array.push(DummyJob.new('b', Time.local(1)))
 
       @array.to_a.collect(&:id).should == %w[ a b c ]
     end
 
     it 'pushes jobs and preserve their next_time order (2)' do
 
-      @array.push(DummyJob.new('a', Time.new(0)))
-      @array.push(DummyJob.new('b', Time.new(1)))
-      @array.push(DummyJob.new('d', Time.new(3)))
-      @array.push(DummyJob.new('e', Time.new(4)))
+      @array.push(DummyJob.new('a', Time.local(0)))
+      @array.push(DummyJob.new('b', Time.local(1)))
+      @array.push(DummyJob.new('d', Time.local(3)))
+      @array.push(DummyJob.new('e', Time.local(4)))
 
-      @array.push(DummyJob.new('c', Time.new(2)))
+      @array.push(DummyJob.new('c', Time.local(2)))
 
       @array.to_a.collect(&:id).should == %w[ a b c d e ]
     end
@@ -45,7 +45,7 @@ describe Rufus::Scheduler::JobArray do
 
     it 'accepts an empty array' do
 
-      @array.push(DummyJob.new('c', Time.new(2)))
+      @array.push(DummyJob.new('c', Time.local(2)))
 
       @array.concat([])
 
@@ -54,11 +54,11 @@ describe Rufus::Scheduler::JobArray do
 
     it 'pushes jobs and ensures next_time order' do
 
-      @array.push(DummyJob.new('c', Time.new(2)))
+      @array.push(DummyJob.new('c', Time.local(2)))
 
       @array.concat([
-        DummyJob.new('a', Time.new(0)),
-        DummyJob.new('b', Time.new(1))
+        DummyJob.new('a', Time.local(0)),
+        DummyJob.new('b', Time.local(1))
       ])
 
       @array.to_a.collect(&:id).should == %w[ a b c ]
@@ -69,21 +69,21 @@ describe Rufus::Scheduler::JobArray do
 
     it 'returns nil if there is no next job' do
 
-      @array.shift(Time.new(0)).should == nil
+      @array.shift(Time.local(0)).should == nil
     end
 
     it 'returns nil if there is no next job (2)' do
 
-      @array.push(DummyJob.new('c', Time.new(2)))
+      @array.push(DummyJob.new('c', Time.local(2)))
 
-      @array.shift(Time.new(1)).should == nil
+      @array.shift(Time.local(1)).should == nil
     end
 
     it 'returns the next job if job.next_time <= now' do
 
-      @array.push(DummyJob.new('a', Time.new(0)))
+      @array.push(DummyJob.new('a', Time.local(0)))
 
-      @array.shift(Time.new(0)).class.should == DummyJob
+      @array.shift(Time.local(0)).class.should == DummyJob
     end
   end
 end
