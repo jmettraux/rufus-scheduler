@@ -27,6 +27,18 @@ describe Rufus::Scheduler::JobArray do
 
       @array.to_a.collect(&:id).should == %w[ a b c ]
     end
+
+    it 'pushes jobs and preserve their next_time order (2)' do
+
+      @array.push(DummyJob.new('a', Time.new(0)))
+      @array.push(DummyJob.new('b', Time.new(1)))
+      @array.push(DummyJob.new('d', Time.new(3)))
+      @array.push(DummyJob.new('e', Time.new(4)))
+
+      @array.push(DummyJob.new('c', Time.new(2)))
+
+      @array.to_a.collect(&:id).should == %w[ a b c d e ]
+    end
   end
 
   describe '#concat' do

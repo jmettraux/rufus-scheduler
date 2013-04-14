@@ -3,7 +3,7 @@
 
 [o] merge schedule_queue and unschedule_queue (and merge [un]schedule steps)
 [x] OR stop using queue, since we've got the thread-safe JobArray
-[ ] reconsider the two points above
+[ ] if possible, drop the mutex in JobArray
 [ ] named mutexes
 
 

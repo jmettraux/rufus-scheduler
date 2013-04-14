@@ -378,14 +378,30 @@ module Rufus
 
       def do_push(job)
 
-        # TODO next version: insert begin/middle/end...
+        #index = 0
+        #@array.each do |j|
+        #  break if job.next_time < j.next_time
+        #  index += 1
+        #end
+        #@array.insert(index, job)
+          #
+          # walk from the head
 
-        index = 0
-        @array.each do |j|
-          break if job.next_time < j.next_time
-          index += 1
-        end
-        @array.insert(index, job)
+        a = 0
+        z = @array.length - 1
+
+        i =
+          loop do
+            break a if z < 0
+            break a if job.next_time <= @array[a].next_time
+            break z + 1 if job.next_time >= @array[z].next_time
+            a += 1; z -= 1
+          end
+        @array.insert(i, job)
+          #
+          # walk from the head and the tail
+
+        # TODO next version: divide in half
       end
     end
 
