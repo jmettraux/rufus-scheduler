@@ -1,5 +1,8 @@
 branches:
-  only: three
+  only:
+    - three
+  #except:
+  #  - master
 #language: ruby
 #rvm:
 #  - 1.9.2
