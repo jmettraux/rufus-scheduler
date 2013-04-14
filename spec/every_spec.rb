@@ -28,24 +28,23 @@ describe Rufus::Scheduler do
 
       $counter = 0
 
-      @scheduler.every(0.1) do
+      @scheduler.every(0.4) do
         $counter += 1
       end
 
-      sleep 0.4
+      sleep 2.0
 
       $counter.should > 2
     end
 
     it 'does not remove the job after execution' do
-      pending
 
-      @scheduler.in(0.4) do
+      @scheduler.every(0.4) do
       end
 
-      sleep 0.700
+      sleep 1.0
 
-      @scheduler.jobs.size.should == 0
+      @scheduler.jobs.size.should == 1
     end
   end
 

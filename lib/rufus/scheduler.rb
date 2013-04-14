@@ -293,12 +293,15 @@ module Rufus
 
         super(scheduler, duration, opts, block)
 
-        @next_time = @scheduled_at + Rufus::Scheduler.parse_in(duration)
+        @frequency = Rufus::Scheduler.parse_in(@original)
+        @next_time = @scheduled_at + @frequency
       end
 
       def trigger(time)
 
         super
+
+        @next_time = Time.now + @frequency
 
         true # do reschedule
       end
@@ -593,6 +596,33 @@ module Rufus
       end
 
       h
+    end
+
+    #--
+    # misc
+    #++
+
+    # Produces the UTC string representation of a Time instance
+    #
+    # like "2009/11/23 11:11:50.947109 UTC"
+    #
+    def self.utc_to_s(t=Time.now)
+
+      "#{t.utc.strftime('%Y-%m-%d %H:%M:%S')}.#{sprintf('%06d', t.usec)} UTC"
+    end
+
+    # Produces a hour/min/sec/milli string representation of Time instance
+    #
+    def self.h_to_s(t=Time.now)
+
+      "#{t.strftime('%H:%M:%S')}.#{sprintf('%06d', t.usec)}"
+    end
+
+    # Debugging tools...
+    #
+    class D
+
+      def self.h_to_s(t=Time.now); Rufus::Scheduler.h_to_s(t); end
     end
   end
 end
