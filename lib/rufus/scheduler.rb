@@ -101,6 +101,18 @@ module Rufus
       do_schedule(Rufus::Scheduler::InJob, duration, opts, block)
     end
 
+    def every(duration, opts={}, &block)
+
+      job = schedule_every(duration, opts, &block)
+
+      opts[:job] ? job : job.id
+    end
+
+    def schedule_every(duration, opts={}, &block)
+
+      do_schedule(Rufus::Scheduler::EveryJob, duration, opts, block)
+    end
+
     def unschedule(job_or_job_id)
 
       @schedule_queue << [ false, job_or_job_id ]
@@ -275,6 +287,31 @@ module Rufus
     end
 
     class EveryJob < RepeatJob
+
+      attr_reader :next_time
+
+      def initialize(scheduler, duration, opts, block)
+
+        super(scheduler, duration, opts, block)
+
+        @next_time = @scheduled_at + Rufus::Scheduler.parse_in(duration)
+      end
+
+      def trigger(time)
+
+        super
+
+        false
+      end
+
+      def determine_id
+
+        [
+          self.class.name.split(':').last.downcase[0..-4],
+          @scheduled_at.to_f,
+          opts.hash.abs
+        ].map(&:to_s).join('_')
+      end
     end
 
     class CronJob < RepeatJob
