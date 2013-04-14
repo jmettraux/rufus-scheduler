@@ -22,6 +22,7 @@
 # Made in Japan.
 #++
 
+require 'date' if RUBY_VERSION < '1.9.0'
 require 'time'
 require 'thread'
 
@@ -298,7 +299,7 @@ module Rufus
 
         @mutex.synchronize {
 
-          @array.sort_by!(&:next_time) if @shuffled
+          @array = @array.sort_by(&:next_time) if @shuffled
           @shuffled = false
 
           @array.each(&block)
@@ -361,7 +362,15 @@ module Rufus
 
     def self.parse_at(o)
 
-      o.is_a?(Time) ? o : Time.parse(o)
+      return o if o.is_a?(Time)
+
+      begin
+        DateTime.parse(o)
+      rescue
+        raise ArgumentError, "no time information in #{o.inspect}"
+      end if RUBY_VERSION < '1.9.0'
+
+      Time.parse(o)
     end
 
     DURATIONS2M = [

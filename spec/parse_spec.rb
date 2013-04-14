@@ -17,8 +17,8 @@ describe Rufus::Scheduler do
 
     it 'parses datetimes' do
 
-      parse('Sun Nov 18 16:01:00 JST 2012').to_s.should match(
-        /2012-11-18 16:01:00 \+\d{4}/)
+      parse('Sun Nov 18 16:01:00 JST 2012').strftime('%c').should ==
+        'Sun Nov 18 16:01:00 2012'
     end
 
     it 'parses cronlines'

@@ -91,6 +91,7 @@ describe Rufus::Scheduler do
       scheduler.shutdown
 
       sleep 0.100
+      sleep 0.400 if RUBY_VERSION < '1.9.0'
 
       t = Thread.list.find { |t|
         t[:name] == "rufus_scheduler_#{scheduler.object_id}"
