@@ -31,6 +31,9 @@ module Rufus
 
   class Scheduler
 
+    require 'rufus/scheduler/timezone'
+    require 'rufus/scheduler/cronline'
+
     VERSION = '3.0.0'
 
     attr_accessor :frequency
