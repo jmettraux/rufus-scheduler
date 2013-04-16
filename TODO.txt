@@ -3,7 +3,8 @@
 
 [o] merge schedule_queue and unschedule_queue (and merge [un]schedule steps)
 [x] OR stop using queue, since we've got the thread-safe JobArray
-[ ] if possible, drop the mutex in JobArray
+[x] if possible, drop the mutex in JobArray
+    NO, that mutex is necessary for Scheduler#jobs (on JRuby an co)...
 [ ] named mutexes
 
 
