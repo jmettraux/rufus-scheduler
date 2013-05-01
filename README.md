@@ -8,7 +8,7 @@
 
 It's a complete rewrite of rufus-scheduler.
 
-There is not EventMachine based scheduler anymore.
+There is no EventMachine-based scheduler anymore.
 
 
 ## license
