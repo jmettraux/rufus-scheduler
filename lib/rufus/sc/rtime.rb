@@ -118,9 +118,14 @@ module Rufus
   #   Rufus.parse_time_string "1h10s"  # => 3610.0
   #   Rufus.parse_time_string "1w2d"   # => 777600.0
   #
+  # Note will call #to_s on the input "string", so anything that is a String
+  # or responds to #to_s will be OK.
+  #
   def self.parse_time_string(string)
 
-    return 0.0 if string.to_s == ''
+    string = string.to_s
+
+    return 0.0 if string == ''
 
     m = string.match(/^(-?)([\d\.#{DURATION_LETTERS}]+)$/)
 

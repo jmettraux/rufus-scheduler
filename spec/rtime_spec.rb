@@ -53,6 +53,23 @@ describe 'rufus/rtime' do
     pts('5.m').should == 300.0
     pts('1m.5s').should == 60.5
     pts('-.5m').should == -30.0
+
+    pts('1d').should == 86400.0
+    pts('0.1d').should == 8640.0
+    pts('0.1s').should == 0.1
+
+    pts('0.1').should == 0.1
+    pts('1').should == 0.001
+      #
+      # the two evil twins :-(
+  end
+
+  it 'parses duration "strings"' do
+
+    o = Object.new
+    def o.to_s; '-2'; end
+
+    pts(o).should == -0.002
   end
 
   it 'raises on wrong duration strings' do
