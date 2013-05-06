@@ -365,12 +365,16 @@ module Scheduler
 
     def determine_frequency
 
-      @frequency = if @t.is_a?(Fixnum) || @t.is_a?(Float)
-        @t
-      else
-        Rufus.parse_duration_string(@t)
-      end
-      raise ArgumentError.new("cannot initialize an EveryJob with a 0.0 frequency") if @frequency == 0.0
+      @frequency =
+        if @t.is_a?(Fixnum) || @t.is_a?(Float)
+          @t
+        else
+          Rufus.parse_duration_string(@t)
+        end
+
+      raise ArgumentError.new(
+        'cannot initialize an EveryJob with a <= 0.0 frequency'
+      ) if @frequency <= 0.0
     end
 
     def determine_at

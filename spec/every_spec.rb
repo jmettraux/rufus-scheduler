@@ -56,7 +56,7 @@ describe "#{SCHEDULER_CLASS}#every" do
     var.should be_within(10).of(37)
   end
 
-  it 'schedules every 0s' do
+  it 'raises on schedule every 0s' do
 
     lambda {
       @s.every '0s' do
@@ -64,7 +64,15 @@ describe "#{SCHEDULER_CLASS}#every" do
     }.should raise_error(ArgumentError)
   end
 
-  it 'schedules every \'\'' do
+  it 'raises on schedule every -1s' do
+
+    lambda {
+      @s.every '-1s' do
+      end
+    }.should raise_error(ArgumentError)
+  end
+
+  it 'raises on schedule every \'\'' do
 
     lambda {
       @s.every '' do
@@ -72,7 +80,7 @@ describe "#{SCHEDULER_CLASS}#every" do
     }.should raise_error(ArgumentError)
   end
 
-  it 'schedules every nil' do
+  it 'raises on schedule every nil' do
 
     lambda {
       @s.every nil do
