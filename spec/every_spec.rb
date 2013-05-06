@@ -43,6 +43,43 @@ describe "#{SCHEDULER_CLASS}#every" do
     var.should == 3
   end
 
+  it 'schedules every 0.1s' do
+
+    var = 0
+
+    job = @s.every '0.1s' do
+      var += 1
+    end
+
+    sleep 3.7
+
+    var.should be_within(10).of(37)
+  end
+
+  it 'schedules every 0s' do
+   
+    lambda { 
+      @s.every '0s' do 
+      end 
+    }.should raise_error(ArgumentError)
+  end
+
+  it 'schedules every \'\'' do 
+   
+    lambda { 
+      @s.every '' do 
+      end 
+    }.should raise_error(ArgumentError)
+  end
+
+  it 'schedules every nil' do
+
+    lambda { 
+      @s.every nil do 
+      end 
+    }.should raise_error(ArgumentError)
+  end
+
   it 'is punctilious' do
 
     hits = []

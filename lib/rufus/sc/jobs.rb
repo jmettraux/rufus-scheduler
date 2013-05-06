@@ -370,6 +370,7 @@ module Scheduler
       else
         Rufus.parse_duration_string(@t)
       end
+      raise ArgumentError.new("cannot initialize an EveryJob with a 0.0 frequency") if @frequency == 0.0
     end
 
     def determine_at

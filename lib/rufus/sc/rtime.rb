@@ -120,7 +120,7 @@ module Rufus
   #
   def self.parse_time_string(string)
 
-    return 0.0 if string == ''
+    return 0.0 if string.to_s == ''
 
     m = string.match(/^(-?)([\d\.#{DURATION_LETTERS}]+)$/)
 
