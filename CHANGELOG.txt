@@ -2,6 +2,12 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 2.0.19    not yet released
+
+- raise ArgumentError on <= 0.0 "every" frequency (Thanks Lucy Fu)
+- support multiple mutexes (Thanks Rainux Luo)
+
+
 == rufus-scheduler - 2.0.18    released 2012/03/06
 
 - support for "L" in cron lines (Thanks Andrew Davey)
