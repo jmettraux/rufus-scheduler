@@ -57,26 +57,26 @@ describe "#{SCHEDULER_CLASS}#every" do
   end
 
   it 'schedules every 0s' do
-   
-    lambda { 
-      @s.every '0s' do 
-      end 
+
+    lambda {
+      @s.every '0s' do
+      end
     }.should raise_error(ArgumentError)
   end
 
-  it 'schedules every \'\'' do 
-   
-    lambda { 
-      @s.every '' do 
-      end 
+  it 'schedules every \'\'' do
+
+    lambda {
+      @s.every '' do
+      end
     }.should raise_error(ArgumentError)
   end
 
   it 'schedules every nil' do
 
-    lambda { 
-      @s.every nil do 
-      end 
+    lambda {
+      @s.every nil do
+      end
     }.should raise_error(ArgumentError)
   end
 
