@@ -52,6 +52,22 @@ describe Rufus::Scheduler do
 
       @scheduler.jobs.size.should == 1
     end
+
+    it 'raises on negative frequencies' do
+
+      lambda {
+        @scheduler.every(-1) do
+        end
+      }.should raise_error(ArgumentError)
+    end
+
+    it 'raises on zero frequencies' do
+
+      lambda {
+        @scheduler.every(0) do
+        end
+      }.should raise_error(ArgumentError)
+    end
   end
 
   describe '#schedule_every' do

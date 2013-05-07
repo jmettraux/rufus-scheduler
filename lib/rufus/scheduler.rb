@@ -298,6 +298,11 @@ module Rufus
 
         @frequency = Rufus::Scheduler.parse_in(@original)
         @next_time = @scheduled_at + @frequency
+
+        raise ArgumentError.new(
+          "cannot schedule EveryJob with a frequency " +
+          "of #{@frequency.inspect} (#{@original.inspect})"
+        ) if @frequency <= 0
       end
 
       def trigger(time)
