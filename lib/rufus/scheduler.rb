@@ -478,6 +478,8 @@ module Rufus
     #
     def self.parse_duration(string, opts={})
 
+      string = string.to_s
+
       return 0.0 if string == ''
 
       m = string.match(/^(-?)([\d\.#{DURATION_LETTERS}]+)$/)
