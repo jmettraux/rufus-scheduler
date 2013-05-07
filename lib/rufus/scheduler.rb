@@ -497,7 +497,7 @@ module Rufus
         if m = s.match(/^(\d+|\d+\.\d*|\d*\.\d+)([#{DURATION_LETTERS}])(.*)$/)
           val += m[1].to_f * DURATIONS[m[2]]
         elsif s.match(/^\d+$/)
-          val += s.to_i / 1000.0
+          val += s.to_i
         elsif s.match(/^\d*\.\d*$/)
           val += s.to_f
         elsif opts[:no_error]

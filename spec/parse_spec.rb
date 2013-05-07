@@ -53,15 +53,15 @@ describe Rufus::Scheduler do
       pd('-5.').should == -5.0
       pd('-2.5s').should == -2.5
       pd('-1s').should == -1.0
-      pd('-500').should == -0.5
+      pd('-500').should == -500
       pd('').should == 0.0
       pd('5.0').should == 5.0
       pd('0.5').should == 0.5
       pd('.5').should == 0.5
       pd('5.').should == 5.0
-      pd('500').should == 0.5
-      pd('1000').should == 1.0
-      pd('1').should == 0.001
+      pd('500').should == 500
+      pd('1000').should == 1000
+      pd('1').should == 1.0
       pd('1s').should == 1.0
       pd('2.5s').should == 2.5
       pd('1h').should == 3600.0
@@ -74,6 +74,15 @@ describe Rufus::Scheduler do
       pd('5.m').should == 300.0
       pd('1m.5s').should == 60.5
       pd('-.5m').should == -30.0
+
+      pd('1').should == 1
+      pd('0.1').should == 0.1
+      pd('1s').should == 1
+    end
+
+    it 'calls #to_s on its input' do
+
+      pd(0.1).should == 0.1
     end
 
     it 'raises on wrong duration strings' do
