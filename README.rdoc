@@ -576,19 +576,28 @@ The 'tzinfo' rubygem.
 The ruby gem 'eventmachine' if you use Rufus::Scheduler::EmScheduler, else no other dependencies.
 
 
-== mailing list
+== support
+
+If you identify and pinpoint a bug, please use the issue tracker. If you are unsure whether the fault lies in rufus-scheduler or in your software, use the mailing list. The mailing list is Google-powered, so, yes, you can search it.
+
+Please read carefully: http://www.chiark.greenend.org.uk/~sgtatham/bugs.html (then re-read it).
+
+
+=== mailing list
 
 On the rufus-ruby list :
 
 http://groups.google.com/group/rufus-ruby
 
 
-== issue tracker
+=== issue tracker
 
-http://rubyforge.org/tracker/?atid=18584&group_id=4812&func=browse
+https://github.com/jmettraux/rufus-scheduler/issues
 
 
-== irc
+=== irc
+
+If you come over to #ruote to ask for rufus-scheduler help, please make sure to 1) say hello 2) be polite 3) state that you're looking for rufus-scheduler help 4) remember that we cannot read your mind and guess whatever lies in your deployment.
 
   irc.freenode.net #ruote
 
