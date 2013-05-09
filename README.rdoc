@@ -589,6 +589,8 @@ On the rufus-ruby list :
 
 http://groups.google.com/group/rufus-ruby
 
+Newcomers' first message is held for moderation in order to prevent spam. Further messages are not held.
+
 
 === issue tracker
 
@@ -600,6 +602,8 @@ https://github.com/jmettraux/rufus-scheduler/issues
 If you come over to #ruote to ask for rufus-scheduler help, please make sure to 1) say hello 2) be polite 3) state that you're looking for rufus-scheduler help 4) remember that we cannot read your mind and guess whatever lies in your deployment.
 
   irc.freenode.net #ruote
+
+If there is no answer on IRC, use the mailing list.
 
 
 == source
