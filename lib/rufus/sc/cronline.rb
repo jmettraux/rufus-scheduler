@@ -297,7 +297,7 @@ module Rufus
         end
 
       return true if values.nil?
-      return true if values.include?('L') && (time + 24 * 3600).day == 1
+      return true if values.include?('L') && (time + DAY_S).day == 1
 
       values.include?(value)
     end
@@ -311,7 +311,8 @@ module Rufus
       true
     end
 
-    DAY_IN_SECONDS = 7 * 24 * 3600
+    DAY_S = 24 * 3600
+    WEEK_S = 7 * DAY_S
 
     def self.monthday(date)
 
@@ -319,7 +320,7 @@ module Rufus
       date2 = date.dup
 
       loop do
-        date2 = date2 - DAY_IN_SECONDS
+        date2 = date2 - WEEK_S
         break if date2.month != date.month
         count = count + 1
       end
