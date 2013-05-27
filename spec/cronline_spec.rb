@@ -225,34 +225,40 @@ describe Rufus::CronLine do
 
     it 'computes the next time correctly when there is a sun#2 involved' do
 
-      now = local(1970, 1, 1)
+      nt('* * * * sun#1', local(1970, 1, 1)).should == local(1970, 1, 4)
+      nt('* * * * sun#2', local(1970, 1, 1)).should == local(1970, 1, 11)
 
-      nt('* * * * sun#1', now).should == local(1970, 1, 4)
-      nt('* * * * sun#2', now).should == local(1970, 1, 11)
-
-      now = local(1970, 1, 12)
-
-      nt('* * * * sun#2', now).should == local(1970, 2, 8)
+      nt('* * * * sun#2', local(1970, 1, 12)).should == local(1970, 2, 8)
     end
 
     it 'computes the next time correctly when there is a sun#2,sun#3 involved' do
 
-      now = local(1970, 1, 1)
-
-      nt('* * * * sun#2,sun#3', now).should == local(1970, 1, 11)
-
-      now = local(1970, 1, 12)
-
-      nt('* * * * sun#2,sun#3', now).should == local(1970, 1, 18)
+      nt('* * * * sun#2,sun#3', local(1970, 1, 1)).should == local(1970, 1, 11)
+      nt('* * * * sun#2,sun#3', local(1970, 1, 12)).should == local(1970, 1, 18)
     end
 
-   it 'computes the next time correctly when there is a L (last day of month)' do
+    it 'understands sun#L' do
 
-     nt('* * L * *', local(1970,1,1)).should == local(1970, 1, 31)
-     nt('* * L * *', local(1970,2,1)).should == local(1970, 2, 28)
-     nt('* * L * *', local(1972,2,1)).should == local(1972, 2, 29)
-     nt('* * L * *', local(1970,4,1)).should == local(1970, 4, 30)
-   end
+      nt('* * * * sun#L', local(1970, 1, 1)).should == local(1970, 1, 25)
+    end
+
+    it 'understands sun#-1' do
+
+      nt('* * * * sun#-1', local(1970, 1, 1)).should == local(1970, 1, 25)
+    end
+
+    it 'understands sun#-2' do
+
+      nt('* * * * sun#-2', local(1970, 1, 1)).should == local(1970, 1, 18)
+    end
+
+    it 'computes the next time correctly when there is a L (last day of month)' do
+
+      nt('* * L * *', local(1970,1,1)).should == local(1970, 1, 31)
+      nt('* * L * *', local(1970,2,1)).should == local(1970, 2, 28)
+      nt('* * L * *', local(1972,2,1)).should == local(1972, 2, 29)
+      nt('* * L * *', local(1970,4,1)).should == local(1970, 4, 30)
+    end
   end
 
   describe '#matches?' do
@@ -325,16 +331,16 @@ describe Rufus::CronLine do
     end
   end
 
-  describe '.monthday' do
+  describe '.monthdays' do
 
     it 'returns the appropriate "sun#2"-like string' do
 
       d = local(1970, 1, 1)
-      Rufus::CronLine.monthday(d).should == 'thu#1'
-      Rufus::CronLine.monthday(d + 6 * 24 * 3600).should == 'wed#1'
-      Rufus::CronLine.monthday(d + 13 * 24 * 3600).should == 'wed#2'
+      Rufus::CronLine.monthdays(d).should == [ 'thu#1', 'thu#-5' ]
+      Rufus::CronLine.monthdays(d + 6 * 24 * 3600).should == %w[ wed#1 wed#-4 ]
+      Rufus::CronLine.monthdays(d + 13 * 24 * 3600).should == %w[ wed#2 wed#-3 ]
 
-      Rufus::CronLine.monthday(local(2011, 3, 11)).should == 'fri#2'
+      Rufus::CronLine.monthdays(local(2011, 3, 11)).should == %w[ fri#2 fri#-3 ]
     end
   end
 end

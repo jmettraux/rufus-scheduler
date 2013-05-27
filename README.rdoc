@@ -98,10 +98,16 @@ The timezones are the ones supported by the 'tzinfo' rubygem (http://tzinfo.ruby
 
 The timezone support was contributed by Tanzeeb Khalili.
 
-Since 2.0.9, "monthdays" are supported
+"monthdays" are supported
 
   scheduler.cron '0 22 * * sun#1,sun#2' do
     # every first and second sunday of the month, at 22:00
+  end
+
+It's also OK (since 2.0.19) to use L (for last monthday) or negative numbers.
+
+  scheduler.cron '0 22 * * sun#-1' do
+    # every last sunday of the month, at 22:00
   end
 
 

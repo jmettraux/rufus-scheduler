@@ -33,6 +33,9 @@ module Rufus
   #
   class CronLine
 
+    DAY_S = 24 * 3600
+    WEEK_S = 7 * DAY_S
+
     # The string used for creating this cronline instance.
     #
     attr_reader :original
@@ -190,13 +193,15 @@ module Rufus
 
       items.each do |it|
 
-        if it.match(/#[12345]$/)
+        if m = it.match(/^(.+)#(l|-?[12345])$/)
 
           raise ArgumentError.new(
             "ranges are not supported for monthdays (#{it})"
-          ) if it.index('-')
+          ) if m[1].index('-')
 
-          (monthdays ||= []) << it
+          expr = it.gsub(/#l/, '#-1')
+
+          (monthdays ||= []) << expr
 
         else
           expr = it.dup
@@ -287,14 +292,9 @@ module Rufus
       result
     end
 
-    def sub_match?(time, accessor, values=:none)
+    def sub_match?(time, accessor, values)
 
-      value, values =
-        if values == :none
-          [ time, accessor ]
-        else
-          [ time.send(accessor), values ]
-        end
+      value = time.send(accessor)
 
       return true if values.nil?
       return true if values.include?('L') && (time + DAY_S).day == 1
@@ -302,30 +302,43 @@ module Rufus
       values.include?(value)
     end
 
+    def monthday_match?(today_values, values)
+
+      return true if values.nil?
+
+      (today_values & values).any?
+    end
+
     def date_match?(date)
 
       return false unless sub_match?(date, :day, @days)
       return false unless sub_match?(date, :month, @months)
       return false unless sub_match?(date, :wday, @weekdays)
-      return false unless sub_match?(CronLine.monthday(date), @monthdays)
+      return false unless monthday_match?(CronLine.monthdays(date), @monthdays)
       true
     end
 
-    DAY_S = 24 * 3600
-    WEEK_S = 7 * DAY_S
+    def self.monthdays(date)
 
-    def self.monthday(date)
-
-      count = 1
-      date2 = date.dup
+      pos = 1
+      d = date.dup
 
       loop do
-        date2 = date2 - WEEK_S
-        break if date2.month != date.month
-        count = count + 1
+        d = d - WEEK_S
+        break if d.month != date.month
+        pos = pos + 1
       end
 
-      "#{WEEKDAYS[date.wday]}##{count}"
+      neg = -1
+      d = date.dup
+
+      loop do
+        d = d + WEEK_S
+        break if d.month != date.month
+        neg = neg - 1
+      end
+
+      [ "#{WEEKDAYS[date.wday]}##{pos}", "#{WEEKDAYS[date.wday]}##{neg}" ]
     end
   end
 end
