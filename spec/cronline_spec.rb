@@ -152,6 +152,10 @@ describe Rufus::CronLine do
 
       nt('10 12 13 12 *', now).should == now + 29938200
         # this one is slow (1 year == 3 seconds)
+        #
+        # historical note:
+        # (comment made in 2006 or 2007, the underlying libs got better and
+        # that slowness is gone)
 
       nt('0 0 * * thu', now).should == now + 604800
 
