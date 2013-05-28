@@ -84,7 +84,7 @@ describe Rufus::CronLine do
 
       to_a(
         '0 */2 * * *',
-        [ [0], [0], (0..12).collect { |e| e * 2 }, nil, nil, nil, nil, nil ])
+        [ [0], [0], (0..11).collect { |e| e * 2 }, nil, nil, nil, nil, nil ])
       to_a(
         '0 7-23/2 * * *',
         [ [0], [0], (7..23).select { |e| e.odd? }, nil, nil, nil, nil, nil ])
@@ -105,7 +105,7 @@ describe Rufus::CronLine do
       to_a '09 * * * *', [ [0], [9], nil, nil, nil, nil, nil, nil ]
       to_a '09-12 * * * *', [ [0], [9, 10, 11, 12], nil, nil, nil, nil, nil, nil ]
       to_a '07-08 * * * *', [ [0], [7, 8], nil, nil, nil, nil, nil, nil ]
-      to_a '* */08 * * *', [ [0], nil, [0, 8, 16, 24], nil, nil, nil, nil, nil ]
+      to_a '* */07 * * *', [ [0], nil, [0, 7, 14, 21], nil, nil, nil, nil, nil ]
       to_a '* 01-09/04 * * *', [ [0], nil, [1, 5, 9], nil, nil, nil, nil, nil ]
       to_a '* * * * 06', [ [0], nil, nil, nil, nil, [6], nil, nil ]
     end
@@ -153,6 +153,10 @@ describe Rufus::CronLine do
         # this one is slow (1 year == 3 seconds)
 
       nt('0 0 * * thu', now).should == now + 604800
+
+      nt('0 24 * * *', now).should == now + 82800
+        # Rufus::CronLine rounds integers >= 24 to 23
+        # Returns the 23rd hour
 
       now = local(2008, 12, 31, 23, 59, 59, 0)
 

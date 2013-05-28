@@ -68,7 +68,7 @@ module Rufus
 
       @seconds = offset == 1 ? parse_item(items[0], 0, 59) : [ 0 ]
       @minutes = parse_item(items[0 + offset], 0, 59)
-      @hours = parse_item(items[1 + offset], 0, 24)
+      @hours = parse_item(items[1 + offset], 0, 23)
       @days = parse_item(items[2 + offset], 1, 31)
       @months = parse_item(items[3 + offset], 1, 12)
       @weekdays, @monthdays = parse_weekdays(items[4 + offset])
