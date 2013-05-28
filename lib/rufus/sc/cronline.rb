@@ -279,7 +279,10 @@ module Rufus
         iend = max
       end
 
-      istart = min if istart < min
+      istart = if istart < min then min
+               elsif istart > max then max
+               else istart
+               end
       iend = max if iend > max
 
       result = []
