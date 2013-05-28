@@ -159,9 +159,8 @@ describe Rufus::CronLine do
 
       nt('0 0 * * thu', now).should == now + 604800
 
-      nt('0 24 * * *', now).should == now + 82800
-        # Rufus::CronLine rounds integers >= 24 to 23
-        # Returns the 23rd hour
+      nt('0 0 * * *', now).should == now + 24 * 3600
+      nt('0 24 * * *', now).should == now + 24 * 3600
 
       now = local(2008, 12, 31, 23, 59, 59, 0)
 

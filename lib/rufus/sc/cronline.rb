@@ -68,7 +68,7 @@ module Rufus
 
       @seconds = offset == 1 ? parse_item(items[0], 0, 59) : [ 0 ]
       @minutes = parse_item(items[0 + offset], 0, 59)
-      @hours = parse_item(items[1 + offset], 0, 23)
+      @hours = parse_item(items[1 + offset], 0, 24)
       @days = parse_item(items[2 + offset], 1, 31)
       @months = parse_item(items[3 + offset], 1, 12)
       @weekdays, @monthdays = parse_weekdays(items[4 + offset])
@@ -251,6 +251,8 @@ module Rufus
 
     def parse_range(item, min, max)
 
+      max = 23 if max == 24
+
       dash = item.index('-')
       slash = item.index('/')
 
@@ -298,6 +300,8 @@ module Rufus
 
       return true if values.nil?
       return true if values.include?('L') && (time + DAY_S).day == 1
+
+      return true if value == 0 && accessor == :hour && values.include?(24)
 
       values.include?(value)
     end
