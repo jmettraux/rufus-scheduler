@@ -306,9 +306,11 @@ module Rufus
       values.include?(value)
     end
 
-    def monthday_match?(today_values, values)
+    def monthday_match?(date, values)
 
       return true if values.nil?
+
+      today_values = monthdays(date)
 
       (today_values & values).any?
     end
@@ -318,11 +320,11 @@ module Rufus
       return false unless sub_match?(date, :day, @days)
       return false unless sub_match?(date, :month, @months)
       return false unless sub_match?(date, :wday, @weekdays)
-      return false unless monthday_match?(CronLine.monthdays(date), @monthdays)
+      return false unless monthday_match?(date, @monthdays)
       true
     end
 
-    def self.monthdays(date)
+    def monthdays(date)
 
       pos = 1
       d = date.dup

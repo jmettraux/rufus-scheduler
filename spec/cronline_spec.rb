@@ -343,12 +343,17 @@ describe Rufus::CronLine do
 
     it 'returns the appropriate "sun#2"-like string' do
 
-      d = local(1970, 1, 1)
-      Rufus::CronLine.monthdays(d).should == [ 'thu#1', 'thu#-5' ]
-      Rufus::CronLine.monthdays(d + 6 * 24 * 3600).should == %w[ wed#1 wed#-4 ]
-      Rufus::CronLine.monthdays(d + 13 * 24 * 3600).should == %w[ wed#2 wed#-3 ]
+      class Rufus::CronLine
+        public :monthdays
+      end
 
-      Rufus::CronLine.monthdays(local(2011, 3, 11)).should == %w[ fri#2 fri#-3 ]
+      cl = Rufus::CronLine.new('* * * * *')
+
+      cl.monthdays(local(1970, 1, 1)).should == %w[ thu#1 thu#-5 ]
+      cl.monthdays(local(1970, 1, 7)).should == %w[ wed#1 wed#-4 ]
+      cl.monthdays(local(1970, 1, 14)).should == %w[ wed#2 wed#-3 ]
+
+      cl.monthdays(local(2011, 3, 11)).should == %w[ fri#2 fri#-3 ]
     end
   end
 end
