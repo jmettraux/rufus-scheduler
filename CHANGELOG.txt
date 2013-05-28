@@ -2,6 +2,12 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 2.0.20    not yet released
+
+- cron 0 vs 24 hour case straightening (Thanks Aimee Rose)
+- support for sun#L or sun#-2 in cron lines
+
+
 == rufus-scheduler - 2.0.19    released 2013/05/07
 
 - raise ArgumentError on <= 0.0 "every" frequency (Thanks Lucy Fu)
