@@ -77,7 +77,7 @@ module Rufus
 
         raise ArgumentError.new(
           "invalid cronline: '#{line}'"
-        ) if es && es.find { |e| ! e.is_a?(Integer) }
+        ) if es && es.find { |e| ! e.is_a?(Fixnum) }
       end
     end
 
@@ -204,6 +204,7 @@ module Rufus
           (monthdays ||= []) << expr
 
         else
+
           expr = it.dup
           WEEKDAYS.each_with_index { |a, i| expr.gsub!(/#{a}/, i.to_s) }
 
@@ -226,72 +227,56 @@ module Rufus
     def parse_item(item, min, max)
 
       return nil if item == '*'
-      return [ 'L' ] if item == 'L'
-      return parse_list(item, min, max) if item.index(',')
-      return parse_range(item, min, max) if item.match(/[*-\/]/)
 
-      i = item.to_i
-
-      i = min if i < min
-      i = max if i > max
-
-      [ i ]
-    end
-
-    def parse_list(item, min, max)
-
-      l = item.split(',').collect { |i| parse_range(i, min, max) }.flatten
+      r = item.split(',').map { |i| parse_range(i.strip, min, max) }.flatten
 
       raise ArgumentError.new(
         "found duplicates in #{item.inspect}"
-      ) if l.uniq.size < l.size
+      ) if r.uniq.size < r.size
 
-      l
+      r
     end
+
+    RANGE_REGEX = /^(\*|\d{1,2})(?:-(\d{1,2}))?(?:\/(\d{1,2}))?$/
 
     def parse_range(item, min, max)
 
-      max = 23 if max == 24
+      return %w[ L ] if item == 'L'
 
-      dash = item.index('-')
-      slash = item.index('/')
-
-      return parse_item(item, min, max) if (not slash) and (not dash)
+      m = item.match(RANGE_REGEX)
 
       raise ArgumentError.new(
-        "'L' (end of month) is not accepted in ranges, " +
-        "#{item.inspect} is not valid"
-      ) if item.index('L')
+        "cannot parse #{item.inspect}"
+      ) unless m
 
-      inc = slash ? item[slash + 1..-1].to_i : 1
+      sta = m[1]
+      sta = sta == '*' ? min : sta.to_i
 
-      istart = -1
-      iend = -1
+      edn = m[2]
+      edn = edn ? edn.to_i : sta
+      edn = max if m[1] == '*'
 
-      if dash
+      inc = m[3]
+      inc = inc ? inc.to_i : 1
 
-        istart = item[0..dash - 1].to_i
-        iend = (slash ? item[dash + 1..slash - 1] : item[dash + 1..-1]).to_i
+      raise ArgumentError.new(
+        "#{item.inspect} is not in range #{min}..#{max}"
+      ) if sta < min or edn > max
 
-      else # case */x
+      r = []
+      val = sta
 
-        istart = min
-        iend = max
-      end
-
-      istart = min if istart < min
-      iend = max if iend > max
-
-      result = []
-
-      value = istart
       loop do
-        result << value
-        value = value + inc
-        break if value > iend
+        v = val
+        v = 0 if max == 24 && v == 24
+        r << v
+        break if inc == 1 && val == edn
+        val += inc
+        break if inc > 1 && val > edn
+        val = min if val > max
       end
 
-      result
+      r.uniq
     end
 
     def sub_match?(time, accessor, values)

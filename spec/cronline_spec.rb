@@ -54,6 +54,13 @@ describe Rufus::CronLine do
       to_a '1-5 * * * * *', [ [1,2,3,4,5], nil, nil, nil, nil, nil, nil, nil ]
 
       to_a '0 0 1 1 *', [ [0], [0], [0], [1], [1], nil, nil, nil ]
+
+      to_a '0 23-24 * * *', [ [0], [0], [23, 0], nil, nil, nil, nil, nil ]
+        #
+        # as reported by Aimee Rose in
+        # https://github.com/jmettraux/rufus-scheduler/issues/56
+
+      to_a '0 23-2 * * *', [ [0], [0], [23, 0, 1, 2], nil, nil, nil, nil, nil ]
     end
 
     it 'rejects invalid weekday expressions' do
@@ -132,6 +139,18 @@ describe Rufus::CronLine do
     it 'raises if L is used for something else than days' do
 
       lambda { cl '* L * * *'}.should raise_error(ArgumentError)
+    end
+
+    it 'raises for out of range input' do
+
+      lambda { cl '60-62 * * * *'}.should raise_error(ArgumentError)
+      lambda { cl '62 * * * *'}.should raise_error(ArgumentError)
+      lambda { cl '60 * * * *'}.should raise_error(ArgumentError)
+      lambda { cl '* 25-26 * * *'}.should raise_error(ArgumentError)
+      lambda { cl '* 25 * * *'}.should raise_error(ArgumentError)
+        #
+        # as reported by Aimee Rose in
+        # https://github.com/jmettraux/rufus-scheduler/pull/58
     end
   end
 
