@@ -135,29 +135,3 @@ describe 'Rufus.at_to_f' do
   end
 end
 
-describe 'Rufus.next(time, component)' do
-
-  def nx(t, c)
-    Rufus.next(t, c)
-  end
-  def pv(t, c)
-    Rufus.next(t, c, -1)
-  end
-
-  it 'skips a time component' do
-
-    nx(lo(1970, 1, 1, 12, 12), :day).should == lo(1970, 1, 2, 0, 0)
-    nx(lo(1970, 1, 1, 12, 12), :hour).should == lo(1970, 1, 1, 13)
-    nx(lo(1970, 1, 1, 12, 12), :min).should == lo(1970, 1, 1, 12, 13)
-    nx(lo(1970, 1, 1, 12, 12), :sec).should == lo(1970, 1, 1, 12, 12, 1)
-  end
-
-  it 'can skip towards the past' do
-
-    pv(lo(1970, 1, 1, 12, 12), :day).should == lo(1969, 12, 31)
-    pv(lo(1970, 1, 1), :hour).should == lo(1969, 12, 31, 23, 00)
-    pv(lo(1970, 1, 1), :min).should == lo(1969, 12, 31, 23, 59)
-    pv(lo(1970, 1, 1), :sec).should == lo(1969, 12, 31, 23, 59, 59)
-  end
-end
-

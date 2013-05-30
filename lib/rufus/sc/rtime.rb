@@ -343,30 +343,6 @@ module Rufus
     at
   end
 
-  # Returns the next time given a component
-  #
-  # For example, Rufus.next(today, :day) yields tomorrow at 00:00:00.
-  #
-  # The direction argument might be negative (or zero) forcing a "previous"
-  # behaviour.
-  #
-  def Rufus.next(time, component, direction=1)
-
-    dir = direction > 0 ? 1 : -1
-
-    SMHD.each do |co|
-      if co == component
-        time = time + dir * DURATIONS[co.to_s[0]]
-        break
-      end
-      time = time - time.send(co) * DURATIONS[co.to_s[0]]
-    end
-
-    time
-  end
-
-  SMHD = [ :sec, :min, :hour, :day ]
-
   DURATIONS2M = [
     [ 'y', 365 * 24 * 3600 ],
     [ 'M', 30 * 24 * 3600 ],
