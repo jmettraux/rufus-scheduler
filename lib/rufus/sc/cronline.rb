@@ -156,6 +156,31 @@ module Rufus
       time
     end
 
+    # Returns the previous the cronline matched. It's like next_time, but
+    # for the past.
+    #
+    def previous_time(now=Time.now)
+
+      # TODO: optimize with a pt(start, now) sub method
+
+      delta = 31 * 24 * 3600
+      delta = delta * 366 if @months
+      current = now - delta
+        #
+        # by default, look back one month, unless months are present in
+        # the cronline. In that case, look back one year
+
+      result = nil
+
+      loop do
+        nex = next_time(current)
+        return result if nex > now
+        result = current = nex
+      end
+
+      nil
+    end
+
     # Returns an array of 6 arrays (seconds, minutes, hours, days,
     # months, weekdays).
     # This method is used by the cronline unit tests.

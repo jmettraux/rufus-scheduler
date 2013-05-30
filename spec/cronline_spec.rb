@@ -152,9 +152,6 @@ describe Rufus::CronLine do
     def nt(cronline, now)
       Rufus::CronLine.new(cronline).next_time(now)
     end
-    def pt(cronline, now)
-      Rufus::CronLine.new(cronline).next_time(now, -1)
-    end
 
     it 'computes the next occurence correctly' do
 
@@ -282,13 +279,20 @@ describe Rufus::CronLine do
       nt('* * L * *', lo(1972, 2, 1)).should == lo(1972, 2, 29)
       nt('* * L * *', lo(1970, 4, 1)).should == lo(1970, 4, 30)
     end
+  end
 
-#    it 'accepts an optional direction argument which can be negative' do
-#
-#      pt('* * * * sun', lo(1970, 1, 1)).should == lo(1969, 12, 28, 23, 59, 00)
-#      pt('* * 13 * *', lo(1970, 1, 1)).should == lo(1969, 12, 13, 23, 59, 00)
-#      pt('0 12 13 * *', lo(1970, 1, 1)).should == lo(1969, 12, 13, 12, 00)
-#    end
+  describe '#previous_time' do
+
+    def pt(cronline, now)
+      Rufus::CronLine.new(cronline).previous_time(now)
+    end
+
+    it 'returns the previous time the cron should have triggered' do
+
+      pt('* * * * sun', lo(1970, 1, 1)).should == lo(1969, 12, 28, 23, 59, 00)
+      pt('* * 13 * *', lo(1970, 1, 1)).should == lo(1969, 12, 13, 23, 59, 00)
+      pt('0 12 13 * *', lo(1970, 1, 1)).should == lo(1969, 12, 13, 12, 00)
+    end
   end
 
   describe '#matches?' do

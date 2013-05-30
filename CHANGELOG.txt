@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 2.0.20    not yet released
 
+- implement CronLine#previous_time(now=Time.now) (Idea Matteo Cerutti)
 - throw ArgumentError for invalid cron lines (Thanks Aimee Rose)
 - cron 0 vs 24 hour case straightening (Thanks Aimee Rose)
 - support for sun#L or sun#-2 in cron lines

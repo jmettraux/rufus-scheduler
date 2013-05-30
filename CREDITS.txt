@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Matteo Cerutti - last_time / previous_time idea (and initial implementation)
 - Aimee Rose (https://github.com/AimeeRose) cronline and > 24
 - Lucy Fu (https://github.com/lfu) arg error on <= 0 "every" freq
 - Rainux Luo (https://github.com/rainux) multiple mutexes
