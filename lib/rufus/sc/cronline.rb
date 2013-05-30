@@ -123,33 +123,42 @@ module Rufus
     #
     # (Thanks to K Liu for the note and the examples)
     #
-    def next_time(now=Time.now)
+    # If the optional parameter "direction" is set to false or some
+    # negative number, this method behaves like if it were a
+    # "previous_time".
+    #
+    def next_time(now=Time.now, direction=1)
+
+      now, direction = [ Time.now, now ] unless now.respond_to?(:usec)
 
       time = @timezone ? @timezone.utc_to_local(now.getutc) : now
 
-      time = time - time.usec * 1e-6 + 1
-        # little adjustment before starting
+      dir = (direction == false || direction < 0) ? -1 : 1
+
+      time = time - time.usec * 1e-6 + dir
+        # small adjustment before starting
+
+      checks = Rufus::SMHD
+      checks = checks.reverse if dir == 1
+
+      arrays = {
+        :day => nil, :hour => @hours, :min => @minutes, :sec => @seconds }
+
+      i = 0
 
       loop do
 
-        unless date_match?(time)
-          time += (24 - time.hour) * 3600 - time.min * 60 - time.sec
-          next
-        end
-        unless sub_match?(time, :hour, @hours)
-          time += (60 - time.min) * 60 - time.sec
-          next
-        end
-        unless sub_match?(time, :min, @minutes)
-          time += 60 - time.sec
-          next
-        end
-        unless sub_match?(time, :sec, @seconds)
-          time += 1
-          next
+        c = checks[i]
+
+        #p [ @original, c, time ]
+
+        unless c == :day ? date_match?(time) : sub_match?(time, c, arrays[c])
+          time = Rufus.next(time, c, dir)
+          i = 0; next
         end
 
-        break
+        i += 1
+        break if i >= 4
       end
 
       if @timezone

@@ -105,7 +105,7 @@ describe 'rufus/rtime' do
   end
 end
 
-describe 'rufus/rtime#at_to_f' do
+describe 'Rufus.at_to_f' do
 
   def atf(o)
     Rufus.at_to_f(o)
@@ -132,6 +132,80 @@ describe 'rufus/rtime#at_to_f' do
   it 'accepts integers' do
 
     atf(1).should == 1.0
+  end
+end
+
+describe 'Rufus.next(time, component)' do
+
+  def nx(t, c)
+    Rufus.next(t, c)
+  end
+  def pv(t, c)
+    Rufus.next(t, c, -1)
+  end
+
+  describe 'Rufus.next(time, :day)' do
+
+    it 'returns the next day' do
+
+      nx(lo(1970, 1, 1, 12, 12), :day).should == lo(1970, 1, 2, 0, 0)
+    end
+  end
+
+  describe 'Rufus.next(time, :hour)' do
+
+    it 'returns the next hour' do
+
+      nx(lo(1970, 1, 1, 12, 12), :hour).should == lo(1970, 1, 1, 13)
+    end
+  end
+
+  describe 'Rufus.next(time, :min)' do
+
+    it 'returns the next minute' do
+
+      nx(lo(1970, 1, 1, 12, 12), :min).should == lo(1970, 1, 1, 12, 13)
+    end
+  end
+
+  describe 'Rufus.next(time, :day)' do
+
+    it 'returns the next second' do
+
+      nx(lo(1970, 1, 1, 12, 12), :sec).should == lo(1970, 1, 1, 12, 12, 1)
+    end
+  end
+
+  describe 'Rufus.next(time, :day, -1)' do
+
+    it 'returns the previous day' do
+
+      pv(lo(1970, 1, 1, 12, 12), :day).should == lo(1969, 12, 31)
+    end
+  end
+
+  describe 'Rufus.next(time, :hour, -1)' do
+
+    it 'returns the previous hour' do
+
+      pv(lo(1970, 1, 1), :hour).should == lo(1969, 12, 31, 23, 00)
+    end
+  end
+
+  describe 'Rufus.next(time, :min, -1)' do
+
+    it 'returns the previous minute' do
+
+      pv(lo(1970, 1, 1), :min).should == lo(1969, 12, 31, 23, 59)
+    end
+  end
+
+  describe 'Rufus.next(time, :sec, -1)' do
+
+    it 'returns the previous second' do
+
+      pv(lo(1970, 1, 1), :sec).should == lo(1969, 12, 31, 23, 59, 59)
+    end
   end
 end
 

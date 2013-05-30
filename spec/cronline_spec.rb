@@ -24,13 +24,6 @@ describe Rufus::CronLine do
     cl(line).to_array.should == array
   end
 
-  def local(*args)
-    Time.local(*args)
-  end
-  def utc(*args)
-    Time.utc(*args)
-  end
-
   describe '.new' do
 
     it 'interprets cron strings correctly' do
@@ -159,6 +152,9 @@ describe Rufus::CronLine do
     def nt(cronline, now)
       Rufus::CronLine.new(cronline).next_time(now)
     end
+    def pt(cronline, now)
+      Rufus::CronLine.new(cronline).next_time(now, -1)
+    end
 
     it 'computes the next occurence correctly' do
 
@@ -279,12 +275,19 @@ describe Rufus::CronLine do
       nt('* * * * sun#-2', local(1970, 1, 1)).should == local(1970, 1, 18)
     end
 
-    it 'computes the next time correctly when there is a L (last day of month)' do
+    it 'computes the next time correctly when "L" (last day of month)' do
 
-      nt('* * L * *', local(1970,1,1)).should == local(1970, 1, 31)
-      nt('* * L * *', local(1970,2,1)).should == local(1970, 2, 28)
-      nt('* * L * *', local(1972,2,1)).should == local(1972, 2, 29)
-      nt('* * L * *', local(1970,4,1)).should == local(1970, 4, 30)
+      nt('* * L * *', lo(1970, 1, 1)).should == lo(1970, 1, 31)
+      nt('* * L * *', lo(1970, 2, 1)).should == lo(1970, 2, 28)
+      nt('* * L * *', lo(1972, 2, 1)).should == lo(1972, 2, 29)
+      nt('* * L * *', lo(1970, 4, 1)).should == lo(1970, 4, 30)
+    end
+
+    it 'accepts an optional direction argument which can be negative' do
+
+      pt('* * * * sun', lo(1970, 1, 1)).should == lo(1969, 12, 28, 23, 59, 00)
+      #pt('* * 13 * *', lo(1970, 1, 1)).should == lo(1969, 12, 13, 23, 59, 00)
+      #pt('0 12 13 * *', lo(1970, 1, 1)).should == lo(1969, 12, 13, 12, 00)
     end
   end
 
@@ -358,7 +361,7 @@ describe Rufus::CronLine do
     end
   end
 
-  describe '.monthdays' do
+  describe '#monthdays' do
 
     it 'returns the appropriate "sun#2"-like string' do
 

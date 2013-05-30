@@ -76,3 +76,12 @@ def wait_next_tick
   #end
 end
 
+def local(*args)
+  Time.local(*args)
+end
+alias lo local
+
+def utc(*args)
+  Time.utc(*args)
+end
+
