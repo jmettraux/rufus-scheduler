@@ -161,24 +161,21 @@ module Rufus
     #
     def previous_time(now=Time.now)
 
-      # TODO: optimize with a pt(start, now) sub method
+      # looks back by slices of two hours,
+      #
+      # finds for '* * * * sun', '* * 13 * *' and '0 12 13 * *'
+      # starting 1970, 1, 1 in 1.8 to 2 seconds (says Rspec)
 
-      delta = 31 * 24 * 3600
-      delta = delta * 366 if @months
-      current = now - delta
-        #
-        # by default, look back one month, unless months are present in
-        # the cronline. In that case, look back one year
-
+      start = current = now - 2 * 3600
       result = nil
 
       loop do
         nex = next_time(current)
-        return result if nex > now
+        return (result ? result : previous_time(start)) if nex > now
         result = current = nex
       end
 
-      nil
+      # never reached
     end
 
     # Returns an array of 6 arrays (seconds, minutes, hours, days,
