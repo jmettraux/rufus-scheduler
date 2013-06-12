@@ -138,6 +138,18 @@ You shouldn't be exposed to this issue when using EventMachine, since while runn
 DO NOT CALL this #join method if you're running rufus-scheduler from Rails or Sinatra or any application that's already some kind of 'daemon'. It's not necessary! #join is meant for small standalone scripts.
 
 
+== schedule.stop
+
+  scheduler.stop
+
+This call stops the scheduler. It doesn't unschedule jobs. If there are running jobs, they're left running.
+
+If you need to stop the scheduler and wait for all the jobs currently running to finish (without killing them), rufus-scheduler 2.0.20 brings a new :terminate => true option.
+
+  scheduler.stop(:terminate => true)
+    # returns once all the jobs have been unscheduled and no jobs is running
+
+
 == block parameters
 
 Scheduled blocks accept 0 or 1 parameter (this unique parameter is the job
@@ -561,7 +573,7 @@ More and more ruby applications are using EventMachine. This flavour of the sche
 
 == with Passenger
 
-"it terminates for no apparent reason !"
+"it terminates for no apparent reason!"
 
 https://github.com/jmettraux/rufus-scheduler/issues/issue/10
 

@@ -24,6 +24,7 @@
 
 == Feedback
 
+- Hongli Lai - Scheduler#stop(:terminate => true) request
 - Tero Tilus - raises on unsupported/unknown options
 - Louis Coilliot - Scheduler#running_jobs
 - Henrique G. Testa - pause/resume concept

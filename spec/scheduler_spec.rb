@@ -200,6 +200,38 @@ describe SCHEDULER_CLASS do
       end
     end
   end
+
+  context 'termination' do
+
+    describe '#stop(true)' do
+
+      it 'terminates the scheduler, blocking until all the jobs are unscheduled' do
+
+        $every = nil
+        $cron = nil
+
+        s = start_scheduler
+        s.every '1s' do
+          $every = :in
+          sleep 0.5
+          $every = :out
+        end
+        s.cron '* * * * * *' do
+          $cron = :in
+          sleep 0.5
+          $cron = :out
+        end
+
+        sleep 2
+
+        s.stop(:terminate => true)
+
+        s.jobs.size.should == 0
+        $every.should == :out
+        $cron.should == :out
+      end
+    end
+  end
 end
 
 describe 'Rufus::Scheduler#start_new' do

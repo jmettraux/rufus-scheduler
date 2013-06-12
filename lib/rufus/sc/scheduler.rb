@@ -327,6 +327,21 @@ module Rufus::Scheduler
       }.compact
     end
 
+    # This is a blocking call, it will return when all the jobs have been
+    # unscheduled, waiting for any running one to finish before unscheduling
+    # it.
+    #
+    def terminate_all_jobs
+
+      all_jobs.each do |job_id, job|
+        job.unschedule
+      end
+
+      while running_jobs.size > 0
+        sleep 0.01
+      end
+    end
+
     protected
 
     # Returns a job queue instance.
@@ -455,9 +470,23 @@ module Rufus::Scheduler
         "#{self.class} - #{Rufus::Scheduler::VERSION}"
     end
 
+    # Stops this scheduler.
+    #
+    # == :terminate => true
+    #
+    # If the option :terminate is set to true,
+    # the method will return once all the jobs have been unscheduled and
+    # are done with their current run if any.
+    #
+    # (note that if a job is
+    # currently running, this method will wait for it to terminate, it
+    # will not interrupt the job run).
+    #
     def stop(opts={})
 
       @thread.exit
+
+      terminate_all_jobs if opts[:terminate]
     end
 
     def join
@@ -487,9 +516,24 @@ module Rufus::Scheduler
       end
     end
 
-    def stop
+
+    # Stops this scheduler.
+    #
+    # == :terminate => true
+    #
+    # If the option :terminate is set to true,
+    # the method will return once all the jobs have been unscheduled and
+    # are done with their current run if any.
+    #
+    # (note that if a job is
+    # currently running, this method will wait for it to terminate, it
+    # will not interrupt the job run).
+    #
+    def stop(opts={})
 
       trap(@options[:signal] || 10)
+
+      terminate_all_jobs if opts[:terminate]
     end
   end
 
@@ -530,12 +574,26 @@ module Rufus::Scheduler
 
     # Stops the scheduler.
     #
+    # == :stop_em => true
+    #
     # If the :stop_em option is passed and set to true, it will stop the
     # EventMachine (but only if it started the EM by itself !).
+    #
+    # == :terminate => true
+    #
+    # If the option :terminate is set to true,
+    # the method will return once all the jobs have been unscheduled and
+    # are done with their current run if any.
+    #
+    # (note that if a job is
+    # currently running, this method will wait for it to terminate, it
+    # will not interrupt the job run).
     #
     def stop(opts={})
 
       @timer.cancel
+
+      terminate_all_jobs if opts[:terminate]
 
       EM.stop if opts[:stop_em] and @em_thread
     end
