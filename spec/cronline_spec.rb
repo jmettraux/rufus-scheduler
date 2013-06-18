@@ -8,10 +8,10 @@
 require 'spec_helper'
 
 
-describe Rufus::Scheduler::CronLine do
+describe Rufus::CronLine do
 
   def cl(cronline_string)
-    Rufus::Scheduler::CronLine.new(cronline_string)
+    Rufus::CronLine.new(cronline_string)
   end
 
   def match(line, time)
@@ -22,13 +22,6 @@ describe Rufus::Scheduler::CronLine do
   end
   def to_a(line, array)
     cl(line).to_array.should == array
-  end
-
-  def local(*args)
-    Time.local(*args)
-  end
-  def utc(*args)
-    Time.utc(*args)
   end
 
   describe '.new' do
@@ -54,6 +47,13 @@ describe Rufus::Scheduler::CronLine do
       to_a '1-5 * * * * *', [ [1,2,3,4,5], nil, nil, nil, nil, nil, nil, nil ]
 
       to_a '0 0 1 1 *', [ [0], [0], [0], [1], [1], nil, nil, nil ]
+
+      to_a '0 23-24 * * *', [ [0], [0], [23, 0], nil, nil, nil, nil, nil ]
+        #
+        # as reported by Aimee Rose in
+        # https://github.com/jmettraux/rufus-scheduler/issues/56
+
+      to_a '0 23-2 * * *', [ [0], [0], [23, 0, 1, 2], nil, nil, nil, nil, nil ]
     end
 
     it 'rejects invalid weekday expressions' do
@@ -84,7 +84,7 @@ describe Rufus::Scheduler::CronLine do
 
       to_a(
         '0 */2 * * *',
-        [ [0], [0], (0..12).collect { |e| e * 2 }, nil, nil, nil, nil, nil ])
+        [ [0], [0], (0..11).collect { |e| e * 2 }, nil, nil, nil, nil, nil ])
       to_a(
         '0 7-23/2 * * *',
         [ [0], [0], (7..23).select { |e| e.odd? }, nil, nil, nil, nil, nil ])
@@ -96,7 +96,7 @@ describe Rufus::Scheduler::CronLine do
     it 'does not support ranges for monthdays (sun#1-sun#2)' do
 
       lambda {
-        Rufus::Scheduler::CronLine.new('* * * * sun#1-sun#2')
+        Rufus::CronLine.new('* * * * sun#1-sun#2')
       }.should raise_error(ArgumentError)
     end
 
@@ -105,7 +105,8 @@ describe Rufus::Scheduler::CronLine do
       to_a '09 * * * *', [ [0], [9], nil, nil, nil, nil, nil, nil ]
       to_a '09-12 * * * *', [ [0], [9, 10, 11, 12], nil, nil, nil, nil, nil, nil ]
       to_a '07-08 * * * *', [ [0], [7, 8], nil, nil, nil, nil, nil, nil ]
-      to_a '* */08 * * *', [ [0], nil, [0, 8, 16, 24], nil, nil, nil, nil, nil ]
+      to_a '* */08 * * *', [ [0], nil, [0, 8, 16], nil, nil, nil, nil, nil ]
+      to_a '* */07 * * *', [ [0], nil, [0, 7, 14, 21], nil, nil, nil, nil, nil ]
       to_a '* 01-09/04 * * *', [ [0], nil, [1, 5, 9], nil, nil, nil, nil, nil ]
       to_a '* * * * 06', [ [0], nil, nil, nil, nil, [6], nil, nil ]
     end
@@ -132,12 +133,24 @@ describe Rufus::Scheduler::CronLine do
 
       lambda { cl '* L * * *'}.should raise_error(ArgumentError)
     end
+
+    it 'raises for out of range input' do
+
+      lambda { cl '60-62 * * * *'}.should raise_error(ArgumentError)
+      lambda { cl '62 * * * *'}.should raise_error(ArgumentError)
+      lambda { cl '60 * * * *'}.should raise_error(ArgumentError)
+      lambda { cl '* 25-26 * * *'}.should raise_error(ArgumentError)
+      lambda { cl '* 25 * * *'}.should raise_error(ArgumentError)
+        #
+        # as reported by Aimee Rose in
+        # https://github.com/jmettraux/rufus-scheduler/pull/58
+    end
   end
 
   describe '#next_time' do
 
     def nt(cronline, now)
-      Rufus::Scheduler::CronLine.new(cronline).next_time(now)
+      Rufus::CronLine.new(cronline).next_time(now)
     end
 
     it 'computes the next occurence correctly' do
@@ -151,8 +164,15 @@ describe Rufus::Scheduler::CronLine do
 
       nt('10 12 13 12 *', now).should == now + 29938200
         # this one is slow (1 year == 3 seconds)
+        #
+        # historical note:
+        # (comment made in 2006 or 2007, the underlying libs got better and
+        # that slowness is gone)
 
       nt('0 0 * * thu', now).should == now + 604800
+
+      nt('0 0 * * *', now).should == now + 24 * 3600
+      nt('0 24 * * *', now).should == now + 24 * 3600
 
       now = local(2008, 12, 31, 23, 59, 59, 0)
 
@@ -225,34 +245,56 @@ describe Rufus::Scheduler::CronLine do
 
     it 'computes the next time correctly when there is a sun#2 involved' do
 
-      now = local(1970, 1, 1)
+      nt('* * * * sun#1', local(1970, 1, 1)).should == local(1970, 1, 4)
+      nt('* * * * sun#2', local(1970, 1, 1)).should == local(1970, 1, 11)
 
-      nt('* * * * sun#1', now).should == local(1970, 1, 4)
-      nt('* * * * sun#2', now).should == local(1970, 1, 11)
-
-      now = local(1970, 1, 12)
-
-      nt('* * * * sun#2', now).should == local(1970, 2, 8)
+      nt('* * * * sun#2', local(1970, 1, 12)).should == local(1970, 2, 8)
     end
 
     it 'computes the next time correctly when there is a sun#2,sun#3 involved' do
 
-      now = local(1970, 1, 1)
-
-      nt('* * * * sun#2,sun#3', now).should == local(1970, 1, 11)
-
-      now = local(1970, 1, 12)
-
-      nt('* * * * sun#2,sun#3', now).should == local(1970, 1, 18)
+      nt('* * * * sun#2,sun#3', local(1970, 1, 1)).should == local(1970, 1, 11)
+      nt('* * * * sun#2,sun#3', local(1970, 1, 12)).should == local(1970, 1, 18)
     end
 
-   it 'computes the next time correctly when there is a L (last day of month)' do
+    it 'understands sun#L' do
 
-     nt('* * L * *', local(1970,1,1)).should == local(1970, 1, 31)
-     nt('* * L * *', local(1970,2,1)).should == local(1970, 2, 28)
-     nt('* * L * *', local(1972,2,1)).should == local(1972, 2, 29)
-     nt('* * L * *', local(1970,4,1)).should == local(1970, 4, 30)
-   end
+      nt('* * * * sun#L', local(1970, 1, 1)).should == local(1970, 1, 25)
+    end
+
+    it 'understands sun#-1' do
+
+      nt('* * * * sun#-1', local(1970, 1, 1)).should == local(1970, 1, 25)
+    end
+
+    it 'understands sun#-2' do
+
+      nt('* * * * sun#-2', local(1970, 1, 1)).should == local(1970, 1, 18)
+    end
+
+    it 'computes the next time correctly when "L" (last day of month)' do
+
+      nt('* * L * *', lo(1970, 1, 1)).should == lo(1970, 1, 31)
+      nt('* * L * *', lo(1970, 2, 1)).should == lo(1970, 2, 28)
+      nt('* * L * *', lo(1972, 2, 1)).should == lo(1972, 2, 29)
+      nt('* * L * *', lo(1970, 4, 1)).should == lo(1970, 4, 30)
+    end
+  end
+
+  describe '#previous_time' do
+
+    def pt(cronline, now)
+      Rufus::CronLine.new(cronline).previous_time(now)
+    end
+
+    it 'returns the previous time the cron should have triggered' do
+
+      pt('* * * * sun', lo(1970, 1, 1)).should == lo(1969, 12, 28, 23, 59, 00)
+      pt('* * 13 * *', lo(1970, 1, 1)).should == lo(1969, 12, 13, 23, 59, 00)
+      pt('0 12 13 * *', lo(1970, 1, 1)).should == lo(1969, 12, 13, 12, 00)
+
+      pt('* * * * * sun', lo(1970, 1, 1)).should == lo(1969, 12, 28, 23, 59, 59)
+    end
   end
 
   describe '#matches?' do
@@ -325,16 +367,21 @@ describe Rufus::Scheduler::CronLine do
     end
   end
 
-  describe '.monthday' do
+  describe '#monthdays' do
 
     it 'returns the appropriate "sun#2"-like string' do
 
-      d = local(1970, 1, 1)
-      Rufus::Scheduler::CronLine.monthday(d).should == 'thu#1'
-      Rufus::Scheduler::CronLine.monthday(d + 6 * 24 * 3600).should == 'wed#1'
-      Rufus::Scheduler::CronLine.monthday(d + 13 * 24 * 3600).should == 'wed#2'
+      class Rufus::CronLine
+        public :monthdays
+      end
 
-      Rufus::Scheduler::CronLine.monthday(local(2011, 3, 11)).should == 'fri#2'
+      cl = Rufus::CronLine.new('* * * * *')
+
+      cl.monthdays(local(1970, 1, 1)).should == %w[ thu#1 thu#-5 ]
+      cl.monthdays(local(1970, 1, 7)).should == %w[ wed#1 wed#-4 ]
+      cl.monthdays(local(1970, 1, 14)).should == %w[ wed#2 wed#-3 ]
+
+      cl.monthdays(local(2011, 3, 11)).should == %w[ fri#2 fri#-3 ]
     end
   end
 end

@@ -9,6 +9,15 @@ Thread.abort_on_exception = true
 
 require 'rufus-scheduler'
 
+def local(*args)
+  Time.local(*args)
+end
+alias lo local
+
+def utc(*args)
+  Time.utc(*args)
+end
+
 
 #RSpec.configure do |config|
 #end
