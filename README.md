@@ -21,6 +21,10 @@ There is no EventMachine-based scheduler anymore.
 ### :blocking => true
 ### :overlap => false
 
+### :mutex => mutex_instance / mutex_name / array of mutexes
+
+Array of mutexes: original idea and implementation by [Rainux Luo](https://github.com/rainux)
+
 
 ## license
 

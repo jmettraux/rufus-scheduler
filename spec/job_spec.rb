@@ -165,5 +165,85 @@ describe Rufus::Scheduler::Job do
       end
     end
   end
+
+  context ':mutex' do
+
+    context ':mutex => "mutex_name"' do
+
+      it 'prevents concurrent executions' do
+
+        j0 =
+          @scheduler.in('0s', :job => true, :mutex => 'vladivostok') do
+            sleep(3)
+          end
+        j1 =
+          @scheduler.in('0s', :job => true, :mutex => 'vladivostok') do
+            sleep(3)
+          end
+
+        sleep 0.4
+
+        if j0.threads.any?
+          j0.threads.size.should == 1
+          j1.threads.size.should == 0
+        else
+          j0.threads.size.should == 0
+          j1.threads.size.should == 1
+        end
+
+        @scheduler.mutexes.keys.should == %w[ vladivostok ]
+      end
+    end
+
+    context ':mutex => mutex_instance' do
+
+      it 'prevents concurrent executions' do
+
+        m = Mutex.new
+
+        j0 = @scheduler.in('0s', :job => true, :mutex => m) { sleep(3) }
+        j1 = @scheduler.in('0s', :job => true, :mutex => m) { sleep(3) }
+
+        sleep 0.4
+
+        if j0.threads.any?
+          j0.threads.size.should == 1
+          j1.threads.size.should == 0
+        else
+          j0.threads.size.should == 0
+          j1.threads.size.should == 1
+        end
+
+        @scheduler.mutexes.keys.should == []
+      end
+    end
+
+    context ':mutex => [ array_of_mutex_names_or_instances ]' do
+
+      it 'prevents concurrent executions' do
+
+        j0 =
+          @scheduler.in('0s', :job => true, :mutex => %w[ a b ]) do
+            sleep(3)
+          end
+        j1 =
+          @scheduler.in('0s', :job => true, :mutex => %w[ a b ]) do
+            sleep(3)
+          end
+
+        sleep 0.4
+
+        if j0.threads.any?
+          j0.threads.size.should == 1
+          j1.threads.size.should == 0
+        else
+          j0.threads.size.should == 0
+          j1.threads.size.should == 1
+        end
+
+        @scheduler.mutexes.keys.sort.should == %w[ a b ]
+      end
+    end
+  end
 end
 

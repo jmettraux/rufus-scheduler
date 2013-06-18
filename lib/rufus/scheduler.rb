@@ -38,6 +38,7 @@ module Rufus
 
     attr_accessor :frequency
     attr_reader :thread
+    attr_reader :mutexes
 
     def initialize(opts={})
 
@@ -51,6 +52,7 @@ module Rufus
 
       @opts = opts
       @frequency = @opts[:frequency] || 0.300
+      @mutexes = {}
 
       start
     end
@@ -215,6 +217,7 @@ module Rufus
         @block = block
 
         @scheduled_at = Time.now
+        @mutexes = {}
 
         @id = determine_id
 
@@ -224,8 +227,13 @@ module Rufus
           caller[2..-1]
         ) unless @block
 
+        # tidy up options
+
         if @opts[:allow_overlap] == false || @opts[:allow_overlapping] == false
           @opts[:overlap] = false
+        end
+        if m = @opts[:mutex]
+          @opts[:mutex] = Array(m)
         end
       end
 
@@ -240,7 +248,13 @@ module Rufus
         if opts[:blocking]
           do_trigger(time)
         else
-          Thread.new { do_trigger(time) }
+          Thread.new do
+            (opts[:mutex] || []).reduce(
+              lambda { do_trigger(time) }
+            ) do |blk, m|
+              lambda { mutex(m).synchronize { blk.call } }
+            end.call
+          end
         end
 
         false # do not reschedule
@@ -277,6 +291,11 @@ module Rufus
       end
 
       protected
+
+      def mutex(m)
+
+        m.is_a?(Mutex) ? m : (@scheduler.mutexes[m.to_s] ||= Mutex.new)
+      end
 
       def do_trigger(time)
 
