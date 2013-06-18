@@ -4,6 +4,12 @@
 
 == Contributors
 
+- Matteo Cerutti - last_time / previous_time idea (and initial implementation)
+- Aimee Rose (https://github.com/AimeeRose) cronline and > 24
+- Lucy Fu (https://github.com/lfu) arg error on <= 0 "every" freq
+- Rainux Luo (https://github.com/rainux) multiple mutexes
+- Andrew Davey (https://github.com/asdavey) "L" in cron lines
+- Stig Kleppe-Jørgensen (https://github.com/stigkj)
 - Danny "northox" Fullerton (https://github.com/northox) negative time strings
 - Marcus Brito (https://github.com/pazustep) CronLine proofing
 - André Luis Leal Cardoso Junior (https://github.com/andrehjr) 1.9.3 patch
@@ -18,6 +24,7 @@
 
 == Feedback
 
+- Hongli Lai - Scheduler#stop(:terminate => true) request
 - Tero Tilus - raises on unsupported/unknown options
 - Louis Coilliot - Scheduler#running_jobs
 - Henrique G. Testa - pause/resume concept
