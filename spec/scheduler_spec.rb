@@ -45,104 +45,123 @@ describe Rufus::Scheduler do
     end
   end
 
-  describe '#uptime' do
+  context 'instance methods' do
 
-    it 'returns the uptime as a float' do
-
-      scheduler = Rufus::Scheduler.new
-
-      scheduler.uptime.should > 0.0
+    before :each do
+      @scheduler = Rufus::Scheduler.new
     end
-  end
-
-  describe '#uptime_s' do
-
-    it 'returns the uptime as a human readable string' do
-
-      scheduler = Rufus::Scheduler.new
-
-      sleep 1
-
-      scheduler.uptime_s.should match(/^[12]s\d+$/)
-    end
-  end
-
-  describe '#join' do
-
-    it 'joins the scheduler thread' do
-
-      scheduler = Rufus::Scheduler.new
-
-      scheduler.respond_to?(:join).should == true # oh, well...
-    end
-  end
-
-  #--
-  # management methods
-  #++
-
-  describe '#shutdown' do
-
-    it 'blanks the uptime' do
-
-      scheduler = Rufus::Scheduler.new
-      scheduler.shutdown
-
-      scheduler.uptime.should == nil
+    after :each do
+      @scheduler.shutdown
     end
 
-    it 'terminates the scheduler' do
+    describe '#uptime' do
 
-      scheduler = Rufus::Scheduler.new
-      scheduler.shutdown
+      it 'returns the uptime as a float' do
 
-      sleep 0.100
-      sleep 0.400 if RUBY_VERSION < '1.9.0'
-
-      t = Thread.list.find { |t|
-        t[:name] == "rufus_scheduler_#{scheduler.object_id}"
-      }
-
-      t.should == nil
+        @scheduler.uptime.should > 0.0
+      end
     end
 
-    it 'has a #stop alias' do
+    describe '#uptime_s' do
 
-      scheduler = Rufus::Scheduler.new
-      scheduler.shutdown
+      it 'returns the uptime as a human readable string' do
 
-      scheduler.uptime.should == nil
+        sleep 1
+
+        @scheduler.uptime_s.should match(/^[12]s\d+$/)
+      end
     end
 
-    #it 'has a #close alias'
-  end
+    describe '#join' do
 
-  describe '#pause' do
-  end
-  describe '#resume' do
-  end
+      it 'joins the scheduler thread' do
 
-  #--
-  # job methods
-  #++
-
-  describe '#jobs' do
-
-    it 'is empty at the beginning' do
-
-      scheduler = Rufus::Scheduler.new
-
-      scheduler.jobs.should == []
+        pending
+        @scheduler.respond_to?(:join).should == true # oh, well...
+      end
     end
-  end
 
-  describe '#every_jobs' do
-  end
-  describe '#at_jobs' do
-  end
-  describe '#in_jobs' do
-  end
-  describe '#cron_jobs' do
+    describe '#next_tick' do
+
+      it 'blocks until the next scheduler tick' do
+
+        pending
+      end
+    end
+
+    #--
+    # management methods
+    #++
+
+    describe '#shutdown' do
+
+      it 'blanks the uptime' do
+
+        scheduler = Rufus::Scheduler.new
+        scheduler.shutdown
+
+        scheduler.uptime.should == nil
+      end
+
+      it 'terminates the scheduler' do
+
+        scheduler = Rufus::Scheduler.new
+        scheduler.shutdown
+
+        sleep 0.100
+        sleep 0.400 if RUBY_VERSION < '1.9.0'
+
+        t = Thread.list.find { |t|
+          t[:name] == "rufus_scheduler_#{scheduler.object_id}"
+        }
+
+        t.should == nil
+      end
+
+      it 'has a #stop alias' do
+
+        scheduler = Rufus::Scheduler.new
+        scheduler.shutdown
+
+        scheduler.uptime.should == nil
+      end
+
+      #it 'has a #close alias'
+    end
+
+    describe '#pause' do
+      it 'works'
+    end
+    describe '#resume' do
+      it 'works'
+    end
+
+    #--
+    # job methods
+    #++
+
+    describe '#jobs' do
+
+      it 'is empty at the beginning' do
+
+        scheduler = Rufus::Scheduler.new
+
+        scheduler.jobs.should == []
+      end
+    end
+
+    describe '#every_jobs' do
+      it 'works'
+    end
+    describe '#at_jobs' do
+      it 'works'
+    end
+    describe '#in_jobs' do
+      it 'works'
+    end
+    describe '#cron_jobs' do
+      it 'works'
+    end
   end
 end
 
