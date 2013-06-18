@@ -7,6 +7,8 @@
     NO, that mutex is necessary for Scheduler#jobs (on JRuby an co)...
 [ ] named mutexes
 
+[ ] :lockfile => x, timestamp, process_id, thread_id...
+
 
 ################################################################################
 

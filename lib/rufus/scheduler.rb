@@ -37,6 +37,7 @@ module Rufus
     VERSION = '3.0.0'
 
     attr_accessor :frequency
+    attr_reader :thread
 
     def initialize(opts={})
 
@@ -222,13 +223,25 @@ module Rufus
           'missing block to schedule',
           caller[2..-1]
         ) unless @block
+
+        if @opts[:allow_overlap] == false || @opts[:allow_overlapping] == false
+          @opts[:overlap] = false
+        end
       end
 
       alias job_id id
 
       def trigger(time)
 
-        @block.call
+        # TODO: blocking, mutex, threadname?
+
+        return if opts[:overlap] == false && running?
+
+        if opts[:blocking]
+          do_trigger(time)
+        else
+          Thread.new { do_trigger(time) }
+        end
 
         false # do not reschedule
       end
@@ -236,6 +249,45 @@ module Rufus
       def unschedule
 
         @scheduler.unschedule(self)
+      end
+
+      def threads
+
+        Thread.list.select { |t| t[thread_key] != nil }
+      end
+
+      def thread_values
+
+        k = thread_key
+
+        threads.collect { |t| t[k] }
+      end
+
+      def running?
+
+        threads.any?
+      end
+
+      # Returns the key used in the thread local vars to store info about
+      # the job.
+      #
+      def thread_key
+
+        "rufus_scheduler_#{@scheduler.object_id}_job_#{@id}"
+      end
+
+      protected
+
+      def do_trigger(time)
+
+        k = thread_key
+
+        Thread.current[k] =
+          { :job => self, :timestamp => time.to_f }
+
+        @block.call
+
+        Thread.current[k] = nil
       end
     end
 
