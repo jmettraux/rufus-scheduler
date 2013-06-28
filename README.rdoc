@@ -337,7 +337,7 @@ The chronic gem may help (http://chronic.rubyforge.org/) :
   require 'chronic' # sudo gem install chronic
 
   scheduler.every '3h', :first_at => Chronic.parse('this tuesday 5:00') do
-    # do something starting this tueday
+    # do something starting this tuesday
   end
 
 Note : setting a :first_at/:first_in in the past will get rufus-scheduler to trigger for all the past schedules until now. Adding :discard_past => true will prevent this.
