@@ -25,6 +25,8 @@ job scheduler for Ruby (at, cron, in and every jobs).
     '*.gemspec', '*.txt', '*.rdoc', '*.md'
   ]
 
+  s.add_dependency 'whedon', '>= 0.0.1'
+
   s.add_runtime_dependency 'tzinfo', '>= 0.3.23'
 
   s.add_development_dependency 'rake'
