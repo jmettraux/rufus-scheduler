@@ -538,6 +538,15 @@ For backward compatibility, overriding #log_exception is still OK :
 
 Note that an every job or a cron job will stay scheduled even if it experiences an exception.
 
+By default, all exceptions are rescued. It's easy to customize that behaviour :
+
+  scheduler = Rufus::Scheduler::PlainScheduler.start_new(:exception => StandardError)
+    # or
+  #scheduler = Rufus::Scheduler::EmScheduler.start_new(:exception => StandardError)
+  
+  scheduler.in "3s" do
+    exit
+  end
 
 == frequency
 
