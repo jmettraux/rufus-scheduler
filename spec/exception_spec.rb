@@ -1,4 +1,3 @@
-
 #
 # Specifying rufus-scheduler
 #
@@ -92,6 +91,23 @@ describe SCHEDULER_CLASS do
 
     $j.class.should == Rufus::Scheduler::InJob
     $e.to_s.should == 'Houston we have a problem'
+  end
+
+  it 'allow custom exception rescue' do
+    @s.options[:exception]= StandardError
+
+    job = @s.in 0 do
+      exit
+    end
+
+    @e= nil
+    begin
+      wait_next_tick
+    rescue SystemExit => e
+      @e= e
+    end
+
+    @e.should_not == nil
   end
 end
 
