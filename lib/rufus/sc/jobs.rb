@@ -198,7 +198,7 @@ module Scheduler
 
           to_job.unschedule if to_job
 
-        rescue Exception => e
+        rescue (@scheduler.options[:exception] || Exception) => e
 
           @scheduler.do_handle_exception(self, e)
         end
