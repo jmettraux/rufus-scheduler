@@ -69,7 +69,7 @@ describe Rufus::Scheduler::Job do
       job.thread_values.size.should == 1
 
       tv = job.thread_values.first
-      tv.keys.should == [ :job, :timestamp ]
+      tv.keys.sort_by { |k| k.to_s }.should == [ :job, :timestamp ]
       tv[:job].should == job
     end
   end
