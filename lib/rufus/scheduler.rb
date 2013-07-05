@@ -241,8 +241,6 @@ module Rufus
 
       def trigger(time)
 
-        # TODO: blocking, mutex, threadname?
-
         return if opts[:overlap] == false && running?
 
         if opts[:blocking]
