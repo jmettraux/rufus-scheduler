@@ -37,6 +37,12 @@ To prevent overlap, one can set :overlap => false. Such a job will not trigger i
 
 ### :mutex => mutex_instance / mutex_name / array of mutexes
 
+When a job with a mutex triggers, the job's block is executed with the mutex around it, preventing other jobs with the same mutex to enter (it makes the other jobs wait until it exits the mutex).
+
+This is different from :overlap => false, which is, first, limited to instances of the same job, and, second, doesn't make the incoming job instance block/wait but give up.
+
+:mutex accepts a mutex instance or a mutex name (String). It also accept an array of mutex names / mutex instances. It allows for complex relations between jobs.
+
 Array of mutexes: original idea and implementation by [Rainux Luo](https://github.com/rainux)
 
 
