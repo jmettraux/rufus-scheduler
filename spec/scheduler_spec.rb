@@ -81,14 +81,6 @@ describe Rufus::Scheduler do
       end
     end
 
-    describe '#next_tick' do
-
-      it 'blocks until the next scheduler tick' do
-
-        pending
-      end
-    end
-
     #--
     # management methods
     #++
