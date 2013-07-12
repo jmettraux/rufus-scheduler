@@ -518,7 +518,7 @@ module Rufus
       parse_in(o, opts) || # covers 'every' schedule strings
       parse_at(o, opts) ||
       parse_cron(o, opts) ||
-      raise(ArgumentError.new("couldn't parse >#{o}<"))
+      raise(ArgumentError.new("couldn't parse \"#{o}\""))
     end
 
     def self.parse_in(o, opts={})
@@ -546,7 +546,12 @@ module Rufus
 
     def self.parse_cron(o, opts)
 
-      CronLine.new(o, opts)
+      CronLine.new(o)
+
+    rescue ArgumentError => ae
+
+      return nil if opts[:no_error]
+      raise ae
     end
 
     DURATIONS2M = [

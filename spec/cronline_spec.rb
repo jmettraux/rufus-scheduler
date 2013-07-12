@@ -5,13 +5,14 @@
 # Sat Mar 21 12:55:27 JST 2009
 #
 
+require 'tzinfo'
 require 'spec_helper'
 
 
-describe Rufus::CronLine do
+describe Rufus::Scheduler::CronLine do
 
   def cl(cronline_string)
-    Rufus::CronLine.new(cronline_string)
+    Rufus::Scheduler::CronLine.new(cronline_string)
   end
 
   def match(line, time)
@@ -96,7 +97,7 @@ describe Rufus::CronLine do
     it 'does not support ranges for monthdays (sun#1-sun#2)' do
 
       lambda {
-        Rufus::CronLine.new('* * * * sun#1-sun#2')
+        Rufus::Scheduler::CronLine.new('* * * * sun#1-sun#2')
       }.should raise_error(ArgumentError)
     end
 
@@ -150,7 +151,7 @@ describe Rufus::CronLine do
   describe '#next_time' do
 
     def nt(cronline, now)
-      Rufus::CronLine.new(cronline).next_time(now)
+      Rufus::Scheduler::CronLine.new(cronline).next_time(now)
     end
 
     it 'computes the next occurence correctly' do
@@ -284,7 +285,7 @@ describe Rufus::CronLine do
   describe '#previous_time' do
 
     def pt(cronline, now)
-      Rufus::CronLine.new(cronline).previous_time(now)
+      Rufus::Scheduler::CronLine.new(cronline).previous_time(now)
     end
 
     it 'returns the previous time the cron should have triggered' do
@@ -371,11 +372,11 @@ describe Rufus::CronLine do
 
     it 'returns the appropriate "sun#2"-like string' do
 
-      class Rufus::CronLine
+      class Rufus::Scheduler::CronLine
         public :monthdays
       end
 
-      cl = Rufus::CronLine.new('* * * * *')
+      cl = Rufus::Scheduler::CronLine.new('* * * * *')
 
       cl.monthdays(local(1970, 1, 1)).should == %w[ thu#1 thu#-5 ]
       cl.monthdays(local(1970, 1, 7)).should == %w[ wed#1 wed#-4 ]

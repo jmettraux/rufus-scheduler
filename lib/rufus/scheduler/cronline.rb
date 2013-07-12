@@ -22,10 +22,8 @@
 # Made in Japan.
 #++
 
-require 'tzinfo'
 
-
-module Rufus
+class Rufus::Scheduler
 
   #
   # A 'cron line' is a line in the sense of a crontab

@@ -31,16 +31,15 @@ describe Rufus::Scheduler do
 
       out = parse('* * * * *')
 
-      p out
-
-      fail
+      out.class.should == Rufus::Scheduler::CronLine
+      out.original.should == '* * * * *'
     end
 
     it 'raises on unparseable input' do
 
       lambda {
         parse('nada')
-      }.should raise_error(ArgumentError, 'no time information in "nada"')
+      }.should raise_error(ArgumentError, 'couldn\'t parse "nada"')
     end
   end
 
