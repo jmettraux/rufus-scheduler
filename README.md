@@ -80,16 +80,37 @@ When calling a schedule method, the id (String) of the job is returned. Longer s
     end
 ```
 
+### Job methods
+
 Those Job instances have a few interesting methods / properties:
 
-### id, job_id
-### opts
-### original
-### scheduled_at
-### last_time
-### unschedule
-### threads, thread_values
-### running?
+#### id, job_id
+#### opts
+#### original
+#### scheduled_at
+#### last_time
+#### unschedule
+#### threads, thread_values
+#### running?
+
+### Given a Job id how may I lookup the Job instance?
+
+The scheduler #job(job_id) method can be used to lookup Job instances.
+
+```ruby
+  require 'rufus-scheduler'
+
+  scheduler = Rufus::Scheduler.new
+
+  job_id =
+    scheduler.in '10d' do
+      # ...
+    end
+
+  # later on...
+
+  job = scheduler.job(job_id)
+```
 
 
 ## parsing cronlines

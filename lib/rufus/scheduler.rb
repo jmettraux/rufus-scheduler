@@ -154,6 +154,11 @@ module Rufus
     def every_jobs; jobs.select { |j| j.is_a?(Rufus::Scheduler::EveryJob) }; end
     def cron_jobs;  jobs.select { |j| j.is_a?(Rufus::Scheduler::CronJob) }; end
 
+    def job(job_id)
+
+      @jobs[job_id]
+    end
+
     protected
 
     def start
@@ -469,6 +474,11 @@ module Rufus
       def to_a
 
         @mutex.synchronize { @array.dup }
+      end
+
+      def [](job_id)
+
+        @mutex.synchronize { @array.find { |j| j.job_id == job_id } }
       end
 
       protected

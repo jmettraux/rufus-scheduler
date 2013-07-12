@@ -81,6 +81,23 @@ describe Rufus::Scheduler do
       end
     end
 
+    describe '#job(job_id)' do
+
+      it 'returns nil if there is no corresponding Job instance' do
+
+        @scheduler.job('nada').should == nil
+      end
+
+      it 'returns the corresponding Job instance' do
+
+        job_id = @scheduler.in '10d' do; end
+
+        sleep(1) # give it some time to get scheduled
+
+        @scheduler.job(job_id).job_id.should == job_id
+      end
+    end
+
     #--
     # management methods
     #++
