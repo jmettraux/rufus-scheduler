@@ -185,8 +185,6 @@ module Rufus
 
     def schedule_jobs
 
-      return if @schedule_queue.empty?
-
       while @schedule_queue.size > 0
 
         schedule, job = @schedule_queue.pop
