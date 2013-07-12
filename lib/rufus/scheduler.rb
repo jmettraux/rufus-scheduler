@@ -208,6 +208,7 @@ module Rufus
       attr_reader :opts
       attr_reader :original
       attr_reader :scheduled_at
+      attr_reader :last_time
 
       def initialize(scheduler, original, opts, block)
 
@@ -217,6 +218,7 @@ module Rufus
         @block = block
 
         @scheduled_at = Time.now
+        @last_time = nil
         @mutexes = {}
 
         @id = determine_id
@@ -301,6 +303,8 @@ module Rufus
 
         Thread.current[k] =
           { :job => self, :timestamp => time.to_f }
+
+        @last_time = time
 
         @block.call
 

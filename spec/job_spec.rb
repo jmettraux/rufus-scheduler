@@ -19,6 +19,27 @@ describe Rufus::Scheduler::Job do
     @scheduler.shutdown
   end
 
+  describe '#last_time' do
+
+    it 'returns nil if the job never fired' do
+
+      job = @scheduler.schedule_in '10d' do; end
+
+      sleep(1)
+
+      job.last_time.should == nil
+    end
+
+    it 'returns the last time the job fired' do
+
+      job = @scheduler.schedule_in '0s' do; end
+
+      sleep(1)
+
+      job.last_time.should_not == nil
+    end
+  end
+
   describe '#threads' do
 
     it 'returns an empty list when the job is not running' do

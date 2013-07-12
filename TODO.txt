@@ -77,4 +77,3 @@
 [ ] Joel's complaint about timeout jobs gone ballistic
 [x] move trigger_job out of the scheduler
 
-
