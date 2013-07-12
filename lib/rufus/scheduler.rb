@@ -382,6 +382,7 @@ module Rufus
 
     class EveryJob < RepeatJob
 
+      attr_reader :frequency
       attr_reader :next_time
 
       def initialize(scheduler, duration, opts, block)

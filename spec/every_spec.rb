@@ -72,7 +72,12 @@ describe Rufus::Scheduler do
 
   describe '#schedule_every' do
 
-    pending 'it accepts a duration string'
+    it 'accepts a duration string' do
+
+      job = @scheduler.schedule_every('1h') do; end
+
+      job.frequency.should == 3600.0
+    end
   end
 end
 
