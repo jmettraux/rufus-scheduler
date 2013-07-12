@@ -55,7 +55,7 @@ This is different from :overlap => false, which is, first, limited to instances 
 Array of mutexes: original idea and implementation by [Rainux Luo](https://github.com/rainux)
 
 
-## job methods
+## Job methods
 
 When calling a schedule method, the id (String) of the job is returned. Longer schedule methods return Job instances directly. Calling the shorter schedule methods with the :job => true also return Job instances instead of Job ids (Strings).
 
@@ -90,6 +90,16 @@ Those Job instances have a few interesting methods / properties:
 ### unschedule
 ### threads, thread_values
 ### running?
+
+## AtJob and InJob methods
+### time
+
+## EveryJob methods
+### frequency
+### next_time
+
+## CronJob methods
+
 
 ## looking up jobs
 
