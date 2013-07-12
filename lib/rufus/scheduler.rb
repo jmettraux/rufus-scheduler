@@ -101,38 +101,38 @@ module Rufus
 
     def at(time, opts={}, &block)
 
-      job = schedule_at(time, opts, &block)
-
-      opts[:job] ? job : job.id
+      do_schedule(
+        Rufus::Scheduler::AtJob, time, opts, opts[:job], block)
     end
 
     def schedule_at(time, opts={}, &block)
 
-      do_schedule(Rufus::Scheduler::AtJob, time, opts, block)
+      do_schedule(
+        Rufus::Scheduler::AtJob, time, opts, true, block)
     end
 
     def in(duration, opts={}, &block)
 
-      job = schedule_in(duration, opts, &block)
-
-      opts[:job] ? job : job.id
+      do_schedule(
+        Rufus::Scheduler::InJob, duration, opts, opts[:job], block)
     end
 
     def schedule_in(duration, opts={}, &block)
 
-      do_schedule(Rufus::Scheduler::InJob, duration, opts, block)
+      do_schedule(
+        Rufus::Scheduler::InJob, duration, opts, true, block)
     end
 
     def every(duration, opts={}, &block)
 
-      job = schedule_every(duration, opts, &block)
-
-      opts[:job] ? job : job.id
+      do_schedule(
+        Rufus::Scheduler::EveryJob, duration, opts, opts[:job], block)
     end
 
     def schedule_every(duration, opts={}, &block)
 
-      do_schedule(Rufus::Scheduler::EveryJob, duration, opts, block)
+      do_schedule(
+        Rufus::Scheduler::EveryJob, duration, opts, true, block)
     end
 
     def unschedule(job_or_job_id)
@@ -210,13 +210,13 @@ module Rufus
       @jobs.concat(jobs_to_reschedule)
     end
 
-    def do_schedule(job_class, t, opts, block)
+    def do_schedule(job_class, t, opts, return_job_instance, block)
 
       job = job_class.new(self, t, opts, block)
 
       @schedule_queue << [ true, job ]
 
-      job
+      return_job_instance ? job : job.job_id
     end
 
     #--
