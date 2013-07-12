@@ -80,20 +80,20 @@ When calling a schedule method, the id (String) of the job is returned. Longer s
     end
 ```
 
-### Job methods
-
 Those Job instances have a few interesting methods / properties:
 
-#### id, job_id
-#### opts
-#### original
-#### scheduled_at
-#### last_time
-#### unschedule
-#### threads, thread_values
-#### running?
+### id, job_id
+### opts
+### original
+### scheduled_at
+### last_time
+### unschedule
+### threads, thread_values
+### running?
 
-### Given a Job id how may I lookup the Job instance?
+## looking up jobs
+
+### Scheduler#job(job_id)
 
 The scheduler #job(job_id) method can be used to lookup Job instances.
 
@@ -110,6 +110,19 @@ The scheduler #job(job_id) method can be used to lookup Job instances.
   # later on...
 
   job = scheduler.job(job_id)
+```
+
+### Scheduler #jobs #at_jobs #in_jobs #every_jobs and #cron_jobs
+
+Are methods for looking up lists of scheduled Job instances.
+
+Here is an example:
+
+```ruby
+  #
+  # let's unschedule all the at jobs
+
+  scheduler.at_jobs.each(&:unschedule)
 ```
 
 

@@ -193,19 +193,71 @@ describe Rufus::Scheduler do
 
         @scheduler.jobs.should == []
       end
+
+      it 'returns the list of scheduled jobs' do
+
+        @scheduler.in '10d' do; end
+        @scheduler.in '1w' do; end
+
+        sleep(1)
+
+        jobs = @scheduler.jobs
+
+        jobs.collect { |j| j.original }.sort.should == %w[ 10d 1w ]
+      end
     end
 
     describe '#every_jobs' do
-      it 'works'
+
+      it 'returns EveryJob instances' do
+
+        @scheduler.at '2030/12/12 12:10:00' do; end
+        @scheduler.in '10d' do; end
+        @scheduler.every '5m' do; end
+
+        sleep(1)
+
+        jobs = @scheduler.every_jobs
+
+        jobs.collect { |j| j.original }.sort.should == %w[ 5m ]
+      end
     end
+
     describe '#at_jobs' do
-      it 'works'
+
+      it 'returns AtJob instances' do
+
+        @scheduler.at '2030/12/12 12:10:00' do; end
+        @scheduler.in '10d' do; end
+        @scheduler.every '5m' do; end
+
+        sleep(1)
+
+        jobs = @scheduler.at_jobs
+
+        jobs.collect { |j| j.original }.sort.should == [ '2030/12/12 12:10:00' ]
+      end
     end
+
     describe '#in_jobs' do
-      it 'works'
+
+      it 'returns InJob instances' do
+
+        @scheduler.at '2030/12/12 12:10:00' do; end
+        @scheduler.in '10d' do; end
+        @scheduler.every '5m' do; end
+
+        sleep(1)
+
+        jobs = @scheduler.in_jobs
+
+        jobs.collect { |j| j.original }.sort.should == %w[ 10d ]
+      end
     end
+
     describe '#cron_jobs' do
-      it 'works'
+
+      it 'returns CronJob instances'
     end
   end
 end
