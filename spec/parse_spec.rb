@@ -27,7 +27,14 @@ describe Rufus::Scheduler do
         'Sun Nov 18 16:01:00 2012'
     end
 
-    it 'parses cronlines'
+    it 'parses cronlines' do
+
+      out = parse('* * * * *')
+
+      p out
+
+      fail
+    end
 
     it 'raises on unparseable input' do
 

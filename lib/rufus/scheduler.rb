@@ -515,15 +515,20 @@ module Rufus
 
     def self.parse(o)
 
-      parse_in(o) || parse_at(o)
+      opts = { :no_error => true }
+
+      parse_in(o, opts) || # covers 'every' schedule strings
+      parse_at(o, opts) ||
+      parse_cron(o, opts) ||
+      raise(ArgumentError.new("couldn't parse >#{o}<"))
     end
 
-    def self.parse_in(o)
+    def self.parse_in(o, opts={})
 
-      o.is_a?(String) ? parse_duration(o, :no_error => true) : o
+      o.is_a?(String) ? parse_duration(o, opts) : o
     end
 
-    def self.parse_at(o)
+    def self.parse_at(o, opts={})
 
       return o if o.is_a?(Time)
 
@@ -534,6 +539,16 @@ module Rufus
       end if RUBY_VERSION < '1.9.0'
 
       Time.parse(o)
+
+    rescue StandardError => se
+
+      return nil if opts[:no_error]
+      raise se
+    end
+
+    def self.parse_cron(o, opts)
+
+      CronLine.new(o, opts)
     end
 
     DURATIONS2M = [
