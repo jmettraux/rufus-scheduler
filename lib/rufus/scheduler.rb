@@ -43,6 +43,7 @@ module Rufus
     def initialize(opts={})
 
       @started_at = nil
+      @paused = false
 
       @schedule_queue = Queue.new
         # using a queue so that schedules/unschedules return immediately
@@ -77,6 +78,21 @@ module Rufus
     def join
 
       @thread.join
+    end
+
+    def paused?
+
+      @paused
+    end
+
+    def pause
+
+      @paused = true
+    end
+
+    def resume
+
+      @paused = false
     end
 
     #--
@@ -150,7 +166,7 @@ module Rufus
           while @started_at do
 
             schedule_jobs
-            trigger_jobs
+            trigger_jobs unless @paused
 
             sleep(@frequency)
           end

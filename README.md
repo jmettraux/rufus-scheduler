@@ -23,6 +23,15 @@ There is no EventMachine-based scheduler anymore.
 TODO: in/at/cron/every
 
 
+## pause and resume the scheduler
+
+The scheduler can be paused via the #pause and #resume methods. One can determine if the scheduler is currently paused by calling #paused?.
+
+While paused, the scheduler still accepts schedules, but no schedule will get triggered as long as #resume isn't called.
+
+TODO: :discard_the_past => true?
+
+
 ## job options
 
 ### :blocking => true

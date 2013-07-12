@@ -89,22 +89,20 @@ describe Rufus::Scheduler do
 
       it 'blanks the uptime' do
 
-        scheduler = Rufus::Scheduler.new
-        scheduler.shutdown
+        @scheduler.shutdown
 
-        scheduler.uptime.should == nil
+        @scheduler.uptime.should == nil
       end
 
       it 'terminates the scheduler' do
 
-        scheduler = Rufus::Scheduler.new
-        scheduler.shutdown
+        @scheduler.shutdown
 
         sleep 0.100
         sleep 0.400 if RUBY_VERSION < '1.9.0'
 
         t = Thread.list.find { |t|
-          t[:name] == "rufus_scheduler_#{scheduler.object_id}"
+          t[:name] == "rufus_scheduler_#{@scheduler.object_id}"
         }
 
         t.should == nil
@@ -112,20 +110,60 @@ describe Rufus::Scheduler do
 
       it 'has a #stop alias' do
 
-        scheduler = Rufus::Scheduler.new
-        scheduler.shutdown
+        @scheduler.stop
 
-        scheduler.uptime.should == nil
+        @scheduler.uptime.should == nil
       end
 
       #it 'has a #close alias'
     end
 
     describe '#pause' do
-      it 'works'
+
+      it 'pauses the scheduler' do
+
+        job = @scheduler.schedule_in '1s' do; end
+
+        @scheduler.pause
+
+        sleep(3)
+
+        job.last_time.should == nil
+      end
     end
+
     describe '#resume' do
-      it 'works'
+
+      it 'works' do
+
+        job = @scheduler.schedule_in '2s' do; end
+
+        @scheduler.pause
+        sleep(1)
+        @scheduler.resume
+        sleep(2)
+
+        job.last_time.should_not == nil
+      end
+    end
+
+    describe '#paused?' do
+
+      it 'returns true if the scheduler is paused' do
+
+        @scheduler.pause
+        @scheduler.paused?.should == true
+      end
+
+      it 'returns false if the scheduler is not paused' do
+
+        @scheduler.paused?.should == false
+
+        @scheduler.pause
+        @scheduler.resume
+
+        @scheduler.paused?.should == false
+      end
     end
 
     #--
@@ -136,9 +174,7 @@ describe Rufus::Scheduler do
 
       it 'is empty at the beginning' do
 
-        scheduler = Rufus::Scheduler.new
-
-        scheduler.jobs.should == []
+        @scheduler.jobs.should == []
       end
     end
 
