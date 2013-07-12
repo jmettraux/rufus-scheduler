@@ -121,3 +121,8 @@ describe Rufus::Scheduler do
   end
 end
 
+describe Rufus::Scheduler::AtJob do
+
+  it 'works'
+end
+

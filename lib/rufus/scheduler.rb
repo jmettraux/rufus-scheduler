@@ -135,6 +135,18 @@ module Rufus
         Rufus::Scheduler::EveryJob, duration, opts, true, block)
     end
 
+    def cron(cronline, opts={}, &block)
+
+      do_schedule(
+        Rufus::Scheduler::CronJob, cronline, opts, opts[:job], block)
+    end
+
+    def schedule_cron(cronline, opts={}, &block)
+
+      do_schedule(
+        Rufus::Scheduler::CronJob, cronline, opts, true, block)
+    end
+
     def unschedule(job_or_job_id)
 
       @schedule_queue << [ false, job_or_job_id ]
@@ -372,6 +384,8 @@ module Rufus
 
     class RepeatJob < Job
 
+      attr_reader :next_time
+
       def trigger(time)
 
         super
@@ -383,7 +397,6 @@ module Rufus
     class EveryJob < RepeatJob
 
       attr_reader :frequency
-      attr_reader :next_time
 
       def initialize(scheduler, duration, opts, block)
 
@@ -418,6 +431,32 @@ module Rufus
     end
 
     class CronJob < RepeatJob
+
+      def initialize(scheduler, cronline, opts, block)
+
+        super(scheduler, cronline, opts, block)
+
+        @cron_line = CronLine.new(cronline)
+        @next_time = @cron_line.next_time
+      end
+
+      def trigger(time)
+
+        super
+
+        @next_time = @cron_line.next_time(time)
+
+        true # do reschedule
+      end
+
+      def determine_id
+
+        [
+          self.class.name.split(':').last.downcase[0..-4],
+          @scheduled_at.to_f,
+          opts.hash.abs
+        ].map(&:to_s).join('_')
+      end
     end
 
     #--

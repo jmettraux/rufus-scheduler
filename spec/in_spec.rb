@@ -76,3 +76,8 @@ describe Rufus::Scheduler do
   end
 end
 
+describe Rufus::Scheduler::InJob do
+
+  it 'works'
+end
+

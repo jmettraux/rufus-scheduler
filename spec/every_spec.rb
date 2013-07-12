@@ -81,3 +81,8 @@ describe Rufus::Scheduler do
   end
 end
 
+describe Rufus::Scheduler::EveryJob do
+
+  it 'works'
+end
+
