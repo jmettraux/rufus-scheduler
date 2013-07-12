@@ -125,6 +125,16 @@ Here is an example:
   scheduler.at_jobs.each(&:unschedule)
 ```
 
+## misc Scheduler methods
+
+### Scheduler#shutdown
+
+Shuts down the scheduler, ceases any scheduler/triggering activity.
+
+### Scheduler#join
+
+Let's the current thread join the scheduling thread in rufus-scheduler. The thread comes back when the scheduler gets shut down.
+
 
 ## parsing cronlines
 

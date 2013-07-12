@@ -76,8 +76,15 @@ describe Rufus::Scheduler do
 
       it 'joins the scheduler thread' do
 
-        pending
-        @scheduler.respond_to?(:join).should == true # oh, well...
+        t = Thread.new { @scheduler.join; Thread.current['a'] = 'over' }
+
+        t['a'].should == nil
+
+        @scheduler.shutdown
+
+        sleep(1)
+
+        t['a'].should == 'over'
       end
     end
 
