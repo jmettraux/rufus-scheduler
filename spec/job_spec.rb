@@ -266,5 +266,40 @@ describe Rufus::Scheduler::Job do
       end
     end
   end
+
+  context ':timeout => duration_or_point_in_time' do
+
+    it 'is set at schedule time' do
+
+      job = @scheduler.schedule_in '10d', :timeout => '1d' do; end
+
+      job.opts[:timeout].should == '1d'
+      job.timeout.should == 86400.0
+    end
+
+    it 'interrupts the job it is stashed to (duration)' do
+
+      counter = 0
+      toe = nil
+
+      job =
+        @scheduler.schedule_in '0s', :timeout => '1s' do
+          begin
+            counter = counter + 1
+            sleep 1.5
+            counter = counter + 1
+          rescue Rufus::Scheduler::TimeoutError => e
+            toe = e
+          end
+        end
+
+      sleep(3)
+
+      counter.should == 1
+      toe.class.should == Rufus::Scheduler::TimeoutError
+    end
+
+    it 'interrupts the job it is stashed to (point in time)'
+  end
 end
 

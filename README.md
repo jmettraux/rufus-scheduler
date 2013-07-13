@@ -16,6 +16,7 @@ There is no EventMachine-based scheduler anymore.
 * As said, no more EventMachine-based scheduler
 * ```scheduler.every('100') {``` will schedule every 100 seconds (previously, it would have been 0.1s). This aligns rufus-scheduler on Ruby's ```sleep(100)```
 * The scheduler isn't catching the whole of Exception anymore, only StandardException
+* Rufus::Scheduler::TimeOutError renamed to Rufus::Scheduler::TimeoutError
 
 
 ## scheduling
@@ -53,6 +54,20 @@ This is different from :overlap => false, which is, first, limited to instances 
 :mutex accepts a mutex instance or a mutex name (String). It also accept an array of mutex names / mutex instances. It allows for complex relations between jobs.
 
 Array of mutexes: original idea and implementation by [Rainux Luo](https://github.com/rainux)
+
+### :timeout => duration or point in time
+
+It's OK to specify a timeout when scheduling some work. After the time specified, it gets interrupted via a Rufus::Scheduler::TimeoutError.
+
+```ruby
+  scheduler.in '10d', :timeout => '1d' do
+    begin
+      # ... do something
+    rescue Rufus::Scheduler::TimeoutError
+      # ... that something got interrupted after 1 day
+    end
+  end
+```
 
 
 ## Job methods

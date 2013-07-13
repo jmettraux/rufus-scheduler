@@ -194,6 +194,7 @@ module Rufus
 
             schedule_jobs
             trigger_jobs unless @paused
+            timeout_jobs
 
             sleep(@frequency)
           end
@@ -228,6 +229,23 @@ module Rufus
       @jobs.concat(jobs_to_reschedule)
     end
 
+    def timeout_jobs
+
+      job_threads.each do |t|
+
+        info = t[thread_key]
+        job = info[:job]
+
+        next unless job.timeout
+
+        ts = info[:timestamp]
+
+        next if ts + job.timeout < Time.now.to_f
+
+        t.raise(Rufus::Scheduler::TimeoutError)
+      end
+    end
+
     def do_schedule(job_class, t, opts, return_job_instance, block)
 
       job = job_class.new(self, t, opts, block)
@@ -248,6 +266,7 @@ module Rufus
       attr_reader :original
       attr_reader :scheduled_at
       attr_reader :last_time
+      attr_reader :timeout
 
       def initialize(scheduler, original, opts, block)
 
@@ -267,6 +286,13 @@ module Rufus
           'missing block to schedule',
           caller[2..-1]
         ) unless @block
+
+        @timeout =
+          if to = @opts[:timeout]
+            Rufus::Scheduler.parse(to)
+          else
+            nil
+          end
 
         # tidy up options
 
@@ -555,6 +581,12 @@ module Rufus
 
         @array.insert(i, job)
       end
+    end
+
+    #
+    # This error is thrown when the :timeout attribute triggers
+    #
+    class TimeoutError < RuntimeError
     end
 
     #--
