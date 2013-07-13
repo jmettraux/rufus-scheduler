@@ -17,7 +17,7 @@ describe Rufus::Scheduler do
       scheduler = Rufus::Scheduler.new
 
       t = Thread.list.find { |t|
-        t[:name] == "rufus_scheduler_#{scheduler.object_id}"
+        t[:name] == "rufus_scheduler_#{scheduler.object_id}_scheduler"
       }
 
       t[:rufus_scheduler].should == scheduler
@@ -102,6 +102,47 @@ describe Rufus::Scheduler do
         sleep(1) # give it some time to get scheduled
 
         @scheduler.job(job_id).job_id.should == job_id
+      end
+    end
+
+    describe '#job_threads' do
+
+      it 'returns [] when there are no jobs running' do
+
+        @scheduler.job_threads.should == []
+      end
+
+      it 'returns the list of threads of the running jobs' do
+
+        job =
+          @scheduler.schedule_in('0s') do
+            sleep(1)
+          end
+
+        sleep 0.4
+
+        @scheduler.job_threads.size.should == 1
+
+        t = @scheduler.job_threads.first
+
+        t.class.should == Thread
+        t[@scheduler.thread_key][:job].should == job
+      end
+
+      it 'does not return threads from other schedulers' do
+
+        scheduler = Rufus::Scheduler.new
+
+        job =
+          @scheduler.schedule_in('0s') do
+            sleep(1)
+          end
+
+        sleep 0.4
+
+        scheduler.job_threads.should == []
+
+        scheduler.shutdown
       end
     end
 

@@ -63,7 +63,7 @@ describe Rufus::Scheduler::Job do
     it 'lists the threads the job currently runs in' do
 
       job =
-        @scheduler.in('0s', :job => true, :blocking => true) do
+        @scheduler.schedule_in('0s') do
           sleep(1)
         end
 

@@ -171,6 +171,16 @@ module Rufus
       @jobs[job_id]
     end
 
+    def job_threads
+
+      Thread.list.select { |t| t[thread_key] }
+    end
+
+    def thread_key
+
+      @thread_key ||= "rufus_scheduler_#{self.object_id}"
+    end
+
     protected
 
     def start
@@ -189,10 +199,8 @@ module Rufus
           end
         end
 
-      @thread[:rufus_scheduler] =
-        self
-      @thread[:name] =
-        @opts[:thread_name] || "rufus_scheduler_#{self.object_id}"
+      @thread[:rufus_scheduler] = self
+      @thread[:name] = @opts[:thread_name] || "#{thread_key}_scheduler"
     end
 
     def schedule_jobs
@@ -318,7 +326,7 @@ module Rufus
       #
       def thread_key
 
-        "rufus_scheduler_#{@scheduler.object_id}_job_#{@id}"
+        "#{@scheduler.thread_key}_job_#{@id}"
       end
 
       protected
@@ -332,14 +340,16 @@ module Rufus
 
         k = thread_key
 
-        Thread.current[k] =
-          { :job => self, :timestamp => time.to_f }
+        info ={ :job => self, :timestamp => time.to_f }
+        Thread.current[k] = info
+        Thread.current[@scheduler.thread_key] = info
 
         @last_time = time
 
         @block.call
 
         Thread.current[k] = nil
+        Thread.current[@scheduler.thread_key] = nil
       end
     end
 
