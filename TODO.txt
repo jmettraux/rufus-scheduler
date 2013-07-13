@@ -20,11 +20,13 @@
 [ ] Rufus::Scheduler#running_jobs (as in rufus-scheduler 2.x)
 [ ] RepeatJob #pause / #resume
 [ ] Rufus::Scheduler.start_new (backward comp) (with deprec note?)
-[ ] first_at / first_in for RepeatJob
 
 [ ] job tags and find_by_tag(t) (as in rs 2.x)
 
 [ ] document frequency
+
+[ ] :last[_in|_at] and first[_in|_at] for RepeatJob (last and first)
+[ ] :times for RepeatJob (how many recurrences)
 
 
 ################################################################################
