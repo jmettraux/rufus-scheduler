@@ -543,7 +543,7 @@ By default, all exceptions are rescued. It's easy to customize that behaviour :
   scheduler = Rufus::Scheduler::PlainScheduler.start_new(:exception => StandardError)
     # or
   #scheduler = Rufus::Scheduler::EmScheduler.start_new(:exception => StandardError)
-  
+
   scheduler.in "3s" do
     exit
   end
@@ -658,3 +658,4 @@ http://rufus.rubyforge.org
 == license
 
 MIT
+
