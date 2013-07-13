@@ -299,7 +299,24 @@ describe Rufus::Scheduler::Job do
       toe.class.should == Rufus::Scheduler::TimeoutError
     end
 
-    it 'interrupts the job it is stashed to (point in time)'
+    it 'interrupts the job it is stashed to (point in time)' do
+
+      counter = 0
+
+      job =
+        @scheduler.schedule_in '0s', :timeout => Time.now + 1 do
+          begin
+            counter = counter + 1
+            sleep 1.5
+            counter = counter + 1
+          rescue Rufus::Scheduler::TimeoutError => e
+          end
+        end
+
+      sleep(3)
+
+      counter.should == 1
+    end
   end
 end
 

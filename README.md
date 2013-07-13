@@ -69,6 +69,8 @@ It's OK to specify a timeout when scheduling some work. After the time specified
   end
 ```
 
+The :timeout option accepts either a duration (like "1d" or "2w3d") or a point in time (like "2013/12/12 12:00").
+
 
 ## Job methods
 

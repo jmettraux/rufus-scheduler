@@ -234,13 +234,18 @@ module Rufus
       job_threads.each do |t|
 
         info = t[thread_key]
-        job = info[:job]
+        to = info[:job].timeout
 
-        next unless job.timeout
+        next unless to
 
+        now = Time.now.to_f
         ts = info[:timestamp]
 
-        next if ts + job.timeout < Time.now.to_f
+        if to.is_a?(Time)
+          next if to.to_f > now
+        else
+          next if ts + to < now
+        end
 
         t.raise(Rufus::Scheduler::TimeoutError)
       end
