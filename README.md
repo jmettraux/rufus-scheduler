@@ -161,6 +161,10 @@ Whereas other "_jobs" method scan the scheduled job list, this method scans the 
 
 ## misc Scheduler methods
 
+### Scheduler#terminate_all_jobs
+
+Unschedules all the jobs, then block until all the jobs that were running terminate.
+
 ### Scheduler#shutdown
 
 Shuts down the scheduler, ceases any scheduler/triggering activity.

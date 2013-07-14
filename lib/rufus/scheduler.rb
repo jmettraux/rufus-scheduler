@@ -186,6 +186,17 @@ module Rufus
       job_threads.collect { |t| t[thread_key][:job] }.uniq
     end
 
+    def terminate_all_jobs
+
+      jobs.each { |j| j.unschedule }
+
+      sleep(@frequency) # let the unschedule job happen
+
+      while running_jobs.size > 0
+        sleep 0.01
+      end
+    end
+
     protected
 
     def start

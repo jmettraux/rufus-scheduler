@@ -54,6 +54,12 @@ describe Rufus::Scheduler do
       @scheduler.shutdown
     end
 
+    describe '#unschedule(job_or_job_id)' do
+
+      it 'works'
+      it 'carefully unschedules repeat jobs'
+    end
+
     describe '#uptime' do
 
       it 'returns the uptime as a float' do
@@ -183,6 +189,42 @@ describe Rufus::Scheduler do
     #--
     # management methods
     #++
+
+    describe '#terminate_all_jobs' do
+
+      it 'unschedules all the jobs' do
+
+        @scheduler.in '10d' do; end
+        @scheduler.at Time.now + 10_000 do; end
+
+        sleep 0.4
+
+        @scheduler.jobs.size.should == 2
+
+        @scheduler.terminate_all_jobs
+
+        @scheduler.jobs.size.should == 0
+      end
+
+      it 'blocks until all the running jobs are done' do
+
+        counter = 0
+
+        @scheduler.in '0s' do
+          sleep 1
+          counter = counter + 1
+        end
+
+        t = Time.now
+        sleep 0.4
+
+        @scheduler.terminate_all_jobs
+
+        @scheduler.jobs.size.should == 0
+        @scheduler.running_jobs.size.should == 0
+        counter.should == 1
+      end
+    end
 
     describe '#shutdown' do
 
