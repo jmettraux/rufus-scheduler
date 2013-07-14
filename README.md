@@ -3,6 +3,33 @@
 
 [![Build Status](https://secure.travis-ci.org/jmettraux/rufus-scheduler.png)](http://travis-ci.org/jmettraux/rufus-scheduler)
 
+Job scheduler for Ruby (at, cron, in and every jobs).
+
+```
+require 'rufus-scheduler'
+
+scheduler = Rufus::Scheduler.new
+
+# ...
+
+scheduler.in '10d' do
+  # do something in 10 days
+end
+
+scheduler.at '2030/12/12 23:30:00' do
+  # do something at a given point in time
+end
+
+scheduler.every '3h' do
+  # do something every 3 hours
+end
+
+scheduler.cron '5 0 * * *' do
+  # do something every day, five minutes after midnight
+  # (see "man 5 crontab" in your terminal)
+end
+```
+
 
 ## note about the 3.0 line
 
