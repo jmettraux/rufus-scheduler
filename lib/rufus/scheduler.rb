@@ -45,10 +45,6 @@ module Rufus
       @started_at = nil
       @paused = false
 
-      @schedule_queue = Queue.new
-        # using a queue so that schedules/unschedules return immediately
-        # (they don't wait for any mutex shared with the main loop)
-
       @jobs = JobArray.new
 
       @opts = opts
@@ -149,7 +145,10 @@ module Rufus
 
     def unschedule(job_or_job_id)
 
-      @schedule_queue << [ false, job_or_job_id ]
+      job = job_or_job_id
+      job = job(job_or_job_id) if job_or_job_id.is_a?(String)
+
+      job.unschedule
     end
 
     #--
@@ -208,7 +207,7 @@ module Rufus
 
           while @started_at do
 
-            schedule_jobs
+            unschedule_jobs
             trigger_jobs unless @paused
             timeout_jobs
 
@@ -220,14 +219,9 @@ module Rufus
       @thread[:name] = @opts[:thread_name] || "#{thread_key}_scheduler"
     end
 
-    def schedule_jobs
+    def unschedule_jobs
 
-      while @schedule_queue.size > 0
-
-        schedule, job = @schedule_queue.pop
-
-        @jobs.send(schedule ? :push : :delete, job)
-      end
+      @jobs.delete_unscheduled
     end
 
     def trigger_jobs
@@ -270,8 +264,7 @@ module Rufus
     def do_schedule(job_class, t, opts, return_job_instance, block)
 
       job = job_class.new(self, t, opts, block)
-
-      @schedule_queue << [ true, job ]
+      @jobs.push(job)
 
       return_job_instance ? job : job.job_id
     end
@@ -288,6 +281,7 @@ module Rufus
       attr_reader :scheduled_at
       attr_reader :last_time
       attr_reader :timeout
+      attr_accessor :unscheduled
 
       def initialize(scheduler, original, opts, block)
 
@@ -314,6 +308,8 @@ module Rufus
           else
             nil
           end
+
+        @unscheduled = false
 
         # tidy up options
 
@@ -348,7 +344,7 @@ module Rufus
 
       def unschedule
 
-        @scheduler.unschedule(self)
+        @unscheduled = true
       end
 
       def threads
@@ -553,17 +549,9 @@ module Rufus
         self
       end
 
-      def delete(job_or_job_id)
+      def delete_unscheduled
 
-        @mutex.synchronize {
-
-          job_id = job_or_job_id
-          job_id = job_id.job_id if job_id.is_a?(Rufus::Scheduler::Job)
-
-          @array.delete_if { |j| j.job_id == job_id }
-        }
-
-        self
+        @mutex.synchronize { @array.delete_if { |j| j.unscheduled } }
       end
 
       def to_a

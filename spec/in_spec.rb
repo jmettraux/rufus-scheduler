@@ -24,23 +24,21 @@ describe Rufus::Scheduler do
       @scheduler.in(3600) do
       end
 
-      sleep 0.4
-
       @scheduler.jobs.size.should == 1
       @scheduler.jobs.first.class.should == Rufus::Scheduler::InJob
     end
 
     it 'triggers a job' do
 
-      $a = false
+      a = false
 
       @scheduler.in(0.4) do
-        $a = true
+        a = true
       end
 
-      sleep 0.700
+      sleep 0.9
 
-      $a.should == true
+      a.should == true
     end
 
     it 'removes the job after execution' do

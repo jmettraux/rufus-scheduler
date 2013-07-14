@@ -50,8 +50,6 @@ describe Rufus::Scheduler do
       @scheduler.at(t) do
       end
 
-      sleep 0.4
-
       @scheduler.jobs.size.should == 1
       @scheduler.jobs.first.class.should == Rufus::Scheduler::AtJob
       @scheduler.jobs.first.time.should == t
@@ -59,15 +57,15 @@ describe Rufus::Scheduler do
 
     it 'triggers a job' do
 
-      $a = false
+      a = false
 
       @scheduler.at(Time.now + 0.100) do
-        $a = true
+        a = true
       end
 
-      sleep 0.7
+      sleep 0.4
 
-      $a.should == true
+      a.should == true
     end
 
     it 'removes the job after execution' do
@@ -75,7 +73,7 @@ describe Rufus::Scheduler do
       @scheduler.at(Time.now + 0.100) do
       end
 
-      sleep 0.7
+      sleep 0.4
 
       @scheduler.jobs.size.should == 0
     end

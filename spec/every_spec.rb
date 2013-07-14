@@ -24,23 +24,21 @@ describe Rufus::Scheduler do
       @scheduler.every(10) do
       end
 
-      sleep 0.4
-
       @scheduler.jobs.size.should == 1
       @scheduler.jobs.first.class.should == Rufus::Scheduler::EveryJob
     end
 
     it 'triggers a job (2 times)' do
 
-      $counter = 0
+      counter = 0
 
       @scheduler.every(0.4) do
-        $counter += 1
+        counter += 1
       end
 
       sleep 2.0
 
-      $counter.should > 2
+      counter.should > 2
     end
 
     it 'does not remove the job after execution' do
@@ -48,7 +46,7 @@ describe Rufus::Scheduler do
       @scheduler.every(0.4) do
       end
 
-      sleep 1.0
+      sleep 0.9
 
       @scheduler.jobs.size.should == 1
     end
@@ -67,6 +65,25 @@ describe Rufus::Scheduler do
         @scheduler.every(0) do
         end
       }.should raise_error(ArgumentError)
+    end
+
+    it 'does not reschedule if the job was unscheduled' do
+
+      counter = 0
+
+      job =
+        @scheduler.schedule_every '0.5s' do
+          counter = counter + 1
+        end
+
+      sleep 1.6
+
+      job.unschedule
+      c = counter
+
+      sleep 1.6
+
+      counter.should == c
     end
   end
 

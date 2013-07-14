@@ -25,8 +25,6 @@ describe Rufus::Scheduler::Job do
 
       job = @scheduler.schedule_in '10d' do; end
 
-      sleep(1)
-
       job.last_time.should == nil
     end
 
@@ -34,7 +32,7 @@ describe Rufus::Scheduler::Job do
 
       job = @scheduler.schedule_in '0s' do; end
 
-      sleep(1)
+      sleep 0.4
 
       job.last_time.should_not == nil
     end
@@ -45,8 +43,6 @@ describe Rufus::Scheduler::Job do
     it 'returns an empty list when the job is not running' do
 
       job = @scheduler.in('1d', :job => true) {}
-
-      sleep 0.4
 
       job.threads.size.should == 0
     end
@@ -100,8 +96,6 @@ describe Rufus::Scheduler::Job do
     it 'returns false when the job is not running in any thread' do
 
       job = @scheduler.in('1d', :job => true) {}
-
-      sleep 0.4
 
       job.running?.should == false
     end

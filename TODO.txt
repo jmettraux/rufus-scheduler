@@ -38,6 +38,8 @@
 
 [ ] do repeat jobs reschedule after timing out?
 
+[ ] pass job to scheduled block? What does rs 2.x do?
+
 
 ################################################################################
 
