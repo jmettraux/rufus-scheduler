@@ -17,7 +17,8 @@
     :mutex => [ [ "mutex_name", true ], [ "other_mutex_name", false ] ]
 
 [o] timeout (as in rufus-scheduler 2.x)
-[ ] Rufus::Scheduler#running_jobs (as in rufus-scheduler 2.x)
+[o] Rufus::Scheduler#running_jobs (as in rufus-scheduler 2.x)
+[ ] Rufus::Scheduler#terminate_all_jobs
 [ ] RepeatJob #pause / #resume
 [ ] Rufus::Scheduler.start_new (backward comp) (with deprec note?)
 

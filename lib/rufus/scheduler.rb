@@ -181,6 +181,11 @@ module Rufus
       @thread_key ||= "rufus_scheduler_#{self.object_id}"
     end
 
+    def running_jobs
+
+      job_threads.collect { |t| t[thread_key][:job] }.uniq
+    end
+
     protected
 
     def start

@@ -152,6 +152,13 @@ Here is an example:
   scheduler.at_jobs.each(&:unschedule)
 ```
 
+### Scheduler#running_jobs
+
+Returns the list of Job instance that have currently running instances.
+
+Whereas other "_jobs" method scan the scheduled job list, this method scans the thread list to find the job. It thus comprises jobs that are running but are not scheduled anymore (that happens for at and in jobs).
+
+
 ## misc Scheduler methods
 
 ### Scheduler#shutdown

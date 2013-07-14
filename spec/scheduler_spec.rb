@@ -146,6 +146,40 @@ describe Rufus::Scheduler do
       end
     end
 
+    describe '#running_jobs' do
+
+      it 'returns [] when there are no running jobs' do
+
+        @scheduler.running_jobs.should == []
+      end
+
+      it 'returns a list of running Job instances' do
+
+        job =
+          @scheduler.schedule_in('0s') do
+            sleep(1)
+          end
+
+        sleep 0.4
+
+        job.running?.should == true
+        @scheduler.running_jobs.should == [ job ]
+      end
+
+      it 'does not return twice the same job' do
+
+        job =
+          @scheduler.schedule_every('0.3s') do
+            sleep(5)
+          end
+
+        sleep 1.5
+
+        job.running?.should == true
+        @scheduler.running_jobs.should == [ job ]
+      end
+    end
+
     #--
     # management methods
     #++
