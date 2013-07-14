@@ -5,6 +5,27 @@
 == rufus-scheduler - 3.0.0    not yet released
 
 
+== rufus-scheduler - 2.0.20    not released
+
+- implement CronLine#previous_time(now=Time.now) (Idea Matteo Cerutti)
+- throw ArgumentError for invalid cron lines (Thanks Aimee Rose)
+- cron 0 vs 24 hour case straightening (Thanks Aimee Rose)
+- support for sun#L or sun#-2 in cron lines
+
+
+== rufus-scheduler - 2.0.19    released 2013/05/07
+
+- raise ArgumentError on <= 0.0 "every" frequency (Thanks Lucy Fu)
+- support multiple mutexes (Thanks Rainux Luo)
+
+
+== rufus-scheduler - 2.0.18    released 2013/03/06
+
+- support for "L" in cron lines (Thanks Andrew Davey)
+- support for negative time strings (Thanks Danny "northox" Fullerton)
+- reject invalid weekdays (Thanks pazustep)
+
+
 == rufus-scheduler - 2.0.17    released 2012/06/14
 
 - @andrehjr patch to make it work on Ruby 1.9.3
