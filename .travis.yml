@@ -9,6 +9,6 @@ rvm:
 script: bundle exec rspec
 branches:
   only:
-    - three
+    - master
   #except:
   #  - master
