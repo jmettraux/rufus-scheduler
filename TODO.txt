@@ -7,9 +7,13 @@
     NO, that mutex is necessary for Scheduler#jobs (on JRuby an co)...
 [o] named mutexes
 
+[ ] drop the schedule queue, rely on the mutex in JobArray
+[ ] def jobs; (@jobs.to_a + running_jobs).uniq; end
+
 [ ] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
     timestamps it?
+[ ] lockblock? pass a block to teach the scheduler how to lock?
 
 [ ] idea: :mutex => x and :skip_on_mutex => true ?
     would prevent blocking/waiting for the mutex to get available
@@ -31,6 +35,8 @@
 
 [ ] :last[_in|_at] and first[_in|_at] for RepeatJob (last and first)
 [ ] :times for RepeatJob (how many recurrences)
+
+[ ] do repeat jobs reschedule after timing out?
 
 
 ################################################################################
