@@ -5,24 +5,29 @@
 
 Job scheduler for Ruby (at, cron, in and every jobs).
 
-Quick QuickStart
+**Warning**: this is the README of the 3.0 line of rufus-scheduler. It got promoted to master branch on 2013/07/15. Head to the [2.0 line's README](https://github.com/jmettraux/rufus-scheduler/blob/two/README.rdoc) if necessary (if your rufus-scheduler version is 2.0.x).
+
+(When the 3.0 gem is released, this warning will get removed).
+
+Quickstart:
 ```
 require 'rufus-scheduler'
 
-scheduler = Rufus::Scheduler.start_new
+scheduler = Rufus::Scheduler.new
 
 scheduler.in '3s' do
   puts 'Hello... Rufus'
 end
 
 scheduler.join
+  # let the current thread join the scheduler thread
 ```
 
-A bit more enlightening QuickStart
+Various forms of scheduling are supported:
 ```
 require 'rufus-scheduler'
 
-scheduler = Rufus::Scheduler.start_new
+scheduler = Rufus::Scheduler.new
 
 # ...
 
@@ -42,6 +47,8 @@ scheduler.cron '5 0 * * *' do
   # do something every day, five minutes after midnight
   # (see "man 5 crontab" in your terminal)
 end
+
+# ...
 ```
 
 
