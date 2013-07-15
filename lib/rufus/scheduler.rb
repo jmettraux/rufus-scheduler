@@ -54,6 +54,17 @@ module Rufus
       start
     end
 
+    # Releasing the gem would probably require redirecting .start_new to
+    # .new and emit a simple deprecation message.
+    #
+    # For now, let's assume the people pointing at rufus-scheduler/master
+    # on GitHub know what they do...
+    #
+    def self.start_new
+
+      fail "this is rufus-scheduler 3.0, use .new instead of .start_new"
+    end
+
     def shutdown
 
       @started_at = nil
