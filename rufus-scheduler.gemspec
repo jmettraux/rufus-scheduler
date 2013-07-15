@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.homepage = 'http://github.com/jmettraux/rufus-scheduler'
   s.rubyforge_project = 'rufus'
   s.summary = 'job scheduler for Ruby (at, cron, in and every jobs)'
+  s.license = 'MIT'
 
   s.description = %{
 job scheduler for Ruby (at, cron, in and every jobs).
