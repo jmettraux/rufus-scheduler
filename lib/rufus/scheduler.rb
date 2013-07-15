@@ -28,6 +28,13 @@ require 'rufus/sc/scheduler'
 
 module Rufus::Scheduler
 
+  # Starts and return a new instance of a PlainScheduler.
+  #
+  def self.new(opts={})
+
+    PlainScheduler.start_new(opts)
+  end
+
   # A quick way to get a scheduler up an running
   #
   #   require 'rubygems'
