@@ -5,10 +5,24 @@
 
 Job scheduler for Ruby (at, cron, in and every jobs).
 
+Quick QuickStart
 ```
 require 'rufus-scheduler'
 
-scheduler = Rufus::Scheduler.new
+scheduler = Rufus::Scheduler.start_new
+
+scheduler.in '3s' do
+  puts 'Hello... Rufus'
+end
+
+scheduler.join
+```
+
+A bit more enlightening QuickStart
+```
+require 'rufus-scheduler'
+
+scheduler = Rufus::Scheduler.start_new
 
 # ...
 
