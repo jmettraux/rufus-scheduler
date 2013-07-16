@@ -295,7 +295,7 @@ module Rufus
       attr_reader :scheduled_at
       attr_reader :last_time
       attr_reader :timeout
-      attr_accessor :unscheduled
+      attr_reader :unscheduled_at
 
       def initialize(scheduler, original, opts, block)
 
@@ -305,6 +305,7 @@ module Rufus
         @block = block
 
         @scheduled_at = Time.now
+        @unscheduled_at = nil
         @last_time = nil
         @mutexes = {}
 
@@ -322,8 +323,6 @@ module Rufus
           else
             nil
           end
-
-        @unscheduled = false
 
         # tidy up options
 
@@ -358,7 +357,7 @@ module Rufus
 
       def unschedule
 
-        @unscheduled = true
+        @unscheduled_at = Time.now
       end
 
       def threads
@@ -565,7 +564,7 @@ module Rufus
 
       def delete_unscheduled
 
-        @mutex.synchronize { @array.delete_if { |j| j.unscheduled } }
+        @mutex.synchronize { @array.delete_if { |j| j.unscheduled_at } }
       end
 
       def to_a
