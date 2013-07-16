@@ -222,6 +222,10 @@ Shuts down the scheduler, ceases any scheduler/triggering activity.
 
 Calls Scheduler#terminate_all_jobs then shuts down the scheduler. That means this shutdown variant blocks until all the jobs are terminated and then shuts down.
 
+### Scheduler#shutdown(:kill)
+
+Kills all the job (threads) and then shuts the scheduler down. Radical.
+
 ### Scheduler#join
 
 Let's the current thread join the scheduling thread in rufus-scheduler. The thread comes back when the scheduler gets shut down.

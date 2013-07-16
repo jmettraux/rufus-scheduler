@@ -274,6 +274,35 @@ describe Rufus::Scheduler do
         @scheduler.shutdown(:terminate)
 
         counter.should == 1
+        @scheduler.uptime.should == nil
+        @scheduler.running_jobs.should == []
+      end
+    end
+
+    describe '#shutdown(:kill)' do
+
+      it 'kills all the jobs and then shuts down' do
+
+        counter = 0
+
+        @scheduler.in '0s' do
+          sleep 1
+          counter = counter + 1
+        end
+        @scheduler.at Time.now + 0.3 do
+          sleep 1
+          counter = counter + 1
+        end
+
+        sleep 0.4
+
+        @scheduler.shutdown(:kill)
+
+        sleep 1.4
+
+        counter.should == 0
+        @scheduler.uptime.should == nil
+        @scheduler.running_jobs.should == []
       end
     end
 

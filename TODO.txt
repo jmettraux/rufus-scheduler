@@ -26,7 +26,7 @@
 [o] Rufus::Scheduler#terminate_all_jobs
 [o] Rufus::Scheduler::Job#kill
 [x] Rufus::Scheduler#kill_all_jobs
-[ ] Rufus::Scheduler#shutdown(:terminate or :kill (or nothing))
+[o] Rufus::Scheduler#shutdown(:terminate or :kill (or nothing))
 [ ] RepeatJob #pause / #resume
 [o] Rufus::Scheduler.start_new (backward comp) (with deprec note?)
 

@@ -67,13 +67,20 @@ module Rufus
 
     # Shuts down the scheduler.
     #
-    # By default simply stops the scheduler thread. It accept an opt
-    # parameter. When set to :terminate, will terminate all the jobs
-    # and then shut down the scheduler.
+    # By default simply stops the scheduler thread.
+    # It accept an opt parameter. When set to :terminate, will terminate all
+    # the jobs and then shut down the scheduler.
+    #
+    # The opt can all be set to :kill, in which case all the job threads are
+    # killed and the scheduler is shut down.
     #
     def shutdown(opt=nil)
 
-      terminate_all_jobs if opt == :terminate
+      if opt == :terminate
+        terminate_all_jobs
+      elsif opt == :kill
+        jobs.each { |j| j.kill }
+      end
 
       @started_at = nil
     end
