@@ -65,7 +65,15 @@ module Rufus
       fail "this is rufus-scheduler 3.0, use .new instead of .start_new"
     end
 
-    def shutdown
+    # Shuts down the scheduler.
+    #
+    # By default simply stops the scheduler thread. It accept an opt
+    # parameter. When set to :terminate, will terminate all the jobs
+    # and then shut down the scheduler.
+    #
+    def shutdown(opt=nil)
+
+      terminate_all_jobs if opt == :terminate
 
       @started_at = nil
     end
@@ -202,8 +210,6 @@ module Rufus
     def terminate_all_jobs
 
       jobs.each { |j| j.unschedule }
-
-      sleep(@frequency) # let the unschedule job happen
 
       while running_jobs.size > 0
         sleep 0.01

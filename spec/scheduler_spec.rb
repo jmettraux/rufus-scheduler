@@ -215,7 +215,6 @@ describe Rufus::Scheduler do
           counter = counter + 1
         end
 
-        t = Time.now
         sleep 0.4
 
         @scheduler.terminate_all_jobs
@@ -235,7 +234,7 @@ describe Rufus::Scheduler do
         @scheduler.uptime.should == nil
       end
 
-      it 'terminates the scheduler' do
+      it 'shuts the scheduler down' do
 
         @scheduler.shutdown
 
@@ -257,6 +256,25 @@ describe Rufus::Scheduler do
       end
 
       #it 'has a #close alias'
+    end
+
+    describe '#shutdown(:terminate)' do
+
+      it 'shuts down when all the jobs terminated' do
+
+        counter = 0
+
+        @scheduler.in '0s' do
+          sleep 1
+          counter = counter + 1
+        end
+
+        sleep 0.4
+
+        @scheduler.shutdown(:terminate)
+
+        counter.should == 1
+      end
     end
 
     describe '#pause' do

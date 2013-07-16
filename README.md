@@ -218,6 +218,10 @@ Unschedules all the jobs, then block until all the jobs that were running termin
 
 Shuts down the scheduler, ceases any scheduler/triggering activity.
 
+### Scheduler#shutdown(:terminate)
+
+Calls Scheduler#terminate_all_jobs then shuts down the scheduler. That means this shutdown variant blocks until all the jobs are terminated and then shuts down.
+
 ### Scheduler#join
 
 Let's the current thread join the scheduling thread in rufus-scheduler. The thread comes back when the scheduler gets shut down.
