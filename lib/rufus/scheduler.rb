@@ -166,9 +166,12 @@ module Rufus
     # jobs methods
     #++
 
+    # Returns all the scheduled jobs
+    # (even those right before re-schedule).
+    #
     def jobs
 
-      @jobs.to_a
+      (@jobs.to_a + running_jobs).uniq
     end
 
     def at_jobs;    jobs.select { |j| j.is_a?(Rufus::Scheduler::AtJob) }; end

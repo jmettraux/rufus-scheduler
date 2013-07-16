@@ -329,6 +329,17 @@ describe Rufus::Scheduler do
 
         jobs.collect { |j| j.original }.sort.should == %w[ 10d 1w ]
       end
+
+      it 'returns all the jobs (even those pending reschedule)' do
+
+        @scheduler.in '0s', :blocking => true do
+          sleep 2
+        end
+
+        sleep 0.4
+
+        @scheduler.jobs.size.should == 1
+      end
     end
 
     describe '#every_jobs' do

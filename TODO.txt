@@ -6,9 +6,11 @@
 [x] if possible, drop the mutex in JobArray
     NO, that mutex is necessary for Scheduler#jobs (on JRuby an co)...
 [o] named mutexes
+[o] drop the schedule queue, rely on the mutex in JobArray
+[o] def jobs; (@jobs.to_a + running_jobs).uniq; end
 
-[ ] drop the schedule queue, rely on the mutex in JobArray
-[ ] def jobs; (@jobs.to_a + running_jobs).uniq; end
+[ ] replace @unscheduled by @unscheduled_at
+[ ] make sure #jobs doesn't return unscheduled jobs
 
 [ ] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
