@@ -92,6 +92,21 @@ describe Rufus::Scheduler::CronLine do
       to_a(
         '*/10 * * * *',
         [ [0], [0, 10, 20, 30, 40, 50], nil, nil, nil, nil, nil, nil ])
+
+      # fighting https://github.com/jmettraux/rufus-scheduler/issues/65
+      #
+      to_a(
+        '*/10 * * * * Europe/Berlin',
+        [ [0], [ 0, 10, 20, 30, 40, 50], nil, nil, nil, nil, nil, 'Europe/Berlin' ])
+    end
+
+    it 'accepts lonely / (slashes) (like <= 2.0.19 did)' do
+
+      # fighting https://github.com/jmettraux/rufus-scheduler/issues/65
+
+      to_a(
+        '/10 * * * *',
+        [ [0], [ 0, 10, 20, 30, 40, 50], nil, nil, nil, nil, nil, nil ])
     end
 
     it 'does not support ranges for monthdays (sun#1-sun#2)' do

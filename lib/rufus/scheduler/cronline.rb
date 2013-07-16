@@ -259,6 +259,8 @@ class Rufus::Scheduler
 
       return %w[ L ] if item == 'L'
 
+      item = '*' + item if item.match(/^\//)
+
       m = item.match(RANGE_REGEX)
 
       raise ArgumentError.new(
