@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 2.0.22    not yet released
+== rufus-scheduler - 2.0.22    released 2013/07/16
 
 - parse "/10 * * * *" again (like <= 2.0.19 did), thanks @skrd
 
