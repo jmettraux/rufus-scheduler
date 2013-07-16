@@ -340,6 +340,20 @@ describe Rufus::Scheduler do
 
         @scheduler.jobs.size.should == 1
       end
+
+      it 'does not return unscheduled jobs' do
+
+        job =
+          @scheduler.schedule_in '0s', :blocking => true do
+            sleep 2
+          end
+
+        sleep 0.4
+
+        job.unschedule
+
+        @scheduler.jobs.size.should == 0
+      end
     end
 
     describe '#every_jobs' do

@@ -9,8 +9,7 @@
 [o] drop the schedule queue, rely on the mutex in JobArray
 [o] def jobs; (@jobs.to_a + running_jobs).uniq; end
 [o] replace @unscheduled by @unscheduled_at
-
-[ ] make sure #jobs doesn't return unscheduled jobs
+[o] make sure #jobs doesn't return unscheduled jobs
 
 [ ] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler

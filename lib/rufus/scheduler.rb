@@ -171,7 +171,7 @@ module Rufus
     #
     def jobs
 
-      (@jobs.to_a + running_jobs).uniq
+      (@jobs.to_a + running_jobs).uniq.reject { |j| j.unscheduled_at }
     end
 
     def at_jobs;    jobs.select { |j| j.is_a?(Rufus::Scheduler::AtJob) }; end
