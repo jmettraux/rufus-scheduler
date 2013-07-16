@@ -154,6 +154,7 @@ Those Job instances have a few interesting methods / properties:
 ### last_time
 ### unschedule
 ### threads, thread_values
+### kill
 ### running?
 
 ## AtJob and InJob methods

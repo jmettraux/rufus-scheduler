@@ -72,6 +72,39 @@ describe Rufus::Scheduler::Job do
     end
   end
 
+  describe '#kill' do
+
+    it 'has no effect if the job is not running' do
+
+      job = @scheduler.schedule_in '10d' do; end
+
+      tls = Thread.list.size
+
+      job.kill
+
+      Thread.list.size.should == tls
+    end
+
+    it 'kills all the threads of the job' do
+
+      counter = 0
+
+      job =
+        @scheduler.schedule_every '0.5s' do
+          sleep 2
+          counter = counter + 1
+        end
+
+      sleep 1
+
+      job.kill
+
+      sleep 2
+
+      counter.should == 0
+    end
+  end
+
   describe '#thread_values' do
 
     it 'lists the thread values set by the job' do

@@ -372,6 +372,13 @@ module Rufus
         threads.collect { |t| t[k] }
       end
 
+      # Kills all the threads this Job currently has going on.
+      #
+      def kill
+
+        threads.each { |t| t.kill }
+      end
+
       def running?
 
         threads.any?
