@@ -232,6 +232,10 @@ Whereas other "_jobs" method scan the scheduled job list, this method scans the 
 
 ## misc Scheduler methods
 
+### Scheduler#unschedule(job_or_job_id)
+
+Unschedule a job given directly or by its id.
+
 ### Scheduler#terminate_all_jobs
 
 Unschedules all the jobs, then block until all the jobs that were running terminate.

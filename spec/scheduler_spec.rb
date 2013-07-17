@@ -56,8 +56,45 @@ describe Rufus::Scheduler do
 
     describe '#unschedule(job_or_job_id)' do
 
-      it 'works'
-      it 'carefully unschedules repeat jobs'
+      it 'accepts job ids' do
+
+        job = @scheduler.schedule_in '10d' do; end
+
+        job.unscheduled_at.should == nil
+
+        @scheduler.unschedule(job.id)
+
+        job.unscheduled_at.should_not == nil
+      end
+
+      it 'accepts jobs' do
+
+        job = @scheduler.schedule_in '10d' do; end
+
+        job.unscheduled_at.should == nil
+
+        @scheduler.unschedule(job)
+
+        job.unscheduled_at.should_not == nil
+      end
+
+      it 'carefully unschedules repeat jobs' do
+
+        counter = 0
+
+        job =
+          @scheduler.schedule_every '0.5s' do
+            counter = counter + 1
+          end
+
+        sleep 1.5
+        c = counter
+
+        @scheduler.unschedule(job)
+
+        sleep 1.5
+        counter.should == c
+      end
     end
 
     describe '#uptime' do
