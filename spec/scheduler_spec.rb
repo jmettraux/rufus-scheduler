@@ -515,8 +515,6 @@ describe Rufus::Scheduler do
         @scheduler.in '10d' do; end
         @scheduler.every '5m' do; end
 
-        sleep(1)
-
         jobs = @scheduler.every_jobs
 
         jobs.collect { |j| j.original }.sort.should == %w[ 5m ]
@@ -530,8 +528,6 @@ describe Rufus::Scheduler do
         @scheduler.at '2030/12/12 12:10:00' do; end
         @scheduler.in '10d' do; end
         @scheduler.every '5m' do; end
-
-        sleep(1)
 
         jobs = @scheduler.at_jobs
 
@@ -547,8 +543,6 @@ describe Rufus::Scheduler do
         @scheduler.in '10d' do; end
         @scheduler.every '5m' do; end
 
-        sleep(1)
-
         jobs = @scheduler.in_jobs
 
         jobs.collect { |j| j.original }.sort.should == %w[ 10d ]
@@ -557,7 +551,17 @@ describe Rufus::Scheduler do
 
     describe '#cron_jobs' do
 
-      it 'returns CronJob instances'
+      it 'returns CronJob instances' do
+
+        @scheduler.at '2030/12/12 12:10:00' do; end
+        @scheduler.in '10d' do; end
+        @scheduler.every '5m' do; end
+        @scheduler.cron '* * * * *' do; end
+
+        jobs = @scheduler.cron_jobs
+
+        jobs.collect { |j| j.original }.sort.should == [ '* * * * *' ]
+      end
     end
   end
 end
