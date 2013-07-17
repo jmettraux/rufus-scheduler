@@ -148,15 +148,91 @@ When calling a schedule method, the id (String) of the job is returned. Longer s
 Those Job instances have a few interesting methods / properties:
 
 ### id, job_id
+
+Returns the job id.
+
+```ruby
+job = scheduler.schedule_in('10d') do; end
+job.id
+  # => "in_1374072446.8923042_0.0_0"
+```
+
 ### opts
+
+Returns the options passed at the Job creation.
+
+```ruby
+job = scheduler.schedule_in('10d', :tag => 'hello') do; end
+job.opts
+  # => { :tag => 'hello' }
+```
+
 ### original
+
+Returns the original schedule.
+
+```ruby
+job = scheduler.schedule_in('10d', :tag => 'hello') do; end
+job.original
+  # => '10d'
+```
+
 ### scheduled_at
+
+Returns the Time instance when the job got created.
+
+```ruby
+job = scheduler.schedule_in('10d', :tag => 'hello') do; end
+job.scheduled_at
+  # => 2013-07-17 23:48:54 +0900
+```
+
 ### last_time
+
+Returns the last time the job triggered (is usually nil for AtJob and InJob).
+k
+```ruby
+job = scheduler.schedule_every('1d') do; end
+# ...
+job.scheduled_at
+  # => 2013-07-17 23:48:54 +0900
+```
+
 ### unschedule
+
+Unschedule the job, preventing it from firing again and removing it from the schedule. This doesn't prevent a running thread for this job to run until its end.
+
 ### threads, thread_values
+
+Returns the list of threads currently "hosting" runs of this Job instance.
+
+Thread values returns the info stored under the job key in their thread local variables.
+
 ### kill
+
+Kills all the currently running threads hosting runs of this Job instance.
+
+Nota bene: this doesn't unschedule the Job instance.
+
 ### running?
+
+Returns true if there is at least one running Thread hosting a run of this Job instance.
+
 ### tags
+
+Returns the list of tags attached to this Job instance.
+
+By default, returns an empty array.
+
+```ruby
+job = scheduler.schedule_in('10d') do; end
+job.tags
+  # => []
+
+job = scheduler.schedule_in('10d', :tag => 'hello') do; end
+job.tags
+  # => [ 'hello' ]
+```
 
 ## AtJob and InJob methods
 ### time
