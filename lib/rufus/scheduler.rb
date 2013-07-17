@@ -32,6 +32,8 @@ module Rufus
   class Scheduler
 
     require 'rufus/scheduler/timezone'
+    Rufus::Scheduler::Timezone.require_tzinfo
+
     require 'rufus/scheduler/cronline'
 
     VERSION = '3.0.0'
@@ -683,9 +685,19 @@ module Rufus
       o.is_a?(String) ? parse_duration(o, opts) : o
     end
 
+    NAMED_TZ_REGEX =
+      /\b((?:[a-zA-Z][a-zA-z0-9\-+]+)(?:\/[a-zA-Z0-9\-+]+)?) *$/
+
     def self.parse_at(o, opts={})
 
       return o if o.is_a?(Time)
+
+      tz =
+        if m = NAMED_TZ_REGEX.match(o.to_s)
+          TZInfo::Timezone.get(m[1])
+        else
+          nil
+        end
 
       begin
         DateTime.parse(o)
@@ -693,7 +705,11 @@ module Rufus
         raise ArgumentError, "no time information in #{o.inspect}"
       end if RUBY_VERSION < '1.9.0'
 
-      Time.parse(o)
+      t = Time.parse(o)
+
+      t = tz.local_to_utc(t) if tz
+
+      t
 
     rescue StandardError => se
 

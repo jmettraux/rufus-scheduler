@@ -27,6 +27,12 @@ describe Rufus::Scheduler do
         'Sun Nov 18 16:01:00 2012'
     end
 
+    it 'parses datetimes with named timezones' do
+
+      parse('Sun Nov 18 16:01:00 2012 Europe/Berlin').to_s.should ==
+        '2012-11-18 15:01:00 UTC'
+    end
+
     it 'parses cronlines' do
 
       out = parse('* * * * *')

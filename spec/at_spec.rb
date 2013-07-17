@@ -101,7 +101,13 @@ describe Rufus::Scheduler do
       job.time.should == Time.parse('2100-12-12 20:30 -0200')
     end
 
-    it 'accepts a time string with a named timezone'
+    it 'accepts a time string with a named timezone' do
+
+      job = @scheduler.at('2050-12-12 20:30 Europe/Berlin', :job => true) {}
+
+      job.time.to_s.should == '2050-12-12 19:30:00 UTC'
+    end
+
     it 'accepts a Chronic time string (if Chronic is present)'
     it 'accepts an ActiveSupport time thinggy'
   end
