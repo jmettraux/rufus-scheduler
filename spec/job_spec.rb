@@ -145,8 +145,26 @@ describe Rufus::Scheduler::Job do
 
   context ':tag / :tags => [ t0, t1 ]' do
 
-    it 'accepts one tag'
-    it 'accepts an array of tags'
+    it 'accepts one tag' do
+
+      job = @scheduler.in '10d', :job => true, :tag => 't0' do; end
+
+      job.tags.should == %w[ t0 ]
+    end
+
+    it 'accepts an array of tags' do
+
+      job = @scheduler.in '10d', :job => true, :tag => %w[ t0 t1 ] do; end
+
+      job.tags.should == %w[ t0 t1 ]
+    end
+
+    it 'turns tags into strings' do
+
+      job = @scheduler.in '10d', :job => true, :tags => [ 1, 2 ] do; end
+
+      job.tags.should == %w[ 1 2 ]
+    end
   end
 
   context ':blocking => true' do
