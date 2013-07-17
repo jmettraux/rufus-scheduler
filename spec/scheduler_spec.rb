@@ -111,6 +111,28 @@ describe Rufus::Scheduler do
       end
     end
 
+#    describe '#find_by_tag(t)' do
+#
+#      it 'returns an empty list when there are no jobs with the given tag' do
+#
+#        @scheduler.find_by_tag('nada').should == []
+#      end
+#
+#      it 'returns all the jobs with the given tag' do
+#
+#        @scheduler.in '10d', :tag => 't0' do; end
+#        @scheduler.every '2h', :tag => %w[ t0 t1 ] do; end
+#        @scheduler.every '3h' do; end
+#
+#        @scheduler.find_by_tag('t0').map(&:original).should ==
+#          %w[ 2h 10d ]
+#        @scheduler.find_by_tag('t1').map(&:original).should ==
+#          %w[ 2h ]
+#        @scheduler.find_by_tag('t1', 't0').map(&:original).sort.should ==
+#          %w[ 2h ]
+#      end
+#    end
+
     describe '#job_threads' do
 
       it 'returns [] when there are no jobs running' do
@@ -400,6 +422,29 @@ describe Rufus::Scheduler do
         job.unschedule
 
         @scheduler.jobs.size.should == 0
+      end
+    end
+
+    describe '#jobs(:tag / :tags => x)' do
+
+      it 'returns [] when there are no jobs with the corresponding tag' do
+
+        @scheduler.jobs(:tag => 'nada').should == []
+        @scheduler.jobs(:tags => %w[ nada hello ]).should == []
+      end
+
+      it 'returns the jobs with the corresponding tag' do
+
+        @scheduler.in '10d', :tag => 't0' do; end
+        @scheduler.every '2h', :tag => %w[ t0 t1 ] do; end
+        @scheduler.every '3h' do; end
+
+        @scheduler.jobs(:tags => 't0').map(&:original).should ==
+          %w[ 2h 10d ]
+        @scheduler.jobs(:tags => 't1').map(&:original).should ==
+          %w[ 2h ]
+        @scheduler.jobs(:tags => [ 't1', 't0' ]).map(&:original).sort.should ==
+          %w[ 2h ]
       end
     end
 

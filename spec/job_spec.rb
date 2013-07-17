@@ -143,6 +143,12 @@ describe Rufus::Scheduler::Job do
     end
   end
 
+  context ':tag / :tags => [ t0, t1 ]' do
+
+    it 'accepts one tag'
+    it 'accepts an array of tags'
+  end
+
   context ':blocking => true' do
 
     it 'runs the job in the same thread as the scheduler thread' do

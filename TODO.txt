@@ -10,6 +10,7 @@
 [o] def jobs; (@jobs.to_a + running_jobs).uniq; end
 [o] replace @unscheduled by @unscheduled_at
 [o] make sure #jobs doesn't return unscheduled jobs
+[o] job tags and find_by_tag(t) (as in rs 2.x)
 
 [ ] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
@@ -29,8 +30,6 @@
 [o] Rufus::Scheduler#shutdown(:terminate or :kill (or nothing))
 [ ] RepeatJob #pause / #resume
 [o] Rufus::Scheduler.start_new (backward comp) (with deprec note?)
-
-[ ] job tags and find_by_tag(t) (as in rs 2.x)
 
 [ ] document frequency
 

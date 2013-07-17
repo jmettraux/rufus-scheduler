@@ -184,15 +184,39 @@ module Rufus
     # Returns all the scheduled jobs
     # (even those right before re-schedule).
     #
-    def jobs
+    def jobs(opts={})
 
-      (@jobs.to_a + running_jobs).uniq.reject { |j| j.unscheduled_at }
+      js = (@jobs.to_a + running_jobs).uniq.reject { |j| j.unscheduled_at }
+
+      ts = Array(opts[:tag] || opts[:tags]).map { |t| t.to_s }
+      js = js.reject { |j| ts.find { |t| ! j.tags.include?(t) } }
+
+      js
     end
 
-    def at_jobs;    jobs.select { |j| j.is_a?(Rufus::Scheduler::AtJob) }; end
-    def in_jobs;    jobs.select { |j| j.is_a?(Rufus::Scheduler::InJob) }; end
-    def every_jobs; jobs.select { |j| j.is_a?(Rufus::Scheduler::EveryJob) }; end
-    def cron_jobs;  jobs.select { |j| j.is_a?(Rufus::Scheduler::CronJob) }; end
+    def at_jobs(opts={})
+
+      jobs(opts).select { |j| j.is_a?(Rufus::Scheduler::AtJob) }
+    end
+
+    def in_jobs(opts={})
+
+      jobs(opts).select { |j| j.is_a?(Rufus::Scheduler::InJob) }
+    end
+
+    def every_jobs(opts={})
+
+      jobs(opts).select { |j| j.is_a?(Rufus::Scheduler::EveryJob) }
+    end
+
+    def cron_jobs(opts={})
+
+      jobs(opts).select { |j| j.is_a?(Rufus::Scheduler::CronJob) }
+    end
+
+    #def find_by_tag(*tags)
+    #  jobs(:tags => tags)
+    #end
 
     def job(job_id)
 
@@ -309,6 +333,7 @@ module Rufus
       attr_reader :last_time
       attr_reader :timeout
       attr_reader :unscheduled_at
+      attr_reader :tags
 
       def initialize(scheduler, original, opts, block)
 
@@ -336,6 +361,8 @@ module Rufus
           else
             nil
           end
+
+        @tags = Array(opts[:tag] || opts[:tags]).collect { |t| t.to_s }
 
         # tidy up options
 

@@ -156,6 +156,7 @@ Those Job instances have a few interesting methods / properties:
 ### threads, thread_values
 ### kill
 ### running?
+### tags
 
 ## AtJob and InJob methods
 ### time
@@ -199,6 +200,27 @@ Here is an example:
   # let's unschedule all the at jobs
 
   scheduler.at_jobs.each(&:unschedule)
+```
+
+### Scheduler#jobs(:tag / :tags => x)
+
+When scheduling a job, one can specify one or more tags attached to the job. These can be used to lookup the job later on.
+
+```ruby
+  scheduler.in '10d', :tag => 'main_process' do
+    # ...
+  end
+  scheduler.in '10d', :tags => [ 'main_process', 'side_dish' ] do
+    # ...
+  end
+
+  # ...
+
+  jobs = scheduler.jobs(:tag => 'main_process')
+    # find all the jobs with the 'main_process' tag
+
+  jobs = scheduler.jobs(:tags => [ 'main_process', 'side_dish' ]
+    # find all the jobs with the 'main_process' AND 'side_dish' tags
 ```
 
 ### Scheduler#running_jobs
