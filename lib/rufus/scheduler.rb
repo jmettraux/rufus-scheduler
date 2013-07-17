@@ -25,14 +25,12 @@
 require 'date' if RUBY_VERSION < '1.9.0'
 require 'time'
 require 'thread'
+require 'tzinfo'
 
 
 module Rufus
 
   class Scheduler
-
-    require 'rufus/scheduler/timezone'
-    Rufus::Scheduler::Timezone.require_tzinfo
 
     require 'rufus/scheduler/cronline'
 

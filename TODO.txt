@@ -11,8 +11,7 @@
 [o] replace @unscheduled by @unscheduled_at
 [o] make sure #jobs doesn't return unscheduled jobs
 [o] job tags and find_by_tag(t) (as in rs 2.x)
-
-[ ] require tzinfo anyway (runtime dep)
+[o] require tzinfo anyway (runtime dep)
 
 [ ] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
