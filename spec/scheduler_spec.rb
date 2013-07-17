@@ -208,6 +208,28 @@ describe Rufus::Scheduler do
       end
     end
 
+    describe '#running_jobs(:tag/:tags => x)' do
+
+      it 'returns a list of running jobs filtered by tag' do
+
+        @scheduler.in '0.1s', :tag => 't0' do
+          sleep 3
+        end
+        @scheduler.in '0.2s', :tag => 't1' do
+          sleep 3
+        end
+
+        sleep 0.4
+
+        @scheduler.running_jobs(:tag => 't0').map(&:original).should ==
+          %w[ 0.1s ]
+        @scheduler.running_jobs(:tag => 't1').map(&:original).should ==
+          %w[ 0.2s ]
+        @scheduler.running_jobs(:tags => %w[ t0 t1 ]).map(&:original).should ==
+          []
+      end
+    end
+
     #--
     # management methods
     #++

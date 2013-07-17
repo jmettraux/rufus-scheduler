@@ -186,7 +186,13 @@ module Rufus
     #
     def jobs(opts={})
 
-      js = (@jobs.to_a + running_jobs).uniq.reject { |j| j.unscheduled_at }
+      js = (@jobs.to_a + job_threads.collect { |t| t[thread_key][:job] }).uniq
+
+      if opts[:running]
+        js = js.select { |j| j.running? }
+      else
+        js = js.reject { |j| j.unscheduled_at }
+      end
 
       ts = Array(opts[:tag] || opts[:tags]).map { |t| t.to_s }
       js = js.reject { |j| ts.find { |t| ! j.tags.include?(t) } }
@@ -233,9 +239,9 @@ module Rufus
       @thread_key ||= "rufus_scheduler_#{self.object_id}"
     end
 
-    def running_jobs
+    def running_jobs(opts={})
 
-      job_threads.collect { |t| t[thread_key][:job] }.uniq
+      jobs(opts.merge(:running => true))
     end
 
     def terminate_all_jobs
