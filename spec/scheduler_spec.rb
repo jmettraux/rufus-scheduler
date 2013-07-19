@@ -28,11 +28,18 @@ describe Rufus::Scheduler do
       scheduler = Rufus::Scheduler.new
     end
 
-    it 'accepts a :frequency option' do
+    it 'accepts a :frequency => integer option' do
 
       scheduler = Rufus::Scheduler.new(:frequency => 2)
 
       scheduler.frequency.should == 2
+    end
+
+    it 'accepts a :frequency => "2h1m" option' do
+
+      scheduler = Rufus::Scheduler.new(:frequency => '2h1m')
+
+      scheduler.frequency.should == 3600 * 2 + 60
     end
 
     it 'accepts a :thread_name option' do

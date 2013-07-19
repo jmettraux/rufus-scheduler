@@ -333,6 +333,28 @@ Kills all the job (threads) and then shuts the scheduler down. Radical.
 Let's the current thread join the scheduling thread in rufus-scheduler. The thread comes back when the scheduler gets shut down.
 
 
+## Rufus::Scheduler.new options
+
+### :frequency
+
+By default, rufus-scheduler sleeps 0.300 second between every step. At each step it checks for jobs to trigger and so on.
+
+The :frequency option lets you change that 0.300 second to something else.
+
+```ruby
+  scheduler = Rufus::Scheduler.new(:frequency => 5)
+```
+
+It's OK to use a time string to specify the frequency.
+
+```ruby
+  scheduler = Rufus::Scheduler.new(:frequency => '2h10m')
+    # this scheduler will sleep 2 hours and 10 minutes between every "step"
+```
+
+Use with care.
+
+
 ## parsing cronlines and time strings
 
 TODO

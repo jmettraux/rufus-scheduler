@@ -48,7 +48,7 @@ module Rufus
       @jobs = JobArray.new
 
       @opts = opts
-      @frequency = @opts[:frequency] || 0.300
+      @frequency = Rufus::Scheduler.parse(@opts[:frequency] || 0.300)
       @mutexes = {}
 
       start
