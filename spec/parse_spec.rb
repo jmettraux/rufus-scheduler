@@ -23,16 +23,25 @@ describe Rufus::Scheduler do
 
     it 'parses datetimes' do
 
+      # local
+
       parse('Sun Nov 18 16:01:00 2012').strftime('%c').should ==
         'Sun Nov 18 16:01:00 2012'
     end
 
     it 'parses datetimes with timezones' do
 
-      pending
+      parse('Sun Nov 18 16:01:00 2012 Japan').getutc.strftime('%c').should ==
+        'Sun Nov 18 07:01:00 2012'
 
-      parse('Sun Nov 18 16:01:00 JST 2012').strftime('%c %z').should ==
-        'Sun Nov 18 16:01:00 2012 +0900'
+      parse('Sun Nov 18 16:01:00 2012 Zulu').getutc.strftime('%c').should ==
+        'Sun Nov 18 16:01:00 2012'
+
+      parse('Sun Nov 18 16:01:00 Japan 2012').getutc.strftime('%c').should ==
+        'Sun Nov 18 07:01:00 2012'
+
+      parse('Japan Sun Nov 18 16:01:00 2012').getutc.strftime('%c').should ==
+        'Sun Nov 18 07:01:00 2012'
     end
 
     it 'parses datetimes with named timezones' do

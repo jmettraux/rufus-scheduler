@@ -683,19 +683,19 @@ module Rufus
       o.is_a?(String) ? parse_duration(o, opts) : o
     end
 
-    NAMED_TZ_REGEX =
-      /\b((?:[a-zA-Z][a-zA-z0-9\-+]+)(?:\/[a-zA-Z0-9\-+]+)?) *$/
+    TZ_REGEX = /\b((?:[a-zA-Z][a-zA-z0-9\-+]+)(?:\/[a-zA-Z0-9\-+]+)?)\b/
 
     def self.parse_at(o, opts={})
 
       return o if o.is_a?(Time)
 
-      tz =
-        if m = NAMED_TZ_REGEX.match(o.to_s)
-          TZInfo::Timezone.get(m[1])
-        else
-          nil
-        end
+      tz = nil
+      s =
+        o.to_s.gsub(TZ_REGEX) { |m|
+          t = TZInfo::Timezone.get(m) rescue nil
+          tz ||= t
+          t ? '' : m
+        }
 
       begin
         DateTime.parse(o)
@@ -703,7 +703,7 @@ module Rufus
         raise ArgumentError, "no time information in #{o.inspect}"
       end if RUBY_VERSION < '1.9.0'
 
-      t = Time.parse(o)
+      t = Time.parse(s)
 
       t = tz.local_to_utc(t) if tz
 
