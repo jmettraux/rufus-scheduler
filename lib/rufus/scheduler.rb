@@ -504,12 +504,35 @@ module Rufus
     class RepeatJob < Job
 
       attr_reader :next_time
+      attr_reader :paused_at
 
-      def trigger(time)
+      def initialize(scheduler, duration, opts, block)
 
         super
 
+        @paused_at = nil
+      end
+
+      def trigger(time)
+
+        super unless @paused_at
+
         true # do reschedule
+      end
+
+      def pause
+
+        @paused_at = Time.now
+      end
+
+      def resume
+
+        @paused_at = nil
+      end
+
+      def paused?
+
+        @paused_at != nil
       end
     end
 

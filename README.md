@@ -218,6 +218,27 @@ Nota bene: this doesn't unschedule the Job instance.
 
 Returns true if there is at least one running Thread hosting a run of this Job instance.
 
+### pause, resume, paused?, paused_at
+
+These four methods are only available to CronJob and EveryJob instances. One can pause or resume such a job thanks to them.
+
+```ruby
+job =
+  scheduler.schedule_every('10s') do
+    # ...
+  end
+
+job.pause
+  # => 2013-07-20 01:22:22 +0900
+job.paused?
+  # => true
+job.paused_at
+  # => 2013-07-20 01:22:22 +0900
+
+job.resume
+  # => nil
+```
+
 ### tags
 
 Returns the list of tags attached to this Job instance.

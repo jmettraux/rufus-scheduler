@@ -60,6 +60,77 @@ describe Rufus::Scheduler::Job do
   end
 
   describe Rufus::Scheduler::RepeatJob do
+
+    describe '#pause' do
+
+      it 'pauses the job' do
+
+        counter = 0
+
+        job =
+          @scheduler.schedule_every('0.5s') do
+            counter += 1
+          end
+
+        counter.should == 0
+
+        while counter < 1; sleep(0.1); end
+
+        job.pause
+
+        sleep(1)
+
+        counter.should == 1
+      end
+    end
+
+    describe '#paused?' do
+
+      it 'returns true if the job is paused' do
+
+        job = @scheduler.schedule_every('10s') do; end
+
+        job.pause
+
+        job.paused?.should == true
+      end
+
+      it 'returns false if the job is not paused' do
+
+        job = @scheduler.schedule_every('10s') do; end
+
+        job.paused?.should == false
+      end
+    end
+
+    describe '#resume' do
+
+      it 'resumes a paused job' do
+
+        counter = 0
+
+        job =
+          @scheduler.schedule_every('0.5s') do
+            counter += 1
+          end
+
+        job.pause
+        job.resume
+
+        sleep(1.5)
+
+        counter.should > 1
+      end
+
+      it 'has no effect on a not paused job' do
+
+        job = @scheduler.schedule_every('10s') do; end
+
+        job.resume
+
+        job.paused?.should == false
+      end
+    end
   end
 
   describe Rufus::Scheduler::EveryJob do

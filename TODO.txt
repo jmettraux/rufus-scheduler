@@ -14,6 +14,14 @@
 [o] require tzinfo anyway (runtime dep)
 [o] document frequency
 [o] accept :frequency => '5s'
+[o] timeout (as in rufus-scheduler 2.x)
+[o] Rufus::Scheduler#running_jobs (as in rufus-scheduler 2.x)
+[o] Rufus::Scheduler#terminate_all_jobs
+[o] Rufus::Scheduler::Job#kill
+[x] Rufus::Scheduler#kill_all_jobs
+[o] Rufus::Scheduler#shutdown(:terminate or :kill (or nothing))
+[o] RepeatJob #pause / #resume (think about discard past)
+[o] Rufus::Scheduler.start_new (backward comp) (with deprec note?)
 
 [ ] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
@@ -24,15 +32,6 @@
     would prevent blocking/waiting for the mutex to get available
     :mutex => [ "mutex_name", true ]
     :mutex => [ [ "mutex_name", true ], [ "other_mutex_name", false ] ]
-
-[o] timeout (as in rufus-scheduler 2.x)
-[o] Rufus::Scheduler#running_jobs (as in rufus-scheduler 2.x)
-[o] Rufus::Scheduler#terminate_all_jobs
-[o] Rufus::Scheduler::Job#kill
-[x] Rufus::Scheduler#kill_all_jobs
-[o] Rufus::Scheduler#shutdown(:terminate or :kill (or nothing))
-[ ] RepeatJob #pause / #resume (think about discard past)
-[o] Rufus::Scheduler.start_new (backward comp) (with deprec note?)
 
 [ ] :last[_in|_at] and first[_in|_at] for RepeatJob (last and first)
 [ ] :times for RepeatJob (how many recurrences)
