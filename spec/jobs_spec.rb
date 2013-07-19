@@ -17,6 +17,12 @@ describe Rufus::Scheduler::Job do
     @scheduler.shutdown
   end
 
+  describe Rufus::Scheduler::Job do
+  end
+
+  describe Rufus::Scheduler::OneTimeJob do
+  end
+
   describe Rufus::Scheduler::AtJob do
 
     describe '#unschedule' do
@@ -51,6 +57,9 @@ describe Rufus::Scheduler::Job do
     #describe '#unschedule' do
     #  it 'unschedules the job'
     #end
+  end
+
+  describe Rufus::Scheduler::RepeatJob do
   end
 
   describe Rufus::Scheduler::EveryJob do
