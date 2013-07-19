@@ -505,19 +505,31 @@ module Rufus
 
       attr_reader :next_time
       attr_reader :paused_at
+      attr_accessor :times
 
       def initialize(scheduler, duration, opts, block)
 
         super
 
+        @times = opts[:times]
         @paused_at = nil
+
+        raise ArgumentError.new(
+          "cannot accept :times => #{@times.inspect}, not nil or an int"
+        ) unless @times == nil || @times.is_a?(Fixnum)
       end
 
       def trigger(time)
 
         super unless @paused_at
 
-        true # do reschedule
+        return true unless @times
+          # reschedule
+
+        @times = @times - 1
+
+        (@times > 0)
+          # reschedule unless times reached 0
       end
 
       def pause
@@ -555,11 +567,11 @@ module Rufus
 
       def trigger(time)
 
-        super
+        reschedule = super
 
         @next_time = Time.now + @frequency
 
-        true # do reschedule
+        reschedule
       end
 
       def determine_id
@@ -584,11 +596,11 @@ module Rufus
 
       def trigger(time)
 
-        super
+        reschedule = super
 
         @next_time = @cron_line.next_time(time)
 
-        true # do reschedule
+        reschedule
       end
 
       def determine_id

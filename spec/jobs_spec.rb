@@ -131,6 +131,44 @@ describe Rufus::Scheduler::Job do
         job.paused?.should == false
       end
     end
+
+    describe ':times => i' do
+
+      it 'lets a job unschedule itself after i times' do
+
+        counter = 0
+
+        job =
+          @scheduler.schedule_every '0.5s', :times => 3 do
+            counter = counter + 1
+          end
+
+        sleep(2.5)
+
+        counter.should == 3
+      end
+
+      it 'is OK when passed a nil instead of an integer' do
+
+        counter = 0
+
+        job =
+          @scheduler.schedule_every '0.5s', :times => nil do
+            counter = counter + 1
+          end
+
+        sleep(2.5)
+
+        counter.should > 3
+      end
+
+      it 'raises when passed something else than nil or an integer' do
+
+        lambda {
+          @scheduler.schedule_every '0.5s', :times => 'nada' do; end
+        }.should raise_error(ArgumentError)
+      end
+    end
   end
 
   describe Rufus::Scheduler::EveryJob do

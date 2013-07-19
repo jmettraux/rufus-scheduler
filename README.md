@@ -108,16 +108,52 @@ Array of mutexes: original idea and implementation by [Rainux Luo](https://githu
 It's OK to specify a timeout when scheduling some work. After the time specified, it gets interrupted via a Rufus::Scheduler::TimeoutError.
 
 ```ruby
-  scheduler.in '10d', :timeout => '1d' do
-    begin
-      # ... do something
-    rescue Rufus::Scheduler::TimeoutError
-      # ... that something got interrupted after 1 day
-    end
+scheduler.in '10d', :timeout => '1d' do
+  begin
+    # ... do something
+  rescue Rufus::Scheduler::TimeoutError
+    # ... that something got interrupted after 1 day
   end
+end
 ```
 
 The :timeout option accepts either a duration (like "1d" or "2w3d") or a point in time (like "2013/12/12 12:00").
+
+### :times => nb of times (before auto-unscheduling)
+
+One can tell how many times a repeat job (CronJob or EveryJob) is to execute before unscheduling by itself.
+
+```ruby
+scheduler.every '2d', :times => 10 do
+  # ... do something every two days, but not more than 10 times
+end
+
+scheduler.cron '0 23 * * *', :times => 31 do
+  # ... do something every day at 23:00 but do it no more than 31 times
+end
+```
+
+It's OK to assign nil to :times to make sure the repeat job is not limited. It's useful when the :times is determined at scheduling time.
+
+```ruby
+scheduler.cron '0 23 * * *', :times => nolimit ? nil : 10 do
+  # ...
+end
+```
+
+The value set by :times is accessible in the job. It can be modified anytime.
+
+```
+job =
+  scheduler.cron '0 23 * * *' do
+    # ...
+  end
+
+# later on...
+
+job.times = 10
+  # 10 days and it will be over
+```
 
 
 ## Job methods

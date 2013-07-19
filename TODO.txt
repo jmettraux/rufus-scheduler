@@ -34,7 +34,7 @@
     :mutex => [ [ "mutex_name", true ], [ "other_mutex_name", false ] ]
 
 [ ] :last[_in|_at] and first[_in|_at] for RepeatJob (last and first)
-[ ] :times for RepeatJob (how many recurrences)
+[o] :times for RepeatJob (how many recurrences)
 
 [ ] do repeat jobs reschedule after timing out?
 
@@ -45,6 +45,9 @@
 [ ] discard past? discard_past => true or => "1d"
 
 [ ] unlock spec/parse_spec.rb:30 "parse datimes with timezones"
+
+[ ] :unschedule_if => lambda { |job| ... }
+[ ] OR look at how it was done in rs 2.0.x, some return value?
 
 
 ################################################################################
