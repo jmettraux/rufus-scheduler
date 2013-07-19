@@ -33,7 +33,8 @@
     :mutex => [ "mutex_name", true ]
     :mutex => [ [ "mutex_name", true ], [ "other_mutex_name", false ] ]
 
-[ ] :last[_in|_at] and first[_in|_at] for RepeatJob (last and first)
+[o] :first[_in|_at] for RepeatJob
+[ ] :last[_in|_at] for RepeatJob
 [o] :times for RepeatJob (how many recurrences)
 
 [ ] do repeat jobs reschedule after timing out?

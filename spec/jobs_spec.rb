@@ -53,10 +53,6 @@ describe Rufus::Scheduler::Job do
   end
 
   describe Rufus::Scheduler::InJob do
-
-    #describe '#unschedule' do
-    #  it 'unschedules the job'
-    #end
   end
 
   describe Rufus::Scheduler::RepeatJob do
@@ -166,6 +162,67 @@ describe Rufus::Scheduler::Job do
 
         lambda {
           @scheduler.schedule_every '0.5s', :times => 'nada' do; end
+        }.should raise_error(ArgumentError)
+      end
+    end
+
+    describe ':first/:first_in/:first_at => point in time' do
+
+      it 'accepts a Time instance' do
+
+        t = Time.now + 10
+
+        job = @scheduler.schedule_every '0.5s', :first => t do; end
+
+        job.first_at.should == t
+      end
+
+      it 'only lets the job trigger after the :first' do
+
+        t = Time.now + 1.4
+        counter = 0
+
+        job =
+          @scheduler.schedule_every '0.5s', :first => t do
+            counter = counter + 1
+          end
+
+        sleep(1)
+
+        counter.should == 0
+
+        sleep(1)
+
+        counter.should > 0
+      end
+    end
+
+    describe ':first/:first_in/:first_at => duration' do
+
+      it 'accepts a duration string' do
+
+        t = Time.now
+
+        job = @scheduler.schedule_every '0.5s', :first => '1h' do; end
+
+        job.first_at.should > t + 3600
+        job.first_at.should < t + 3601
+      end
+
+      it 'accepts a duration in seconds' do
+
+        t = Time.now
+
+        job = @scheduler.schedule_every '0.5s', :first => 3600 do; end
+
+        job.first_at.should > t + 3600
+        job.first_at.should < t + 3601
+      end
+
+      it 'raises if the argument is worthless' do
+
+        lambda {
+          @scheduler.every '0.5s', :first => :nada do; end
         }.should raise_error(ArgumentError)
       end
     end

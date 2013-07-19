@@ -119,6 +119,33 @@ end
 
 The :timeout option accepts either a duration (like "1d" or "2w3d") or a point in time (like "2013/12/12 12:00").
 
+### :first_at, :first_in, :first
+
+This option is for repeat jobs (cron / every) only.
+
+It's used to specify the first time after which the repeat job should trigger for the first time.
+
+In the case of an "every" job, this will be the first time (module the scheduler frequency) the job triggers.
+For a "cron" job, it's the time after which the first schedule will trigger.
+
+```ruby
+scheduler.every '2d', :first_at => Time.now + 10 * 3600 do
+  # ... every two days, but start in 10 hours
+end
+
+scheduler.every '2d', :first_in => '10h' do
+  # ... every two days, but start in 10 hours
+end
+```
+
+:first, :first_at and :first_in all accept a point in time or a duration (number or time string). Use the symbol you think make your schedule more readable.
+
+### :last_at, :last_in, :last
+
+This option is for repeat jobs (cron / every) only.
+
+TODO
+
 ### :times => nb of times (before auto-unscheduling)
 
 One can tell how many times a repeat job (CronJob or EveryJob) is to execute before unscheduling by itself.

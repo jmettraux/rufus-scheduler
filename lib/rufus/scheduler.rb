@@ -505,23 +505,37 @@ module Rufus
 
       attr_reader :next_time
       attr_reader :paused_at
+      attr_reader :first_at
       attr_accessor :times
 
       def initialize(scheduler, duration, opts, block)
 
         super
 
-        @times = opts[:times]
         @paused_at = nil
+
+        @times = opts[:times]
 
         raise ArgumentError.new(
           "cannot accept :times => #{@times.inspect}, not nil or an int"
         ) unless @times == nil || @times.is_a?(Fixnum)
+
+        first = opts[:first] || opts[:first_at] || opts[:first_in] || 0
+        f = first
+        f = Rufus::Scheduler.parse(f) if f.is_a?(String)
+        @first_at = f.is_a?(Numeric) ? Time.now + f : f
+
+        raise ArgumentError.new(
+          "cannot accept :first => #{first.inspect}, doesn't make sense"
+        ) unless @first_at.is_a?(Time)
       end
 
       def trigger(time)
 
-        super unless @paused_at
+        return true if @paused_at
+        return true if time < @first_at
+
+        super
 
         return true unless @times
           # reschedule
@@ -569,7 +583,14 @@ module Rufus
 
         reschedule = super
 
-        @next_time = Time.now + @frequency
+        @next_time =
+          if time < @first_at
+            time + @scheduler.frequency
+              # force scheduler to consider us at next step
+          else
+            Time.now + @frequency
+              # rest until next occurence
+          end
 
         reschedule
       end
