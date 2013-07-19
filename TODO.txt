@@ -45,6 +45,8 @@
 
 [ ] discard past? discard_past => true or => "1d"
 
+[ ] unlock spec/parse_spec.rb:30 "parse datimes with timezones"
+
 
 ################################################################################
 
