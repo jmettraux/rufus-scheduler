@@ -52,6 +52,13 @@ end
 
 describe Rufus::Scheduler::CronJob do
 
-  it 'works'
+  before :each do
+    @scheduler = Rufus::Scheduler.new
+  end
+  after :each do
+    @scheduler.shutdown
+  end
+
+  #it 'works'
 end
 
