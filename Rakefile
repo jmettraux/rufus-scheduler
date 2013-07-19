@@ -1,8 +1,5 @@
 
-$:.unshift('.') # 1.9.2
-
 require 'rubygems'
-require 'rubygems/user_interaction' if Gem::RubyGemsVersion == '1.5.0'
 
 require 'rake'
 require 'rake/clean'
@@ -42,7 +39,7 @@ desc %{
 task :build do
 
   sh "gem build #{GEMSPEC_FILE}"
-  sh "mkdir pkg" rescue nil
+  sh "mkdir -p pkg"
   sh "mv #{GEMSPEC.name}-#{GEMSPEC.version}.gem pkg/"
 end
 
