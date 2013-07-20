@@ -40,8 +40,10 @@
 [ ] do repeat jobs reschedule after timing out?
 
 [ ] pass job to scheduled block? What does rs 2.x do?
+    2.x: 0 or 1 param (the job instance itself)
 
 [ ] thread pool something? Thread upper limit?
+    look at EM's thread pool
 
 [ ] discard past? discard_past => true or => "1d"
 
@@ -49,6 +51,9 @@
 
 [ ] :unschedule_if => lambda { |job| ... }
 [ ] OR look at how it was done in rs 2.0.x, some return value?
+    no, pass the job as arg to the block, then let the block do job.unschedule
+
+[ ] bring back EM (but only EM.defer ?) :defer => true (Job or Scheduler or both option?)
 
 
 ################################################################################
