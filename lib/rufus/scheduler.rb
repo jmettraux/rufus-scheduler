@@ -506,7 +506,9 @@ module Rufus
 
       attr_reader :next_time
       attr_reader :paused_at
-      attr_reader :first_at
+
+      attr_accessor :first_at
+      attr_accessor :last_at
       attr_accessor :times
 
       def initialize(scheduler, duration, opts, block)
@@ -529,12 +531,23 @@ module Rufus
         raise ArgumentError.new(
           "cannot accept :first => #{first.inspect}, doesn't make sense"
         ) unless @first_at.is_a?(Time)
+
+        last = opts[:last] || opts[:last_at] || opts[:last_in] || nil
+        l = last
+        l = Rufus::Scheduler.parse(l) if l.is_a?(String)
+        @last_at = l.is_a?(Numeric) ? Time.now + l : l
+
+        raise ArgumentError.new(
+          "cannot accept :last => #{first.inspect}, doesn't make sense"
+        ) unless @last_at == nil || @last_at.is_a?(Time)
       end
 
       def trigger(time)
 
         return true if @paused_at
         return true if time < @first_at
+
+        return false if @last_at && time >= @last_at
 
         super
 

@@ -144,11 +144,41 @@ end
 
 :first, :first_at and :first_in all accept a point in time or a duration (number or time string). Use the symbol you think make your schedule more readable.
 
+Note: it's OK to change the first_at (a Time instance) directly:
+```ruby
+job.first_at = Time.now + 10
+job.first_at = Rufus::Scheduler.parse('2029-12-12')
+```
+
 ### :last_at, :last_in, :last
 
 This option is for repeat jobs (cron / every) only.
 
-TODO
+It indicates the point in time after which the job should unschedule itself.
+
+```ruby
+scheduler.cron '5 23 * * *', :last_in => '10d' do
+  # ... do something every evening at 23:05 for 10 days
+end
+
+scheduler.every '10m', :last_at => Time.now + 10 * 3600 do
+  # ... do something every 10 minutes for 10 hours
+end
+
+scheduler.every '10m', :last_in => 10 * 3600 do
+  # ... do something every 10 minutes for 10 hours
+end
+```
+:last, :last_at and :last_in all accept a point in time or a duration (number or time string). Use the symbol you think make your schedule more readable.
+
+Note: it's OK to change the last_at (nil or a Time instance) directly:
+```ruby
+job.last_at = nil
+  # remove the "last" bound
+
+job.last_at = Rufus::Scheduler.parse('2029-12-12')
+  # set the last bound
+```
 
 ### :times => nb of times (before auto-unscheduling)
 

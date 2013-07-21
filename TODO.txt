@@ -23,6 +23,9 @@
 [o] RepeatJob #pause / #resume (think about discard past)
 [o] Rufus::Scheduler.start_new (backward comp) (with deprec note?)
 [o] pass job to scheduled block? What does rs 2.x do?
+[o] :first[_in|_at] for RepeatJob
+[o] :last[_in|_at] for RepeatJob
+[o] :times for RepeatJob (how many recurrences)
 
 [ ] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
@@ -33,10 +36,6 @@
     would prevent blocking/waiting for the mutex to get available
     :mutex => [ "mutex_name", true ]
     :mutex => [ [ "mutex_name", true ], [ "other_mutex_name", false ] ]
-
-[o] :first[_in|_at] for RepeatJob
-[ ] :last[_in|_at] for RepeatJob
-[o] :times for RepeatJob (how many recurrences)
 
 [ ] do repeat jobs reschedule after timing out?
 
@@ -57,6 +56,14 @@
 
 [ ] schedule_interval('20s')?
 [ ] prepare a daemon
+
+[ ] Scheduler#reschedule(job) (new copy of the job)
+
+[ ] some kind of Schedulable (Xyz#call(job, time))
+
+[ ] :if => lambda { |job, time| ... } why not?
+
+[ ] make Job #first_at= / #last_at= automatically parse strings?
 
 
 ################################################################################

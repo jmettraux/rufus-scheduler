@@ -177,6 +177,15 @@ describe Rufus::Scheduler::Job do
         job.first_at.should == t
       end
 
+      it 'accepts a time string' do
+
+        t = Time.now + 10
+
+        job = @scheduler.schedule_every '0.5s', :first => t.to_s do; end
+
+        job.first_at.to_s.should == t.to_s
+      end
+
       it 'only lets the job trigger after the :first' do
 
         t = Time.now + 1.4
@@ -209,7 +218,7 @@ describe Rufus::Scheduler::Job do
         job.first_at.should < t + 3601
       end
 
-      it 'accepts a duration in seconds' do
+      it 'accepts a duration in seconds (integer)' do
 
         t = Time.now
 
@@ -223,6 +232,73 @@ describe Rufus::Scheduler::Job do
 
         lambda {
           @scheduler.every '0.5s', :first => :nada do; end
+        }.should raise_error(ArgumentError)
+      end
+    end
+
+    describe ':last/:last_in/:last_at => point in time' do
+
+      it 'accepts a Time instance' do
+
+        t = Time.now + 10
+
+        job = @scheduler.schedule_every '0.5s', :last => t do; end
+
+        job.last_at.should == t
+      end
+
+      it 'unschedules the job after the last_at time' do
+
+        t = Time.now + 2
+        counter = 0
+
+        job =
+          @scheduler.schedule_every '0.5s', :last => t do
+            counter = counter + 1
+          end
+
+        sleep 3
+
+        counter.should == 3
+        @scheduler.jobs.should_not include(job)
+      end
+
+      it 'accepts a time string' do
+
+        t = Time.now + 10
+
+        job = @scheduler.schedule_every '0.5s', :last => t.to_s do; end
+
+        job.last_at.to_s.should == t.to_s
+      end
+    end
+
+    describe ':last/:last_in/:last_at => duration' do
+
+      it 'accepts a duration string' do
+
+        t = Time.now
+
+        job = @scheduler.schedule_every '0.5s', :last_in => '2s' do; end
+
+        job.last_at.should > t + 2
+        job.last_at.should < t + 2.5
+      end
+
+      it 'accepts a duration in seconds (integer)' do
+
+        t = Time.now
+
+        job = @scheduler.schedule_every '0.5s', :last_in => 2.0 do; end
+
+        job.last_at.should > t + 2
+        job.last_at.should < t + 2.5
+      end
+
+      it 'raises if the argument is worthless' do
+
+        lambda {
+          @scheduler.every '0.5s', :last => :nada do; end
         }.should raise_error(ArgumentError)
       end
     end
