@@ -22,6 +22,7 @@
 [o] Rufus::Scheduler#shutdown(:terminate or :kill (or nothing))
 [o] RepeatJob #pause / #resume (think about discard past)
 [o] Rufus::Scheduler.start_new (backward comp) (with deprec note?)
+[o] pass job to scheduled block? What does rs 2.x do?
 
 [ ] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
@@ -38,9 +39,6 @@
 [o] :times for RepeatJob (how many recurrences)
 
 [ ] do repeat jobs reschedule after timing out?
-
-[ ] pass job to scheduled block? What does rs 2.x do?
-    2.x: 0 or 1 param (the job instance itself)
 
 [ ] thread pool something? Thread upper limit?
     look at EM's thread pool

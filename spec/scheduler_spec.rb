@@ -61,6 +61,32 @@ describe Rufus::Scheduler do
       @scheduler.shutdown
     end
 
+    context 'schedule methods' do
+
+      describe '#in' do
+
+        it 'passes the job to its block when it triggers' do
+
+          j = nil
+          job = @scheduler.schedule_in('0s') { |jj| j = jj }
+
+          sleep 0.4
+
+          j.should == job
+        end
+
+        it 'passes the trigger time as second block argument' do
+
+          t = nil
+          @scheduler.schedule_in('0s') { |jj, tt| t = tt }
+
+          sleep 0.4
+
+          t.class.should == Time
+        end
+      end
+    end
+
     describe '#unschedule(job_or_job_id)' do
 
       it 'accepts job ids' do

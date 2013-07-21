@@ -71,6 +71,10 @@ There is no EventMachine-based scheduler anymore.
 
 TODO: in/at/cron/every
 
+### schedule blocks arguments (job, time)
+
+TODO
+
 
 ## pause and resume the scheduler
 

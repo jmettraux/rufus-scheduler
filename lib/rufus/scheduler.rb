@@ -455,7 +455,7 @@ module Rufus
 
         @last_time = time
 
-        @block.call
+        @block.call(self, time)
 
         Thread.current[k] = nil
         Thread.current[@scheduler.thread_key] = nil
