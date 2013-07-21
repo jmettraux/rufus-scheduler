@@ -31,9 +31,6 @@ class Rufus::Scheduler
   #
   class CronLine
 
-    DAY_S = 24 * 3600
-    WEEK_S = 7 * DAY_S
-
     # The string used for creating this cronline instance.
     #
     attr_reader :original
@@ -121,9 +118,9 @@ class Rufus::Scheduler
     #
     # (Thanks to K Liu for the note and the examples)
     #
-    def next_time(now=Time.now)
+    def next_time(from=Time.now)
 
-      time = @timezone ? @timezone.utc_to_local(now.getutc) : now
+      time = @timezone ? @timezone.utc_to_local(from.getutc) : from
 
       time = time - time.usec * 1e-6 + 1
         # small adjustment before starting
@@ -148,7 +145,7 @@ class Rufus::Scheduler
 
       if @timezone
         time = @timezone.local_to_utc(time)
-        time = time.getlocal unless now.utc?
+        time = time.getlocal unless from.utc?
       end
 
       time
@@ -157,19 +154,19 @@ class Rufus::Scheduler
     # Returns the previous the cronline matched. It's like next_time, but
     # for the past.
     #
-    def previous_time(now=Time.now)
+    def previous_time(from=Time.now)
 
       # looks back by slices of two hours,
       #
       # finds for '* * * * sun', '* * 13 * *' and '0 12 13 * *'
       # starting 1970, 1, 1 in 1.8 to 2 seconds (says Rspec)
 
-      start = current = now - 2 * 3600
+      start = current = from - 2 * 3600
       result = nil
 
       loop do
         nex = next_time(current)
-        return (result ? result : previous_time(start)) if nex > now
+        return (result ? result : previous_time(start)) if nex > from
         result = current = nex
       end
 
@@ -194,9 +191,11 @@ class Rufus::Scheduler
       ]
     end
 
-    private
+    protected
 
     WEEKDAYS = %w[ sun mon tue wed thu fri sat ]
+    DAY_S = 24 * 3600
+    WEEK_S = 7 * DAY_S
 
     def parse_weekdays(item)
 
@@ -279,7 +278,7 @@ class Rufus::Scheduler
 
       raise ArgumentError.new(
         "#{item.inspect} is not in range #{min}..#{max}"
-      ) if sta < min or edn > max
+      ) if sta < min || edn > max
 
       r = []
       val = sta
