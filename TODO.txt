@@ -52,8 +52,13 @@
 [ ] :unschedule_if => lambda { |job| ... }
 [ ] OR look at how it was done in rs 2.0.x, some return value?
     no, pass the job as arg to the block, then let the block do job.unschedule
+    so, document schedule.every('10d') { |j| j.unschedule if x?() }
 
-[ ] bring back EM (but only EM.defer ?) :defer => true (Job or Scheduler or both option?)
+[ ] bring back EM (but only EM.defer ?) :defer => true (Job or Scheduler
+    or both option?)
+
+[ ] schedule_interval('20s')?
+[ ] prepare a daemon
 
 
 ################################################################################
