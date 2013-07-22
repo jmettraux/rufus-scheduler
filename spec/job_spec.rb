@@ -212,7 +212,7 @@ describe Rufus::Scheduler::Job do
       it 'lets a job overlap itself' do
 
         job =
-          @scheduler.every('0.100', :job => true) do
+          @scheduler.every('0.3', :job => true) do
             sleep(5)
           end
 
@@ -227,7 +227,7 @@ describe Rufus::Scheduler::Job do
       it 'prevents a job from overlapping itself' do
 
         job =
-          @scheduler.every('0.100', :job => true, :overlap => false) do
+          @scheduler.every('0.3', :job => true, :overlap => false) do
             sleep(5)
           end
 

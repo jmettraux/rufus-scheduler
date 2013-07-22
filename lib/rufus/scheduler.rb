@@ -321,6 +321,12 @@ module Rufus
     def do_schedule(job_class, t, opts, return_job_instance, block)
 
       job = job_class.new(self, t, opts, block)
+
+      raise ArgumentError.new(
+        "job frequency (#{job.frequency}) is higher than " +
+        "scheduler frequency (#{@frequency})"
+      ) if job.respond_to?(:frequency) && job.frequency < @frequency
+
       @jobs.push(job)
 
       return_job_instance ? job : job.job_id
@@ -627,6 +633,11 @@ module Rufus
 
         @cron_line = CronLine.new(cronline)
         @next_time = @cron_line.next_time
+      end
+
+      def frequency
+
+        @cron_line.frequency
       end
 
       def trigger(time)

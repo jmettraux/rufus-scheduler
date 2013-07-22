@@ -355,11 +355,39 @@ job.tags
 ## AtJob and InJob methods
 ### time
 
+## EveryJob and CronJob methods
+
+Nothing in particular.
+
 ## EveryJob methods
+
 ### frequency
+
+It returns the scheduling frequency. For a job scheduled "every 20s", it's 20.
+
+It's used to determine if the job frequency is higher than the scheduler frequency (it raises an ArgumentError if that is the case).
+
 ### next_time
 
 ## CronJob methods
+
+### frequency
+
+It returns the shortest interval of time between two potential occurences of the job.
+
+For instance:
+```ruby
+Rufus::Scheduler.parse('* * * * *').frequency         # ==> 60
+Rufus::Scheduler.parse('* * * * * *').frequency       # ==> 1
+
+Rufus::Scheduler.parse('5 23 * * *').frequency        # ==> 24 * 3600
+Rufus::Scheduler.parse('5 * * * *').frequency         # ==> 3600
+Rufus::Scheduler.parse('10,20,30 * * * *').frequency  # ==> 600
+```
+
+It's used to determine if the job frequency is higher than the scheduler frequency (it raises an ArgumentError if that is the case).
+
+### next_time
 
 
 ## looking up jobs

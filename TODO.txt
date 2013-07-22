@@ -27,6 +27,9 @@
 [o] :last[_in|_at] for RepeatJob
 [o] :times for RepeatJob (how many recurrences)
 [o] fix issue #39 (first_at parses as UTC)
+[o] about issue #43, raise if cron/every job frequency < scheduler frequency
+
+[ ] remove duplicate code (RepeatJob ids)
 
 [ ] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
@@ -65,9 +68,6 @@
 [ ] :if => lambda { |job, time| ... } why not?
 
 [ ] make Job #first_at= / #last_at= automatically parse strings?
-
-[ ] about issue #43, raise if cron/every job frequency < scheduler frequency
-    (implement RepeatJob#frequency ? #precision sounds better)
 
 
 ################################################################################

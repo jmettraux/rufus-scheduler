@@ -85,6 +85,15 @@ describe Rufus::Scheduler do
 
       counter.should == c
     end
+
+    it 'raises if the job frequency is higher than the scheduler frequency' do
+
+      @scheduler.frequency = 10
+
+      lambda {
+        @scheduler.every '1s' do; end
+      }.should raise_error(ArgumentError)
+    end
   end
 
   describe '#schedule_every' do
