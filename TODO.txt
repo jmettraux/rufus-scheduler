@@ -28,8 +28,8 @@
 [o] :times for RepeatJob (how many recurrences)
 [o] fix issue #39 (first_at parses as UTC)
 [o] about issue #43, raise if cron/every job frequency < scheduler frequency
-
-[ ] remove duplicate code (RepeatJob ids)
+[o] unlock spec/parse_spec.rb:30 "parse datimes with timezones"
+[o] some kind of Schedulable (Xyz#call(job, time))
 
 [ ] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
@@ -48,8 +48,6 @@
 
 [ ] discard past? discard_past => true or => "1d"
 
-[ ] unlock spec/parse_spec.rb:30 "parse datimes with timezones"
-
 [ ] :unschedule_if => lambda { |job| ... }
 [ ] OR look at how it was done in rs 2.0.x, some return value?
     no, pass the job as arg to the block, then let the block do job.unschedule
@@ -62,8 +60,6 @@
 [ ] prepare a daemon
 
 [ ] Scheduler#reschedule(job) (new copy of the job)
-
-[ ] some kind of Schedulable (Xyz#call(job, time))
 
 [ ] :if => lambda { |job, time| ... } why not?
 

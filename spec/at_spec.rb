@@ -28,8 +28,9 @@ describe Rufus::Scheduler do
 
     it 'returns a job id' do
 
-      job_id = @scheduler.at(Time.now + 3600) do
-      end
+      job_id =
+        @scheduler.at(Time.now + 3600) do
+        end
 
       job_id.class.should == String
       job_id.should match(/^at_/)
@@ -37,8 +38,9 @@ describe Rufus::Scheduler do
 
     it 'returns a job if :job => true' do
 
-      job = @scheduler.at(Time.now + 3600, :job => true) do
-      end
+      job =
+        @scheduler.at(Time.now + 3600, :job => true) do
+        end
 
       job.class.should == Rufus::Scheduler::AtJob
     end

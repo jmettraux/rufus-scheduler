@@ -75,6 +75,38 @@ TODO: in/at/cron/every
 
 TODO
 
+### scheduling not just blocks
+
+It's OK to pass any object, as long as it respond to #call(), when scheduling:
+
+```ruby
+class Handler
+  def self.call(job, time)
+    p "- Handler called for #{job.id} at #{time}"
+  end
+end
+
+scheduler.in '10d', Handler
+
+# or
+
+class OtherHandler
+  def initialize(name)
+    @name = name
+  end
+  def call(job, time)
+    p "* #{time} - Handler #{name.inspect} called for #{job.id}"
+  end
+end
+
+oh = OtherHandler.new('Doe')
+
+scheduler.every '10m', oh
+scheduler.in '3d5m', oh
+```
+
+The call method must accept 2 (job, time), 1 (job) or 0 arguments.
+
 
 ## pause and resume the scheduler
 
@@ -254,6 +286,10 @@ job.id
   # => "in_1374072446.8923042_0.0_0"
 ```
 
+### scheduler
+
+Returns the scheduler instance itself.
+
 ### opts
 
 Returns the options passed at the Job creation.
@@ -273,6 +309,49 @@ job = scheduler.schedule_in('10d', :tag => 'hello') do; end
 job.original
   # => '10d'
 ```
+
+### callable, handler
+
+callable() returns the scheduled block (or the call method of the callable object passed in lieu of a block)
+
+handler() returns nil if a block was scheduled and the instance scheduled else.
+
+```ruby
+# when passing a block
+
+job =
+  scheduler.schedule_in('10d') do
+    # ...
+  end
+
+job.handler
+  # => nil
+job.callable
+  # => #<Proc:0x00000001dc6f58@/home/jmettraux/whatever.rb:115>
+```
+and
+
+```ruby
+# when passing something else than a block
+
+class MyHandler
+  attr_reader :counter
+  def initialize
+    @counter = 0
+  end
+  def call(job, time)
+    @counter = @counter + 1
+  end
+end
+
+job = scheduler.schedule_in('10d', MyHandler.new)
+
+job.handler
+  # => #<Method: MyHandler#call>
+job.callable
+  # => #<MyHandler:0x0000000163ae88 @counter=0>
+```
+
 
 ### scheduled_at
 

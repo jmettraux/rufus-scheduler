@@ -84,6 +84,27 @@ describe Rufus::Scheduler do
 
           t.class.should == Time
         end
+
+        class MyHandler
+          attr_reader :counter
+          def initialize
+            @counter = 0
+          end
+          def call(job, time)
+            @counter = @counter + 1
+          end
+        end
+
+        it 'accepts a callable object instead of a block' do
+
+          mh = MyHandler.new
+
+          @scheduler.schedule_in('0s', mh)
+
+          sleep 0.4
+
+          mh.counter.should == 1
+        end
       end
     end
 
