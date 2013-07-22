@@ -602,7 +602,7 @@ module Rufus
             time + @scheduler.frequency
               # force scheduler to consider us at next step
           else
-            Time.now + @frequency
+            time + @frequency
               # rest until next occurence
           end
 
@@ -866,7 +866,9 @@ module Rufus
         elsif opts[:no_error]
           return nil
         else
-          raise ArgumentError.new("cannot parse '#{string}' (especially '#{s}')")
+          raise ArgumentError.new(
+            "cannot parse '#{string}' (especially '#{s}')"
+          )
         end
         break unless m && m[3]
         s = m[3]

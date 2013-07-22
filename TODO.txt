@@ -65,6 +65,11 @@
 
 [ ] make Job #first_at= / #last_at= automatically parse strings?
 
+[ ] about issue #43, raise if cron/every job frequency < scheduler frequency
+    (implement RepeatJob#frequency ? #precision sounds better)
+
+[ ] fix issue #39 (first_at parses as UTC)
+
 
 ################################################################################
 
