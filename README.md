@@ -480,5 +480,5 @@ TODO
 
 ## license
 
-MIT, see LICENSE.txt
+MIT, see [LICENSE.txt](LICENSE.txt)
 
