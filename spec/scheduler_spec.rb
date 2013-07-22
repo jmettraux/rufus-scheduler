@@ -105,6 +105,25 @@ describe Rufus::Scheduler do
 
           mh.counter.should == 1
         end
+
+        class MyOtherHandler
+          attr_reader :counter
+          def initialize
+            @counter = 0
+          end
+          def call
+            @counter = @counter + 1
+          end
+        end
+
+        it 'accepts a callable obj instead of a block (#call with no args)' do
+
+          job = @scheduler.schedule_in('0s', MyOtherHandler.new)
+
+          sleep 0.4
+
+          job.handler.counter.should == 1
+        end
       end
     end
 
