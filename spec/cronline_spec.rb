@@ -400,5 +400,18 @@ describe Rufus::Scheduler::CronLine do
       cl.monthdays(local(2011, 3, 11)).should == %w[ fri#2 fri#-3 ]
     end
   end
+
+  describe '#frequency' do
+
+    it 'returns the shortest delta between two occurrences' do
+
+      Rufus::Scheduler::CronLine.new('* * * * *').frequency.should == 60
+      Rufus::Scheduler::CronLine.new('* * * * * *').frequency.should == 1
+
+      Rufus::Scheduler::CronLine.new('5 23 * * *').frequency.should == 24 * 3600
+      Rufus::Scheduler::CronLine.new('5 * * * *').frequency.should == 3600
+      Rufus::Scheduler::CronLine.new('10,20,30 * * * *').frequency.should == 600
+    end
+  end
 end
 

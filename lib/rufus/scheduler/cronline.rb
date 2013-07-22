@@ -191,6 +191,33 @@ class Rufus::Scheduler
       ]
     end
 
+    # Returns the shortest delta between two potential occurences of the
+    # schedule described by this cronline.
+    #
+    def frequency
+
+      delta = 366 * DAY_S
+
+      t0 = previous_time(Time.local(2000, 1, 1))
+
+      loop do
+
+        break if delta <= 1
+        break if delta <= 60 && @seconds && @seconds.size == 1
+
+        t1 = next_time(t0)
+        d = t1 - t0
+        delta = d if d < delta
+
+        break if @months == nil && t1.month == 2
+        break if t1.year == 2001
+
+        t0 = t1
+      end
+
+      delta
+    end
+
     protected
 
     WEEKDAYS = %w[ sun mon tue wed thu fri sat ]
