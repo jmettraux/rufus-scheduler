@@ -580,6 +580,15 @@ module Rufus
 
         @paused_at != nil
       end
+
+      def determine_id
+
+        [
+          self.class.name.split(':').last.downcase[0..-4],
+          @scheduled_at.to_f,
+          opts.hash.abs
+        ].map(&:to_s).join('_')
+      end
     end
 
     class EveryJob < RepeatJob
@@ -614,15 +623,6 @@ module Rufus
 
         reschedule
       end
-
-      def determine_id
-
-        [
-          self.class.name.split(':').last.downcase[0..-4],
-          @scheduled_at.to_f,
-          opts.hash.abs
-        ].map(&:to_s).join('_')
-      end
     end
 
     class CronJob < RepeatJob
@@ -647,15 +647,6 @@ module Rufus
         @next_time = @cron_line.next_time(time)
 
         reschedule
-      end
-
-      def determine_id
-
-        [
-          self.class.name.split(':').last.downcase[0..-4],
-          @scheduled_at.to_f,
-          opts.hash.abs
-        ].map(&:to_s).join('_')
       end
     end
 
