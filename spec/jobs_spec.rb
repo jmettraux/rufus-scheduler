@@ -184,6 +184,7 @@ describe Rufus::Scheduler::Job do
         job = @scheduler.schedule_every '0.5s', :first => t.to_s do; end
 
         job.first_at.to_s.should == t.to_s
+        job.first_at.zone.should == t.zone
       end
 
       it 'only lets the job trigger after the :first' do
@@ -270,6 +271,7 @@ describe Rufus::Scheduler::Job do
         job = @scheduler.schedule_every '0.5s', :last => t.to_s do; end
 
         job.last_at.to_s.should == t.to_s
+        job.last_at.zone.should == t.zone
       end
     end
 

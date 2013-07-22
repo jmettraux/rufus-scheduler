@@ -52,6 +52,14 @@ describe Rufus::Scheduler do
         'Sun Nov 18 15:01:00 2012 +0000'
     end
 
+    it 'parses datetimes (with the local timezone implicitely)' do
+
+      localzone = Time.now.strftime('%z')
+
+      parse('Sun Nov 18 16:01:00 2012').strftime('%c %z').should ==
+        "Sun Nov 18 16:01:00 2012 #{localzone}"
+    end
+
     it 'parses cronlines' do
 
       out = parse('* * * * *')
