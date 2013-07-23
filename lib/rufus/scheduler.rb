@@ -477,6 +477,19 @@ module Rufus
       raise ae
     end
 
+    def self.parse_to_time(o)
+
+      t = o
+      t = parse(t) if t.is_a?(String)
+      t = Time.now + t if t.is_a?(Numeric)
+
+      raise ArgumentError.new(
+        "cannot turn #{o.inspect} to a point in time, doesn't make sense"
+      ) unless t.is_a?(Time)
+
+      t
+    end
+
     DURATIONS2M = [
       [ 'y', 365 * 24 * 3600 ],
       [ 'M', 30 * 24 * 3600 ],

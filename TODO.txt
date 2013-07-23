@@ -31,6 +31,7 @@
 [o] unlock spec/parse_spec.rb:30 "parse datimes with timezones"
 [o] some kind of Schedulable (Xyz#call(job, time))
 [o] add Jruby and Rubinius to Travis
+[o] make Job #first_at= / #last_at= automatically parse strings?
 
 [ ] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
@@ -63,8 +64,6 @@
 [ ] Scheduler#reschedule(job) (new copy of the job)
 
 [ ] :if => lambda { |job, time| ... } why not?
-
-[ ] make Job #first_at= / #last_at= automatically parse strings?
 
 
 ################################################################################

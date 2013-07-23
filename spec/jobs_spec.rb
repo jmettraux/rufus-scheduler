@@ -237,6 +237,17 @@ describe Rufus::Scheduler::Job do
       end
     end
 
+    describe '#first_at=' do
+
+      it 'can be used to set first_at directly' do
+
+        job = @scheduler.schedule_every '0.5s', :first => 3600 do; end
+        job.first_at = '2030-12-12 12:00:30'
+
+        job.first_at.strftime('%c').should == 'Thu Dec 12 12:00:30 2030'
+      end
+    end
+
     describe ':last/:last_in/:last_at => point in time' do
 
       it 'accepts a Time instance' do
@@ -302,6 +313,17 @@ describe Rufus::Scheduler::Job do
         lambda {
           @scheduler.every '0.5s', :last => :nada do; end
         }.should raise_error(ArgumentError)
+      end
+    end
+
+    describe '#last_at=' do
+
+      it 'can be used to set last_at directly' do
+
+        job = @scheduler.schedule_every '0.5s', :last_in => 10.0 do; end
+        job.last_at = '2030-12-12 12:00:30'
+
+        job.last_at.strftime('%c').should == 'Thu Dec 12 12:00:30 2030'
       end
     end
   end

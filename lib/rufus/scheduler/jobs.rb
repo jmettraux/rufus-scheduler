@@ -218,7 +218,7 @@ module Rufus
       attr_reader :next_time
       attr_reader :paused_at
 
-      attr_accessor :first_at
+      attr_reader :first_at
       attr_accessor :last_at
       attr_accessor :times
 
@@ -234,23 +234,20 @@ module Rufus
           "cannot accept :times => #{@times.inspect}, not nil or an int"
         ) unless @times == nil || @times.is_a?(Fixnum)
 
-        first = opts[:first] || opts[:first_at] || opts[:first_in] || 0
-        f = first
-        f = Rufus::Scheduler.parse(f) if f.is_a?(String)
-        @first_at = f.is_a?(Numeric) ? Time.now + f : f
+        self.first_at =
+          opts[:first] || opts[:first_at] || opts[:first_in] || 0
+        self.last_at =
+          opts[:last] || opts[:last_at] || opts[:last_in]
+      end
 
-        raise ArgumentError.new(
-          "cannot accept :first => #{first.inspect}, doesn't make sense"
-        ) unless @first_at.is_a?(Time)
+      def first_at=(first)
 
-        last = opts[:last] || opts[:last_at] || opts[:last_in] || nil
-        l = last
-        l = Rufus::Scheduler.parse(l) if l.is_a?(String)
-        @last_at = l.is_a?(Numeric) ? Time.now + l : l
+        @first_at = Rufus::Scheduler.parse_to_time(first)
+      end
 
-        raise ArgumentError.new(
-          "cannot accept :last => #{first.inspect}, doesn't make sense"
-        ) unless @last_at == nil || @last_at.is_a?(Time)
+      def last_at=(last)
+
+        @last_at = last ? Rufus::Scheduler.parse_to_time(last) : nil
       end
 
       def trigger(time)
