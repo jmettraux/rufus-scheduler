@@ -294,7 +294,7 @@ describe Rufus::Scheduler::Job do
 
         job = @scheduler.schedule_every '0.5s', :last_in => '2s' do; end
 
-        job.last_at.should > t + 2
+        job.last_at.should >= t + 2
         job.last_at.should < t + 2.5
       end
 
@@ -304,7 +304,7 @@ describe Rufus::Scheduler::Job do
 
         job = @scheduler.schedule_every '0.5s', :last_in => 2.0 do; end
 
-        job.last_at.should > t + 2
+        job.last_at.should >= t + 2
         job.last_at.should < t + 2.5
       end
 

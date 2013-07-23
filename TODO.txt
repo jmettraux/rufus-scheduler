@@ -67,6 +67,7 @@
 
 [ ] schedule_in(2.days.from_now) {}
     at and in could understand each others time parameter, ftw...
+    use the new #parse_to_time?
 
 
 ################################################################################

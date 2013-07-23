@@ -174,7 +174,7 @@ describe Rufus::Scheduler do
 
       it 'returns the uptime as a float' do
 
-        @scheduler.uptime.should > 0.0
+        @scheduler.uptime.should >= 0.0
       end
     end
 
