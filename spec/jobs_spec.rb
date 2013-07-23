@@ -215,7 +215,7 @@ describe Rufus::Scheduler::Job do
 
         job = @scheduler.schedule_every '0.5s', :first => '1h' do; end
 
-        job.first_at.should > t + 3600
+        job.first_at.should >= t + 3600
         job.first_at.should < t + 3601
       end
 
@@ -225,7 +225,7 @@ describe Rufus::Scheduler::Job do
 
         job = @scheduler.schedule_every '0.5s', :first => 3600 do; end
 
-        job.first_at.should > t + 3600
+        job.first_at.should >= t + 3600
         job.first_at.should < t + 3601
       end
 
