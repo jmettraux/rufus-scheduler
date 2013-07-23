@@ -71,6 +71,10 @@ describe Rufus::Scheduler do
     end
 
     it 'accepts an ActiveSupport .from_now thinggy'
+      #
+      #   schedule_in(2.days.from_now)
+      #
+      # that'd simply require "in" to be a bit like "at"...
   end
 end
 

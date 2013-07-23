@@ -65,6 +65,9 @@
 
 [ ] :if => lambda { |job, time| ... } why not?
 
+[ ] schedule_in(2.days.from_now) {}
+    at and in could understand each others time parameter, ftw...
+
 
 ################################################################################
 
