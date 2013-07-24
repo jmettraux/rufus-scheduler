@@ -33,6 +33,12 @@
 [o] add Jruby and Rubinius to Travis
 [o] make Job #first_at= / #last_at= automatically parse strings?
 
+[ ] rescue StandardError
+    :on_error => :crash[_scheduler]
+    :on_error => :ignore
+    :on_error => ...
+    what about TimeoutError in that scheme ?
+
 [ ] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
     timestamps it?
