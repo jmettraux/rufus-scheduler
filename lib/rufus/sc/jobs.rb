@@ -186,6 +186,19 @@ module Scheduler
 
         @last_job_thread = job_thread
 
+        # note that add_job and add_cron_job ensured that :blocking is
+        # not used along :timeout
+
+        if to = @params[:timeout]
+
+          to_job = @scheduler.in(to, :parent => self, :tags => 'timeout') do
+
+            if job_thread && job_thread.alive?
+              job_thread.raise(Rufus::Scheduler::TimeOutError)
+            end
+          end
+        end
+
         begin
 
           trigger_block
@@ -206,20 +219,6 @@ module Scheduler
         @running = false
       end
 
-      # note that add_job and add_cron_job ensured that :blocking is
-      # not used along :timeout
-
-      if to = @params[:timeout]
-
-        to_job = @scheduler.in(to, :parent => self, :tags => 'timeout') do
-
-          # at this point, @job_thread might be set
-
-          if job_thread && job_thread.alive?
-            job_thread.raise(Rufus::Scheduler::TimeOutError)
-          end
-        end
-      end
     end
 
     # Simply encapsulating the block#call/trigger operation, for easy
