@@ -121,5 +121,28 @@ describe "#{SCHEDULER_CLASS} timeouts" do
 
     @s.jobs.size.should == 0
   end
+
+  it 'times out properly after waiting for a mutex' do
+
+    mutex = Mutex.new
+    timedout = false
+
+    @s.in '0s', :mutex => mutex do
+      sleep 1
+    end
+
+    @s.in '0s', :mutex => mutex, :timeout => 0.1 do
+      begin
+        sleep 2
+      rescue Rufus::Scheduler::TimeOutError => e
+        timedout = true
+      end
+    end
+
+    sleep 2
+
+    @s.jobs.size.should == 0
+    timedout.should be_true
+  end
 end
 
