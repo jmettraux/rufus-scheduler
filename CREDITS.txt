@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Tobias Kraze (https://github.com/kratob) timeout vs mutex fix
 - Thomas Sevestre (https://github.com/thomassevestre) :exception option
 - Matteo Cerutti - last_time / previous_time idea (and initial implementation)
 - Aimee Rose (https://github.com/AimeeRose) cronline and > 24
