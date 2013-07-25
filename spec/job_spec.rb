@@ -68,7 +68,7 @@ describe Rufus::Scheduler::Job do
       job.threads.size.should == 1
 
       t = job.threads.first
-      t[job.thread_key].should_not == nil
+      t[:rufus_scheduler_job].should == job
     end
   end
 
@@ -102,25 +102,6 @@ describe Rufus::Scheduler::Job do
       sleep 2
 
       counter.should == 0
-    end
-  end
-
-  describe '#thread_values' do
-
-    it 'lists the thread values set by the job' do
-
-      job =
-        @scheduler.in('0s', :job => true, :blocking => true) do
-          sleep(1)
-        end
-
-      sleep 0.4
-
-      job.thread_values.size.should == 1
-
-      tv = job.thread_values.first
-      tv.keys.sort_by { |k| k.to_s }.should == [ :job, :timestamp ]
-      tv[:job].should == job
     end
   end
 

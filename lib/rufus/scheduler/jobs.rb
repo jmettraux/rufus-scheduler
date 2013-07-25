@@ -63,6 +63,7 @@ module Rufus
         @unscheduled_at = nil
         @last_time = nil
         @mutexes = {}
+        #@pool_mutex = Mutex.new
 
         @id = determine_id
 
@@ -100,13 +101,7 @@ module Rufus
         if opts[:blocking]
           do_trigger(time)
         else
-          Thread.new do
-            (opts[:mutex] || []).reduce(
-              lambda { do_trigger(time) }
-            ) do |blk, m|
-              lambda { mutex(m).synchronize { blk.call } }
-            end.call
-          end
+          do_trigger_in_thread(time)
         end
 
         false # do not reschedule
@@ -119,14 +114,7 @@ module Rufus
 
       def threads
 
-        Thread.list.select { |t| t[thread_key] != nil }
-      end
-
-      def thread_values
-
-        k = thread_key
-
-        threads.collect { |t| t[k] }
+        Thread.list.select { |t| t[:rufus_scheduler_job] == self }
       end
 
       # Kills all the threads this Job currently has going on.
@@ -141,14 +129,6 @@ module Rufus
         threads.any?
       end
 
-      # Returns the key used in the thread local vars to store info about
-      # the job.
-      #
-      def thread_key
-
-        "#{@scheduler.thread_key}_job_#{@id}"
-      end
-
       protected
 
       def mutex(m)
@@ -158,19 +138,66 @@ module Rufus
 
       def do_trigger(time)
 
-        k = thread_key
-
-        info ={ :job => self, :timestamp => time.to_f }
-        Thread.current[k] = info
-        Thread.current[@scheduler.thread_key] = info
+        Thread.current[:rufus_scheduler_job] = self
+        Thread.current[:rufus_scheduler_time] = time
 
         @last_time = time
 
         args = [ self, time ][0, @callable.arity]
         @callable.call(*args)
 
-        Thread.current[k] = nil
-        Thread.current[@scheduler.thread_key] = nil
+      #rescue StandardError => se
+      #
+      #  p se
+      #  puts se.backtrace
+
+      ensure
+
+        Thread.current[:rufus_scheduler_job] = nil
+        Thread.current[:rufus_scheduler_time] = nil
+      end
+
+      def start_job_thread
+
+        thread =
+          Thread.new do
+
+            #Thread.current[@scheduler.thread_key] = true
+            #Thread.current[:rufus_scheduler_job_thread] = true
+            Thread.pass
+
+            loop do
+
+              job, time = @scheduler.queue.pop
+
+              #break if job == :bye
+
+              (job.opts[:mutex] || []).reduce(
+                lambda { job.do_trigger(time) }
+              ) do |b, m|
+                lambda { mutex(m).synchronize { b.call } }
+              end.call
+            end
+          end
+
+        thread[@scheduler.thread_key] = true
+        thread[:rufus_scheduler_job_thread] = true
+      end
+
+      def do_trigger_in_thread(time)
+
+        #@pool_mutex.synchronize do
+
+        threads = @scheduler.job_threads
+        count = threads.size
+        #vacant = threads.select { |t| t[:rufus_scheduler_job] == nil }.size
+        min = @scheduler.min_job_threads
+        max = @scheduler.max_job_threads
+
+        start_job_thread if count < max
+        #end
+
+        @scheduler.queue << [ self, time ]
       end
     end
 

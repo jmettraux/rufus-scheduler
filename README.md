@@ -378,11 +378,9 @@ job.scheduled_at
 
 Unschedule the job, preventing it from firing again and removing it from the schedule. This doesn't prevent a running thread for this job to run until its end.
 
-### threads, thread_values
+### threads
 
 Returns the list of threads currently "hosting" runs of this Job instance.
-
-Thread values returns the info stored under the job key in their thread local variables.
 
 ### kill
 

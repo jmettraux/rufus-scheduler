@@ -37,9 +37,18 @@ module Rufus
 
     VERSION = '3.0.0'
 
+    MIN_JOB_THREADS = 7
+    MAX_JOB_THREADS = 35
+
     attr_accessor :frequency
     attr_reader :thread
+    attr_reader :thread_key
     attr_reader :mutexes
+
+    attr_accessor :min_job_threads
+    attr_accessor :max_job_threads
+
+    attr_reader :queue
 
     def initialize(opts={})
 
@@ -49,8 +58,15 @@ module Rufus
       @jobs = JobArray.new
 
       @opts = opts
-      @frequency = Rufus::Scheduler.parse(@opts[:frequency] || 0.300)
+      @frequency = Rufus::Scheduler.parse(opts[:frequency] || 0.300)
       @mutexes = {}
+
+      @queue = Queue.new
+
+      @min_job_threads = opts[:min_job_threads] || MIN_JOB_THREADS
+      @max_job_threads = opts[:max_job_threads] || MAX_JOB_THREADS
+
+      @thread_key = "rufus_scheduler_#{self.object_id}"
 
       start
     end
@@ -179,7 +195,10 @@ module Rufus
     #
     def jobs(opts={})
 
-      js = (@jobs.to_a + job_threads.collect { |t| t[thread_key][:job] }).uniq
+      js =
+        (@jobs.to_a + running_job_threads.collect { |t|
+          t[:rufus_scheduler_job]
+        }).uniq
 
       if opts[:running]
         js = js.select { |j| j.running? }
@@ -224,12 +243,17 @@ module Rufus
 
     def job_threads
 
-      Thread.list.select { |t| t[thread_key] }
+      Thread.list.select { |t| t[thread_key] && t[:rufus_scheduler_job_thread] }
     end
 
-    def thread_key
+    def running_job_threads
 
-      @thread_key ||= "rufus_scheduler_#{self.object_id}"
+      Thread.list.select { |t| t[thread_key] && t[:rufus_scheduler_job] }
+    end
+
+    def vacant_job_threads
+
+      job_threads.select { |t| t[:rufus_scheduler_job] == nil }
     end
 
     def running_jobs(opts={})
@@ -265,8 +289,9 @@ module Rufus
           end
         end
 
+      @thread[@thread_key] = true
       @thread[:rufus_scheduler] = self
-      @thread[:name] = @opts[:thread_name] || "#{thread_key}_scheduler"
+      @thread[:name] = @opts[:thread_name] || "#{@thread_key}_scheduler"
     end
 
     def unschedule_jobs
@@ -291,15 +316,15 @@ module Rufus
 
     def timeout_jobs
 
-      job_threads.each do |t|
+      running_job_threads.each do |t|
 
-        info = t[thread_key]
-        to = info[:job].timeout
+        job = t[:rufus_scheduler_job]
+        to = job.timeout
 
         next unless to
 
         now = Time.now.to_f
-        ts = info[:timestamp]
+        ts = t[:rufus_scheduler_time].to_f
 
         if to.is_a?(Time)
           next if to.to_f > now

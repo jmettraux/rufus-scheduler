@@ -33,6 +33,10 @@
 [o] add Jruby and Rubinius to Travis
 [o] make Job #first_at= / #last_at= automatically parse strings?
 
+[ ] add spec for job queued then unscheduled
+[ ] add spec for Scheduler#shutdown and job threads
+[ ] drop min threads setting?
+
 [ ] rescue StandardError
     :on_error => :crash[_scheduler]
     :on_error => :ignore
