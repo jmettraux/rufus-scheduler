@@ -32,6 +32,10 @@
 [o] some kind of Schedulable (Xyz#call(job, time))
 [o] add Jruby and Rubinius to Travis
 [o] make Job #first_at= / #last_at= automatically parse strings?
+[o] bring in Kratob's spec about mutex vs timeout and adapt 3.0 to it,
+    https://github.com/jmettraux/rufus-scheduler/pull/67
+
+[ ] remove the time in job.trigger(time)
 
 [ ] add spec for job queued then unscheduled
 [ ] add spec for Scheduler#shutdown and job threads
@@ -55,7 +59,7 @@
 
 [ ] do repeat jobs reschedule after timing out?
 
-[ ] thread pool something? Thread upper limit?
+[.] thread pool something? Thread upper limit?
     look at EM's thread pool
 
 [ ] discard past? discard_past => true or => "1d"

@@ -319,18 +319,14 @@ module Rufus
       running_job_threads.each do |t|
 
         job = t[:rufus_scheduler_job]
-        to = job.timeout
+        to = t[:rufus_scheduler_timeout]
 
         next unless to
 
-        now = Time.now.to_f
-        ts = t[:rufus_scheduler_time].to_f
+        ts = t[:rufus_scheduler_time]
+        to = to.is_a?(Time) ? to : ts + to
 
-        if to.is_a?(Time)
-          next if to.to_f > now
-        else
-          next if ts + to < now
-        end
+        next if to > Time.now
 
         t.raise(Rufus::Scheduler::TimeoutError)
       end

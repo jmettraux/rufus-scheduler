@@ -38,7 +38,6 @@ module Rufus
       attr_reader :original
       attr_reader :scheduled_at
       attr_reader :last_time
-      attr_reader :timeout
       attr_reader :unscheduled_at
       attr_reader :tags
       attr_reader :callable
@@ -72,13 +71,6 @@ module Rufus
           'missing block or callable to schedule',
           caller[2..-1]
         ) unless @callable
-
-        @timeout =
-          if to = @opts[:timeout]
-            Rufus::Scheduler.parse(to)
-          else
-            nil
-          end
 
         @tags = Array(opts[:tag] || opts[:tags]).collect { |t| t.to_s }
 
@@ -131,6 +123,15 @@ module Rufus
 
       protected
 
+      def compute_timeout
+
+        if to = @opts[:timeout]
+          Rufus::Scheduler.parse(to)
+        else
+          nil
+        end
+      end
+
       def mutex(m)
 
         m.is_a?(Mutex) ? m : (@scheduler.mutexes[m.to_s] ||= Mutex.new)
@@ -138,12 +139,16 @@ module Rufus
 
       def do_trigger(time)
 
+        t = Time.now
+          # if there are mutexes, t might be really bigger than time
+
         Thread.current[:rufus_scheduler_job] = self
-        Thread.current[:rufus_scheduler_time] = time
+        Thread.current[:rufus_scheduler_time] = t
+        Thread.current[:rufus_scheduler_timeout] = compute_timeout
 
-        @last_time = time
+        @last_time = t
 
-        args = [ self, time ][0, @callable.arity]
+        args = [ self, t ][0, @callable.arity]
         @callable.call(*args)
 
       #rescue StandardError => se
@@ -155,6 +160,7 @@ module Rufus
 
         Thread.current[:rufus_scheduler_job] = nil
         Thread.current[:rufus_scheduler_time] = nil
+        Thread.current[:rufus_scheduler_timeout] = nil
       end
 
       def start_job_thread

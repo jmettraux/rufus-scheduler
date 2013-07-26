@@ -301,14 +301,6 @@ describe Rufus::Scheduler::Job do
 
   context ':timeout => duration_or_point_in_time' do
 
-    it 'is set at schedule time' do
-
-      job = @scheduler.schedule_in '10d', :timeout => '1d' do; end
-
-      job.opts[:timeout].should == '1d'
-      job.timeout.should == 86400.0
-    end
-
     it 'interrupts the job it is stashed to (duration)' do
 
       counter = 0
@@ -348,6 +340,34 @@ describe Rufus::Scheduler::Job do
       sleep(3)
 
       counter.should == 1
+    end
+
+    it 'starts timing when the job enters successfully all its mutexes' do
+
+      t0, t1, t2 = nil
+
+      @scheduler.schedule_in '0s', :mutex => 'a' do
+        sleep 1
+        t0 = Time.now
+      end
+
+      job =
+        @scheduler.schedule_in '0.1s', :mutex => 'a', :timeout => '1s' do
+          begin
+            t1 = Time.now
+            sleep 2
+          rescue Rufus::Scheduler::TimeoutError => e
+            t2 = Time.now
+          end
+        end
+
+      sleep 3
+
+      t0.should < t1
+
+      d = t2 - t1
+      d.should >= 1.0
+      d.should < 1.5
     end
   end
 end
