@@ -363,7 +363,7 @@ describe Rufus::Scheduler::Job do
 
       sleep 3
 
-      t0.should < t1
+      t0.should <= t1
 
       d = t2 - t1
       d.should >= 1.0
