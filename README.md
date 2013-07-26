@@ -73,7 +73,26 @@ TODO: in/at/cron/every
 
 ### schedule blocks arguments (job, time)
 
-TODO
+A schedule block may be given 0, 1 or 2 arguments.
+
+The first argument is "job", it's simple the Job instance involved. It might be useful if the job is to be unscheduled for some reason.
+
+```ruby
+scheduler.every '10m' do |job|
+
+  status = determine_pie_status
+
+  if status == 'burnt' || status == 'cooked'
+    stop_oven
+    takeout_pie
+    job.unschedule
+  end
+end
+```
+
+The second argument is "time", it's the time when the job got cleared for triggering (not Time.now).
+
+Note that time is the time when the job got cleared for triggering. If there are mutexes involved, now = mutex_wait_time + time...
 
 ### scheduling not just blocks
 
@@ -106,6 +125,8 @@ scheduler.in '3d5m', oh
 ```
 
 The call method must accept 2 (job, time), 1 (job) or 0 arguments.
+
+Note that time is the time when the job got cleared for triggering. If there are mutexes involved, now = mutex_wait_time + time...
 
 
 ## pause and resume the scheduler

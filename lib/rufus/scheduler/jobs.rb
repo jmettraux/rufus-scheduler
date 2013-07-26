@@ -148,7 +148,7 @@ module Rufus
 
         @last_time = t
 
-        args = [ self, t ][0, @callable.arity]
+        args = [ self, time ][0, @callable.arity]
         @callable.call(*args)
 
       #rescue StandardError => se
