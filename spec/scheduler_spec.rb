@@ -51,18 +51,18 @@ describe Rufus::Scheduler do
       t[:rufus_scheduler].should == scheduler
     end
 
-    it 'accepts a :min_job_threads option' do
+    it 'accepts a :min_work_threads option' do
 
-      scheduler = Rufus::Scheduler.new(:min_job_threads => 9)
+      scheduler = Rufus::Scheduler.new(:min_work_threads => 9)
 
-      scheduler.min_job_threads.should == 9
+      scheduler.min_work_threads.should == 9
     end
 
-    it 'accepts a :max_job_threads option' do
+    it 'accepts a :max_work_threads option' do
 
-      scheduler = Rufus::Scheduler.new(:max_job_threads => 9)
+      scheduler = Rufus::Scheduler.new(:max_work_threads => 9)
 
-      scheduler.max_job_threads.should == 9
+      scheduler.max_work_threads.should == 9
     end
   end
 
@@ -136,7 +136,7 @@ describe Rufus::Scheduler do
     end
   end
 
-  describe '#unschedule(job_or_job_id)' do
+  describe '#unschedule(job_or_work_id)' do
 
     it 'accepts job ids' do
 
@@ -252,18 +252,19 @@ describe Rufus::Scheduler do
 #      end
 #    end
 
-  describe '#job_threads' do
-    it 'works'
-  end
-  describe '#vacant_job_threads' do
+  describe '#work_threads(:all)' do
     it 'works'
   end
 
-  describe '#running_job_threads' do
+  describe '#work_threads(:vacant)' do
+    it 'works'
+  end
+
+  describe '#work_threads(:active)' do
 
     it 'returns [] when there are no jobs running' do
 
-      @scheduler.running_job_threads.should == []
+      @scheduler.work_threads(:active).should == []
     end
 
     it 'returns the list of threads of the running jobs' do
@@ -275,9 +276,9 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      @scheduler.running_job_threads.size.should == 1
+      @scheduler.work_threads(:active).size.should == 1
 
-      t = @scheduler.running_job_threads.first
+      t = @scheduler.work_threads(:active).first
 
       t.class.should == Thread
       t[@scheduler.thread_key].should == true
@@ -296,45 +297,45 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      scheduler.running_job_threads.should == []
+      scheduler.work_threads(:active).should == []
 
       scheduler.shutdown
     end
   end
 
-  describe '#min_job_threads' do
+  describe '#min_work_threads' do
 
     it 'returns the min job thread count' do
 
-      @scheduler.min_job_threads.should == 7
+      @scheduler.min_work_threads.should == 7
     end
   end
 
-  describe '#min_job_threads=' do
+  describe '#min_work_threads=' do
 
     it 'sets the min job thread count' do
 
-      @scheduler.min_job_threads = 1
+      @scheduler.min_work_threads = 1
 
-      @scheduler.min_job_threads.should == 1
+      @scheduler.min_work_threads.should == 1
     end
   end
 
-  describe '#max_job_threads' do
+  describe '#max_work_threads' do
 
     it 'returns the max job thread count' do
 
-      @scheduler.max_job_threads.should == 35
+      @scheduler.max_work_threads.should == 35
     end
   end
 
-  describe '#max_job_threads=' do
+  describe '#max_work_threads=' do
 
     it 'sets the max job thread count' do
 
-      @scheduler.max_job_threads = 14
+      @scheduler.max_work_threads = 14
 
-      @scheduler.max_job_threads.should == 14
+      @scheduler.max_work_threads.should == 14
     end
   end
 

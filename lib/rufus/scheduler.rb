@@ -37,16 +37,21 @@ module Rufus
 
     VERSION = '3.0.0'
 
-    MIN_JOB_THREADS = 7
-    MAX_JOB_THREADS = 35
+    #
+    # This error is thrown when the :timeout attribute triggers
+    #
+    class TimeoutError < StandardError; end
+
+    MIN_WORK_THREADS = 7
+    MAX_WORK_THREADS = 35
 
     attr_accessor :frequency
     attr_reader :thread
     attr_reader :thread_key
     attr_reader :mutexes
 
-    attr_accessor :min_job_threads
-    attr_accessor :max_job_threads
+    attr_accessor :min_work_threads
+    attr_accessor :max_work_threads
 
     attr_reader :queue
 
@@ -63,8 +68,8 @@ module Rufus
 
       @queue = Queue.new
 
-      @min_job_threads = opts[:min_job_threads] || MIN_JOB_THREADS
-      @max_job_threads = opts[:max_job_threads] || MAX_JOB_THREADS
+      @min_work_threads = opts[:min_work_threads] || MIN_WORK_THREADS
+      @max_work_threads = opts[:max_work_threads] || MAX_WORK_THREADS
 
       @thread_key = "rufus_scheduler_#{self.object_id}"
 
@@ -196,7 +201,7 @@ module Rufus
     def jobs(opts={})
 
       js =
-        (@jobs.to_a + running_job_threads.collect { |t|
+        (@jobs.to_a + work_threads(:active).collect { |t|
           t[:rufus_scheduler_job]
         }).uniq
 
@@ -241,19 +246,38 @@ module Rufus
       @jobs[job_id]
     end
 
-    def job_threads
+    # Lists all the threads associated with this scheduler.
+    #
+    def threads
 
-      Thread.list.select { |t| t[thread_key] && t[:rufus_scheduler_job_thread] }
+      Thread.list.select { |t| t[thread_key] }
     end
 
-    def running_job_threads
+    # Lists all the work threads (the ones actually running the scheduled
+    # block code)
+    #
+    # Accepts a query option, which can be set to:
+    # * :all (default), returns all the threads that are work threads
+    #   or are currently running a job
+    # * :active, returns all threads that are currenly running a job
+    # * :vacant, returns the threads that are not running a job
+    #
+    # If, thanks to :blocking => true, a job is scheduled to monopolize the
+    # main scheduler thread, that thread will get returned when :active or
+    # :all.
+    #
+    def work_threads(query=:all)
 
-      Thread.list.select { |t| t[thread_key] && t[:rufus_scheduler_job] }
-    end
+      ts =
+        threads.select { |t|
+          t[:rufus_scheduler_job] || t[:rufus_scheduler_work_thread]
+        }
 
-    def vacant_job_threads
-
-      job_threads.select { |t| t[:rufus_scheduler_job] == nil }
+      case query
+        when :active then ts.select { |t| t[:rufus_scheduler_job] }
+        when :vacant then ts.reject { |t| t[:rufus_scheduler_job] }
+        else ts
+      end
     end
 
     def running_jobs(opts={})
@@ -316,12 +340,13 @@ module Rufus
 
     def timeout_jobs
 
-      running_job_threads.each do |t|
+      work_threads(:active).each do |t|
 
         job = t[:rufus_scheduler_job]
         to = t[:rufus_scheduler_timeout]
 
-        next unless to
+        next unless job && to
+          # thread might just have become inactive (job -> nil)
 
         ts = t[:rufus_scheduler_time]
         to = to.is_a?(Time) ? to : ts + to
@@ -429,12 +454,6 @@ module Rufus
 
         @array.insert(i, job)
       end
-    end
-
-    #
-    # This error is thrown when the :timeout attribute triggers
-    #
-    class TimeoutError < RuntimeError
     end
 
     #--

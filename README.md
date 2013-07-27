@@ -576,6 +576,9 @@ Kills all the job (threads) and then shuts the scheduler down. Radical.
 
 Let's the current thread join the scheduling thread in rufus-scheduler. The thread comes back when the scheduler gets shut down.
 
+### Scheduler#threads
+### Scheduler#work_threads(query=:all/:active/:vacant)
+
 
 ## Rufus::Scheduler.new options
 

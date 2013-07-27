@@ -21,13 +21,13 @@ describe Rufus::Scheduler do
 
     it 'starts with an empty thread pool' do
 
-      @scheduler.job_threads.size.should == 0
+      @scheduler.work_threads.size.should == 0
     end
 
-    it 'does not cross the max_job_threads threshold' do
+    it 'does not cross the max_work_threads threshold' do
 
-      @scheduler.min_job_threads = 2
-      @scheduler.max_job_threads = 5
+      @scheduler.min_work_threads = 2
+      @scheduler.max_work_threads = 5
 
       10.times do
         @scheduler.in '0s' do
@@ -42,12 +42,12 @@ describe Rufus::Scheduler do
       #  p t[:rufus_scheduler_job].class
       #end
 
-      @scheduler.job_threads.size.should == 5
+      @scheduler.work_threads.size.should == 5
     end
 
     it 'does not execute unscheduled jobs' do
 
-      @scheduler.max_job_threads = 1
+      @scheduler.max_work_threads = 1
 
       counter = 0
 

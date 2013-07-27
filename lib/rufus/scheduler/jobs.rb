@@ -163,7 +163,7 @@ module Rufus
         Thread.current[:rufus_scheduler_timeout] = nil
       end
 
-      def start_job_thread
+      def start_work_thread
 
         thread =
           Thread.new do
@@ -188,20 +188,20 @@ module Rufus
           end
 
         thread[@scheduler.thread_key] = true
-        thread[:rufus_scheduler_job_thread] = true
+        thread[:rufus_scheduler_work_thread] = true
       end
 
       def do_trigger_in_thread(time)
 
         #@pool_mutex.synchronize do
 
-        threads = @scheduler.job_threads
+        threads = @scheduler.work_threads
         count = threads.size
         #vacant = threads.select { |t| t[:rufus_scheduler_job] == nil }.size
-        min = @scheduler.min_job_threads
-        max = @scheduler.max_job_threads
+        min = @scheduler.min_work_threads
+        max = @scheduler.max_work_threads
 
-        start_job_thread if count < max
+        start_work_thread if count < max
         #end
 
         @scheduler.queue << [ self, time ]
