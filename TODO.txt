@@ -39,8 +39,10 @@
     no, pass the job as arg to the block, then let the block do job.unschedule
     so, document schedule.every('10d') { |j| j.unschedule if x?() }
 [x] remove the time in job.trigger(time)
+[o] add spec for job queued then unscheduled
 
-[ ] add spec for job queued then unscheduled
+[ ] rescue KillJobSignal in job thread loop to kill just the job... idea
+
 [ ] add spec for Scheduler#shutdown and job threads
 [ ] drop min threads setting?
 

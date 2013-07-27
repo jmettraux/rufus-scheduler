@@ -177,6 +177,7 @@ module Rufus
               job, time = @scheduler.queue.pop
 
               #break if job == :bye
+              next if job.unscheduled_at
 
               (job.opts[:mutex] || []).reduce(
                 lambda { job.do_trigger(time) }

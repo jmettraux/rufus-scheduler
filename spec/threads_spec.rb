@@ -44,6 +44,32 @@ describe Rufus::Scheduler do
 
       @scheduler.job_threads.size.should == 5
     end
+
+    it 'does not execute unscheduled jobs' do
+
+      @scheduler.max_job_threads = 1
+
+      counter = 0
+
+      job0 =
+        @scheduler.schedule_in '0.3s' do
+          counter += 1
+          sleep 1
+        end
+      job1 =
+        @scheduler.schedule_in '0.35s' do
+          counter += 1
+          sleep 1
+        end
+
+      sleep(0.1) while counter < 1
+      sleep(0.1) while @scheduler.queue.size < 1
+      job1.unschedule
+
+      sleep(2)
+
+      counter.should == 1
+    end
   end
 end
 
