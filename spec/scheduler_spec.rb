@@ -454,41 +454,6 @@ describe Rufus::Scheduler do
   # management methods
   #++
 
-  describe '#terminate_all_jobs' do
-
-    it 'unschedules all the jobs' do
-
-      @scheduler.in '10d' do; end
-      @scheduler.at Time.now + 10_000 do; end
-
-      sleep 0.4
-
-      @scheduler.jobs.size.should == 2
-
-      @scheduler.terminate_all_jobs
-
-      @scheduler.jobs.size.should == 0
-    end
-
-    it 'blocks until all the running jobs are done' do
-
-      counter = 0
-
-      @scheduler.in '0s' do
-        sleep 1
-        counter = counter + 1
-      end
-
-      sleep 0.4
-
-      @scheduler.terminate_all_jobs
-
-      @scheduler.jobs.size.should == 0
-      @scheduler.running_jobs.size.should == 0
-      counter.should == 1
-    end
-  end
-
   describe '#shutdown' do
 
     it 'blanks the uptime' do
@@ -522,9 +487,9 @@ describe Rufus::Scheduler do
     #it 'has a #close alias'
   end
 
-  describe '#shutdown(:terminate)' do
+  describe '#shutdown(:wait)' do
 
-    it 'shuts down when all the jobs terminated' do
+    it 'shuts down and blocks until all the jobs ended their current runs' do
 
       counter = 0
 
@@ -535,11 +500,12 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      @scheduler.shutdown(:terminate)
+      @scheduler.shutdown(:wait)
 
       counter.should == 1
       @scheduler.uptime.should == nil
       @scheduler.running_jobs.should == []
+      @scheduler.threads.should == []
     end
   end
 
@@ -567,6 +533,7 @@ describe Rufus::Scheduler do
       counter.should == 0
       @scheduler.uptime.should == nil
       @scheduler.running_jobs.should == []
+      @scheduler.threads.should == []
     end
   end
 

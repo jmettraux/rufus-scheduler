@@ -168,15 +168,15 @@ module Rufus
         thread =
           Thread.new do
 
-            #Thread.current[@scheduler.thread_key] = true
-            #Thread.current[:rufus_scheduler_job_thread] = true
-            Thread.pass
+            Thread.current[@scheduler.thread_key] = true
+            Thread.current[:rufus_scheduler_job_thread] = true
 
             loop do
 
-              job, time = @scheduler.queue.pop
+              job, time = @scheduler.work_queue.pop
 
-              #break if job == :bye
+              break if @scheduler.started_at == nil
+
               next if job.unscheduled_at
 
               (job.opts[:mutex] || []).reduce(
@@ -189,14 +189,16 @@ module Rufus
 
         thread[@scheduler.thread_key] = true
         thread[:rufus_scheduler_work_thread] = true
+          #
+          # same as above (in the thead block),
+          # but it has to be done as quickly as possible
       end
 
       def do_trigger_in_thread(time)
 
         #@pool_mutex.synchronize do
 
-        threads = @scheduler.work_threads
-        count = threads.size
+        count = @scheduler.work_threads.size
         #vacant = threads.select { |t| t[:rufus_scheduler_job] == nil }.size
         min = @scheduler.min_work_threads
         max = @scheduler.max_work_threads
@@ -204,7 +206,7 @@ module Rufus
         start_work_thread if count < max
         #end
 
-        @scheduler.queue << [ self, time ]
+        @scheduler.work_queue << [ self, time ]
       end
     end
 

@@ -63,7 +63,7 @@ describe Rufus::Scheduler do
         end
 
       sleep(0.1) while counter < 1
-      sleep(0.1) while @scheduler.queue.size < 1
+      sleep(0.1) while @scheduler.work_queue.size < 1
       job1.unschedule
 
       sleep(2)

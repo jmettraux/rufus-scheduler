@@ -40,11 +40,16 @@
     so, document schedule.every('10d') { |j| j.unschedule if x?() }
 [x] remove the time in job.trigger(time)
 [o] add spec for job queued then unscheduled
+[o] add spec for Scheduler#shutdown and work threads
+[o] at some point, bring back rbx19 to Travis
+
+[ ] move the parse/util part of scheduler.rb to util.rb
 
 [ ] rescue KillJobSignal in job thread loop to kill just the job... idea
 
-[ ] add spec for Scheduler#shutdown and job threads
 [ ] drop min threads setting?
+
+[ ] add spec for raise if scheduling a job while scheduler is shutting down
 
 [ ] rescue StandardError
     :on_error => :crash[_scheduler]
@@ -87,8 +92,6 @@
 [ ] schedule_in(2.days.from_now) {}
     at and in could understand each others time parameter, ftw...
     use the new #parse_to_time?
-
-[o] at some point, bring back rbx19 to Travis
 
 
 ################################################################################

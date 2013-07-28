@@ -46,6 +46,7 @@ module Rufus
     MAX_WORK_THREADS = 35
 
     attr_accessor :frequency
+    attr_reader :started_at
     attr_reader :thread
     attr_reader :thread_key
     attr_reader :mutexes
@@ -53,7 +54,7 @@ module Rufus
     attr_accessor :min_work_threads
     attr_accessor :max_work_threads
 
-    attr_reader :queue
+    attr_reader :work_queue
 
     def initialize(opts={})
 
@@ -66,7 +67,7 @@ module Rufus
       @frequency = Rufus::Scheduler.parse(opts[:frequency] || 0.300)
       @mutexes = {}
 
-      @queue = Queue.new
+      @work_queue = Queue.new
 
       @min_work_threads = opts[:min_work_threads] || MIN_WORK_THREADS
       @max_work_threads = opts[:max_work_threads] || MAX_WORK_THREADS
@@ -87,24 +88,18 @@ module Rufus
       fail "this is rufus-scheduler 3.0, use .new instead of .start_new"
     end
 
-    # Shuts down the scheduler.
-    #
-    # By default simply stops the scheduler thread.
-    # It accept an opt parameter. When set to :terminate, will terminate all
-    # the jobs and then shut down the scheduler.
-    #
-    # The opt can all be set to :kill, in which case all the job threads are
-    # killed and the scheduler is shut down.
-    #
     def shutdown(opt=nil)
 
-      if opt == :terminate
-        terminate_all_jobs
-      elsif opt == :kill
-        jobs.each { |j| j.kill }
-      end
+      jobs.each { |j| j.unschedule }
 
       @started_at = nil
+      @work_queue.clear
+
+      if opt == :wait
+        join_all_work_threads
+      elsif opt == :kill
+        kill_all_work_threads
+      end
     end
 
     alias stop shutdown
@@ -285,16 +280,34 @@ module Rufus
       jobs(opts.merge(:running => true))
     end
 
+    protected
+
     def terminate_all_jobs
 
       jobs.each { |j| j.unschedule }
 
-      while running_jobs.size > 0
-        sleep 0.01
-      end
+      sleep 0.01 while running_jobs.size > 0
     end
 
-    protected
+    def join_all_work_threads
+
+      work_threads.size.times { @work_queue << :sayonara }
+
+      work_threads.each { |t| t.join }
+
+      @work_queue.clear
+    end
+
+    def kill_all_work_threads
+
+      work_threads.each { |t| t.kill }
+    end
+
+    def free_all_work_threads
+
+      # TODO
+      #work_threads.each { |t| t.raise CancelSignal }
+    end
 
     def start
 

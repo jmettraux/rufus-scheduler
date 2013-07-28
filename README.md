@@ -556,17 +556,13 @@ Whereas other "_jobs" method scan the scheduled job list, this method scans the 
 
 Unschedule a job given directly or by its id.
 
-### Scheduler#terminate_all_jobs
-
-Unschedules all the jobs, then block until all the jobs that were running terminate.
-
 ### Scheduler#shutdown
 
 Shuts down the scheduler, ceases any scheduler/triggering activity.
 
-### Scheduler#shutdown(:terminate)
+### Scheduler#shutdown(:wait)
 
-Calls Scheduler#terminate_all_jobs then shuts down the scheduler. That means this shutdown variant blocks until all the jobs are terminated and then shuts down.
+Shuts down the scheduler, waits (blocks) until all the jobs cease running.
 
 ### Scheduler#shutdown(:kill)
 
