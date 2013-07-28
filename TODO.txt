@@ -44,10 +44,9 @@
 [o] at some point, bring back rbx19 to Travis
 [o] move the parse/util part of scheduler.rb to util.rb
 [o] rescue KillSignal in job thread loop to kill just the job
+[o] add spec for raise if scheduling a job while scheduler is shutting down
 
 [ ] drop min threads setting?
-
-[ ] add spec for raise if scheduling a job while scheduler is shutting down
 
 [ ] rescue StandardError
     :on_error => :crash[_scheduler]

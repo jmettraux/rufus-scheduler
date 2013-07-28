@@ -91,9 +91,10 @@ module Rufus
 
     def shutdown(opt=nil)
 
+      @started_at = nil
+
       jobs.each { |j| j.unschedule }
 
-      @started_at = nil
       @work_queue.clear
 
       if opt == :wait
@@ -372,6 +373,10 @@ module Rufus
     end
 
     def do_schedule(job_type, t, callable, opts, return_job_instance, block)
+
+      raise RuntimeError.new(
+        'cannot schedule, scheduler is down or shutting down'
+      ) if @started_at == nil
 
       callable, opts = nil, callable if callable.is_a?(Hash)
       return_job_instance ||= opts[:job]

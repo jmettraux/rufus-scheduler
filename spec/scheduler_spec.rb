@@ -73,7 +73,7 @@ describe Rufus::Scheduler do
     @scheduler.shutdown
   end
 
-  describe '#in / #schedule_in' do
+  describe 'a schedule method' do
 
     it 'passes the job to its block when it triggers' do
 
@@ -133,6 +133,15 @@ describe Rufus::Scheduler do
       sleep 0.4
 
       job.handler.counter.should == 1
+    end
+
+    it 'raises if the scheduler is shutting down' do
+
+      @scheduler.shutdown
+
+      lambda {
+        @scheduler.in('0s') { puts 'hhhhhhhhhhhello!!' }
+      }.should raise_error(RuntimeError)
     end
   end
 
