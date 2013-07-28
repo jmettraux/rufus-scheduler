@@ -85,23 +85,35 @@ describe Rufus::Scheduler::Job do
       Thread.list.size.should == tls
     end
 
-    it 'kills all the threads of the job' do
+    it 'makes the threads vacant' do
 
       counter = 0
 
       job =
-        @scheduler.schedule_every '0.5s' do
+        @scheduler.schedule_in '0s' do
           sleep 2
           counter = counter + 1
         end
 
       sleep 1
 
+      v0 = @scheduler.work_threads(:vacant).size
+      a0 = @scheduler.work_threads(:active).size
+
       job.kill
 
       sleep 2
 
+      v1 = @scheduler.work_threads(:vacant).size
+      a1 = @scheduler.work_threads(:active).size
+
       counter.should == 0
+
+      v0.should == 0
+      a0.should == 1
+
+      v1.should == 1
+      a1.should == 0
     end
   end
 

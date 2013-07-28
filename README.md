@@ -405,9 +405,11 @@ Returns the list of threads currently "hosting" runs of this Job instance.
 
 ### kill
 
-Kills all the currently running threads hosting runs of this Job instance.
+Interrupts all the work threads currently running for this job instance. They discard their work and are free for their next run (of whatever job).
 
-Nota bene: this doesn't unschedule the Job instance.
+Note: this doesn't unschedule the Job instance.
+
+Note: if the job is pooled for another run, a free work thread will probably pick up that next run and the job will appear as running again. You'd have to unschedule and kill to make sure the job doesn't run again.
 
 ### running?
 

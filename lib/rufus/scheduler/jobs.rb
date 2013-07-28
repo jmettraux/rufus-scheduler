@@ -33,6 +33,11 @@ module Rufus
 
     class Job
 
+      #
+      # Used by Job#kill
+      #
+      class KillSignal < StandardError; end
+
       attr_reader :id
       attr_reader :opts
       attr_reader :original
@@ -113,7 +118,7 @@ module Rufus
       #
       def kill
 
-        threads.each { |t| t.kill }
+        threads.each { |t| t.raise(KillSignal) }
       end
 
       def running?
@@ -179,11 +184,18 @@ module Rufus
 
               next if job.unscheduled_at
 
-              (job.opts[:mutex] || []).reduce(
-                lambda { job.do_trigger(time) }
-              ) do |b, m|
-                lambda { mutex(m).synchronize { b.call } }
-              end.call
+              begin
+
+                (job.opts[:mutex] || []).reduce(
+                  lambda { job.do_trigger(time) }
+                ) do |b, m|
+                  lambda { mutex(m).synchronize { b.call } }
+                end.call
+
+              rescue KillSignal
+
+                # simply go on looping
+              end
             end
           end
 
