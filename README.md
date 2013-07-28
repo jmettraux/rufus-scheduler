@@ -577,7 +577,18 @@ Kills all the job (threads) and then shuts the scheduler down. Radical.
 Let's the current thread join the scheduling thread in rufus-scheduler. The thread comes back when the scheduler gets shut down.
 
 ### Scheduler#threads
+
+Returns all the threads associated with the scheduler, including the scheduler thread itself.
+
 ### Scheduler#work_threads(query=:all/:active/:vacant)
+
+Lists the work threads associated with the scheduler. The query option defaults to :all.
+
+* :all : all the work threads
+* :active : all the work threads currently running a Job
+* :vacant : all the work threads currently not running a Job
+
+Note that the main schedule thread will be returned if it is currently running a Job (ie one of those :blocking => true jobs).
 
 
 ## Rufus::Scheduler.new options

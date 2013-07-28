@@ -252,12 +252,67 @@ describe Rufus::Scheduler do
 #      end
 #    end
 
+  describe '#threads' do
+
+    it 'just lists the main thread (scheduler thread) when no job is scheduled' do
+
+      @scheduler.threads.should == [ @scheduler.thread ]
+    end
+
+    it 'lists all the threads a scheduler uses' do
+
+      @scheduler.in '0s' do
+        sleep(2)
+      end
+
+      sleep 0.4
+
+      @scheduler.threads.size.should == 2
+    end
+  end
+
   describe '#work_threads(:all)' do
-    it 'works'
+
+    it 'returns an empty array when the scheduler has not yet done anything' do
+
+      @scheduler.work_threads.should == []
+    end
+
+    it 'lists all the work threads in the pool' do
+
+      @scheduler.in '0s' do
+        # nada
+      end
+      @scheduler.in '0s' do
+        sleep(2)
+      end
+
+      sleep 0.4
+
+      @scheduler.work_threads.size.should == 2
+    end
   end
 
   describe '#work_threads(:vacant)' do
-    it 'works'
+
+    it 'returns an empty array when the scheduler has not yet done anything' do
+
+      @scheduler.work_threads(:vacant).should == []
+    end
+
+    it 'lists all the work threads in the pool' do
+
+      @scheduler.in '0s' do
+        # nada
+      end
+      @scheduler.in '0s' do
+        sleep(2)
+      end
+
+      sleep 0.4
+
+      @scheduler.work_threads(:vacant).size.should == 1
+    end
   end
 
   describe '#work_threads(:active)' do
