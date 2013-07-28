@@ -42,8 +42,7 @@
 [o] add spec for job queued then unscheduled
 [o] add spec for Scheduler#shutdown and work threads
 [o] at some point, bring back rbx19 to Travis
-
-[ ] move the parse/util part of scheduler.rb to util.rb
+[o] move the parse/util part of scheduler.rb to util.rb
 
 [ ] rescue KillJobSignal in job thread loop to kill just the job... idea
 
