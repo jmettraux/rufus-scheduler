@@ -142,22 +142,22 @@ module Rufus
 
     def at(time, callable=nil, opts={}, &block)
 
-      do_schedule(:at, time, callable, opts, opts[:job], block)
+      do_schedule(:once, time, callable, opts, opts[:job], block)
     end
 
     def schedule_at(time, callable=nil, opts={}, &block)
 
-      do_schedule(:at, time, callable, opts, true, block)
+      do_schedule(:once, time, callable, opts, true, block)
     end
 
     def in(duration, callable=nil, opts={}, &block)
 
-      do_schedule(:in, duration, callable, opts, opts[:job], block)
+      do_schedule(:once, duration, callable, opts, opts[:job], block)
     end
 
     def schedule_in(duration, callable=nil, opts={}, &block)
 
-      do_schedule(:in, duration, callable, opts, true, block)
+      do_schedule(:once, duration, callable, opts, true, block)
     end
 
     def every(duration, callable=nil, opts={}, &block)
@@ -381,7 +381,16 @@ module Rufus
       callable, opts = nil, callable if callable.is_a?(Hash)
       return_job_instance ||= opts[:job]
 
-      job_class = Rufus::Scheduler.const_get(job_type.to_s.capitalize + 'Job')
+      job_class =
+        case job_type
+          when :once
+            tt = Rufus::Scheduler.parse(t)
+            tt.is_a?(Time) ? AtJob : InJob
+          when :every
+            EveryJob
+          when :cron
+            CronJob
+        end
 
       job = job_class.new(self, t, opts, block || callable)
 

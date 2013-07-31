@@ -45,6 +45,9 @@
 [o] move the parse/util part of scheduler.rb to util.rb
 [o] rescue KillSignal in job thread loop to kill just the job
 [o] add spec for raise if scheduling a job while scheduler is shutting down
+[o] schedule_in(2.days.from_now) {}
+    at and in could understand each others time parameter, ftw...
+    use the new #parse_to_time? no
 
 [ ] drop min threads setting?
 
@@ -85,11 +88,6 @@
     can help get the block themselves leaner
     #
     investigate guards for schedulables... def if_guard; ...; end
-
-[ ] schedule_in(2.days.from_now) {}
-    at and in could understand each others time parameter, ftw...
-    use the new #parse_to_time?
-
 
 ################################################################################
 

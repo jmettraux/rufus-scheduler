@@ -145,6 +145,33 @@ describe Rufus::Scheduler do
     end
   end
 
+  describe '#in / #at' do
+
+    # scheduler.in(2.hours.from_now) { ... }
+
+    it 'accepts point in time and duration indifferently (#in)' do
+
+      seen = false
+
+      t = Time.now + 1
+
+      @scheduler.in(t) { seen = true }
+
+      sleep 0.1 while seen != true
+    end
+
+    it 'accepts point in time and duration indifferently (#at)' do
+
+      seen = false
+
+      t = 1
+
+      @scheduler.at(t) { seen = true }
+
+      sleep 0.1 while seen != true
+    end
+  end
+
   describe '#unschedule(job_or_work_id)' do
 
     it 'accepts job ids' do
