@@ -381,6 +381,23 @@ describe Rufus::Scheduler::Job do
       d.should >= 1.0
       d.should < 1.5
     end
+
+    it 'does not prevent a repeat job from recurring' do
+
+      counter = 0
+
+      @scheduler.every('1s', :timeout => '0.5s') do
+        begin
+          counter = counter + 1
+          sleep 0.9
+        rescue Rufus::Scheduler::TimeoutError => e
+        end
+      end
+
+      sleep 3
+
+      counter.should > 1
+    end
   end
 end
 

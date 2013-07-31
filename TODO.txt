@@ -48,6 +48,7 @@
 [o] schedule_in(2.days.from_now) {}
     at and in could understand each others time parameter, ftw...
     use the new #parse_to_time? no
+[o] do repeat jobs reschedule after timing out? yes
 
 [ ] drop min threads setting?
 
@@ -66,8 +67,6 @@
     would prevent blocking/waiting for the mutex to get available
     :mutex => [ "mutex_name", true ]
     :mutex => [ [ "mutex_name", true ], [ "other_mutex_name", false ] ]
-
-[ ] do repeat jobs reschedule after timing out?
 
 [.] thread pool something? Thread upper limit?
     look at EM's thread pool
