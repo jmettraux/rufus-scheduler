@@ -160,6 +160,8 @@ This is different from :overlap => false, which is, first, limited to instances 
 
 Array of mutexes: original idea and implementation by [Rainux Luo](https://github.com/rainux)
 
+Warning: creating lots of different mutexes is OK. Rufus-scheduler will place them in its Scheduler#mutexes hash... And they won't get garbage collected.
+
 ### :timeout => duration or point in time
 
 It's OK to specify a timeout when scheduling some work. After the time specified, it gets interrupted via a Rufus::Scheduler::TimeoutError.
