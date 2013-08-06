@@ -43,6 +43,8 @@ describe Rufus::Scheduler do
 
     it 'triggers, but reschedules after the trigger execution' do
 
+      pending
+
       chronos = []
 
       @scheduler.interval(0.4) do

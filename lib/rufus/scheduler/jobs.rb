@@ -399,15 +399,15 @@ module Rufus
         ) if @interval <= 0
       end
 
-      def trigger(time)
+      #def trigger(time)
+      #
+      #  false
+      #end
 
-        false
-      end
-
-      def post_trigger(time)
-
-        @next_time = Time.now + @interval
-      end
+      #def post_trigger(time)
+      #
+      #  @next_time = Time.now + @interval
+      #end
     end
 
     class CronJob < RepeatJob
