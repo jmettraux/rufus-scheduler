@@ -156,6 +156,8 @@ module Rufus
         args = [ self, time ][0, @callable.arity]
         @callable.call(*args)
 
+        post_trigger(time)
+
       #rescue StandardError => se
       #
       #  p se
@@ -166,6 +168,11 @@ module Rufus
         Thread.current[:rufus_scheduler_job] = nil
         Thread.current[:rufus_scheduler_time] = nil
         Thread.current[:rufus_scheduler_timeout] = nil
+      end
+
+      def post_trigger(time)
+
+        # empty, merely used by IntervalJob
       end
 
       def start_work_thread
@@ -353,7 +360,7 @@ module Rufus
         @next_time = @scheduled_at + @frequency
 
         raise ArgumentError.new(
-          "cannot schedule EveryJob with a frequency " +
+          "cannot schedule #{self.class} with a frequency " +
           "of #{@frequency.inspect} (#{@original.inspect})"
         ) if @frequency <= 0
       end
@@ -372,6 +379,34 @@ module Rufus
           end
 
         reschedule
+      end
+    end
+
+    class IntervalJob < RepeatJob
+
+      attr_reader :interval
+
+      def initialize(scheduler, interval, opts, block)
+
+        super(scheduler, interval, opts, block)
+
+        @interval = Rufus::Scheduler.parse_in(@original)
+        @next_time = @scheduled_at + @interval
+
+        raise ArgumentError.new(
+          "cannot schedule #{self.class} with an interval " +
+          "of #{@interval.inspect} (#{@original.inspect})"
+        ) if @interval <= 0
+      end
+
+      def trigger(time)
+
+        false
+      end
+
+      def post_trigger(time)
+
+        @next_time = Time.now + @interval
       end
     end
 

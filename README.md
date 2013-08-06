@@ -455,7 +455,14 @@ job.tags
 ```
 
 ## AtJob and InJob methods
+
 ### time
+
+Returns when the job will trigger (hopefully).
+
+### next_time
+
+An alias to time.
 
 ## EveryJob and CronJob methods
 
@@ -470,6 +477,8 @@ It returns the scheduling frequency. For a job scheduled "every 20s", it's 20.
 It's used to determine if the job frequency is higher than the scheduler frequency (it raises an ArgumentError if that is the case).
 
 ### next_time
+
+Returns the next time the job will trigger (hopefully).
 
 ## CronJob methods
 
@@ -490,6 +499,8 @@ Rufus::Scheduler.parse('10,20,30 * * * *').frequency  # ==> 600
 It's used to determine if the job frequency is higher than the scheduler frequency (it raises an ArgumentError if that is the case).
 
 ### next_time
+
+Returns the next time the job will trigger (hopefully).
 
 
 ## looking up jobs

@@ -170,6 +170,16 @@ module Rufus
       do_schedule(:every, duration, callable, opts, true, block)
     end
 
+    def interval(duration, callable=nil, opts={}, &block)
+
+      do_schedule(:interval, duration, callable, opts, opts[:job], block)
+    end
+
+    def schedule_interval(duration, callable=nil, opts={}, &block)
+
+      do_schedule(:interval, duration, callable, opts, true, block)
+    end
+
     def cron(cronline, callable=nil, opts={}, &block)
 
       do_schedule(:cron, cronline, callable, opts, opts[:job], block)
@@ -388,6 +398,8 @@ module Rufus
             tt.is_a?(Time) ? AtJob : InJob
           when :every
             EveryJob
+          when :interval
+            IntervalJob
           when :cron
             CronJob
         end
