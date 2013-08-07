@@ -207,6 +207,8 @@ module Rufus
     #
     def jobs(opts={})
 
+      opts = { opts => true } if opts.is_a?(Symbol)
+
       js =
         (@jobs.to_a + work_threads(:active).collect { |t|
           t[:rufus_scheduler_job]
@@ -214,7 +216,7 @@ module Rufus
 
       if opts[:running]
         js = js.select { |j| j.running? }
-      else
+      elsif ! opts[:all]
         js = js.reject { |j| j.unscheduled_at }
       end
 

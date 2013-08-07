@@ -67,59 +67,52 @@ describe Rufus::Scheduler do
       end
     end
 
-#    it 'does not remove the job after execution' do
-#
-#      @scheduler.every(0.4) do
-#      end
-#
-#      sleep 0.9
-#
-#      @scheduler.jobs.size.should == 1
-#    end
-#
-#    it 'raises on negative frequencies' do
-#
-#      lambda {
-#        @scheduler.every(-1) do
-#        end
-#      }.should raise_error(ArgumentError)
-#    end
-#
-#    it 'raises on zero frequencies' do
-#
-#      lambda {
-#        @scheduler.every(0) do
-#        end
-#      }.should raise_error(ArgumentError)
-#    end
-#
-#    it 'does not reschedule if the job was unscheduled' do
-#
-#      counter = 0
-#
-#      job =
-#        @scheduler.schedule_every '0.5s' do
-#          counter = counter + 1
-#        end
-#
-#      sleep 1.6
-#
-#      job.unschedule
-#      c = counter
-#
-#      sleep 1.6
-#
-#      counter.should == c
-#    end
-#
-#    it 'raises if the job frequency is higher than the scheduler frequency' do
-#
-#      @scheduler.frequency = 10
-#
-#      lambda {
-#        @scheduler.every '1s' do; end
-#      }.should raise_error(ArgumentError)
-#    end
+    it 'does not reschedule if the job was unscheduled' do
+
+      counter = 0
+
+      job =
+        @scheduler.schedule_interval '0.5s' do
+          counter = counter + 1
+        end
+
+      sleep 1.6
+
+      @scheduler.jobs(:all).size.should == 1
+
+      job.unschedule
+      c = counter
+
+      sleep 1.6
+
+      counter.should == c
+      @scheduler.jobs(:all).size.should == 0
+    end
+
+    it 'raises on negative intervals' do
+
+      lambda {
+        @scheduler.interval(-1) do
+        end
+      }.should raise_error(ArgumentError)
+    end
+
+    it 'raises on zero intervals' do
+
+      lambda {
+        @scheduler.interval(0) do
+        end
+      }.should raise_error(ArgumentError)
+    end
+
+    #it 'raises if the job frequency is higher than the scheduler frequency' do
+    #
+    #  @scheduler.frequency = 10
+    #
+    #  lambda {
+    #    @scheduler.interval '1s' do; end
+    #  }.should raise_error(ArgumentError)
+    #end
   end
 
   describe '#schedule_interval' do
