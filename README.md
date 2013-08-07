@@ -527,7 +527,7 @@ The scheduler #job(job_id) method can be used to lookup Job instances.
   job = scheduler.job(job_id)
 ```
 
-### Scheduler #jobs #at_jobs #in_jobs #every_jobs and #cron_jobs
+### Scheduler #jobs #at_jobs #in_jobs #every_jobs #interval_jobs and #cron_jobs
 
 Are methods for looking up lists of scheduled Job instances.
 

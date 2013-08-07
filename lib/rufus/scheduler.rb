@@ -239,6 +239,11 @@ module Rufus
       jobs(opts).select { |j| j.is_a?(Rufus::Scheduler::EveryJob) }
     end
 
+    def interval_jobs(opts={})
+
+      jobs(opts).select { |j| j.is_a?(Rufus::Scheduler::IntervalJob) }
+    end
+
     def cron_jobs(opts={})
 
       jobs(opts).select { |j| j.is_a?(Rufus::Scheduler::CronJob) }

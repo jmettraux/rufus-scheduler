@@ -749,5 +749,21 @@ describe Rufus::Scheduler do
       jobs.collect { |j| j.original }.sort.should == [ '* * * * *' ]
     end
   end
+
+  describe '#interval_jobs' do
+
+    it 'returns IntervalJob instances' do
+
+      @scheduler.at '2030/12/12 12:10:00' do; end
+      @scheduler.in '10d' do; end
+      @scheduler.every '5m' do; end
+      @scheduler.cron '* * * * *' do; end
+      @scheduler.interval '7m' do; end
+
+      jobs = @scheduler.interval_jobs
+
+      jobs.collect { |j| j.original }.sort.should == %w[ 7m ]
+    end
+  end
 end
 
