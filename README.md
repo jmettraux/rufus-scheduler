@@ -65,11 +65,12 @@ There is no EventMachine-based scheduler anymore.
 * ```scheduler.every('100') {``` will schedule every 100 seconds (previously, it would have been 0.1s). This aligns rufus-scheduler on Ruby's ```sleep(100)```
 * The scheduler isn't catching the whole of Exception anymore, only StandardException
 * Rufus::Scheduler::TimeOutError renamed to Rufus::Scheduler::TimeoutError
+* Introduction of "interval" jobs. Whereas "every" jobs are like "every 10 minuts, do this", interval jobs are like "do that, then wait for 10 minutes, then do that again, and so on"
 
 
 ## scheduling
 
-TODO: in/at/cron/every
+TODO: in/at/every/interval/cron
 
 ### schedule blocks arguments (job, time)
 
@@ -464,9 +465,11 @@ Returns when the job will trigger (hopefully).
 
 An alias to time.
 
-## EveryJob and CronJob methods
+## EveryJob, IntervalJob and CronJob methods
 
-Nothing in particular.
+### next_time
+
+Returns the next time the job will trigger (hopefully).
 
 ## EveryJob methods
 
@@ -476,9 +479,13 @@ It returns the scheduling frequency. For a job scheduled "every 20s", it's 20.
 
 It's used to determine if the job frequency is higher than the scheduler frequency (it raises an ArgumentError if that is the case).
 
-### next_time
+## IntervalJob methods
 
-Returns the next time the job will trigger (hopefully).
+### interval
+
+Returns the interval scheduled between each execution of the job.
+
+Every jobs use a time duration between each start of their execution, while interval jobs use a time duration between the end of an execution and the start of the next.
 
 ## CronJob methods
 
@@ -497,10 +504,6 @@ Rufus::Scheduler.parse('10,20,30 * * * *').frequency  # ==> 600
 ```
 
 It's used to determine if the job frequency is higher than the scheduler frequency (it raises an ArgumentError if that is the case).
-
-### next_time
-
-Returns the next time the job will trigger (hopefully).
 
 
 ## looking up jobs

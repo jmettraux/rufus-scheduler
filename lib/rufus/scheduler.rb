@@ -294,6 +294,11 @@ module Rufus
 
     protected
 
+    def reschedule(job)
+
+      @jobs.push(job)
+    end
+
     def terminate_all_jobs
 
       jobs.each { |j| j.unschedule }

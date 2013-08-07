@@ -43,8 +43,6 @@ describe Rufus::Scheduler do
 
     it 'triggers, but reschedules after the trigger execution' do
 
-      pending
-
       chronos = []
 
       @scheduler.interval(0.4) do
@@ -54,12 +52,15 @@ describe Rufus::Scheduler do
         sleep 0.5
       end
 
-      sleep 0.1 while chronos.size < 4
+      t = Time.now
+      sleep 0.1 while chronos.size < 4 && Time.now < t + 5
+
+      chronos.size.should == 4
 
       deltas = chronos.collect(&:last).compact
 
-      pp chronos
-      pp deltas
+      #pp chronos
+      #pp deltas
 
       deltas.each do |d|
         d.should >= 0.9

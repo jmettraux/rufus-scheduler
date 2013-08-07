@@ -5,6 +5,7 @@
 == rufus-scheduler - 3.0.0    not yet released
 
 - complete rewrite.
+- introduce scheduler.interval('10s') { ... }
 
 
 == rufus-scheduler - 2.0.22    released 2013/07/16

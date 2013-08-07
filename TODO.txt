@@ -49,6 +49,10 @@
     at and in could understand each others time parameter, ftw...
     use the new #parse_to_time? no
 [o] do repeat jobs reschedule after timing out? yes
+[o] schedule_interval('20s')?
+[x] Scheduler#reschedule(job) (new copy of the job)
+
+[ ] #free_all_work_threads is missing an implementation
 
 [ ] drop min threads setting?
 
@@ -76,10 +80,7 @@
 [ ] bring back EM (but only EM.defer ?) :defer => true (Job or Scheduler
     or both option?)
 
-[ ] schedule_interval('20s')?
 [ ] prepare a daemon
-
-[ ] Scheduler#reschedule(job) (new copy of the job)
 
 [ ] :if => lambda { |job, time| ... } why not?
     :unless => lambda { ...
