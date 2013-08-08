@@ -63,7 +63,7 @@ There is no EventMachine-based scheduler anymore.
 
 * As said, no more EventMachine-based scheduler
 * ```scheduler.every('100') {``` will schedule every 100 seconds (previously, it would have been 0.1s). This aligns rufus-scheduler on Ruby's ```sleep(100)```
-* The scheduler isn't catching the whole of Exception anymore, only StandardException
+* The scheduler isn't catching the whole of Exception anymore, only StandardError
 * Rufus::Scheduler::TimeOutError renamed to Rufus::Scheduler::TimeoutError
 * Introduction of "interval" jobs. Whereas "every" jobs are like "every 10 minuts, do this", interval jobs are like "do that, then wait for 10 minutes, then do that again, and so on"
 
@@ -604,6 +604,22 @@ Lists the work threads associated with the scheduler. The query option defaults 
 
 Note that the main schedule thread will be returned if it is currently running a Job (ie one of those :blocking => true jobs).
 
+
+## dealing with job errors
+
+TODO
+
+### block jobs
+
+TODO
+
+### callable jobs
+
+TODO
+
+### Rufus::Scheduler#on_error(job, error)
+
+TODO
 
 ## Rufus::Scheduler.new options
 
