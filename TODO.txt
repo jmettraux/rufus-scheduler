@@ -51,8 +51,7 @@
 [o] do repeat jobs reschedule after timing out? yes
 [o] schedule_interval('20s')?
 [x] Scheduler#reschedule(job) (new copy of the job)
-
-[ ] #free_all_work_threads is missing an implementation
+[x] #free_all_work_threads is missing an implementation
 
 [ ] drop min threads setting?
 

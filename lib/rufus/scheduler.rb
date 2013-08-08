@@ -327,11 +327,10 @@ module Rufus
       work_threads.each { |t| t.kill }
     end
 
-    def free_all_work_threads
-
-      # TODO
-      #work_threads.each { |t| t.raise CancelSignal }
-    end
+    #def free_all_work_threads
+    #
+    #  work_threads.each { |t| t.raise(KillSignal) }
+    #end
 
     def start
 

@@ -430,6 +430,26 @@ describe Rufus::Scheduler do
     end
   end
 
+  #describe '#kill_all_work_threads' do
+  #
+  #  it 'kills all the work threads' do
+  #
+  #    @scheduler.in '0s' do; sleep(5); end
+  #    @scheduler.in '0s' do; sleep(5); end
+  #    @scheduler.in '0s' do; sleep(5); end
+  #
+  #    sleep 0.5
+  #
+  #    @scheduler.work_threads.size.should == 3
+  #
+  #    @scheduler.send(:kill_all_work_threads)
+  #
+  #    sleep 0.5
+  #
+  #    @scheduler.work_threads.size.should == 0
+  #  end
+  #end
+
   describe '#running_jobs' do
 
     it 'returns [] when there are no running jobs' do
