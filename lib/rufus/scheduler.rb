@@ -299,6 +299,33 @@ module Rufus
       jobs(opts.merge(:running => true))
     end
 
+    def on_error(job, err)
+
+      pre = err.object_id.to_s
+
+      $stderr.puts("{ #{pre} rufus-scheduler intercepted an error:")
+      $stderr.puts("  #{pre}   job:")
+      $stderr.puts("  #{pre}     #{job.class} #{job.original.inspect} #{job.opts.inspect}")
+      $stderr.puts("  #{pre}   error:")
+      $stderr.puts("  #{pre}     #{err.object_id}")
+      $stderr.puts("  #{pre}     #{err.class}")
+      $stderr.puts("  #{pre}     #{err}")
+      err.backtrace.each do |l|
+        $stderr.puts("  #{pre}       #{l}")
+      end
+      $stderr.puts("} #{pre} .")
+
+    rescue => e
+
+      $stderr.puts("failure in #on_error itself:")
+      $stderr.puts(e.inspect)
+      $stderr.puts(e.backtrace)
+
+    ensure
+
+      $stderr.flush
+    end
+
     protected
 
     def reschedule(job)

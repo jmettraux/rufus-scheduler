@@ -158,10 +158,9 @@ module Rufus
 
         post_trigger(time)
 
-      #rescue StandardError => se
-      #
-      #  p se
-      #  puts se.backtrace
+      rescue StandardError => se
+
+        @scheduler.on_error(self, se)
 
       ensure
 

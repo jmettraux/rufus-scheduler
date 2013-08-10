@@ -53,8 +53,6 @@
 [x] Scheduler#reschedule(job) (new copy of the job)
 [x] #free_all_work_threads is missing an implementation
 
-[ ] drop min threads setting?
-
 [ ] rescue StandardError
     :on_error => :crash[_scheduler]
     :on_error => :ignore
@@ -71,6 +69,7 @@
     :mutex => [ "mutex_name", true ]
     :mutex => [ [ "mutex_name", true ], [ "other_mutex_name", false ] ]
 
+[ ] drop min threads setting?
 [.] thread pool something? Thread upper limit?
     look at EM's thread pool
 

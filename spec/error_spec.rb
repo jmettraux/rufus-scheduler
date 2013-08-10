@@ -6,14 +6,18 @@
 #
 
 require 'spec_helper'
+require 'stringio'
 
 
-describe Rufus::Scheduler::Job do
+describe Rufus::Scheduler do
 
   before :each do
 
     @taoe = Thread.abort_on_exception
     Thread.abort_on_exception = false
+
+    @ose = $stderr
+    $stderr = StringIO.new
 
     @scheduler = Rufus::Scheduler.new
   end
@@ -23,11 +27,13 @@ describe Rufus::Scheduler::Job do
     @scheduler.shutdown
 
     Thread.abort_on_exception = @taoe
+
+    $stderr = @ose
   end
 
   context 'error in block' do
 
-    it 'discards the error silently' do
+    it 'intercepts the error and describes it on $stderr' do
 
       counter = 0
 
@@ -39,6 +45,7 @@ describe Rufus::Scheduler::Job do
       sleep 2
 
       counter.should > 2
+      $stderr.string.should match(/argh/)
     end
   end
 
@@ -55,7 +62,7 @@ describe Rufus::Scheduler::Job do
       end
     end
 
-    it 'discards the error silently' do
+    it 'intercepts the error and describes it on $stderr' do
 
       mfh = MyFailingHandler.new
 
@@ -64,12 +71,30 @@ describe Rufus::Scheduler::Job do
       sleep 2
 
       mfh.counter.should > 2
+      $stderr.string.should match(/ouch/)
     end
   end
 
   context 'Rufus::Scheduler#on_error(&block)' do
 
-    it 'intercepts all StandardError instances'
+    it 'intercepts all StandardError instances' do
+
+      $message = nil
+
+      def @scheduler.on_error(job, err)
+        $message = "#{job.class} #{job.original} #{err.message}"
+      rescue
+        p $!
+      end
+
+      @scheduler.in('0s') do
+        fail 'miserably'
+      end
+
+      sleep 0.5
+
+      $message.should == 'Rufus::Scheduler::InJob 0s miserably'
+    end
   end
 end
 
