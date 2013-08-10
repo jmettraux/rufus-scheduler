@@ -52,12 +52,12 @@
 [o] schedule_interval('20s')?
 [x] Scheduler#reschedule(job) (new copy of the job)
 [x] #free_all_work_threads is missing an implementation
-
-[ ] rescue StandardError
+[x] rescue StandardError
     :on_error => :crash[_scheduler]
     :on_error => :ignore
     :on_error => ...
-    what about TimeoutError in that scheme ?
+
+[ ] on_error: what about TimeoutError in that scheme?
 
 [ ] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler

@@ -156,13 +156,17 @@ module Rufus
         args = [ self, time ][0, @callable.arity]
         @callable.call(*args)
 
-        post_trigger(time)
+      rescue KillSignal
+
+        # discard
 
       rescue StandardError => se
 
         @scheduler.on_error(self, se)
 
       ensure
+
+        post_trigger(time)
 
         Thread.current[:rufus_scheduler_job] = nil
         Thread.current[:rufus_scheduler_time] = nil
