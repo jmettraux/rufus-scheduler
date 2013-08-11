@@ -7,6 +7,7 @@
 
 Thread.abort_on_exception = true
 
+require 'stringio'
 require 'rufus-scheduler'
 
 def local(*args)

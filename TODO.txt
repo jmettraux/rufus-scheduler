@@ -56,8 +56,8 @@
     :on_error => :crash[_scheduler]
     :on_error => :ignore
     :on_error => ...
-
-[ ] on_error: what about TimeoutError in that scheme?
+[o] on_error: what about TimeoutError in that scheme?
+    TimeoutError goes to $stderr, like a normal error
 
 [ ] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler

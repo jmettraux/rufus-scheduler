@@ -13,10 +13,23 @@ describe Rufus::Scheduler::Job do
   # specify behaviours common to all job classes
 
   before :each do
+
+    @taoe = Thread.abort_on_exception
+    Thread.abort_on_exception = false
+
+    @ose = $stderr
+    $stderr = StringIO.new
+
     @scheduler = Rufus::Scheduler.new
   end
+
   after :each do
+
     @scheduler.shutdown
+
+    Thread.abort_on_exception = @taoe
+
+    $stderr = @ose
   end
 
   describe '#last_time' do
@@ -382,16 +395,24 @@ describe Rufus::Scheduler::Job do
       d.should < 1.5
     end
 
+    it 'emits the timeout information to $stderr (default #on_error)' do
+
+      @scheduler.every('1s', :timeout => '0.5s') do
+        sleep 0.9
+      end
+
+      sleep 2
+
+      $stderr.string.should match(/Rufus::Scheduler::TimeoutError/)
+    end
+
     it 'does not prevent a repeat job from recurring' do
 
       counter = 0
 
       @scheduler.every('1s', :timeout => '0.5s') do
-        begin
-          counter = counter + 1
-          sleep 0.9
-        rescue Rufus::Scheduler::TimeoutError => e
-        end
+        counter = counter + 1
+        sleep 0.9
       end
 
       sleep 3

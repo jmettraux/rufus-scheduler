@@ -6,7 +6,6 @@
 #
 
 require 'spec_helper'
-require 'stringio'
 
 
 describe Rufus::Scheduler do
