@@ -364,7 +364,7 @@ describe Rufus::Scheduler::Job do
       end
 
       job =
-        @scheduler.schedule_in '0.1s', :mutex => 'a', :timeout => '1s' do
+        @scheduler.schedule_in '0.5s', :mutex => 'a', :timeout => '1s' do
           begin
             t1 = Time.now
             sleep 2
