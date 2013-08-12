@@ -1,6 +1,4 @@
 
-(3.0)
-
 [o] merge schedule_queue and unschedule_queue (and merge [un]schedule steps)
 [x] OR stop using queue, since we've got the thread-safe JobArray
 [x] if possible, drop the mutex in JobArray
@@ -91,64 +89,4 @@
     can help get the block themselves leaner
     #
     investigate guards for schedulables... def if_guard; ...; end
-
-################################################################################
-
-(was 2.0)
-
-[o] spec for jobs in the past (in and at)
-[o] :discard_past
-
-[o] every
-[o] cron
-
-[o] CHECK every and unschedule !!!
-
-[o] :tags
-[o] timeout feature (at/in/every/cron) in Job class
-
-[o] :first_in, :first_at
-
-[x] :dont_reschedule (or block returns false ?)
-
-[o] [get_]jobs methods
-[o] find methods
-
-[x] CTRL-C during tests : allow, trap_int...
-
-[o] 1.9
-[o] j1.2.0
-
-[o] revise trigger block arity
-    use a compatibility switch ? yes
-
-[o] synchronize @cron_jobs ?
-
-[o] why not : make it work even if EM is not present
-    EmScheduler < Scheduler
-    FiberScheduler < Scheduler
-
-[x] :blocking => 'blockname' idea, mutex = @mutexes['blockname'] ...
-[o] eventually, make sleep frequency customizable
-
-[o] PlainScheduler : name thread
-
-[o] document :blocking
-
-[o] README.rdoc
-[o] fix jruby120 --em
-
-[o] handle_exception (job, e)
-
-[o] Schedulable
-
-[o] Rufus::Scheduler.start_new() : autodetect EM ?
-[o] check :blocking and every (reschedule blocking...)
-[o] document :thread_name scheduler option
-
-[o] unify cron_jobs#trigger_matching_jobs(now) and jobs#job_to_trigger
-[o] pluggable job queues
-
-[ ] Joel's complaint about timeout jobs gone ballistic
-[x] move trigger_job out of the scheduler
 
