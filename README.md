@@ -71,7 +71,7 @@ There is no EventMachine-based scheduler anymore.
 
 ## getting help
 
-So you need help. People can help you, but first help them help you, and don't waster their time. Provide a complete description of the issue. If it works on A but not on B and others have to ask you: "so what is different between A and B" you are wasting everyone's time.
+So you need help. People can help you, but first help them help you, and don't waste their time. Provide a complete description of the issue. If it works on A but not on B and others have to ask you: "so what is different between A and B" you are wasting everyone's time.
 
 Go read [how to report bugs effectively](http://www.chiark.greenend.org.uk/~sgtatham/bugs.html), twice.
 
