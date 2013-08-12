@@ -61,11 +61,13 @@
 [o] link to SO for support
     - sublink to "how to report bugs effectively"
 [o] link to #ruote for support
+[x] lockblock? pass a block to teach the scheduler how to lock?
+    is not necessary, @scheduler = Scheduler.new if should_start?
+    the surrounding Ruby code checks
 
 [ ] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
     timestamps it?
-[ ] lockblock? pass a block to teach the scheduler how to lock?
 
 [ ] idea: :mutex => x and :skip_on_mutex => true ?
     would prevent blocking/waiting for the mutex to get available
