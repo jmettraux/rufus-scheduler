@@ -323,7 +323,7 @@ describe Rufus::Scheduler do
         sleep(2)
       end
 
-      sleep 0.4
+      sleep 0.6
 
       @scheduler.work_threads.size.should == 2
     end
