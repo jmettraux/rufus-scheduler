@@ -69,6 +69,35 @@ There is no EventMachine-based scheduler anymore.
 * Introduction of "interval" jobs. Whereas "every" jobs are like "every 10 minuts, do this", interval jobs are like "do that, then wait for 10 minutes, then do that again, and so on"
 
 
+## getting help
+
+So you need help. People can help you, but first help them help you, and don't waster their time. Provide a complete description of the issue. If it works on A but not on B and others have to ask you: "so what is different between A and B" you are wasting everyone's time.
+
+Go read [how to report bugs effectively](http://www.chiark.greenend.org.uk/~sgtatham/bugs.html), twice.
+
+### on StackOverflow
+
+Use this [form](http://stackoverflow.com/questions/ask?tags=rufus-scheduler+ruby). It'll create a question flagged "rufus-scheduler" and "ruby".
+
+Here are the [questions tagged rufus-scheduler](http://stackoverflow.com/questions/tagged/rufus-scheduler).
+
+### on IRC
+
+I sometimes haunt #ruote on freenode.net. The channel is not dedicated to rufus-scheduler, so if you ask a question, first mention it's about rufus-scheduler.
+
+Please note that I prefer helping over Stack Overflow because it's more searchable than the ruote IRC archive.
+
+### issues
+
+Yes, issues can be reported in [rufus-scheduler issues](https://github.com/jmettraux/rufus-scheduler/issues), I'd actually prefer bugs in there. If there is nothing wrong with rufus-scheduler, a [Stack Overflow question](http://stackoverflow.com/questions/ask?tags=rufus-scheduler+ruby) is better.
+
+### faq
+
+* [It doesn't work...](http://www.chiark.greenend.org.uk/~sgtatham/bugs.html)
+* [I want a refund](http://blog.nodejitsu.com/getting-refunds-on-open-source-projects)
+* [Passenger and rufus-scheduler](http://stackoverflow.com/questions/18108719/debugging-rufus-scheduler/18156180#18156180)
+
+
 ## scheduling
 
 TODO: in/at/every/interval/cron
@@ -647,6 +676,11 @@ Use with care.
 ## parsing cronlines and time strings
 
 TODO
+
+
+## support
+
+see [getting help](#getting-help) above.
 
 
 ## license
