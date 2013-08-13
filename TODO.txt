@@ -63,9 +63,10 @@
     is not necessary, @scheduler = Scheduler.new if should_start?
     the surrounding Ruby code checks
 
-[ ] :lockfile => x, timestamp, process_id, thread_id...
+[o] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
     timestamps it?
+[ ] develop lockfile timestamp thinggy
 
 [ ] idea: :mutex => x and :skip_on_mutex => true ?
     would prevent blocking/waiting for the mutex to get available

@@ -672,6 +672,10 @@ It's OK to use a time string to specify the frequency.
 
 Use with care.
 
+### :lockfile => true (or "mylockfile.txt")
+
+TODO
+
 
 ## parsing cronlines and time strings
 

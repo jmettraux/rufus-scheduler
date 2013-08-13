@@ -26,6 +26,7 @@ require 'date' if RUBY_VERSION < '1.9.0'
 require 'time'
 require 'thread'
 require 'tzinfo'
+require 'fileutils'
 
 
 module Rufus
@@ -59,12 +60,13 @@ module Rufus
 
     def initialize(opts={})
 
+      @opts = opts
+
       @started_at = nil
       @paused = false
 
       @jobs = JobArray.new
 
-      @opts = opts
       @frequency = Rufus::Scheduler.parse(opts[:frequency] || 0.300)
       @mutexes = {}
 
@@ -74,6 +76,8 @@ module Rufus
       @max_work_threads = opts[:max_work_threads] || MAX_WORK_THREADS
 
       @thread_key = "rufus_scheduler_#{self.object_id}"
+
+      consider_lockfile || return
 
       start
     end
@@ -102,6 +106,8 @@ module Rufus
       elsif opt == :kill
         kill_all_work_threads
       end
+
+      @lockfile.flock(File::LOCK_UN) if @lockfile
     end
 
     alias stop shutdown
@@ -327,6 +333,34 @@ module Rufus
     end
 
     protected
+
+    def consider_lockfile
+
+      @lockfile = nil
+
+      return true unless f = @opts[:lockfile]
+
+      f = '.rufus-scheduler.lock' if f == true
+
+      FileUtils.mkdir_p(File.dirname(f))
+
+      f = File.new(f, File::RDWR | File::CREAT)
+      locked = f.flock(File::LOCK_NB | File::LOCK_EX)
+
+      return false unless locked
+
+      now = Time.now
+
+      f.print("pid: #{$$}, ")
+      f.print("scheduler.object_id: #{self.object_id}, ")
+      f.print("time: #{now}, ")
+      f.print("timestamp: #{now.to_f}")
+      f.flush
+
+      @lockfile = f
+
+      true
+    end
 
     def reschedule(job)
 
