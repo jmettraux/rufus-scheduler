@@ -90,3 +90,7 @@
     #
     investigate guards for schedulables... def if_guard; ...; end
 
+[ ] introduce job "vars", as in
+    http://stackoverflow.com/questions/18202848/how-to-have-a-variable-that-will-available-to-particular-scheduled-task-whenever
+    or job['key'] Job #[] and #[]=, as with Thread #[] #[]=
+
