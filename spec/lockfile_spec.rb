@@ -32,7 +32,7 @@ describe Rufus::Scheduler do
 
       s = Rufus::Scheduler.new :lockfile => true
 
-      f = File.new('.rufus-scheduler.lock', 'r')
+      f = File.new('.rufus-scheduler.lock', 'a')
 
       f.flock(File::LOCK_NB | File::LOCK_EX).should == false
     end
@@ -52,7 +52,7 @@ describe Rufus::Scheduler do
 
       s.shutdown(:kill)
 
-      f = File.new('.rufus-scheduler.lock', 'r')
+      f = File.new('.rufus-scheduler.lock', 'a')
 
       f.flock(File::LOCK_NB | File::LOCK_EX).should == 0
     end
