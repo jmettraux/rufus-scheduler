@@ -673,9 +673,15 @@ It's OK to use a time string to specify the frequency.
 
 Use with care.
 
-### :lockfile => true (or "mylockfile.txt")
+### :lockfile => "mylockfile.txt"
 
-TODO
+This feature only works on OSes that support the flock (man 2 flock) call.
+
+Starting the scheduler with ```:lockfile => ".rufus-scheduler.lock"``` will make the scheduler attempt to create and lock the file ```.rufus-scheduler.lock``` in the current working directory. If that fails, the scheduler will not start.
+
+The idea is to guarantee only one scheduler (in a group of scheduler sharing the same lockfile) is running.
+
+This is useful in environments where the Ruby process holding the scheduler gets started multiple times.
 
 
 ## parsing cronlines and time strings
