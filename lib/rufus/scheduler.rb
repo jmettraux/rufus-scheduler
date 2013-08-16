@@ -340,7 +340,9 @@ module Rufus
 
       return true unless f = @opts[:lockfile]
 
-      f = '.rufus-scheduler.lock' if f == true
+      raise ArgumentError.new(
+        ":lockfile argument must be a string, not a #{f.class}"
+      ) unless f.is_a?(String)
 
       FileUtils.mkdir_p(File.dirname(f))
 
