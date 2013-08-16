@@ -67,6 +67,7 @@ There is no EventMachine-based scheduler anymore.
 * The error_handler is #on_error (instead of #on_exception), by default it now prints the details of the error to $stderr (used to be $stdout)
 * Rufus::Scheduler::TimeOutError renamed to Rufus::Scheduler::TimeoutError
 * Introduction of "interval" jobs. Whereas "every" jobs are like "every 10 minuts, do this", interval jobs are like "do that, then wait for 10 minutes, then do that again, and so on"
+* Introduction of a :lockfile => true/filename mechanism to prevent multiple schedulers from executing
 
 
 ## getting help

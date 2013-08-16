@@ -78,6 +78,8 @@
     look at EM's thread pool
 
 [ ] discard past? discard_past => true or => "1d"
+    default would be discard_past => "1m" or scheduler freq * 2 ?
+    jobs would adjust their next_time until it fits the window...
 
 [ ] bring back EM (but only EM.defer ?) :defer => true (Job or Scheduler
     or both option?)
@@ -94,4 +96,5 @@
 [ ] introduce job "vars", as in
     http://stackoverflow.com/questions/18202848/how-to-have-a-variable-that-will-available-to-particular-scheduled-task-whenever
     or job['key'] Job #[] and #[]=, as with Thread #[] #[]=
+    job-local variables #keys #key?
 
