@@ -62,6 +62,11 @@
 [x] lockblock? pass a block to teach the scheduler how to lock?
     is not necessary, @scheduler = Scheduler.new if should_start?
     the surrounding Ruby code checks
+[o] introduce job "vars", as in
+    http://stackoverflow.com/questions/18202848/how-to-have-a-variable-that-will-available-to-particular-scheduled-task-whenever
+    or job['key'] Job #[] and #[]=, as with Thread #[] #[]=
+    job-local variables #keys #key?
+[o] thread-safety for job-local variables?
 
 [o] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
@@ -92,10 +97,4 @@
     can help get the block themselves leaner
     #
     investigate guards for schedulables... def if_guard; ...; end
-
-[ ] introduce job "vars", as in
-    http://stackoverflow.com/questions/18202848/how-to-have-a-variable-that-will-available-to-particular-scheduled-task-whenever
-    or job['key'] Job #[] and #[]=, as with Thread #[] #[]=
-    job-local variables #keys #key?
-[ ] thread-safety for job-local variables?
 
