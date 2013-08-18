@@ -66,8 +66,11 @@ module Rufus
         @scheduled_at = Time.now
         @unscheduled_at = nil
         @last_time = nil
-        @mutexes = {}
+        #@mutexes = {}
         #@pool_mutex = Mutex.new
+
+        @locals = {}
+        @local_mutex = Mutex.new
 
         @id = determine_id
 
@@ -124,6 +127,26 @@ module Rufus
       def running?
 
         threads.any?
+      end
+
+      def []=(key, value)
+
+        @local_mutex.synchronize { @locals[key] = value }
+      end
+
+      def [](key)
+
+        @local_mutex.synchronize { @locals[key] }
+      end
+
+      def key?(key)
+
+        @local_mutex.synchronize { @locals.key?(key) }
+      end
+
+      def keys
+
+        @local_mutex.synchronize { @locals.keys }
       end
 
       protected

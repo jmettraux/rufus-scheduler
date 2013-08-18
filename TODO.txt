@@ -97,4 +97,5 @@
     http://stackoverflow.com/questions/18202848/how-to-have-a-variable-that-will-available-to-particular-scheduled-task-whenever
     or job['key'] Job #[] and #[]=, as with Thread #[] #[]=
     job-local variables #keys #key?
+[ ] thread-safety for job-local variables?
 

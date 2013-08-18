@@ -486,6 +486,31 @@ job.tags
   # => [ 'hello' ]
 ```
 
+### []=, [], key? and keys
+
+Threads have thread-local variables. Rufus-scheduler jobs have job-local variables.
+
+```ruby
+job =
+  @scheduler.schedule_every '1s' do |job|
+    job[:timestamp] = Time.now.to_f
+    job[:counter] ||= 0
+    job[:counter] += 1
+  end
+
+sleep 3.6
+
+job[:counter]
+  # => 3
+
+job.key?(:timestamp)
+  # => true
+job.keys
+  # => [ :timestamp, :counter ]
+```
+
+Job-local variables are thread-safe.
+
 ## AtJob and InJob methods
 
 ### time

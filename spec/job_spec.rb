@@ -149,6 +149,67 @@ describe Rufus::Scheduler::Job do
     end
   end
 
+  context 'job-local variables' do
+
+    describe '#[]=' do
+
+      it 'sets a job-local variable' do
+
+        job =
+          @scheduler.schedule_every '1s' do |job|
+            job[:counter] ||= 0
+            job[:counter] += 1
+          end
+
+        sleep 3
+
+        job[:counter].should > 1
+      end
+    end
+
+    describe '#[]' do
+
+      it 'returns nil if there is no such entry' do
+
+        job = @scheduler.schedule_in '1s' do; end
+
+        job[:nada].should == nil
+      end
+
+      it 'returns the value of a job-local variable' do
+
+        job = @scheduler.schedule_in '1s' do; end
+        job[:x] = :y
+
+        job[:x].should == :y
+      end
+    end
+
+    describe '#key?' do
+
+      it 'returns true if there is an entry with the given key' do
+
+        job = @scheduler.schedule_in '1s' do; end
+        job[:x] = :y
+
+        job.key?(:x).should == true
+      end
+    end
+
+    describe '#keys' do
+
+      it 'returns the array of keys of the job-local variables' do
+
+        job = @scheduler.schedule_in '1s' do; end
+        job[:x] = :y
+        job['hello'] = :z
+        job[123] = {}
+
+        job.keys.sort_by { |k| k.to_s }.should == [ 123, 'hello', :x ]
+      end
+    end
+  end
+
   context ':tag / :tags => [ t0, t1 ]' do
 
     it 'accepts one tag' do
