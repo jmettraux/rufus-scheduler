@@ -1,4 +1,3 @@
-
 # rufus-scheduler
 
 [![Build Status](https://secure.travis-ci.org/jmettraux/rufus-scheduler.png)](http://travis-ci.org/jmettraux/rufus-scheduler)
@@ -10,7 +9,7 @@ Job scheduler for Ruby (at, cron, in and every jobs).
 (When the 3.0 gem is released, this warning will get removed).
 
 Quickstart:
-```
+```ruby
 require 'rufus-scheduler'
 
 scheduler = Rufus::Scheduler.new
@@ -24,7 +23,7 @@ scheduler.join
 ```
 
 Various forms of scheduling are supported:
-```
+```ruby
 require 'rufus-scheduler'
 
 scheduler = Rufus::Scheduler.new
@@ -291,7 +290,7 @@ end
 
 The value set by :times is accessible in the job. It can be modified anytime.
 
-```
+```ruby
 job =
   scheduler.cron '0 23 * * *' do
     # ...
