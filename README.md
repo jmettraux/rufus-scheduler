@@ -1,3 +1,4 @@
+
 # rufus-scheduler
 
 [![Build Status](https://secure.travis-ci.org/jmettraux/rufus-scheduler.png)](http://travis-ci.org/jmettraux/rufus-scheduler)

@@ -27,6 +27,7 @@
 
 == Feedback
 
+- Arthur Maltson - https://github.com/amaltson - readme fixes
 - skrd - https://github.com/skrd - "/10 * * * *" cron issue
 - Hongli Lai - Scheduler#stop(:terminate => true) request
 - Tero Tilus - raises on unsupported/unknown options
