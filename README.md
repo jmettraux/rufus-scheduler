@@ -77,6 +77,8 @@ So you need help. People can help you, but first help them help you, and don't w
 
 Go read [how to report bugs effectively](http://www.chiark.greenend.org.uk/~sgtatham/bugs.html), twice.
 
+Update: [help_help.md](https://gist.github.com/jmettraux/310fed75f568fd731814) might help help you.
+
 ### on StackOverflow
 
 Use this [form](http://stackoverflow.com/questions/ask?tags=rufus-scheduler+ruby). It'll create a question flagged "rufus-scheduler" and "ruby".
