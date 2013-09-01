@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 2.0.24    not yet released
+== rufus-scheduler - 2.0.24    released 2013/09/02
 
 - lowered tzinfo dependency to >= 0.3.22
   http://stackoverflow.com/questions/18551970
