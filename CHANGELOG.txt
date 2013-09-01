@@ -2,6 +2,12 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 2.0.24    not yet released
+
+- lowered tzinfo dependency to >= 0.3.22
+  http://stackoverflow.com/questions/18551970
+
+
 == rufus-scheduler - 2.0.23    released 2013/07/26
 
 - mutex vs timeout fix by Tobias Kraze
