@@ -8,6 +8,17 @@
 - introduce scheduler.interval('10s') { ... }
 
 
+== rufus-scheduler - 2.0.24    released 2013/09/02
+
+- lowered tzinfo dependency to >= 0.3.22
+  http://stackoverflow.com/questions/18551970
+
+
+== rufus-scheduler - 2.0.23    released 2013/07/26
+
+- mutex vs timeout fix by Tobias Kraze
+
+
 == rufus-scheduler - 2.0.22    released 2013/07/16
 
 - parse "/10 * * * *" again (like <= 2.0.19 did), thanks @skrd
