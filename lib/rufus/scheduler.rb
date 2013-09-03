@@ -269,11 +269,26 @@ module Rufus
 
     # Returns true if this job is currently scheduled.
     #
+    # Takes extra care to answer true if the job is a repeat job
+    # currently firing (thus not apparently scheduled).
+    #
     def scheduled?(job_or_job_id)
+
+      # feels complicated
+      # why not maintain a second job array for "scheduled jobs"
+      # or event better, a job set?
 
       job, job_id = fetch(job_or_job_id)
 
-      !! job(job_id)
+      j = job(job_id)
+
+      if j
+        return ! j.unscheduled_at
+      elsif job.is_a?(RepeatJob)
+        return job.running?
+      else
+        false
+      end
     end
 
     # Lists all the threads associated with this scheduler.

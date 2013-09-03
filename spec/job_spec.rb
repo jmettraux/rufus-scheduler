@@ -166,6 +166,16 @@ describe Rufus::Scheduler::Job do
 
       job.scheduled?.should == false
     end
+
+    it 'returns true for repeat jobs that are running' do
+
+      job = @scheduler.schedule_interval('0.4s') { sleep(10) }
+
+      sleep 1
+
+      job.running?.should == true
+      job.scheduled?.should == true
+    end
   end
 
   context 'job-local variables' do

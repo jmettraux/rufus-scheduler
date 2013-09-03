@@ -154,6 +154,15 @@ module Rufus
         @local_mutex.synchronize { @locals.keys }
       end
 
+      #def hash
+      #  self.object_id
+      #end
+      #def eql?(o)
+      #  o.class == self.class && o.hash == self.hash
+      #end
+        #
+        # might be necessary at some point
+
       protected
 
       def compute_timeout

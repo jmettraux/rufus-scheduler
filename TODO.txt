@@ -100,3 +100,5 @@
     #
     investigate guards for schedulables... def if_guard; ...; end
 
+[ ] rethink job array vs job set for #scheduled?
+
