@@ -149,6 +149,25 @@ describe Rufus::Scheduler::Job do
     end
   end
 
+  describe '#scheduled?' do
+
+    it 'returns true when the job is scheduled' do
+
+      job = @scheduler.schedule_in('1d') {}
+
+      job.scheduled?.should == true
+    end
+
+    it 'returns false when the job is not scheduled' do
+
+      job = @scheduler.schedule_in('0.1s') {}
+
+      sleep 0.4
+
+      job.scheduled?.should == false
+    end
+  end
+
   context 'job-local variables' do
 
     describe '#[]=' do

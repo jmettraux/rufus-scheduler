@@ -452,6 +452,10 @@ Note: if the job is pooled for another run, a free work thread will probably pic
 
 Returns true if there is at least one running Thread hosting a run of this Job instance.
 
+### scheduled?
+
+Returns true if the job is scheduled (is due to trigger). For repeat jobs it should return true until the job gets unscheduled. "at" and "in" jobs will respond with false as soon as they start running (execution triggered).
+
 ### pause, resume, paused?, paused_at
 
 These four methods are only available to CronJob and EveryJob instances. One can pause or resume such a job thanks to them.
@@ -662,6 +666,10 @@ Lists the work threads associated with the scheduler. The query option defaults 
 * :vacant : all the work threads currently not running a Job
 
 Note that the main schedule thread will be returned if it is currently running a Job (ie one of those :blocking => true jobs).
+
+### Scheduler#scheduled?(job_or_job_id)
+
+Returns true if the arg is a currently scheduled job (see Job#scheduled?).
 
 
 ## dealing with job errors

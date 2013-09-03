@@ -198,10 +198,11 @@ module Rufus
 
     def unschedule(job_or_job_id)
 
-      job = job_or_job_id
-      job = job(job_or_job_id) if job_or_job_id.is_a?(String)
+      job, job_id = fetch(job_or_job_id)
 
-      job.unschedule
+      fail ArgumentError.new("no job found with id '#{job_id}'") unless job
+
+      job.unschedule if job
     end
 
     #--
@@ -264,6 +265,15 @@ module Rufus
     def job(job_id)
 
       @jobs[job_id]
+    end
+
+    # Returns true if this job is currently scheduled.
+    #
+    def scheduled?(job_or_job_id)
+
+      job, job_id = fetch(job_or_job_id)
+
+      !! job(job_id)
     end
 
     # Lists all the threads associated with this scheduler.
@@ -333,6 +343,17 @@ module Rufus
     end
 
     protected
+
+    # Returns [ job, job_id ]
+    #
+    def fetch(job_or_job_id)
+
+      if job_or_job_id.respond_to?(:job_id)
+        [ job_or_job_id, job_or_job_id.job_id ]
+      else
+        [ job(job_or_job_id), job_or_job_id ]
+      end
+    end
 
     def consider_lockfile
 

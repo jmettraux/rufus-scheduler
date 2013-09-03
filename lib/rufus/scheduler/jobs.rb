@@ -129,6 +129,11 @@ module Rufus
         threads.any?
       end
 
+      def scheduled?
+
+        @scheduler.scheduled?(self)
+      end
+
       def []=(key, value)
 
         @local_mutex.synchronize { @locals[key] = value }
