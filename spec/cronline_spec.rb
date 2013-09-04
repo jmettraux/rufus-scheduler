@@ -186,6 +186,7 @@ describe Rufus::Scheduler::CronLine do
         # that slowness is gone)
 
       nt('0 0 * * thu', now).should == now + 604800
+      nt('00 0 * * thu', now).should == now + 604800
 
       nt('0 0 * * *', now).should == now + 24 * 3600
       nt('0 24 * * *', now).should == now + 24 * 3600
