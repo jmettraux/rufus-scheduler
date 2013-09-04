@@ -47,6 +47,7 @@ describe Rufus::CronLine do
       to_a '1-5 * * * * *', [ [1,2,3,4,5], nil, nil, nil, nil, nil, nil, nil ]
 
       to_a '0 0 1 1 *', [ [0], [0], [0], [1], [1], nil, nil, nil ]
+      to_a '00 00 1 1 *', [ [0], [0], [0], [1], [1], nil, nil, nil ]
 
       to_a '0 23-24 * * *', [ [0], [0], [23, 0], nil, nil, nil, nil, nil ]
         #
