@@ -36,6 +36,7 @@ module Rufus
     require 'rufus/scheduler/util'
     require 'rufus/scheduler/jobs'
     require 'rufus/scheduler/cronline'
+    require 'rufus/scheduler/job_array'
 
     VERSION = '3.0.0'
 
@@ -524,86 +525,6 @@ module Rufus
       @jobs.push(job)
 
       return_job_instance ? job : job.job_id
-    end
-
-    #--
-    # a thread-safe array for Jobs
-    #
-    # JRuby (Quartz-land), Rubinius?, ...
-    #++
-
-    class JobArray
-
-      def initialize
-
-        @mutex = Mutex.new
-        @array = []
-      end
-
-      def concat(jobs)
-
-        @mutex.synchronize { jobs.each { |j| do_push(j) } }
-
-        self
-      end
-
-      def shift(now)
-
-        @mutex.synchronize {
-          nxt = @array.first
-          return nil if nxt.nil? || nxt.next_time > now
-          @array.shift
-        }
-      end
-
-      def push(job)
-
-        @mutex.synchronize { do_push(job) }
-
-        self
-      end
-
-      def delete_unscheduled
-
-        @mutex.synchronize { @array.delete_if { |j| j.unscheduled_at } }
-      end
-
-      def to_a
-
-        @mutex.synchronize { @array.dup }
-      end
-
-      def [](job_id)
-
-        @mutex.synchronize { @array.find { |j| j.job_id == job_id } }
-      end
-
-      protected
-
-      def do_push(job)
-
-        a = 0
-        z = @array.length - 1
-
-        i =
-          loop do
-
-            break a if z < 0
-
-            break a if job.next_time <= @array[a].next_time
-            break z + 1 if job.next_time >= @array[z].next_time
-
-            m = (a + z) / 2
-
-            if job.next_time < @array[m].next_time
-              a += 1; z = m
-            else
-              a = m; z -= 1
-            end
-          end
-
-        @array.insert(i, job)
-      end
     end
   end
 end
