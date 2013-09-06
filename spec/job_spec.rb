@@ -349,7 +349,7 @@ describe Rufus::Scheduler::Job do
             sleep(3)
           end
 
-        sleep 0.4
+        sleep 0.7
 
         if j0.threads.any?
           j0.threads.size.should == 1
@@ -372,7 +372,7 @@ describe Rufus::Scheduler::Job do
         j0 = @scheduler.in('0s', :job => true, :mutex => m) { sleep(3) }
         j1 = @scheduler.in('0s', :job => true, :mutex => m) { sleep(3) }
 
-        sleep 0.4
+        sleep 0.7
 
         if j0.threads.any?
           j0.threads.size.should == 1
@@ -399,7 +399,7 @@ describe Rufus::Scheduler::Job do
             sleep(3)
           end
 
-        sleep 0.4
+        sleep 0.7
 
         if j0.threads.any?
           j0.threads.size.should == 1
