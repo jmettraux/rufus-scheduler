@@ -250,7 +250,9 @@ module Rufus
         thread[:rufus_scheduler_work_thread] = true
           #
           # same as above (in the thead block),
-          # but it has to be done as quickly as possible
+          # but since it has to be done as quickly as possible.
+          # So, whoever is running first (scheduler thread vs job thread)
+          # sets this information
       end
 
       def do_trigger_in_thread(time)
