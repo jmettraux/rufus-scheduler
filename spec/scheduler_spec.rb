@@ -785,5 +785,88 @@ describe Rufus::Scheduler do
       jobs.collect { |j| j.original }.sort.should == %w[ 7m ]
     end
   end
+
+  describe '#on_pre_trigger' do
+
+    it 'is called right before a job triggers' do
+
+      $out = []
+
+      def @scheduler.on_pre_trigger(job)
+        $out << "pre #{job.id}"
+      end
+
+      job_id =
+        @scheduler.in '0.5s' do |job|
+          $out << job.id
+        end
+
+      sleep 0.7
+
+      $out.should == [ "pre #{job_id}", job_id ]
+    end
+
+    it 'accepts the job and the triggerTime as argument' do
+
+      $tt = nil
+
+      def @scheduler.on_pre_trigger(job, trigger_time)
+        $tt = trigger_time
+      end
+
+      start = Time.now
+
+      @scheduler.in '0.5s' do; end
+
+      sleep 0.7
+
+      $tt.class.should == Time
+      $tt.should > start
+      $tt.should < Time.now
+    end
+
+    context 'when it returns false' do
+
+      it 'prevents the job from triggering' do
+
+        $out = []
+
+        def @scheduler.on_pre_trigger(job)
+          $out << "pre #{job.id}"
+          false
+        end
+
+        job_id =
+          @scheduler.in '0.5s' do |job|
+            $out << job.id
+          end
+
+        sleep 0.7
+
+        $out.should == [ "pre #{job_id}" ]
+      end
+    end
+  end
+
+  describe '#on_post_trigger' do
+
+    it 'is called right after a job triggers' do
+
+      $out = []
+
+      def @scheduler.on_post_trigger(job)
+        $out << "post #{job.id}"
+      end
+
+      job_id =
+        @scheduler.in '0.5s' do |job|
+          $out << job.id
+        end
+
+      sleep 0.7
+
+      $out.should == [ job_id, "post #{job_id}" ]
+    end
+  end
 end
 

@@ -102,3 +102,22 @@
 
 [ ] rethink job array vs job set for #scheduled?
 
+[ ] expanded block/schedulable
+    ```
+      scheduler.every '10m' do
+        def pre
+          return false if Backend.down?
+          # ...
+        end
+        def post
+          # ...
+        end
+        def trigger
+          puts "oh hai!"
+        end
+      end
+    ```
+    or something like that...
+
+[x] add spec case for corner case in Job#trigger (overlap vs reschedule) !!!
+

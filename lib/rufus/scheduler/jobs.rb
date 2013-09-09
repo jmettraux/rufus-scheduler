@@ -96,7 +96,11 @@ module Rufus
 
       def trigger(time)
 
-        return if opts[:overlap] == false && running?
+        return false if opts[:overlap] == false && running?
+
+        r = callback(:pre, time)
+
+        return false if r == false
 
         if opts[:blocking]
           do_trigger(time)
@@ -165,6 +169,17 @@ module Rufus
 
       protected
 
+      def callback(position, time)
+
+        name = position == :pre ? :on_pre_trigger : :on_post_trigger
+
+        return unless @scheduler.respond_to?(name)
+
+        args = @scheduler.method(name).arity < 2 ? [ self ] : [ self, time ]
+
+        @scheduler.send(name, *args)
+      end
+
       def compute_timeout
 
         if to = @opts[:timeout]
@@ -212,7 +227,7 @@ module Rufus
 
       def post_trigger(time)
 
-        # empty, merely used by IntervalJob
+        callback(:post, time)
       end
 
       def start_work_thread
@@ -449,6 +464,8 @@ module Rufus
       end
 
       def post_trigger(time)
+
+        super
 
         @next_time = Time.now + @interval
         @scheduler.send(:reschedule, self)

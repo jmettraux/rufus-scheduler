@@ -688,6 +688,45 @@ TODO
 
 TODO
 
+## Rufus::Scheduler #on_pre_trigger and #on_post_trigger callbacks
+
+One can bind callbacks before and after jobs trigger:
+
+```
+s = Rufus::Scheduler.new
+
+def s.on_pre_trigger(job, trigger_time)
+  puts "triggering job #{job.id}..."
+end
+
+def s.on_post_trigger(job, trigger_time)
+  puts "triggered job #{job.id}."
+end
+
+s.every '1s' do
+  # ...
+end
+```
+
+The ```trigger_time``` is the time at which the job triggers. It might be a bit before ```Time.now```.
+
+Warning: these two callbacks are executed in the scheduler thread, not in the work threads (the threads were the job execution really happens).
+
+### Rufus::Scheduler#on_pre_trigger as a guard
+
+Returning ```false``` in on_pre_trigger will prevent the job from triggering. Returning anything else (nil, -1, true, ...) will let the job trigger.
+
+Note: your business logic should go in the scheduled block itself (or the scheduled instance). Don't put business logic in on_pre_trigger. Return false for admin reasons (backend down, etc) not for business reasons that are tied to the job itself.
+
+```
+def s.on_pre_trigger(job, trigger_time)
+
+  return false if Backend.down?
+
+  puts "triggering job #{job.id}..."
+end
+```
+
 ## Rufus::Scheduler.new options
 
 ### :frequency

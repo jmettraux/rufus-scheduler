@@ -27,6 +27,7 @@
 
 == Feedback
 
+- Daniel Beauchamp - https://github.com/pushmatrix - pre/post trigger callbacks
 - Arthur Maltson - https://github.com/amaltson - readme fixes
 - skrd - https://github.com/skrd - "/10 * * * *" cron issue
 - Hongli Lai - Scheduler#stop(:terminate => true) request
