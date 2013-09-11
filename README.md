@@ -690,13 +690,13 @@ By default, rufus-scheduler intercepts all errors (that inherit from StandardErr
 
 If, for example, you'd like to divert that flow to another file (descriptor). You can reassign $stderr for the current Ruby process
 
-```
+```ruby
 $stderr = File.open('/var/log/myapplication.log', 'ab')
 ```
 
 or, you can limit that reassignement to the scheduler itself
 
-```
+```ruby
 scheduler.stderr = File.open('/var/log/myapplication.log', 'ab')
 ```
 
@@ -704,13 +704,18 @@ scheduler.stderr = File.open('/var/log/myapplication.log', 'ab')
 
 We've just seen that, by default, rufus-scheduler dumps error information to $stderr. If one needs to completely change what happens in case of error, it's OK to overwrite #on_error
 
-TODO
+```ruby
+def scheduler.on_error(job, error)
+
+  Logger.warn("intercepted error in #{job.id}: #{error.message}")
+end
+```
 
 ## Rufus::Scheduler #on_pre_trigger and #on_post_trigger callbacks
 
 One can bind callbacks before and after jobs trigger:
 
-```
+```ruby
 s = Rufus::Scheduler.new
 
 def s.on_pre_trigger(job, trigger_time)
@@ -736,7 +741,7 @@ Returning ```false``` in on_pre_trigger will prevent the job from triggering. Re
 
 Note: your business logic should go in the scheduled block itself (or the scheduled instance). Don't put business logic in on_pre_trigger. Return false for admin reasons (backend down, etc) not for business reasons that are tied to the job itself.
 
-```
+```ruby
 def s.on_pre_trigger(job, trigger_time)
 
   return false if Backend.down?
