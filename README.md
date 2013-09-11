@@ -51,6 +51,20 @@ end
 # ...
 ```
 
+## non-features
+
+Rufus-scheduler (out of the box) is an in-process, in-memory scheduler.
+
+It does not persist your schedules. When the process is gone and the scheduler instance with it, the schedules are gone.
+
+
+## related and similar gems
+
+* [whenever](https://github.com/javan/whenever) - let cron call back your Ruby code, trusted and reliable cron drives your schedule
+* [clockwork](https://github.com/tomykaira/clockwork) - rufus-scheduler inspired gem
+
+(please note: rufus-scheduler is not a cron replacement)
+
 
 ## note about the 3.0 line
 
@@ -105,6 +119,46 @@ Yes, issues can be reported in [rufus-scheduler issues](https://github.com/jmett
 ## scheduling
 
 TODO: in/at/every/interval/cron
+
+Rufus-scheduler supports five kinds of jobs. in, at, every, interval and cron jobs.
+
+In and at jobs trigger once.
+
+```ruby
+scheduler.in '10d' do
+  puts "10 days reminder for review X!"
+end
+
+scheduler.at '2014/12/24 2000' do
+  puts "merry xmas!"
+end
+```
+
+In jobs are scheduled with a time interval, they trigger after that time elapsed. At jobs are scheduled with a point in time, they trigger when that point in time is reached (better to choose a point in the future).
+
+Every, interval and cron jobs trigger repeatedly.
+
+```ruby
+scheduler.every '3h' do
+  puts "change the oil filter!"
+end
+
+scheduler.interval '2h' do
+  puts "thinking..."
+  puts sleep(rand * 1000)
+  puts "thought."
+end
+
+scheduler.cron '00 09 * * *' do
+  puts "it's 9am! good morning!"
+end
+```
+
+Every jobs try hard to trigger following the frequency they were scheduled with.
+
+Interval jobs, trigger, execute and then trigger again after the interval elapsed. (every jobs time between trigger times, interval jobs time between trigger termination and the next trigger start).
+
+Cron jobs are based on the venerable cron utility (```man 5 crontab```). They trigger following a pattern given in (almost) the same language cron uses.
 
 ### schedule blocks arguments (job, time)
 
