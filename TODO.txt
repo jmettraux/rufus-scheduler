@@ -121,3 +121,5 @@
 
 [x] add spec case for corner case in Job#trigger (overlap vs reschedule) !!!
 
+[ ] Rufus::Scheduler.singleton
+

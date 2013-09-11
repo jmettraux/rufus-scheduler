@@ -684,7 +684,25 @@ TODO
 
 TODO
 
+### Rufus::Scheduler#stderr=
+
+By default, rufus-scheduler intercepts all errors (that inherit from StandardError) and dumps abundent details to $stderr.
+
+If, for example, you'd like to divert that flow to another file (descriptor). You can reassign $stderr for the current Ruby process
+
+```
+$stderr = File.open('/var/log/myapplication.log', 'ab')
+```
+
+or, you can limit that reassignement to the scheduler itself
+
+```
+scheduler.stderr = File.open('/var/log/myapplication.log', 'ab')
+```
+
 ### Rufus::Scheduler#on_error(job, error)
+
+We've just seen that, by default, rufus-scheduler dumps error information to $stderr. If one needs to completely change what happens in case of error, it's OK to overwrite #on_error
 
 TODO
 

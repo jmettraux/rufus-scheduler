@@ -57,6 +57,8 @@ module Rufus
     attr_accessor :min_work_threads
     attr_accessor :max_work_threads
 
+    attr_accessor :stderr
+
     attr_reader :work_queue
 
     def initialize(opts={})
@@ -75,6 +77,8 @@ module Rufus
 
       @min_work_threads = opts[:min_work_threads] || MIN_WORK_THREADS
       @max_work_threads = opts[:max_work_threads] || MAX_WORK_THREADS
+
+      @stderr = $stderr
 
       @thread_key = "rufus_scheduler_#{self.object_id}"
 
@@ -335,27 +339,27 @@ module Rufus
 
       pre = err.object_id.to_s
 
-      $stderr.puts("{ #{pre} rufus-scheduler intercepted an error:")
-      $stderr.puts("  #{pre}   job:")
-      $stderr.puts("  #{pre}     #{job.class} #{job.original.inspect} #{job.opts.inspect}")
-      $stderr.puts("  #{pre}   error:")
-      $stderr.puts("  #{pre}     #{err.object_id}")
-      $stderr.puts("  #{pre}     #{err.class}")
-      $stderr.puts("  #{pre}     #{err}")
+      stderr.puts("{ #{pre} rufus-scheduler intercepted an error:")
+      stderr.puts("  #{pre}   job:")
+      stderr.puts("  #{pre}     #{job.class} #{job.original.inspect} #{job.opts.inspect}")
+      stderr.puts("  #{pre}   error:")
+      stderr.puts("  #{pre}     #{err.object_id}")
+      stderr.puts("  #{pre}     #{err.class}")
+      stderr.puts("  #{pre}     #{err}")
       err.backtrace.each do |l|
-        $stderr.puts("  #{pre}       #{l}")
+        stderr.puts("  #{pre}       #{l}")
       end
-      $stderr.puts("} #{pre} .")
+      stderr.puts("} #{pre} .")
 
     rescue => e
 
-      $stderr.puts("failure in #on_error itself:")
-      $stderr.puts(e.inspect)
-      $stderr.puts(e.backtrace)
+      stderr.puts("failure in #on_error itself:")
+      stderr.puts(e.inspect)
+      stderr.puts(e.backtrace)
 
     ensure
 
-      $stderr.flush
+      stderr.flush
     end
 
     protected

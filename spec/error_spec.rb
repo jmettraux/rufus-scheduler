@@ -74,6 +74,23 @@ describe Rufus::Scheduler do
     end
   end
 
+  context 'Rufus::Scheduler#stderr=' do
+
+    it 'lets divert error information to custom files' do
+
+      @scheduler.stderr = StringIO.new
+
+      @scheduler.in('0s') do
+        fail 'miserably'
+      end
+
+      sleep 0.5
+
+      @scheduler.stderr.string.should match(/intercepted an error/)
+      @scheduler.stderr.string.should match(/miserably/)
+    end
+  end
+
   context 'Rufus::Scheduler#on_error(&block)' do
 
     it 'intercepts all StandardError instances' do
