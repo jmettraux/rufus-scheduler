@@ -71,38 +71,7 @@
     default would be discard_past => "1m" or scheduler freq * 2 ?
     jobs would adjust their next_time until it fits the window...
     ~~ discard past by default
-
-[o] :lockfile => x, timestamp, process_id, thread_id...
-    warning: have to clean up that file on exit... or does the scheduler
-    timestamps it?
-[ ] develop lockfile timestamp thinggy
-    ~ if the timestamp is too old (twice the default frequency?) then
-    lock [file] take over...
-    Is that really what we want all the time?
-
-[ ] idea: :mutex => x and :skip_on_mutex => true ?
-    would prevent blocking/waiting for the mutex to get available
-    :mutex => [ "mutex_name", true ]
-    :mutex => [ [ "mutex_name", true ], [ "other_mutex_name", false ] ]
-
-[.] thread pool something? Thread upper limit?
-[ ] drop min threads setting?
-
-[ ] bring back EM (but only EM.defer ?) :defer => true (Job or Scheduler
-    or both option?)
-
-[ ] prepare a daemon
-
-[ ] :if => lambda { |job, time| ... } why not?
-    :unless => lambda { ...
-    :block => lambda { ...
-    can help get the block themselves leaner
-    #
-    investigate guards for schedulables... def if_guard; ...; end
-
-[ ] rethink job array vs job set for #scheduled?
-
-[ ] expanded block/schedulable (it's "callable")
+[o] expanded block/schedulable (it's "callable")
     ```
       scheduler.every '10m' do
         def pre
@@ -128,8 +97,37 @@
       end
     ```
     the job contains the instance in its @callable
-
 [x] add spec case for corner case in Job#trigger (overlap vs reschedule) !!!
+
+[o] :lockfile => x, timestamp, process_id, thread_id...
+    warning: have to clean up that file on exit... or does the scheduler
+    timestamps it?
+[ ] develop lockfile timestamp thinggy
+    ~ if the timestamp is too old (twice the default frequency?) then
+    lock [file] take over...
+    Is that really what we want all the time?
+
+[ ] idea: :mutex => x and :skip_on_mutex => true ?
+    would prevent blocking/waiting for the mutex to get available
+    :mutex => [ "mutex_name", true ]
+    :mutex => [ [ "mutex_name", true ], [ "other_mutex_name", false ] ]
+
+[.] thread pool something? Thread upper limit?
+[ ] drop min threads setting?
+
+[ ] bring back EM (but only EM.defer ?) :defer => true (Job or Scheduler
+    or both option?)
+
+[ ] prepare a daemon, trust daemon-kit for that
+
+[ ] :if => lambda { |job, time| ... } why not?
+    :unless => lambda { ...
+    :block => lambda { ...
+    can help get the block themselves leaner
+    #
+    investigate guards for schedulables... def if_guard; ...; end
+
+[ ] rethink job array vs job set for #scheduled?
 
 [ ] Rufus::Scheduler.singleton
 

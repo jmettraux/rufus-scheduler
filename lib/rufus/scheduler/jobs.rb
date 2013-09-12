@@ -51,8 +51,7 @@ module Rufus
       #
       attr_reader :callable
 
-      # the original thing that was passed to get scheduled,
-      # kept for reference
+      # a reference to the instance whose call method is the @callable
       #
       attr_reader :handler
 
@@ -69,6 +68,9 @@ module Rufus
             block
           elsif block.respond_to?(:call)
             block.method(:call)
+          elsif block.is_a?(Class)
+            @handler = block.new
+            @handler.method(:call) rescue nil
           else
             nil
           end

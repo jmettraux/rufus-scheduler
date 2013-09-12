@@ -135,6 +135,21 @@ describe Rufus::Scheduler do
       job.handler.counter.should == 1
     end
 
+    it 'accepts a class as callable' do
+
+      job =
+        @scheduler.schedule_in('0s', Class.new do
+          attr_reader :value
+          def call
+            @value = 7
+          end
+        end)
+
+      sleep 0.4
+
+      job.handler.value.should == 7
+    end
+
     it 'raises if the scheduler is shutting down' do
 
       @scheduler.shutdown
