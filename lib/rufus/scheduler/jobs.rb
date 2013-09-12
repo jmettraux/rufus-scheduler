@@ -45,7 +45,15 @@ module Rufus
       attr_reader :last_time
       attr_reader :unscheduled_at
       attr_reader :tags
+
+      # anything with a #call(job[, timet]) method,
+      # what gets actually triggered
+      #
       attr_reader :callable
+
+      # the original thing that was passed to get scheduled,
+      # kept for reference
+      #
       attr_reader :handler
 
       def initialize(scheduler, original, opts, block)
@@ -54,11 +62,13 @@ module Rufus
         @original = original
         @opts = opts
 
-        @callable, @handler =
+        @handler = block
+
+        @callable =
           if block.respond_to?(:arity)
-            [ block, nil ]
+            block
           elsif block.respond_to?(:call)
-            [ block.method(:call), block ]
+            block.method(:call)
           else
             nil
           end
