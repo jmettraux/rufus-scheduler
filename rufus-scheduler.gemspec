@@ -32,5 +32,28 @@ job scheduler for Ruby (at, cron, in and every jobs).
   s.add_development_dependency 'rspec', '>= 2.13.0'
 
   s.require_path = 'lib'
+
+  s.post_install_message =
+    %{
+***
+
+Thanks for installing rufus-scheduler #{s.version}
+
+It might not be 100% compatible with rufus-scheduler 2.x.
+
+If you encounter issues with this new rufus-scheduler, especially
+if your app worked fine with previous versions of it, you can
+
+A) Forget it and peg your Gemfile to rufus-scheduler 2.0.24
+
+and / or
+
+B) Take some time to carefully report the issue at
+   https://github.com/jmettraux/rufus-scheduler/issue
+
+Cheers.
+
+***
+    }
 end
 
