@@ -118,9 +118,11 @@ Yes, issues can be reported in [rufus-scheduler issues](https://github.com/jmett
 
 ## scheduling
 
-TODO: in/at/every/interval/cron
-
 Rufus-scheduler supports five kinds of jobs. in, at, every, interval and cron jobs.
+
+Most of the rufus-scheduler examples show block scheduling, but it's also OK to schedule handler instances or handler classes.
+
+### in, at, every, interval, cron
 
 In and at jobs trigger once.
 
@@ -160,6 +162,34 @@ Interval jobs, trigger, execute and then trigger again after the interval elapse
 
 Cron jobs are based on the venerable cron utility (```man 5 crontab```). They trigger following a pattern given in (almost) the same language cron uses.
 
+### #schedule_x vs #x
+
+schedule_in, schedule_at, schedule_cron, etc will return the new Job instance.
+
+in, at, cron will return the new Job instance's id (a String).
+
+```ruby
+job_id =
+  scheduler.in '10d' do
+    # ...
+  end
+job = scheduler.job(job_id)
+
+# versus
+
+job =
+  scheduler.schedule_in '10d' do
+    # ...
+  end
+
+# also
+
+job =
+  scheduler.in '10d', :job => true do
+    # ...
+  end
+```
+
 ### schedule blocks arguments (job, time)
 
 A schedule block may be given 0, 1 or 2 arguments.
@@ -183,7 +213,7 @@ The second argument is "time", it's the time when the job got cleared for trigge
 
 Note that time is the time when the job got cleared for triggering. If there are mutexes involved, now = mutex_wait_time + time...
 
-### scheduling not just blocks
+### scheduling handler instances
 
 It's OK to pass any object, as long as it respond to #call(), when scheduling:
 
@@ -216,6 +246,41 @@ scheduler.in '3d5m', oh
 The call method must accept 2 (job, time), 1 (job) or 0 arguments.
 
 Note that time is the time when the job got cleared for triggering. If there are mutexes involved, now = mutex_wait_time + time...
+
+### scheduling handler classes
+
+One can pass a handler class to rufus-scheduler when scheduling. Rufus will instantiate it and that instance will be available via job#handler.
+
+```ruby
+class MyHandler
+  attr_reader :count
+  def initialize
+    @count = 0
+  end
+  def call(job)
+    @count += 1
+    puts ". #{self.class} called at #{Time.now} (#{@count})"
+  end
+end
+
+job = scheduler.schedule_every '35m', MyHandler
+
+job.handler
+  # => #<MyHandler:0x000000021034f0>
+job.handler.count
+  # => 0
+```
+
+If you want to keep that "block feeling":
+
+```ruby
+job_id =
+  scheduler.every '10m', Class.new do
+    def call(job)
+      puts ". hello #{self.inspect} at #{Time.now}"
+    end
+  end
+```
 
 
 ## pause and resume the scheduler
@@ -512,7 +577,7 @@ Returns true if the job is scheduled (is due to trigger). For repeat jobs it sho
 
 ### pause, resume, paused?, paused_at
 
-These four methods are only available to CronJob and EveryJob instances. One can pause or resume such a job thanks to them.
+These four methods are only available to CronJob, EveryJob and IntervalJob instances. One can pause or resume such a job thanks to them.
 
 ```ruby
 job =

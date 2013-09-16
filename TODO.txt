@@ -130,4 +130,5 @@
 [ ] rethink job array vs job set for #scheduled?
 
 [ ] Rufus::Scheduler.singleton
+    Rufus::Scheduler.s
 
