@@ -132,3 +132,8 @@
 [ ] Rufus::Scheduler.singleton
     Rufus::Scheduler.s
 
+[ ] create spec/ at_job_spec.rb, repeat_job_spec.rb, cron_job_spec.rb, ...
+
+[ ] scheduler.schedule duration/time/cron ... for at/in/cron (not every, nor interval)
+    scheduler.repeat time/cron ... for every/cron
+
