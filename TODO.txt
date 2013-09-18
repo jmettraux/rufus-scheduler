@@ -137,3 +137,7 @@
 [ ] scheduler.schedule duration/time/cron ... for at/in/cron (not every, nor interval)
     scheduler.repeat time/cron ... for every/cron
 
+[ ] introduce common parent class for EveryJob and IntervalJob
+
+[ ] EveryJob#first_at= and IntervalJob#first_at= should alter @next_time
+

@@ -205,6 +205,15 @@ describe Rufus::Scheduler::Job do
 
         counter.should > 0
       end
+
+      it 'rejects points in the past' do
+
+        lambda {
+
+          @scheduler.schedule_every '0.5s', :first => Time.now - 60 do; end
+
+        }.should raise_error(ArgumentError)
+      end
     end
 
     describe ':first/:first_in/:first_at => duration' do
