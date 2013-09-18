@@ -206,7 +206,7 @@ describe Rufus::Scheduler::Job do
         counter.should > 0
       end
 
-      it 'rejects points in the past' do
+      it 'raises on points in the past' do
 
         lambda {
 
@@ -238,7 +238,7 @@ describe Rufus::Scheduler::Job do
         job.first_at.should < t + 3601
       end
 
-      it 'raises if the argument is worthless' do
+      it 'raises if the argument cannot be used' do
 
         lambda {
           @scheduler.every '0.5s', :first => :nada do; end
@@ -292,6 +292,15 @@ describe Rufus::Scheduler::Job do
 
         job.last_at.to_s.should == t.to_s
         job.last_at.zone.should == t.zone
+      end
+
+      it 'raises on a point in the past' do
+
+        lambda {
+
+          @scheduler.every '0.5s', :last => Time.now - 60 do; end
+
+        }.should raise_error(ArgumentError)
       end
     end
 

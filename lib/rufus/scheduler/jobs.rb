@@ -369,7 +369,7 @@ module Rufus
         @first_at = Rufus::Scheduler.parse_to_time(first)
 
         raise ArgumentError.new(
-          "cannot set first_at in the past: " +
+          "cannot set first[_at|_in] in the past: " +
           "#{first.inspect} -> #{@first_at.inspect}"
         ) if first != 0 && @first_at < Time.now
       end
@@ -377,6 +377,11 @@ module Rufus
       def last_at=(last)
 
         @last_at = last ? Rufus::Scheduler.parse_to_time(last) : nil
+
+        raise ArgumentError.new(
+          "cannot set last[_at|_in] in the past: " +
+          "#{last.inspect} -> #{@last_at.inspect}"
+        ) if last && @last_at < Time.now
       end
 
       def trigger(time)
