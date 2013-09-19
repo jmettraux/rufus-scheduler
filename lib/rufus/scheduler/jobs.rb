@@ -128,6 +128,11 @@ module Rufus
         @unscheduled_at = Time.now
       end
 
+      def do_reschedule
+
+        @scheduler.send(:reschedule, self)
+      end
+
       def threads
 
         Thread.list.select { |t| t[:rufus_scheduler_job] == self }
@@ -372,6 +377,9 @@ module Rufus
           "cannot set first[_at|_in] in the past: " +
           "#{first.inspect} -> #{@first_at.inspect}"
         ) if first != 0 && @first_at < Time.now
+
+        # TODO: reschedule if necessary,
+        #       unless just created...
       end
 
       def last_at=(last)
@@ -490,7 +498,7 @@ module Rufus
         super
 
         @next_time = Time.now + @interval
-        @scheduler.send(:reschedule, self)
+        do_reschedule
       end
     end
 
