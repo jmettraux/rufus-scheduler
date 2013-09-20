@@ -45,6 +45,16 @@ describe Rufus::Scheduler::JobArray do
 
       @array.to_a.collect(&:id).should == %w[ a b c d e ]
     end
+
+    it 'pushes and remove duplicates' do
+
+      j = DummyJob.new('a', Time.local(0))
+
+      @array.push(j)
+      @array.push(j)
+
+      @array.to_a.collect(&:id).should == %w[ a ]
+    end
   end
 
   describe '#concat' do
@@ -68,6 +78,16 @@ describe Rufus::Scheduler::JobArray do
       ])
 
       @array.to_a.collect(&:id).should == %w[ a b c ]
+    end
+
+    it 'concats and removes duplicates' do
+
+      j0 = DummyJob.new('a', Time.local(0))
+      j1 = DummyJob.new('b', Time.local(1))
+
+      @array.concat([ j0, j1, j0])
+
+      @array.to_a.collect(&:id).should == %w[ a b ]
     end
   end
 

@@ -40,7 +40,14 @@ module Rufus
 
       def concat(jobs)
 
-        @mutex.synchronize { jobs.each { |j| do_push(j) } }
+        @mutex.synchronize { do_concat(jobs) }
+
+        self
+      end
+
+      def push(job)
+
+        @mutex.synchronize { do_concat([ job ]) }
 
         self
       end
@@ -52,13 +59,6 @@ module Rufus
           return nil if nxt.nil? || nxt.next_time > now
           @array.shift
         }
-      end
-
-      def push(job)
-
-        @mutex.synchronize { do_push(job) }
-
-        self
       end
 
       def delete_unscheduled
@@ -78,29 +78,9 @@ module Rufus
 
       protected
 
-      def do_push(job)
+      def do_concat(jobs)
 
-        a = 0
-        z = @array.length - 1
-
-        i =
-          loop do
-
-            break a if z < 0
-
-            break a if job.next_time <= @array[a].next_time
-            break z + 1 if job.next_time >= @array[z].next_time
-
-            m = (a + z) / 2
-
-            if job.next_time < @array[m].next_time
-              a += 1; z = m
-            else
-              a = m; z -= 1
-            end
-          end
-
-        @array.insert(i, job)
+        @array = @array.concat(jobs).uniq.sort_by(&:next_time)
       end
     end
   end
