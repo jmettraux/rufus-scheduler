@@ -285,12 +285,10 @@ module Rufus
 
       job, job_id = fetch(job_or_job_id)
 
-      j = job(job_id)
-
-      if j
-        return ! j.unscheduled_at
+      if j = job(job_id)
+        ! j.unscheduled_at
       elsif job.is_a?(RepeatJob)
-        return job.running?
+        job.running?
       else
         false
       end
