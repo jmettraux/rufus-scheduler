@@ -221,21 +221,18 @@ module Rufus
 
       opts = { opts => true } if opts.is_a?(Symbol)
 
-      js =
-        (@jobs.to_a + work_threads(:active).collect { |t|
-          t[:rufus_scheduler_job]
-        }).uniq
+      jobs = @jobs.to_a
 
       if opts[:running]
-        js = js.select { |j| j.running? }
+        jobs = jobs.select { |j| j.running? }
       elsif ! opts[:all]
-        js = js.reject { |j| j.unscheduled_at }
+        jobs = jobs.reject { |j| j.next_time.nil? || j.unscheduled_at }
       end
 
-      ts = Array(opts[:tag] || opts[:tags]).map { |t| t.to_s }
-      js = js.reject { |j| ts.find { |t| ! j.tags.include?(t) } }
+      tags = Array(opts[:tag] || opts[:tags]).collect { |t| t.to_s }
+      jobs = jobs.reject { |j| tags.find { |t| ! j.tags.include?(t) } }
 
-      js
+      jobs
     end
 
     def at_jobs(opts={})
@@ -263,10 +260,6 @@ module Rufus
       jobs(opts).select { |j| j.is_a?(Rufus::Scheduler::CronJob) }
     end
 
-    #def find_by_tag(*tags)
-    #  jobs(:tags => tags)
-    #end
-
     def job(job_id)
 
       @jobs[job_id]
@@ -275,23 +268,13 @@ module Rufus
     # Returns true if this job is currently scheduled.
     #
     # Takes extra care to answer true if the job is a repeat job
-    # currently firing (thus not apparently scheduled).
+    # currently firing.
     #
     def scheduled?(job_or_job_id)
 
-      # feels complicated
-      # why not maintain a second job array for "scheduled jobs"
-      # or event better, a job set?
-
       job, job_id = fetch(job_or_job_id)
 
-      if j = job(job_id)
-        ! j.unscheduled_at
-      elsif job.is_a?(RepeatJob)
-        job.running?
-      else
-        false
-      end
+      !! (job && job.next_time != nil)
     end
 
     # Lists all the threads associated with this scheduler.
@@ -403,10 +386,9 @@ module Rufus
       true
     end
 
-    def reschedule(job)
-
-      @jobs.push(job)
-    end
+    #def reschedule(job)
+    #  @jobs.push(job)
+    #end
 
     def terminate_all_jobs
 
@@ -464,16 +446,11 @@ module Rufus
     def trigger_jobs
 
       now = Time.now
-      jobs_to_reschedule = []
 
-      while job = @jobs.shift(now)
+      @jobs.each(now) do |job|
 
-        reschedule = job.trigger(now)
-
-        jobs_to_reschedule << job if reschedule
+        job.trigger(now)
       end
-
-      @jobs.concat(jobs_to_reschedule)
     end
 
     def timeout_jobs

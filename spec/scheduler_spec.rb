@@ -719,9 +719,9 @@ describe Rufus::Scheduler do
       @scheduler.every '2h', :tag => %w[ t0 t1 ] do; end
       @scheduler.every '3h' do; end
 
-      @scheduler.jobs(:tags => 't0').map(&:original).should ==
-        %w[ 2h 10d ]
-      @scheduler.jobs(:tags => 't1').map(&:original).should ==
+      @scheduler.jobs(:tags => 't0').map(&:original).sort.should ==
+        %w[ 10d 2h ]
+      @scheduler.jobs(:tags => 't1').map(&:original).sort.should ==
         %w[ 2h ]
       @scheduler.jobs(:tags => [ 't1', 't0' ]).map(&:original).sort.should ==
         %w[ 2h ]

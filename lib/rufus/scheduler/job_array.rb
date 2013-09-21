@@ -38,32 +38,35 @@ module Rufus
         @array = []
       end
 
-      def concat(jobs)
-
-        @mutex.synchronize { do_concat(jobs) }
-
-        self
-      end
-
       def push(job)
 
-        @mutex.synchronize { do_concat([ job ]) }
+        @mutex.synchronize { @array << job unless @array.index(job) }
 
         self
       end
 
-      def shift(now)
+      def size
 
-        @mutex.synchronize {
-          nxt = @array.first
-          return nil if nxt.nil? || nxt.next_time > now
-          @array.shift
-        }
+        @array.size
+      end
+
+      def each(now, &block)
+
+        to_a.sort_by { |j| j.next_time || (now + 1) }.each do |job|
+
+          break unless job.next_time
+          break if job.next_time > now
+
+          block.call(job)
+        end
       end
 
       def delete_unscheduled
 
-        @mutex.synchronize { @array.delete_if { |j| j.unscheduled_at } }
+        @mutex.synchronize {
+
+          @array.delete_if { |j| j.next_time.nil? || j.unscheduled_at }
+        }
       end
 
       def to_a
@@ -74,13 +77,6 @@ module Rufus
       def [](job_id)
 
         @mutex.synchronize { @array.find { |j| j.job_id == job_id } }
-      end
-
-      protected
-
-      def do_concat(jobs)
-
-        @array = @array.concat(jobs).uniq.sort_by(&:next_time)
       end
     end
   end

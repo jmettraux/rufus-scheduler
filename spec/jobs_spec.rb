@@ -139,7 +139,7 @@ describe Rufus::Scheduler::Job do
             counter = counter + 1
           end
 
-        sleep(2.5)
+        sleep(2.6)
 
         counter.should == 3
       end

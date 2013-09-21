@@ -46,6 +46,10 @@ module Rufus
       attr_reader :unscheduled_at
       attr_reader :tags
 
+      # next trigger time
+      #
+      attr_accessor :next_time
+
       # anything with a #call(job[, timet]) method,
       # what gets actually triggered
       #
@@ -107,6 +111,8 @@ module Rufus
       alias job_id id
 
       def trigger(time)
+
+        set_next_time(false, time)
 
         return false if opts[:overlap] == false && running?
 
@@ -244,6 +250,8 @@ module Rufus
 
       def post_trigger(time)
 
+        set_next_time(true, time)
+
         callback(:post, time)
       end
 
@@ -305,9 +313,7 @@ module Rufus
 
     class OneTimeJob < Job
 
-      attr_reader :time
-
-      alias next_time time
+      alias time next_time
 
       protected
 
@@ -316,9 +322,16 @@ module Rufus
         [
           self.class.name.split(':').last.downcase[0..-4],
           @scheduled_at.to_f,
-          @time.to_f,
+          @next_time.to_f,
           opts.hash.abs
         ].map(&:to_s).join('_')
+      end
+
+      # There is no next_time for one time jobs, hence the false.
+      #
+      def set_next_time(is_post, trigger_time)
+
+        @next_time = is_post ? nil : false
       end
     end
 
@@ -326,9 +339,9 @@ module Rufus
 
       def initialize(scheduler, time, opts, block)
 
-        @time = Rufus::Scheduler.parse_at(time)
-
         super(scheduler, time, opts, block)
+
+        @next_time = Rufus::Scheduler.parse_at(time)
       end
     end
 
@@ -338,13 +351,12 @@ module Rufus
 
         super(scheduler, duration, opts, block)
 
-        @time = @scheduled_at + Rufus::Scheduler.parse_in(duration)
+        @next_time = @scheduled_at + Rufus::Scheduler.parse_in(duration)
       end
     end
 
     class RepeatJob < Job
 
-      attr_reader :next_time
       attr_reader :paused_at
 
       attr_reader :first_at
@@ -394,20 +406,19 @@ module Rufus
 
       def trigger(time)
 
-        return true if @paused_at
-        return true if time < @first_at
+        return if @paused_at
+        return if time < @first_at
+          #
+          # TODO: remove me when @first_at gets reworked
 
-        return false if @last_at && time >= @last_at
+        return (@next_time = nil) if @times && @times < 1
+        return (@next_time = nil) if @last_at && time >= @last_at
+          #
+          # TODO: rework that, jobs are thus kept 1 step too much in @jobs
 
         super
 
-        return true unless @times
-          # reschedule
-
-        @times = @times - 1
-
-        (@times > 0)
-          # reschedule unless times reached 0
+        @times = @times - 1 if @times
       end
 
       def pause
@@ -433,6 +444,15 @@ module Rufus
           opts.hash.abs
         ].map(&:to_s).join('_')
       end
+
+      protected
+
+      def post_trigger(trigger_time)
+
+        super
+
+        set_next_time(true, trigger_time) if @next_time != nil
+      end
     end
 
     class EveryJob < RepeatJob
@@ -452,20 +472,18 @@ module Rufus
         ) if @frequency <= 0
       end
 
-      def trigger(time)
+      protected
 
-        reschedule = super
+      def set_next_time(is_post, trigger_time)
 
         @next_time =
-          if time < @first_at
-            time + @scheduler.frequency
+          if trigger_time < @first_at
+            trigger_time + @scheduler.frequency
               # force scheduler to consider us at next step
           else
-            time + @frequency
+            trigger_time + @frequency
               # rest until next occurence
-          end
-
-        reschedule
+        end
       end
     end
 
@@ -486,19 +504,11 @@ module Rufus
         ) if @interval <= 0
       end
 
-      def trigger(time)
+      protected
 
-        super
+      def set_next_time(is_post, trigger_time)
 
-        false
-      end
-
-      def post_trigger(time)
-
-        super
-
-        @next_time = Time.now + @interval
-        do_reschedule
+        @next_time = is_post ? Time.now + @interval : false
       end
     end
 
@@ -517,13 +527,11 @@ module Rufus
         @cron_line.frequency
       end
 
-      def trigger(time)
+      protected
 
-        reschedule = super
+      def set_next_time(is_post, trigger_time)
 
-        @next_time = @cron_line.next_time(time)
-
-        reschedule
+        @next_line = @cron_line.next_time
       end
     end
   end
