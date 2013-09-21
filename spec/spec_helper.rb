@@ -13,17 +13,26 @@ require 'rufus-scheduler'
 
 
 def local(*args)
+
   Time.local(*args)
 end
 alias lo local
 
 def utc(*args)
+
   Time.utc(*args)
 end
 
 def sleep_until_next_minute
+
   min = Time.now.min
   while Time.now.min == min; sleep 2; end
+end
+
+def sleep_until_next_second
+
+  sec = Time.now.sec
+  while Time.now.sec == sec; sleep 0.2; end
 end
 
 

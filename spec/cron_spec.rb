@@ -31,9 +31,11 @@ describe Rufus::Scheduler do
           counter = counter + 1
         end
 
-      sleep 3.5
+      sleep_until_next_second
+      sleep_until_next_second
+      sleep 0.3 # be sure to be well into the second
 
-      counter.should > 2
+      counter.should == 2
     end
 
     it 'raises if the job frequency is higher than the scheduler frequency' do

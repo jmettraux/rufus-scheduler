@@ -139,3 +139,5 @@
 
 [ ] EveryJob#first_at= and IntervalJob#first_at= should alter @next_time
 
+[ ] CronLine#next_time return a time with subseconds chopped off
+

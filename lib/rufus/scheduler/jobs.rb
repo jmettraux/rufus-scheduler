@@ -444,15 +444,6 @@ module Rufus
           opts.hash.abs
         ].map(&:to_s).join('_')
       end
-
-      protected
-
-      def post_trigger(trigger_time)
-
-        super
-
-        set_next_time(true, trigger_time) if @next_time != nil
-      end
     end
 
     class EveryJob < RepeatJob
@@ -531,7 +522,7 @@ module Rufus
 
       def set_next_time(is_post, trigger_time)
 
-        @next_line = @cron_line.next_time
+        @next_time = @cron_line.next_time
       end
     end
   end
