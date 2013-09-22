@@ -27,6 +27,7 @@
 
 == Feedback
 
+- Kevin Bouwkamp - https://github.com/bmxpert1 - first_at issues
 - Daniel Beauchamp - https://github.com/pushmatrix - pre/post trigger callbacks
 - Arthur Maltson - https://github.com/amaltson - readme fixes
 - skrd - https://github.com/skrd - "/10 * * * *" cron issue

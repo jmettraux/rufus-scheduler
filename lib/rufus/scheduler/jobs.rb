@@ -448,26 +448,32 @@ module Rufus
         super(scheduler, duration, opts, block)
 
         @frequency = Rufus::Scheduler.parse_in(@original)
-        @next_time = @scheduled_at + @frequency
 
         raise ArgumentError.new(
           "cannot schedule #{self.class} with a frequency " +
           "of #{@frequency.inspect} (#{@original.inspect})"
         ) if @frequency <= 0
+
+        set_next_time(false, nil)
       end
 
       protected
 
       def set_next_time(is_post, trigger_time)
 
+        return if is_post
+
+        # TODO: discard_past: if @next_time is in the past
+        #       schedule for Time.Now + @frequency
+
         @next_time =
-          if trigger_time < @first_at
-            trigger_time + @scheduler.frequency
-              # force scheduler to consider us at next step
-          else
+          if trigger_time
             trigger_time + @frequency
-              # rest until next occurence
-        end
+          elsif @first_at < Time.now
+            Time.now + @frequency
+          else
+            @first_at
+          end
       end
     end
 
@@ -480,19 +486,31 @@ module Rufus
         super(scheduler, interval, opts, block)
 
         @interval = Rufus::Scheduler.parse_in(@original)
-        @next_time = @scheduled_at + @interval
 
         raise ArgumentError.new(
           "cannot schedule #{self.class} with an interval " +
           "of #{@interval.inspect} (#{@original.inspect})"
         ) if @interval <= 0
+
+        set_next_time(false, nil)
       end
 
       protected
 
       def set_next_time(is_post, trigger_time)
 
-        @next_time = is_post ? Time.now + @interval : false
+        @next_time =
+          if is_post
+            Time.now + @interval
+          elsif trigger_time.nil?
+            if @first_at < Time.now
+              Time.now + @interval
+            else
+              @first_at
+            end
+          else
+            false
+          end
       end
     end
 
