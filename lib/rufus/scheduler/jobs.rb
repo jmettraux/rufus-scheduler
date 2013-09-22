@@ -114,29 +114,22 @@ module Rufus
 
         set_next_time(false, time)
 
-        return false if opts[:overlap] == false && running?
+        return if opts[:overlap] == false && running?
 
         r = callback(:pre, time)
 
-        return false if r == false
+        return if r == false
 
         if opts[:blocking]
           do_trigger(time)
         else
           do_trigger_in_thread(time)
         end
-
-        false # do not reschedule
       end
 
       def unschedule
 
         @unscheduled_at = Time.now
-      end
-
-      def do_reschedule
-
-        @scheduler.send(:reschedule, self)
       end
 
       def threads
