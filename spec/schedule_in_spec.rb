@@ -78,15 +78,3 @@ describe Rufus::Scheduler do
   end
 end
 
-describe Rufus::Scheduler::InJob do
-
-  before :each do
-    @scheduler = Rufus::Scheduler.new
-  end
-  after :each do
-    @scheduler.shutdown
-  end
-
-  #it 'works'
-end
-

@@ -127,25 +127,3 @@ describe Rufus::Scheduler do
   end
 end
 
-describe Rufus::Scheduler::AtJob do
-
-  before :each do
-    @scheduler = Rufus::Scheduler.new
-  end
-  after :each do
-    @scheduler.shutdown
-  end
-
-  describe '#time' do
-
-    it 'returns the time at which the job will trigger' do
-
-      t = Time.now + 3600
-
-      job = @scheduler.schedule_at t do; end
-
-      job.time.should == t
-    end
-  end
-end
-
