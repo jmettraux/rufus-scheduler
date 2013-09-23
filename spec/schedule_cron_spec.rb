@@ -26,6 +26,9 @@ describe Rufus::Scheduler do
 
       counter = 0
 
+      sleep_until_next_second
+      sleep 0.3 # make sure to schedule right after a scheduler 'tick'
+
       job =
         @scheduler.cron '* * * * * *', :job => true do
           counter = counter + 1
