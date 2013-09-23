@@ -463,9 +463,6 @@ module Rufus
 
         return if is_post
 
-        # TODO: discard_past: if @next_time is in the past
-        #       schedule for Time.Now + @frequency
-
         @next_time =
           if trigger_time
             trigger_time + @frequency

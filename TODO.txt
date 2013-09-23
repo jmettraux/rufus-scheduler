@@ -101,6 +101,7 @@
 [o] rethink job array vs job set for #scheduled?
 [x] introduce common parent class for EveryJob and IntervalJob
 [o] create spec/ at_job_spec.rb, repeat_job_spec.rb, cron_job_spec.rb, ...
+[x] ensure EveryJob do not schedule in the past (it's already like that)
 
 [o] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
@@ -139,6 +140,4 @@
 [ ] EveryJob#first_at= and IntervalJob#first_at= should alter @next_time
 
 [ ] CronLine#next_time should return a time with subseconds chopped off
-
-[ ] ensure EveryJob do not schedule in the past
 
