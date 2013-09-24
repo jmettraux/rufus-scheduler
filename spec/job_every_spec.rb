@@ -27,7 +27,7 @@ describe Rufus::Scheduler::EveryJob do
 
     sleep 3.5
 
-    counter.should == 2
+    [ 2, 3 ].should include(counter)
   end
 
   context 'first_at/in' do
