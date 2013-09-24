@@ -122,8 +122,10 @@ class Rufus::Scheduler
 
       time = @timezone ? @timezone.utc_to_local(from.getutc) : from
 
-      time = time - time.usec * 1e-6 + 1
-        # small adjustment before starting
+      time = time.round
+        # chop off subseconds
+      time = time + 1
+        # start at the next second
 
       loop do
 

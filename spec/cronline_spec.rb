@@ -296,6 +296,12 @@ describe Rufus::Scheduler::CronLine do
       nt('* * L * *', lo(1972, 2, 1)).should == lo(1972, 2, 29)
       nt('* * L * *', lo(1970, 4, 1)).should == lo(1970, 4, 30)
     end
+
+    it 'returns a time with subseconds chopped off' do
+
+      nt('* * * * *', Time.now).usec.should == 0
+      nt('* * * * *', Time.now).iso8601(10).match(/\.0+[^\d]/).should_not == nil
+    end
   end
 
   describe '#previous_time' do
