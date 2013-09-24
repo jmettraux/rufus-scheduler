@@ -122,8 +122,9 @@ class Rufus::Scheduler
 
       time = @timezone ? @timezone.utc_to_local(from.getutc) : from
 
-      time = time.round
-        # chop off subseconds
+      time = time.respond_to?(:round) ? time.round : time - time.usec * 1e-6
+        # chop off subseconds (and yes, Ruby 1.8 doesn't have #round)
+
       time = time + 1
         # start at the next second
 
