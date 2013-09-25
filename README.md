@@ -83,6 +83,7 @@ There is no EventMachine-based scheduler anymore.
 * Introduction of "interval" jobs. Whereas "every" jobs are like "every 10 minuts, do this", interval jobs are like "do that, then wait for 10 minutes, then do that again, and so on"
 * Introduction of a :lockfile => true/filename mechanism to prevent multiple schedulers from executing
 * "discard_past" is on by default. If the scheduler (its host) sleeps for 1 hour and a ```every '10m'``` job is on, it will trigger once at wakeup, not 6 times (discard_past was false by default in rufus-scheduler 2.x). No intention to re-introduce ```:discard_past => false``` in 3.0 for now.
+* Introduction of Scheduler #on_pre_trigger and #on_post_trigger callback points
 
 
 ## getting help
