@@ -47,6 +47,25 @@ describe Rufus::Scheduler::EveryJob do
       job.first_at.should be_within_1s_of(t + 2)
       job.last_time.should be_within_1s_of(job.first_at)
     end
+
+    describe '#first_at=' do
+
+      it 'alters @next_time' do
+
+        job = @scheduler.schedule_every '3s', :first_in => '10s' do; end
+
+        fa0 = job.first_at
+        nt0 = job.next_time
+
+        job.first_at = Time.now + 3
+
+        fa1 = job.first_at
+        nt1 = job.next_time
+
+        nt0.should == fa0
+        nt1.should == fa1
+      end
+    end
   end
 end
 

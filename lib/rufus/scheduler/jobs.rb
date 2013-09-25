@@ -382,9 +382,6 @@ module Rufus
           "cannot set first[_at|_in] in the past: " +
           "#{first.inspect} -> #{@first_at.inspect}"
         ) if first != 0 && @first_at < Time.now
-
-        # TODO: reschedule if necessary,
-        #       unless just created...
       end
 
       def last_at=(last)
@@ -439,7 +436,20 @@ module Rufus
       end
     end
 
-    class EveryJob < RepeatJob
+    #
+    # A parent class of EveryJob and IntervalJob
+    #
+    class EvInJob < RepeatJob
+
+      def first_at=(first)
+
+        super
+
+        @next_time = @first_at
+      end
+    end
+
+    class EveryJob < EvInJob
 
       attr_reader :frequency
 
@@ -474,7 +484,7 @@ module Rufus
       end
     end
 
-    class IntervalJob < RepeatJob
+    class IntervalJob < EvInJob
 
       attr_reader :interval
 

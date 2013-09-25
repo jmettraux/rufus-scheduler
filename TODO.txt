@@ -106,6 +106,7 @@
 [o] drop min work threads setting?
 [o] thread pool something? Thread upper limit?
 [o] Rufus::Scheduler.singleton, Rufus::Scheduler.s
+[o] EveryJob#first_at= and IntervalJob#first_at= should alter @next_time
 
 [o] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
@@ -134,6 +135,4 @@
 
 [ ] scheduler.schedule duration/time/cron ... for at/in/cron (not every, nor interval)
     scheduler.repeat time/cron ... for every/cron
-
-[ ] EveryJob#first_at= and IntervalJob#first_at= should alter @next_time
 
