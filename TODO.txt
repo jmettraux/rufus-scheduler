@@ -103,6 +103,8 @@
 [o] create spec/ at_job_spec.rb, repeat_job_spec.rb, cron_job_spec.rb, ...
 [x] ensure EveryJob do not schedule in the past (it's already like that)
 [o] CronLine#next_time should return a time with subseconds chopped off
+[o] drop min work threads setting?
+[o] thread pool something? Thread upper limit?
 
 [o] :lockfile => x, timestamp, process_id, thread_id...
     warning: have to clean up that file on exit... or does the scheduler
@@ -116,9 +118,6 @@
     would prevent blocking/waiting for the mutex to get available
     :mutex => [ "mutex_name", true ]
     :mutex => [ [ "mutex_name", true ], [ "other_mutex_name", false ] ]
-
-[.] thread pool something? Thread upper limit?
-[ ] drop min threads setting?
 
 [ ] bring back EM (but only EM.defer ?) :defer => true (Job or Scheduler
     or both option?)

@@ -294,7 +294,7 @@ module Rufus
 
         count = @scheduler.work_threads.size
         #vacant = threads.select { |t| t[:rufus_scheduler_job] == nil }.size
-        min = @scheduler.min_work_threads
+        #min = @scheduler.min_work_threads
         max = @scheduler.max_work_threads
 
         start_work_thread if count < max

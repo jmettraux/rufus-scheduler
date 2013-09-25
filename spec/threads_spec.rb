@@ -26,7 +26,7 @@ describe Rufus::Scheduler do
 
     it 'does not cross the max_work_threads threshold' do
 
-      @scheduler.min_work_threads = 2
+      #@scheduler.min_work_threads = 2
       @scheduler.max_work_threads = 5
 
       10.times do

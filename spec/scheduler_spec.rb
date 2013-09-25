@@ -51,12 +51,10 @@ describe Rufus::Scheduler do
       t[:rufus_scheduler].should == scheduler
     end
 
-    it 'accepts a :min_work_threads option' do
-
-      scheduler = Rufus::Scheduler.new(:min_work_threads => 9)
-
-      scheduler.min_work_threads.should == 9
-    end
+    #it 'accepts a :min_work_threads option' do
+    #  scheduler = Rufus::Scheduler.new(:min_work_threads => 9)
+    #  scheduler.min_work_threads.should == 9
+    #end
 
     it 'accepts a :max_work_threads option' do
 
@@ -409,23 +407,17 @@ describe Rufus::Scheduler do
     end
   end
 
-  describe '#min_work_threads' do
-
-    it 'returns the min job thread count' do
-
-      @scheduler.min_work_threads.should == 7
-    end
-  end
-
-  describe '#min_work_threads=' do
-
-    it 'sets the min job thread count' do
-
-      @scheduler.min_work_threads = 1
-
-      @scheduler.min_work_threads.should == 1
-    end
-  end
+  #describe '#min_work_threads' do
+  #  it 'returns the min job thread count' do
+  #    @scheduler.min_work_threads.should == 7
+  #  end
+  #end
+  #describe '#min_work_threads=' do
+  #  it 'sets the min job thread count' do
+  #    @scheduler.min_work_threads = 1
+  #    @scheduler.min_work_threads.should == 1
+  #  end
+  #end
 
   describe '#max_work_threads' do
 

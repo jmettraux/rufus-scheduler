@@ -878,14 +878,14 @@ By default, rufus-scheduler sleeps 0.300 second between every step. At each step
 The :frequency option lets you change that 0.300 second to something else.
 
 ```ruby
-  scheduler = Rufus::Scheduler.new(:frequency => 5)
+scheduler = Rufus::Scheduler.new(:frequency => 5)
 ```
 
 It's OK to use a time string to specify the frequency.
 
 ```ruby
-  scheduler = Rufus::Scheduler.new(:frequency => '2h10m')
-    # this scheduler will sleep 2 hours and 10 minutes between every "step"
+scheduler = Rufus::Scheduler.new(:frequency => '2h10m')
+  # this scheduler will sleep 2 hours and 10 minutes between every "step"
 ```
 
 Use with care.
@@ -899,6 +899,22 @@ Starting the scheduler with ```:lockfile => ".rufus-scheduler.lock"``` will make
 The idea is to guarantee only one scheduler (in a group of scheduler sharing the same lockfile) is running.
 
 This is useful in environments where the Ruby process holding the scheduler gets started multiple times.
+
+### :max_work_threads
+
+In rufus-scheduler 2.x, by default, each job triggering received its own, new, hthread of execution. In rufus-scheduler 3.x, execution happens in a work thread and the max work thread count defaults to 35.
+
+One can set this maximum value when starting the scheduler.
+
+```ruby
+scheduler = Rufus::Scheduler.new(:max_work_threads => 77)
+```
+
+It's OK to increase the :max_work_threads of a running scheduler.
+
+```ruby
+scheduler.max_work_threads += 10
+```
 
 
 ## parsing cronlines and time strings

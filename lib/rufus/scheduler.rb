@@ -45,7 +45,7 @@ module Rufus
     #
     class TimeoutError < StandardError; end
 
-    MIN_WORK_THREADS = 7
+    #MIN_WORK_THREADS = 7
     MAX_WORK_THREADS = 35
 
     attr_accessor :frequency
@@ -54,7 +54,7 @@ module Rufus
     attr_reader :thread_key
     attr_reader :mutexes
 
-    attr_accessor :min_work_threads
+    #attr_accessor :min_work_threads
     attr_accessor :max_work_threads
 
     attr_accessor :stderr
@@ -75,7 +75,7 @@ module Rufus
 
       @work_queue = Queue.new
 
-      @min_work_threads = opts[:min_work_threads] || MIN_WORK_THREADS
+      #@min_work_threads = opts[:min_work_threads] || MIN_WORK_THREADS
       @max_work_threads = opts[:max_work_threads] || MAX_WORK_THREADS
 
       @stderr = $stderr
