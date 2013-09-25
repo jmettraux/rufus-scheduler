@@ -128,6 +128,10 @@ Most of the rufus-scheduler examples show block scheduling, but it's also OK to 
 In and at jobs trigger once.
 
 ```ruby
+require 'rufus-scheduler'
+
+scheduler = Rufus::Scheduler.new
+
 scheduler.in '10d' do
   puts "10 days reminder for review X!"
 end
@@ -142,6 +146,10 @@ In jobs are scheduled with a time interval, they trigger after that time elapsed
 Every, interval and cron jobs trigger repeatedly.
 
 ```ruby
+require 'rufus-scheduler'
+
+scheduler = Rufus::Scheduler.new
+
 scheduler.every '3h' do
   puts "change the oil filter!"
 end
@@ -915,6 +923,29 @@ It's OK to increase the :max_work_threads of a running scheduler.
 
 ```ruby
 scheduler.max_work_threads += 10
+```
+
+
+## Rufus::Scheduler.singleton
+
+Do not want to store a reference to your rufus-scheduler instance?
+Then ```Rufus::Scheduler.singleton``` can help, it returns a singleon instance of the scheduler, initialized the first time this class method is called.
+
+```ruby
+Rufus::Scheduler.singleton.every '10s' { puts "hello, world!" }
+```
+
+It's OK to pass initialization arguments (like :frequency or :max_work_threads) but they will only be taken into account the first time ```.singleton``` is called.
+
+```ruby
+Rufus::Scheduler.singleton(:max_work_threads => 77)
+Rufus::Scheduler.singleton(:max_work_threads => 277) # no effect
+```
+
+The ```.s``` is a shortcut for ```.singleton```.
+
+```ruby
+Rufus::Scheduler.s.every '10s' { puts "hello, world!" }
 ```
 
 

@@ -875,5 +875,30 @@ describe Rufus::Scheduler do
       $out.should == [ job_id, "post #{job_id}" ]
     end
   end
+
+  describe '.singleton / .s' do
+
+    before(:each) do
+
+      Rufus::Scheduler.class_eval { @singleton = nil } # ;-)
+    end
+
+    it 'returns a singleton instance of the scheduler' do
+
+      s0 = Rufus::Scheduler.singleton
+      s1 = Rufus::Scheduler.s
+
+      s0.class.should == Rufus::Scheduler
+      s1.object_id.should == s0.object_id
+    end
+
+    it 'accepts initialization parameters' do
+
+      s = Rufus::Scheduler.singleton(:max_work_threads => 77)
+      s = Rufus::Scheduler.singleton(:max_work_threads => 42)
+
+      s.max_work_threads.should == 77
+    end
+  end
 end
 

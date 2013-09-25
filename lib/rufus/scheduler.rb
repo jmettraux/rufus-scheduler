@@ -87,6 +87,17 @@ module Rufus
       start
     end
 
+    # Returns a singleton Rufus::Scheduler instance
+    #
+    def self.singleton(opts={})
+
+      @singleton ||= Rufus::Scheduler.new(opts)
+    end
+
+    # Alias for Rufus::Scheduler.singleton
+    #
+    def self.s(opts={}); singleton(opts); end
+
     # Releasing the gem would probably require redirecting .start_new to
     # .new and emit a simple deprecation message.
     #
