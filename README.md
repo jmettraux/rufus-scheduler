@@ -951,7 +951,51 @@ Rufus::Scheduler.s.every '10s' { puts "hello, world!" }
 
 ## parsing cronlines and time strings
 
-TODO
+Rufus::Scheduler provides a class method ```.parse``` to parse time durations and cron strings. It's what it's using when receiving schedules. One can use it diectly (no need to instantiate a Scheduler).
+
+```ruby
+require 'rufus-scheduler'
+
+Rufus::Scheduler.parse('1w2d')
+  # => 777600.0
+Rufus::Scheduler.parse('1.0w1.0d')
+  # => 777600.0
+
+Rufus::Scheduler.parse('Sun Nov 18 16:01:00 2012').strftime('%c')
+  # => 'Sun Nov 18 16:01:00 2012'
+
+Rufus::Scheduler.parse('Sun Nov 18 16:01:00 2012 Europe/Berlin').strftime('%c %z')
+  # => 'Sun Nov 18 15:01:00 2012 +0000'
+
+Rufus::Scheduler.parse(0.1)
+  # => 0.1
+
+Rufus::Scheduler.parse('* * * * *')
+  # => #<Rufus::Scheduler::CronLine:0x00000002be5198
+  #        @original="* * * * *", @timezone=nil,
+  #        @seconds=[0], @minutes=nil, @hours=nil, @days=nil, @months=nil,
+  #        @weekdays=nil, @monthdays=nil>
+```
+
+It returns a number when the output is a duration and a CronLine instance when the input is a cron string.
+
+It will raise an ArgumentError if it can't parse the input.
+
+Beyond ```.parse```, there are also ```.parse_cron``` and ```.parse_duration```, for finer granularity.
+
+There is an interesting helper method named ```.to_duration_hash```:
+
+```ruby
+require 'rufus-scheduler'
+
+Rufus::Scheduler.to_duration_hash(60)
+  # => { :m => 1 }
+Rufus::Scheduler.to_duration_hash(62.127)
+  # => { :m => 1, :s => 2, :ms => 127 }
+
+Rufus::Scheduler.to_duration_hash(62.127, :drop_seconds => true)
+  # => { :m => 1 }
+```
 
 
 ## support
