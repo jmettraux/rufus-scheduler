@@ -185,6 +185,49 @@ describe Rufus::Scheduler do
     end
   end
 
+  describe '#schedule' do
+
+    it 'accepts a duration and schedules an InJob' do
+
+      j = @scheduler.schedule '1s' do; end
+
+      j.class.should == Rufus::Scheduler::InJob
+      j.original.should == '1s'
+    end
+
+    it 'accepts a point in time and schedules an AtJob' do
+
+      j = @scheduler.schedule '2070/12/24 24:00' do; end
+
+      j.class.should == Rufus::Scheduler::AtJob
+      j.next_time.strftime('%Y %m %d').should == '2070 12 25'
+    end
+
+    it 'accepts a cron string and schedules a CronJob' do
+
+      j = @scheduler.schedule '* * * * *' do; end
+
+      j.class.should == Rufus::Scheduler::CronJob
+    end
+  end
+
+  describe '#repeat' do
+
+    it 'accepts a duration and schedules an EveryJob' do
+
+      j = @scheduler.repeat '1s' do; end
+
+      j.class.should == Rufus::Scheduler::EveryJob
+    end
+
+    it 'accepts a cron string and schedules a CronJob' do
+
+      j = @scheduler.repeat '* * * * *' do; end
+
+      j.class.should == Rufus::Scheduler::CronJob
+    end
+  end
+
   describe '#unschedule(job_or_work_id)' do
 
     it 'accepts job ids' do
@@ -793,6 +836,10 @@ describe Rufus::Scheduler do
     end
   end
 
+  #--
+  # callbacks
+  #++
+
   describe '#on_pre_trigger' do
 
     it 'is called right before a job triggers' do
@@ -875,6 +922,10 @@ describe Rufus::Scheduler do
       $out.should == [ job_id, "post #{job_id}" ]
     end
   end
+
+  #--
+  # misc
+  #++
 
   describe '.singleton / .s' do
 

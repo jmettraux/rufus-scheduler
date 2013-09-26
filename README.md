@@ -199,6 +199,35 @@ job =
   end
 ```
 
+### #schedule and #repeat
+
+Sometimes it pays to be less verbose.
+
+The ```#schedule``` methods schedules an at, in or cron job. It just decide based on its input. It returns the Job instance.
+
+```ruby
+scheduler.schedule '10d' do; end.class
+  # => Rufus::Scheduler::InJob
+
+scheduler.schedule '2013/12/12 12:30' do; end.class
+  # => Rufus::Scheduler::AtJob
+
+scheduler.schedule '* * * * *' do; end.class
+  # => Rufus::Scheduler::CronJob
+```
+
+The ```#repeat``` method schedules and returns an EveryJob or a CronJob.
+
+```ruby
+scheduler.repeat '10d' do; end.class
+  # => Rufus::Scheduler::EveryJob
+
+scheduler.repeat '* * * * *' do; end.class
+  # => Rufus::Scheduler::CronJob
+```
+
+(Yes, no combination heres gives back an IntervalJob).
+
 ### schedule blocks arguments (job, time)
 
 A schedule block may be given 0, 1 or 2 arguments.

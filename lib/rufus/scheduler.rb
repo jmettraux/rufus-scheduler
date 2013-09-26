@@ -212,6 +212,27 @@ module Rufus
       do_schedule(:cron, cronline, callable, opts, true, block)
     end
 
+    def schedule(arg, callable=nil, opts={}, &block)
+
+      # TODO: eventually, spare one parse call
+
+      case Scheduler.parse(arg)
+        when CronLine then schedule_cron(arg, callable, opts, &block)
+        when Time then schedule_at(arg, callable, opts, &block)
+        else schedule_in(arg, callable, opts, &block)
+      end
+    end
+
+    def repeat(arg, callable=nil, opts={}, &block)
+
+      # TODO: eventually, spare one parse call
+
+      case Scheduler.parse(arg)
+        when CronLine then schedule_cron(arg, callable, opts, &block)
+        else schedule_every(arg, callable, opts, &block)
+      end
+    end
+
     def unschedule(job_or_job_id)
 
       job, job_id = fetch(job_or_job_id)
