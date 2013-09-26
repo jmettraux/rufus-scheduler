@@ -197,10 +197,10 @@ describe Rufus::Scheduler do
 
     it 'accepts a point in time and schedules an AtJob' do
 
-      j = @scheduler.schedule '2070/12/24 24:00' do; end
+      j = @scheduler.schedule '2070/12/24 23:00' do; end
 
       j.class.should == Rufus::Scheduler::AtJob
-      j.next_time.strftime('%Y %m %d').should == '2070 12 25'
+      j.next_time.strftime('%Y %m %d').should == '2070 12 24'
     end
 
     it 'accepts a cron string and schedules a CronJob' do
