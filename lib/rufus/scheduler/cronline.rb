@@ -46,7 +46,9 @@ class Rufus::Scheduler
 
     def initialize(line)
 
-      super()
+      raise ArgumentError.new(
+        "not a string: #{line.inspect}"
+      ) unless line.is_a?(String)
 
       @original = line
 

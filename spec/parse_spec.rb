@@ -66,6 +66,9 @@ describe Rufus::Scheduler do
 
       out.class.should == Rufus::Scheduler::CronLine
       out.original.should == '* * * * *'
+
+      parse('10 23 * * *').class.should == Rufus::Scheduler::CronLine
+      parse('* 23 * * *').class.should == Rufus::Scheduler::CronLine
     end
 
     it 'raises on unparseable input' do

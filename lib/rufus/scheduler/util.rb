@@ -35,9 +35,9 @@ module Rufus
 
       opts = { :no_error => true }
 
+      parse_cron(o, opts) ||
       parse_in(o, opts) || # covers 'every' schedule strings
       parse_at(o, opts) ||
-      parse_cron(o, opts) ||
       raise(ArgumentError.new("couldn't parse \"#{o}\""))
     end
 
