@@ -327,8 +327,6 @@ The scheduler can be paused via the #pause and #resume methods. One can determin
 
 While paused, the scheduler still accepts schedules, but no schedule will get triggered as long as #resume isn't called.
 
-TODO: :discard_the_past => true?
-
 
 ## job options
 
@@ -831,15 +829,45 @@ Returns true if the arg is a currently scheduled job (see Job#scheduled?).
 
 ## dealing with job errors
 
-TODO
+The easy, job-granular way of dealing with errors is to rescue and deal with them immediately. The two next sections show examples. Skip them for explanations on how to deal with errors at the scheduler level.
 
 ### block jobs
 
-TODO
+As said, jobs could take care of their errors themselves.
+
+```ruby
+scheduler.every '10m' do
+  begin
+    # do something that might fail...
+  rescue => e
+    $stderr.puts '-' * 80
+    $stderr.puts e.message
+    $stderr.puts e.stacktrace
+    $stderr.puts '-' * 80
+  end
+end
+```
 
 ### callable jobs
 
-TODO
+Jobs are not only shrunk to blocks, here is how the above would look like with a dedicated class.
+
+```ruby
+scheduler.every '10m', Class.new do
+  def call(job)
+    # do something that might fail...
+  rescue => e
+    $stderr.puts '-' * 80
+    $stderr.puts e.message
+    $stderr.puts e.stacktrace
+    $stderr.puts '-' * 80
+  end
+end
+```
+
+TODO: talk about callable#on_error (if implemented)
+
+(see [scheduling handler instances](#scheduling-handler-instances) and [scheduling handler classes](#scheduling-handler-classes) for more about those "callable jobs")
 
 ### Rufus::Scheduler#stderr=
 

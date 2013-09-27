@@ -136,3 +136,12 @@
     #
     investigate guards for schedulables... def if_guard; ...; end
 
+[ ] scheduler.every '10', Class.new do
+      def call(job, time)
+        # might fail...
+      end
+      def on_error(err, job)
+        # catches...
+      end
+    end
+
