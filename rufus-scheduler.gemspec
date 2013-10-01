@@ -51,6 +51,9 @@ and / or
 B) Take some time to carefully report the issue at
    https://github.com/jmettraux/rufus-scheduler/issue
 
+For general help about rufus-scheduler, ask via:
+http://stackoverflow.com/questions/ask?tags=rufus-scheduler+ruby
+
 Cheers.
 
 ***
