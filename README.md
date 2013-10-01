@@ -5,9 +5,7 @@
 
 Job scheduler for Ruby (at, cron, in and every jobs).
 
-**Warning**: this is the README of the 3.0 line of rufus-scheduler. It got promoted to master branch on 2013/07/15. Head to the [2.0 line's README](https://github.com/jmettraux/rufus-scheduler/blob/two/README.rdoc) if necessary (if your rufus-scheduler version is 2.0.x).
-
-(When the 3.0 gem is released, this warning will get removed).
+**Note**: maybe are you looking for the [README of rufus-scheduler 2.x](https://github.com/jmettraux/rufus-scheduler/blob/two/README.rdoc)?
 
 Quickstart:
 ```ruby
