@@ -133,17 +133,17 @@ module Rufus
     #
     # Some examples:
     #
-    #   Rufus::Scheduler.parse_duration_string "0.5"    # => 0.5
-    #   Rufus::Scheduler.parse_duration_string "500"    # => 0.5
-    #   Rufus::Scheduler.parse_duration_string "1000"   # => 1.0
-    #   Rufus::Scheduler.parse_duration_string "1h"     # => 3600.0
-    #   Rufus::Scheduler.parse_duration_string "1h10s"  # => 3610.0
-    #   Rufus::Scheduler.parse_duration_string "1w2d"   # => 777600.0
+    #   Rufus::Scheduler.parse_duration "0.5"    # => 0.5
+    #   Rufus::Scheduler.parse_duration "500"    # => 0.5
+    #   Rufus::Scheduler.parse_duration "1000"   # => 1.0
+    #   Rufus::Scheduler.parse_duration "1h"     # => 3600.0
+    #   Rufus::Scheduler.parse_duration "1h10s"  # => 3610.0
+    #   Rufus::Scheduler.parse_duration "1w2d"   # => 777600.0
     #
     # Negative time strings are OK (Thanks Danny Fullerton):
     #
-    #   Rufus::Scheduler.parse_duration_string "-0.5"   # => -0.5
-    #   Rufus::Scheduler.parse_duration_string "-1h"    # => -3600.0
+    #   Rufus::Scheduler.parse_duration "-0.5"   # => -0.5
+    #   Rufus::Scheduler.parse_duration "-1h"    # => -3600.0
     #
     def self.parse_duration(string, opts={})
 

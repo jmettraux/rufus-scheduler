@@ -27,6 +27,7 @@
 
 == Feedback
 
+- Tamir Duberstein - httsp://github.com/tamird - rdoc inaccuracies
 - Kevin Bouwkamp - https://github.com/bmxpert1 - first_at issues
 - Daniel Beauchamp - https://github.com/pushmatrix - pre/post trigger callbacks
 - Arthur Maltson - https://github.com/amaltson - readme fixes
