@@ -38,7 +38,7 @@ module Rufus
     require 'rufus/scheduler/cronline'
     require 'rufus/scheduler/job_array'
 
-    VERSION = '3.0.0'
+    VERSION = '3.0.1'
 
     #
     # This error is thrown when the :timeout attribute triggers
