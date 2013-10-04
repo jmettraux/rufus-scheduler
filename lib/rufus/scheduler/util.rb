@@ -185,11 +185,11 @@ module Rufus
 
     # Turns a number of seconds into a a time string
     #
-    #   Rufus.to_duration_string 0                    # => '0s'
-    #   Rufus.to_duration_string 60                   # => '1m'
-    #   Rufus.to_duration_string 3661                 # => '1h1m1s'
-    #   Rufus.to_duration_string 7 * 24 * 3600        # => '1w'
-    #   Rufus.to_duration_string 30 * 24 * 3600 + 1   # => "4w2d1s"
+    #   Rufus.to_duration 0                    # => '0s'
+    #   Rufus.to_duration 60                   # => '1m'
+    #   Rufus.to_duration 3661                 # => '1h1m1s'
+    #   Rufus.to_duration 7 * 24 * 3600        # => '1w'
+    #   Rufus.to_duration 30 * 24 * 3600 + 1   # => "4w2d1s"
     #
     # It goes from seconds to the year. Months are not counted (as they
     # are of variable length). Weeks are counted.
@@ -197,16 +197,14 @@ module Rufus
     # For 30 days months to be counted, the second parameter of this
     # method can be set to true.
     #
-    #   Rufus.to_time_string 30 * 24 * 3600 + 1, true   # => "1M1s"
-    #
-    # (to_time_string is an alias for to_duration_string)
+    #   Rufus.to_duration 30 * 24 * 3600 + 1, true   # => "1M1s"
     #
     # If a Float value is passed, milliseconds will be displayed without
     # 'marker'
     #
-    #   Rufus.to_duration_string 0.051                       # => "51"
-    #   Rufus.to_duration_string 7.051                       # => "7s51"
-    #   Rufus.to_duration_string 0.120 + 30 * 24 * 3600 + 1  # => "4w2d1s120"
+    #   Rufus.to_duration 0.051                       # => "51"
+    #   Rufus.to_duration 7.051                       # => "7s51"
+    #   Rufus.to_duration 0.120 + 30 * 24 * 3600 + 1  # => "4w2d1s120"
     #
     # (this behaviour mirrors the one found for parse_time_string()).
     #
@@ -238,7 +236,11 @@ module Rufus
     end
 
     class << self
+      #-
+      # for compatibility with rufus-scheduler 2.x
+      #+
       alias to_duration_string to_duration
+      alias to_time_string to_duration
     end
 
     # Turns a number of seconds (integer or Float) into a hash like in :
@@ -250,8 +252,7 @@ module Rufus
     #   Rufus.to_duration_hash 0.120 + 30 * 24 * 3600 + 1
     #     # => { :w => 4, :d => 2, :s => 1, :ms => "120" }
     #
-    # This method is used by to_duration_string (to_time_string) behind
-    # the scene.
+    # This method is used by to_duration behind the scenes.
     #
     # Options are :
     #

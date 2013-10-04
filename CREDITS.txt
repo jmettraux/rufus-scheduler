@@ -27,7 +27,8 @@
 
 == Feedback
 
-- Tamir Duberstein - httsp://github.com/tamird - rdoc inaccuracies
+- https://github.com/joast - missing .to_time_string alias (code and doc)
+- Tamir Duberstein - https://github.com/tamird - rdoc inaccuracies
 - Kevin Bouwkamp - https://github.com/bmxpert1 - first_at issues
 - Daniel Beauchamp - https://github.com/pushmatrix - pre/post trigger callbacks
 - Arthur Maltson - https://github.com/amaltson - readme fixes
