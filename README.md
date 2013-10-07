@@ -1052,6 +1052,38 @@ Rufus::Scheduler.to_duration_hash(62.127, :drop_seconds => true)
   # => { :m => 1 }
 ```
 
+## a note about timezones
+
+Cron schedules and at schedules support the specification of a timezone.
+
+```ruby
+scheduler.cron '0 22 * * 1-5 America/Chicago' do
+  # the job...
+end
+
+scheduler.at '2013-12-12 14:00 Pacific/Samoa' do
+  puts "it's tea time!"
+end
+
+# or even
+
+Rufus::Scheduler.parse("2013-12-12 14:00 Pacific/Saipan")
+  # => 2013-12-12 04:00:00 UTC
+```
+
+Behind the scenes, rufus-scheduler uses [tzinfo](http://tzinfo.github.io/) to deal with timezones.
+
+Here is a [list of timezones](misc/tz_all.txt) known to my Debian GNU/Linux 7. It was generated with this script:
+
+```ruby
+require 'tzinfo'
+TZInfo::Timezone.all.each { |tz| puts tz.name }
+```
+
+Unknown timezones, typos, will be rejected by tzinfo thus rufus-scheduler.
+
+On its own tzinfo derives the timezones from the system's information. On some system it needs some help, one can install the 'tzinfo-data' gem to provide the missing information.
+
 
 ## support
 

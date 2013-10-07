@@ -62,5 +62,6 @@
 
 == and finally
 
+- many thanks to the author and contributors of the tzinfo gem (http://tzinfo.github.io/)
 - many thanks to the EventMachine team (especially Aman Gupta)
 
