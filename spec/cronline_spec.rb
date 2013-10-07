@@ -74,8 +74,15 @@ describe Rufus::Scheduler::CronLine do
 
     it 'interprets cron strings with TZ correctly' do
 
-      to_a '* * * * * EST', [ [0], nil, nil, nil, nil, nil, nil, 'EST' ]
-      to_a '* * * * * * EST', [ nil, nil, nil, nil, nil, nil, nil, 'EST' ]
+      to_a('* * * * * EST', [ [0], nil, nil, nil, nil, nil, nil, 'EST' ])
+      to_a('* * * * * * EST', [ nil, nil, nil, nil, nil, nil, nil, 'EST' ])
+
+      to_a(
+        '* * * * * * America/Chicago',
+        [ nil, nil, nil, nil, nil, nil, nil, 'America/Chicago' ])
+      to_a(
+        '* * * * * * America/New_York',
+        [ nil, nil, nil, nil, nil, nil, nil, 'America/New_York' ])
 
       lambda { cl '* * * * * NotATimeZone' }.should raise_error
       lambda { cl '* * * * * * NotATimeZone' }.should raise_error
