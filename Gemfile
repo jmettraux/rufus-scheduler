@@ -1,7 +1,7 @@
 
 source 'https://rubygems.org'
 
-gem 'tzinfo-data'
+#gem 'tzinfo-data'
 
 gemspec
 
