@@ -203,6 +203,11 @@ module Scheduler
 
           trigger_block
 
+        rescue (@scheduler.options[:exception] || Exception) => e
+
+          @scheduler.do_handle_exception(self, e)
+
+        ensure
           job_thread[
             "rufus_scheduler__trigger_thread__#{@scheduler.object_id}"
           ] = nil
@@ -210,10 +215,6 @@ module Scheduler
           job_thread = nil
 
           to_job.unschedule if to_job
-
-        rescue (@scheduler.options[:exception] || Exception) => e
-
-          @scheduler.do_handle_exception(self, e)
         end
 
         @running = false
