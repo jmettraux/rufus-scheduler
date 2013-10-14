@@ -106,15 +106,15 @@ class Rufus::Scheduler
     # be passed if no start time is specified (search start time set to
     # Time.now))
     #
-    #   Rufus::CronLine.new('30 7 * * *').next_time(
+    #   Rufus::Scheduler::CronLine.new('30 7 * * *').next_time(
     #     Time.mktime(2008, 10, 24, 7, 29))
     #   #=> Fri Oct 24 07:30:00 -0500 2008
     #
-    #   Rufus::CronLine.new('30 7 * * *').next_time(
+    #   Rufus::Scheduler::CronLine.new('30 7 * * *').next_time(
     #     Time.utc(2008, 10, 24, 7, 29))
     #   #=> Fri Oct 24 07:30:00 UTC 2008
     #
-    #   Rufus::CronLine.new('30 7 * * *').next_time(
+    #   Rufus::Scheduler::CronLine.new('30 7 * * *').next_time(
     #     Time.utc(2008, 10, 24, 7, 29)).localtime
     #   #=> Fri Oct 24 02:30:00 -0500 2008
     #
