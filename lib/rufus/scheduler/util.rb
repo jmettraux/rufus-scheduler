@@ -183,6 +183,15 @@ module Rufus
       mod * val
     end
 
+    class << self
+      #-
+      # for compatibility with rufus-scheduler 2.x
+      #+
+      alias parse_duration_string parse_duration
+      alias parse_time_string parse_duration
+    end
+
+
     # Turns a number of seconds into a a time string
     #
     #   Rufus.to_duration 0                    # => '0s'

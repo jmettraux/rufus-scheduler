@@ -138,6 +138,22 @@ describe Rufus::Scheduler do
     end
   end
 
+  describe '.parse_time_string -> .parse_duration' do
+
+    it 'is still around for libs using it out there' do
+
+      Rufus::Scheduler.parse_time_string('1d1w1d').should == 777600.0
+    end
+  end
+
+  describe '.parse_duration_string -> .parse_duration' do
+
+    it 'is still around for libs using it out there' do
+
+      Rufus::Scheduler.parse_duration_string('1d1w1d').should == 777600.0
+    end
+  end
+
   describe '.to_duration' do
 
     def td(o, opts={})

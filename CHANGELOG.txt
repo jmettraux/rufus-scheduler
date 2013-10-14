@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 3.0.1    not yet released
 
+- bring back .parse_time_string and .parse_duration_string
+
 
 == rufus-scheduler - 3.0.0    released 2013/10/02
 
