@@ -45,6 +45,27 @@ describe Rufus::Scheduler do
       @scheduler.work_threads.size.should == 5
     end
 
+    it 'does not cross the max_work_threads threshold (overlap: false)' do
+
+      #@scheduler.min_work_threads = 2
+      @scheduler.max_work_threads = 5
+
+      10.times do
+        @scheduler.in '0s', :overlap => false do
+          sleep 5
+        end
+      end
+
+      sleep 0.5
+
+      #@scheduler.job_threads.each do |t|
+      #  p t.keys
+      #  p t[:rufus_scheduler_job].class
+      #end
+
+      @scheduler.work_threads.size.should == 5
+    end
+
     it 'does not execute unscheduled jobs' do
 
       @scheduler.max_work_threads = 1

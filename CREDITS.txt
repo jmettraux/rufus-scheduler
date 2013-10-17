@@ -27,6 +27,7 @@
 
 == Feedback
 
+- Gatis Tomsons - https://github.io/gacha - heavy duty work threads
 - https://github.com/joast - missing .to_time_string alias (code and doc)
 - Tamir Duberstein - https://github.com/tamird - rdoc inaccuracies
 - Kevin Bouwkamp - https://github.com/bmxpert1 - first_at issues
