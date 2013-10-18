@@ -292,12 +292,14 @@ module Rufus
 
         #@pool_mutex.synchronize do
 
-        count = @scheduler.work_threads.size
-        #vacant = threads.select { |t| t[:rufus_scheduler_job] == nil }.size
+        threads = @scheduler.work_threads
+
+        cur = threads.size
+        vac = threads.select { |t| t[:rufus_scheduler_job] == nil }.size
         #min = @scheduler.min_work_threads
         max = @scheduler.max_work_threads
 
-        start_work_thread if count < max
+        start_work_thread if vac < 1 && cur < max
         #end
 
         @scheduler.work_queue << [ self, time ]

@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 3.0.2    not yet released
 
+- fix "rufus rushes to create work threads" issue, thanks Gatis Tomsons
 - introduce Rufus::Scheduler::NotRunningError, thanks Gatis Tomsons
 
 
