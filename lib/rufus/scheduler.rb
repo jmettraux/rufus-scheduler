@@ -41,9 +41,20 @@ module Rufus
     VERSION = '3.0.1'
 
     #
+    # A common error class for rufus-scheduler
+    #
+    class Error < StandardError; end
+
+    #
     # This error is thrown when the :timeout attribute triggers
     #
-    class TimeoutError < StandardError; end
+    class TimeoutError < Error; end
+
+    #
+    # For when the scheduler is not running
+    # (it got shut down or didn't start because of a lock)
+    #
+    class NotRunningError < Error; end
 
     #MIN_WORK_THREADS = 7
     MAX_WORK_THREADS = 35
@@ -139,6 +150,10 @@ module Rufus
     end
 
     def join
+
+      fail NotRunningError.new(
+        'cannot join scheduler that is not running'
+      ) unless @thread
 
       @thread.join
     end
@@ -502,7 +517,7 @@ module Rufus
 
     def do_schedule(job_type, t, callable, opts, return_job_instance, block)
 
-      raise RuntimeError.new(
+      fail NotRunningError.new(
         'cannot schedule, scheduler is down or shutting down'
       ) if @started_at == nil
 

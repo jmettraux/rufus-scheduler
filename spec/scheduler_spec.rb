@@ -154,7 +154,7 @@ describe Rufus::Scheduler do
 
       lambda {
         @scheduler.in('0s') { puts 'hhhhhhhhhhhello!!' }
-      }.should raise_error(RuntimeError)
+      }.should raise_error(Rufus::Scheduler::NotRunningError)
     end
   end
 
