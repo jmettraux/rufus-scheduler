@@ -2,7 +2,12 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.0.1    not yet released
+== rufus-scheduler - 3.0.2    not yet released
+
+- introduce Rufus::Scheduler::NotRunningError, thanks Gatis Tomsons
+
+
+== rufus-scheduler - 3.0.1    released 2013/10/19
 
 - fix post_install_message, thanks Ted Pennings
 - bring back .parse_time_string and .parse_duration_string

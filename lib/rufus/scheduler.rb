@@ -38,7 +38,7 @@ module Rufus
     require 'rufus/scheduler/cronline'
     require 'rufus/scheduler/job_array'
 
-    VERSION = '3.0.1'
+    VERSION = '3.0.2'
 
     #
     # A common error class for rufus-scheduler
