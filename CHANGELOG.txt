@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 3.0.1    not yet released
 
+- fix post_install_message, thanks Ted Pennings
 - bring back .parse_time_string and .parse_duration_string
 
 
