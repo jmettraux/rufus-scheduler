@@ -1,4 +1,3 @@
-
 Gem::Specification.new do |s|
 
   s.name = 'rufus-scheduler'
@@ -49,7 +48,7 @@ A) Forget it and peg your Gemfile to rufus-scheduler 2.0.24
 and / or
 
 B) Take some time to carefully report the issue at
-   https://github.com/jmettraux/rufus-scheduler/issue
+   https://github.com/jmettraux/rufus-scheduler/issues
 
 For general help about rufus-scheduler, ask via:
 http://stackoverflow.com/questions/ask?tags=rufus-scheduler+ruby
