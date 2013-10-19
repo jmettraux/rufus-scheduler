@@ -373,7 +373,7 @@ describe Rufus::Scheduler do
     it 'lists all the work threads in the pool' do
 
       @scheduler.in '0s' do
-        sleep(0.1)
+        sleep(0.2)
       end
       @scheduler.in '0s' do
         sleep(2.0)
@@ -382,6 +382,7 @@ describe Rufus::Scheduler do
       sleep 0.6
 
       @scheduler.work_threads.size.should == 2
+      @scheduler.work_threads(:all).size.should == 2
     end
   end
 
@@ -392,10 +393,10 @@ describe Rufus::Scheduler do
       @scheduler.work_threads(:vacant).should == []
     end
 
-    it 'lists all the work threads in the pool' do
+    it 'lists all the vacant work threads in the pool' do
 
       @scheduler.in '0s' do
-        sleep(0.1)
+        sleep(0.2)
       end
       @scheduler.in '0s' do
         sleep(2.0)
@@ -403,6 +404,7 @@ describe Rufus::Scheduler do
 
       sleep 0.6
 
+      @scheduler.work_threads(:all).size.should == 2
       @scheduler.work_threads(:vacant).size.should == 1
     end
   end

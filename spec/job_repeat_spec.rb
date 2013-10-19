@@ -231,16 +231,21 @@ describe Rufus::Scheduler::RepeatJob do
     it 'unschedules the job after the last_at time' do
 
       t = Time.now + 2
+
       counter = 0
+      tt = nil
 
       job =
         @scheduler.schedule_every '0.5s', :last => t do
           counter = counter + 1
+          tt = Time.now
         end
 
       sleep 3
 
-      counter.should == 3
+      #counter.should == 3
+      [ 3, 4 ].should include(counter)
+      tt.should < t
       @scheduler.jobs.should_not include(job)
     end
 
