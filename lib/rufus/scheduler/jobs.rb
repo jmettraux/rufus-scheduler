@@ -82,8 +82,6 @@ module Rufus
         @scheduled_at = Time.now
         @unscheduled_at = nil
         @last_time = nil
-        #@mutexes = {}
-        #@pool_mutex = Mutex.new
 
         @locals = {}
         @local_mutex = Mutex.new
@@ -290,17 +288,15 @@ module Rufus
 
       def do_trigger_in_thread(time)
 
-        #@pool_mutex.synchronize do
-
         threads = @scheduler.work_threads
 
         cur = threads.size
         vac = threads.select { |t| t[:rufus_scheduler_job] == nil }.size
         #min = @scheduler.min_work_threads
         max = @scheduler.max_work_threads
+        que = @scheduler.work_queue.size
 
-        start_work_thread if vac < 1 && cur < max
-        #end
+        start_work_thread if vac - que < 1 && cur < max
 
         @scheduler.work_queue << [ self, time ]
       end
