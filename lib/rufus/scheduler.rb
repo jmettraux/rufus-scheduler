@@ -56,8 +56,8 @@ module Rufus
     #
     class NotRunningError < Error; end
 
-    #MIN_WORK_THREADS = 7
-    MAX_WORK_THREADS = 35
+    #MIN_WORK_THREADS = 3
+    MAX_WORK_THREADS = 28
 
     attr_accessor :frequency
     attr_reader :started_at

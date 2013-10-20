@@ -966,7 +966,7 @@ This is useful in environments where the Ruby process holding the scheduler gets
 
 ### :max_work_threads
 
-In rufus-scheduler 2.x, by default, each job triggering received its own, new, hthread of execution. In rufus-scheduler 3.x, execution happens in a work thread and the max work thread count defaults to 35.
+In rufus-scheduler 2.x, by default, each job triggering received its own, new, hthread of execution. In rufus-scheduler 3.x, execution happens in a work thread and the max work thread count defaults to 28.
 
 One can set this maximum value when starting the scheduler.
 

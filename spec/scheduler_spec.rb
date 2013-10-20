@@ -454,7 +454,7 @@ describe Rufus::Scheduler do
 
   #describe '#min_work_threads' do
   #  it 'returns the min job thread count' do
-  #    @scheduler.min_work_threads.should == 7
+  #    @scheduler.min_work_threads.should == 3
   #  end
   #end
   #describe '#min_work_threads=' do
@@ -468,7 +468,7 @@ describe Rufus::Scheduler do
 
     it 'returns the max job thread count' do
 
-      @scheduler.max_work_threads.should == 35
+      @scheduler.max_work_threads.should == 28
     end
   end
 
