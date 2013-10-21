@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.0.2    not yet released
+== rufus-scheduler - 3.0.2    released 2013/10/22
 
 - default :max_work_threads to 28
 - fix "rufus rushes to create work threads" issue, thanks Gatis Tomsons
@@ -161,5 +161,9 @@
 == rufus-scheduler - 2.0.1    released 2009/05/07
 == rufus-scheduler - 2.0.0    released 2009/05/07
 
+...
+
 - initial release
+
+(was openwferu-scheduler before that)
 
