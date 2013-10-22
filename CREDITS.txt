@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Eric Lindvall (https://github.com/eric) Zookeeper locked example
 - Ted Pennings (https://github.com/tedpennings) typo in post_install_message
 - Tobias Kraze (https://github.com/kratob) timeout vs mutex fix
 - Patrick Farrell (https://github.com/pfarrell) pointing at deprecated start_new

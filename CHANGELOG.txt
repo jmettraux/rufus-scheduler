@@ -4,6 +4,9 @@
 
 == rufus-scheduler - 3.0.3    not yet released
 
+- introduce ZookeptScheduler example in the readme
+- rename #consider_lockfile to #lock and introduce #unlock
+
 
 == rufus-scheduler - 3.0.2    released 2013/10/22
 
