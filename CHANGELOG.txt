@@ -2,6 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 3.0.3    not yet released
+
+
 == rufus-scheduler - 3.0.2    released 2013/10/22
 
 - default :max_work_threads to 28
