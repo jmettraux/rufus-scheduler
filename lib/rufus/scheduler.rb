@@ -93,7 +93,7 @@ module Rufus
 
       @thread_key = "rufus_scheduler_#{self.object_id}"
 
-      consider_lockfile || return
+      lock || return
 
       start
     end
@@ -134,7 +134,7 @@ module Rufus
         kill_all_work_threads
       end
 
-      @lockfile.flock(File::LOCK_UN) if @lockfile
+      unlock
     end
 
     alias stop shutdown
@@ -403,7 +403,25 @@ module Rufus
       end
     end
 
-    def consider_lockfile
+    # Returns true if the scheduler has acquired the [exclusive] lock and
+    # thus may run.
+    #
+    # Most of the time, a scheduler is run alone and this method should
+    # return true. It is useful in cases where among a group of applications
+    # only one of them should run the scheduler. For schedulers that should
+    # not run, the method should return false.
+    #
+    # Out of the box, rufus-scheduler proposes the
+    # :lockfile => 'path/to/lock/file' scheduler start option. It makes
+    # it easy for schedulers on the same machine to determine which should
+    # run (to first to write the lockfile and lock it). It uses "man 2 flock"
+    # so it probably won't work reliably on distributed file systems.
+    #
+    # If one needs to use a special/different locking mechanism, providing
+    # overriding implementation for this #lock and the #unlock complement is
+    # easy.
+    #
+    def lock
 
       @lockfile = nil
 
@@ -431,6 +449,13 @@ module Rufus
       @lockfile = f
 
       true
+    end
+
+    # Sister method to #lock, is called when the scheduler shuts down.
+    #
+    def unlock
+
+      @lockfile.flock(File::LOCK_UN) if @lockfile
     end
 
     def terminate_all_jobs
