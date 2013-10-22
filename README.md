@@ -964,6 +964,8 @@ The idea is to guarantee only one scheduler (in a group of scheduler sharing the
 
 This is useful in environments where the Ruby process holding the scheduler gets started multiple times.
 
+If the lockfile mechanism here is not sufficient, you can plug your custom mechanism. It's explained in [advanced lock schemes](#advanced-lock-schemes) below.
+
 ### :max_work_threads
 
 In rufus-scheduler 2.x, by default, each job triggering received its own, new, hthread of execution. In rufus-scheduler 3.x, execution happens in a work thread and the max work thread count defaults to 28.
@@ -1002,6 +1004,51 @@ The ```.s``` is a shortcut for ```.singleton```.
 ```ruby
 Rufus::Scheduler.s.every '10s' { puts "hello, world!" }
 ```
+
+
+## advanced lock schemes
+
+As seen above, rufus-scheduler proposes the :lockfile system out of the box. If in a group of schedulers only one is supposed to run, the lockfile mecha prevents schedulers that have not set/created the lockfile from running.
+
+There are situation where this is not sufficient.
+
+By overriding #lock and #unlock, one can customize how his schedulers lock.
+
+This example was provided by [Eric Lindvall](https://github.com/eric):
+
+```ruby
+class ZookeptScheduler < Rufus::Scheduler
+
+  def initialize(zookeeper, opts={})
+    @zk = zookeeper
+    super(opts)
+  end
+
+  def lock
+    @zk_locker = @zk.exclusive_locker('scheduler')
+    @zk_locker.with_lock { return true }
+    false # we did not acquire the lock, return false
+  end
+
+  def unlock
+    @zk_locker.unlock
+  end
+
+  def on_pre_trigger(job)
+    @zk_locker.assert!
+  rescue ZK::Exceptions::LockAssertionFailedError => e
+    # we've lost the lock, shutdown (and return false to at least prevent
+    # this job from triggering
+    shutdown
+    false
+  end
+end
+```
+
+This uses a [zookeeper](http://zookeeper.apache.org/) to make sure only one scheduler in a group of distributed schedulers runs.
+
+The methods #lock and #unlock are overriden and #on_pre_trigger is provided,
+to make sure that the lock is still valid.
 
 
 ## parsing cronlines and time strings
