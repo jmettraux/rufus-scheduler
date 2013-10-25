@@ -1099,6 +1099,58 @@ Rufus::Scheduler.to_duration_hash(62.127, :drop_seconds => true)
   # => { :m => 1 }
 ```
 
+### cronline notations specific to rufus-scheduler
+
+#### first Monday, last Sunday et al
+
+To schedule something at noon every first Monday of the month:
+
+```ruby
+scheduler.cron('00 12 * * mon#1') do
+  # ...
+end
+```
+
+To schedule something at noon the last Sunday of every month:
+
+```ruby
+scheduler.cron('00 12 * * sun#-1') do
+  # ...
+end
+#
+# OR
+#
+scheduler.cron('00 12 * * sun#L') do
+  # ...
+end
+```
+
+Such cronlines can be tested with scripts like:
+
+```ruby
+require 'rufus-scheduler'
+
+Time.now
+  # => 2013-10-26 07:07:08 +0900
+Rufus::Scheduler.parse('* * * * mon#1').next_time
+  # => 2013-11-04 00:00:00 +0900
+```
+
+#### L (last day of month)
+
+L can be used in the "day" slot:
+
+In this example, the cronline is supposed to trigger every last day of the month at noon:
+
+```ruby
+require 'rufus-scheduler'
+Time.now
+  # => 2013-10-26 07:22:09 +0900
+Rufus::Scheduler.parse('00 12 L * *').next_time
+  # => 2013-10-31 12:00:00 +0900
+```
+
+
 ## a note about timezones
 
 Cron schedules and at schedules support the specification of a timezone.
