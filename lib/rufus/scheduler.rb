@@ -158,6 +158,11 @@ module Rufus
       @thread.join
     end
 
+    def down?
+
+      ! @started_at
+    end
+
     def paused?
 
       @paused

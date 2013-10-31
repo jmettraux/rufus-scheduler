@@ -693,6 +693,21 @@ describe Rufus::Scheduler do
     end
   end
 
+  describe '#down?' do
+
+    it 'returns true when the scheduler is down' do
+
+      @scheduler.shutdown
+
+      @scheduler.down?.should == true
+    end
+
+    it 'returns false when the scheduler is up' do
+
+      @scheduler.down?.should == false
+    end
+  end
+
   #--
   # job methods
   #++
