@@ -114,7 +114,9 @@ module Rufus
 
         return if opts[:overlap] == false && running?
 
-        r = callback(:on_pre_trigger, time)
+        r =
+          callback(:confirm_lock, time) &&
+          callback(:on_pre_trigger, time)
 
         return if r == false
 

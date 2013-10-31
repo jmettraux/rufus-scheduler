@@ -802,6 +802,10 @@ Shuts down the scheduler, waits (blocks) until all the jobs cease running.
 
 Kills all the job (threads) and then shuts the scheduler down. Radical.
 
+### Scheduler#down?
+
+Returns true if the scheduler has been shut down.
+
 ### Scheduler#join
 
 Let's the current thread join the scheduling thread in rufus-scheduler. The thread comes back when the scheduler gets shut down.
@@ -1034,7 +1038,8 @@ class ZookeptScheduler < Rufus::Scheduler
     @zk_locker.unlock
   end
 
-  def on_pre_trigger(job)
+  def confirm_lock
+    return false if down?
     @zk_locker.assert!
   rescue ZK::Exceptions::LockAssertionFailedError => e
     # we've lost the lock, shutdown (and return false to at least prevent
@@ -1047,8 +1052,10 @@ end
 
 This uses a [zookeeper](http://zookeeper.apache.org/) to make sure only one scheduler in a group of distributed schedulers runs.
 
-The methods #lock and #unlock are overriden and #on_pre_trigger is provided,
+The methods #lock and #unlock are overriden and #confirm_lock is provided,
 to make sure that the lock is still valid.
+
+The #confirm_lock method is called right before a job triggers (if it is provided). The more generic callback #on_pre_trigger is called right after #confirm_lock.
 
 
 ## parsing cronlines and time strings
