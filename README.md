@@ -1030,8 +1030,7 @@ class ZookeptScheduler < Rufus::Scheduler
 
   def lock
     @zk_locker = @zk.exclusive_locker('scheduler')
-    @zk_locker.with_lock { return true }
-    false # we did not acquire the lock, return false
+    @zk_locker.lock # returns true if the lock was acquired, false else
   end
 
   def unlock
