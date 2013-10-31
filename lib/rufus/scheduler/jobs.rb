@@ -114,7 +114,7 @@ module Rufus
 
         return if opts[:overlap] == false && running?
 
-        r = callback(:pre, time)
+        r = callback(:on_pre_trigger, time)
 
         return if r == false
 
@@ -183,15 +183,14 @@ module Rufus
 
       protected
 
-      def callback(position, time)
+      def callback(meth, time)
 
-        name = position == :pre ? :on_pre_trigger : :on_post_trigger
+        return true unless @scheduler.respond_to?(meth)
 
-        return unless @scheduler.respond_to?(name)
+        arity = @scheduler.method(meth).arity
+        args = [ self, time ][0, (arity < 0 ? 2 : arity)]
 
-        args = @scheduler.method(name).arity < 2 ? [ self ] : [ self, time ]
-
-        @scheduler.send(name, *args)
+        @scheduler.send(meth, *args)
       end
 
       def compute_timeout
@@ -243,7 +242,7 @@ module Rufus
 
         set_next_time(true, time)
 
-        callback(:post, time)
+        callback(:on_post_trigger, time)
       end
 
       def start_work_thread
