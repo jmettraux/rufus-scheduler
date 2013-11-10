@@ -199,6 +199,27 @@ class Rufus::Scheduler
     # Returns the shortest delta between two potential occurences of the
     # schedule described by this cronline.
     #
+    # .
+    #
+    # For a simple cronline like "*/5 * * * *", obviously the frequency is
+    # five minutes. Why does this method look at a whole year of #next_time ?
+    #
+    # Consider "* * * * sun#2,sun#3", the computed frequency is 1 week
+    # (the shortest delta is the one between the second sunday and the third
+    # sunday). This method takes no chance and runs next_time for the span
+    # of a whole year and keeps the shortest.
+    #
+    # Of course, this method can get VERY slow if you call on it a second-
+    # based cronline...
+    #
+    # Since it's a rarely used method, I haven't taken the time to make it
+    # smarter/faster.
+    #
+    # One obvious improvement would be to cache the result once computed...
+    #
+    # See https://github.com/jmettraux/rufus-scheduler/issues/89
+    # for a discussion about this method.
+    #
     def frequency
 
       delta = 366 * DAY_S
