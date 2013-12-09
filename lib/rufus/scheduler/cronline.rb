@@ -156,7 +156,7 @@ class Rufus::Scheduler
       time
     end
 
-    # Returns the previous the cronline matched. It's like next_time, but
+    # Returns the previous time the cronline matched. It's like next_time, but
     # for the past.
     #
     def previous_time(from=Time.now)
