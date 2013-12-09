@@ -322,6 +322,7 @@ describe Rufus::Scheduler::CronLine do
       pt('* * * * sun', lo(1970, 1, 1)).should == lo(1969, 12, 28, 23, 59, 00)
       pt('* * 13 * *', lo(1970, 1, 1)).should == lo(1969, 12, 13, 23, 59, 00)
       pt('0 12 13 * *', lo(1970, 1, 1)).should == lo(1969, 12, 13, 12, 00)
+      pt('0 0 2 1 *', lo(1970, 1, 1)).should == lo(1969, 1, 2, 0, 00)
 
       pt('* * * * * sun', lo(1970, 1, 1)).should == lo(1969, 12, 28, 23, 59, 59)
     end

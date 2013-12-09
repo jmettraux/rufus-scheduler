@@ -121,17 +121,13 @@ class Rufus::Scheduler
     # (Thanks to K Liu for the note and the examples)
     #
     def next_time(from=Time.now)
+      time = local_time(from)
+      time = round_to_seconds(time)
 
-      time = @timezone ? @timezone.utc_to_local(from.getutc) : from
-
-      time = time.respond_to?(:round) ? time.round : time - time.usec * 1e-6
-        # chop off subseconds (and yes, Ruby 1.8 doesn't have #round)
-
+      # start at the next second
       time = time + 1
-        # start at the next second
 
       loop do
-
         unless date_match?(time)
           time += (24 - time.hour) * 3600 - time.min * 60 - time.sec; next
         end
@@ -148,34 +144,37 @@ class Rufus::Scheduler
         break
       end
 
-      if @timezone
-        time = @timezone.local_to_utc(time)
-        time = time.getlocal unless from.utc?
-      end
-
-      time
+      global_time(time, from.utc?)
     end
 
     # Returns the previous the cronline matched. It's like next_time, but
     # for the past.
     #
     def previous_time(from=Time.now)
+      time = local_time(from)
+      time = round_to_seconds(time)
 
-      # looks back by slices of two hours,
-      #
-      # finds for '* * * * sun', '* * 13 * *' and '0 12 13 * *'
-      # starting 1970, 1, 1 in 1.8 to 2 seconds (says Rspec)
-
-      start = current = from - 2 * 3600
-      result = nil
+      # start at the previous second
+      time = time - 1
 
       loop do
-        nex = next_time(current)
-        return (result ? result : previous_time(start)) if nex > from
-        result = current = nex
+        unless date_match?(time)
+          time -= time.hour * 3600 + time.min * 60 + time.sec + 1; next
+        end
+        unless sub_match?(time, :hour, @hours)
+          time -= time.min * 60 + time.sec + 1; next
+        end
+        unless sub_match?(time, :min, @minutes)
+          time -= time.sec + 1; next
+        end
+        unless sub_match?(time, :sec, @seconds)
+          time -= 1; next
+        end
+
+        break
       end
 
-      # never reached
+      global_time(time, from.utc?)
     end
 
     # Returns an array of 6 arrays (seconds, minutes, hours, days,
@@ -400,6 +399,24 @@ class Rufus::Scheduler
       end
 
       [ "#{WEEKDAYS[date.wday]}##{pos}", "#{WEEKDAYS[date.wday]}##{neg}" ]
+    end
+
+    def local_time(time)
+      time = @timezone ? @timezone.utc_to_local(time.getutc) : time
+    end
+
+    def global_time(time, from_in_utc)
+      if @timezone
+        time = @timezone.local_to_utc(time)
+        time = time.getlocal unless from_in_utc
+      end
+
+      time
+    end
+
+    def round_to_seconds(time)
+      # Ruby 1.8 doesn't have #round
+      time.respond_to?(:round) ? time.round : time - time.usec * 1e-6
     end
   end
 end
