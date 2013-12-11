@@ -2,8 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.0.3    not yet released
+== rufus-scheduler - 3.0.3    released 2013/12/12
 
+- CronLine#previous_time fix by Yassen Bantchev (https://github.com/yassenb)
 - introduce ZookeptScheduler example in the readme
 - rename #consider_lockfile to #lock and introduce #unlock
 

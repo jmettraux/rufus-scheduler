@@ -121,6 +121,7 @@ class Rufus::Scheduler
     # (Thanks to K Liu for the note and the examples)
     #
     def next_time(from=Time.now)
+
       time = local_time(from)
       time = round_to_seconds(time)
 
@@ -151,6 +152,7 @@ class Rufus::Scheduler
     # for the past.
     #
     def previous_time(from=Time.now)
+
       time = local_time(from)
       time = round_to_seconds(time)
 
