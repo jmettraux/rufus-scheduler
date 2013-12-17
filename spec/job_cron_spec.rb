@@ -62,6 +62,20 @@ describe Rufus::Scheduler::CronJob do
       job.first_at.should be_within_1s_of(t + 3)
       job.last_time.should == nil
     end
+
+    it 'triggers for the first time at first_at' do
+
+      first_time = nil
+      t = Time.now
+
+      job = @scheduler.schedule_cron '* * * * * *', :first_in => '3s' do
+        first_time ||= Time.now
+      end
+      sleep 4.5
+
+      job.first_at.should be_within_1s_of(t + 3)
+      first_time.should be_within_1s_of(job.first_at)
+    end
   end
 end
 
