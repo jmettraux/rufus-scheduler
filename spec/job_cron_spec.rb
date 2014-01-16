@@ -77,5 +77,30 @@ describe Rufus::Scheduler::CronJob do
       first_time.should be_within_1s_of(job.first_at)
     end
   end
+
+  context 'scheduling the cron itself' do
+
+    # for https://github.com/jmettraux/rufus-scheduler/issues/95
+    #
+    # schedule_cron takes more than 30 seconds, blocking...
+    #
+    it 'does not sit scheduling and blocking...' do
+
+      n = Time.now
+      first = nil
+
+      job = @scheduler.schedule_cron '*/2 * * * * *' do
+        first ||= Time.now
+      end
+
+      (Time.now - n).should < 1.0
+
+      loop do
+        next unless first
+        (first - n).should < 4.0
+        break
+      end
+    end
+  end
 end
 

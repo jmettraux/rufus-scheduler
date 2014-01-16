@@ -535,6 +535,11 @@ module Rufus
         @cron_line.frequency
       end
 
+      def brute_frequency
+
+        @cron_line.brute_frequency
+      end
+
       protected
 
       def set_next_time(is_post, trigger_time)

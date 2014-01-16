@@ -717,16 +717,22 @@ Rufus::Scheduler.parse('* * * * * *').frequency       # ==> 1
 Rufus::Scheduler.parse('5 23 * * *').frequency        # ==> 24 * 3600
 Rufus::Scheduler.parse('5 * * * *').frequency         # ==> 3600
 Rufus::Scheduler.parse('10,20,30 * * * *').frequency  # ==> 600
+
+Rufus::Scheduler.parse('10,20,30 * * * * *').frequency  # ==> 10
 ```
 
 It's used to determine if the job frequency is higher than the scheduler frequency (it raises an ArgumentError if that is the case).
+
+### brute_frequency
+
+Cron jobs also have a ```#brute_frequency``` method that looks a one year of intervals to determine the shortest delta for the cron. This method can take between 20 to 50 seconds for cron lines that go the second level. ```#frequency``` above, when encountering second level cron lines will take a shortcut to answer as quickly as possible with a usable value.
 
 
 ## looking up jobs
 
 ### Scheduler#job(job_id)
 
-The scheduler #job(job_id) method can be used to lookup Job instances.
+The scheduler ```#job(job_id)``` method can be used to lookup Job instances.
 
 ```ruby
   require 'rufus-scheduler'

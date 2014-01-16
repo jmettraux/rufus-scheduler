@@ -396,6 +396,23 @@ describe Rufus::Scheduler::CronLine do
       match '* * * * sun#2,sun#3', local(1970, 1, 18)
       no_match '* * * * sun#2,sun#3', local(1970, 1, 25)
     end
+
+    it 'matches correctly for seconds' do
+
+      match '* * * * * *', local(1970, 1, 11)
+      match '* * * * * *', local(1970, 1, 11, 0, 0, 13)
+    end
+
+    it 'matches correctly for seconds / interval' do
+
+      match '*/2 * * * * *', local(1970, 1, 11)
+      match '*/5 * * * * *', local(1970, 1, 11)
+      match '*/5 * * * * *', local(1970, 1, 11, 0, 0, 0)
+      no_match '*/5 * * * * *', local(1970, 1, 11, 0, 0, 1)
+      match '*/5 * * * * *', local(1970, 1, 11, 0, 0, 5)
+      match '*/2 * * * * *', local(1970, 1, 11, 0, 0, 2)
+      match '*/2 * * * * *', local(1970, 1, 11, 0, 0, 2, 500)
+    end
   end
 
   describe '#monthdays' do
@@ -420,12 +437,43 @@ describe Rufus::Scheduler::CronLine do
 
     it 'returns the shortest delta between two occurrences' do
 
-      Rufus::Scheduler::CronLine.new('* * * * *').frequency.should == 60
-      Rufus::Scheduler::CronLine.new('* * * * * *').frequency.should == 1
+      Rufus::Scheduler::CronLine.new(
+          '* * * * *').frequency.should == 60
+      Rufus::Scheduler::CronLine.new(
+          '* * * * * *').frequency.should == 1
 
-      Rufus::Scheduler::CronLine.new('5 23 * * *').frequency.should == 24 * 3600
-      Rufus::Scheduler::CronLine.new('5 * * * *').frequency.should == 3600
-      Rufus::Scheduler::CronLine.new('10,20,30 * * * *').frequency.should == 600
+      Rufus::Scheduler::CronLine.new(
+          '5 23 * * *').frequency.should == 24 * 3600
+      Rufus::Scheduler::CronLine.new(
+          '5 * * * *').frequency.should == 3600
+      Rufus::Scheduler::CronLine.new(
+          '10,20,30 * * * *').frequency.should == 600
+
+      Rufus::Scheduler::CronLine.new(
+          '10,20,30 * * * * *').frequency.should == 10
+    end
+  end
+
+  describe '#brute_frequency' do
+
+    it 'returns the shortest delta between two occurrences' do
+
+      Rufus::Scheduler::CronLine.new(
+          '* * * * *').brute_frequency.should == 60
+      Rufus::Scheduler::CronLine.new(
+          '* * * * * *').brute_frequency.should == 1
+
+      Rufus::Scheduler::CronLine.new(
+          '5 23 * * *').brute_frequency.should == 24 * 3600
+      Rufus::Scheduler::CronLine.new(
+          '5 * * * *').brute_frequency.should == 3600
+      Rufus::Scheduler::CronLine.new(
+          '10,20,30 * * * *').brute_frequency.should == 600
+
+      #Rufus::Scheduler::CronLine.new(
+      #    '10,20,30 * * * * *').brute_frequency.should == 10
+        #
+        # takes > 20s ...
     end
   end
 end

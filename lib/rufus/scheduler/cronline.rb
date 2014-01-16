@@ -197,6 +197,28 @@ class Rufus::Scheduler
       ]
     end
 
+    # Returns a quickly computed approximation of the frequency for this
+    # cron line.
+    #
+    # #brute_frequency, on the other hand, will compute the frequency by
+    # examining a whole, that can take more than seconds for a seconds
+    # level cron...
+    #
+    def frequency
+
+      return brute_frequency unless @seconds && @seconds.length > 1
+
+      delta = 60
+      prev = @seconds[0]
+
+      @seconds[1..-1].each do |sec|
+        d = sec - prev
+        delta = d if d < delta
+      end
+
+      delta
+    end
+
     # Returns the shortest delta between two potential occurences of the
     # schedule described by this cronline.
     #
@@ -221,7 +243,7 @@ class Rufus::Scheduler
     # See https://github.com/jmettraux/rufus-scheduler/issues/89
     # for a discussion about this method.
     #
-    def frequency
+    def brute_frequency
 
       delta = 366 * DAY_S
 
