@@ -363,37 +363,16 @@ describe Rufus::Scheduler do
     end
   end
 
-  describe '#work_threads(:all)' do
+  describe '#work_threads(:all | :vacant)' do
 
     it 'returns an empty array when the scheduler has not yet done anything' do
 
       @scheduler.work_threads.should == []
-    end
-
-    it 'lists all the work threads in the pool' do
-
-      @scheduler.in '0s' do
-        sleep(0.2)
-      end
-      @scheduler.in '0s' do
-        sleep(2.0)
-      end
-
-      sleep 0.6
-
-      @scheduler.work_threads.size.should == 2
-      @scheduler.work_threads(:all).size.should == 2
-    end
-  end
-
-  describe '#work_threads(:vacant)' do
-
-    it 'returns an empty array when the scheduler has not yet done anything' do
-
+      @scheduler.work_threads(:all).should == []
       @scheduler.work_threads(:vacant).should == []
     end
 
-    it 'lists all the vacant work threads in the pool' do
+    it 'lists the [vacant] work threads in the pool' do
 
       @scheduler.in '0s' do
         sleep(0.2)
@@ -402,10 +381,17 @@ describe Rufus::Scheduler do
         sleep(2.0)
       end
 
-      sleep 0.6
+      sleep 0.7
 
-      @scheduler.work_threads(:all).size.should == 2
-      @scheduler.work_threads(:vacant).size.should == 1
+      if @scheduler.work_threads.size == 1
+        @scheduler.work_threads.size.should == 1
+        @scheduler.work_threads(:all).size.should == 1
+        @scheduler.work_threads(:vacant).size.should == 0
+      else
+        @scheduler.work_threads.size.should == 2
+        @scheduler.work_threads(:all).size.should == 2
+        @scheduler.work_threads(:vacant).size.should == 1
+      end
     end
   end
 
