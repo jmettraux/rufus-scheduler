@@ -2,6 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 3.0.5    not yet released
+
+
 == rufus-scheduler - 3.0.4    released 2014/10/19
 
 - make CronLine#frequency faster (to avoid 20s schedule_cron times)
