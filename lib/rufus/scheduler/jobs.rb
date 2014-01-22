@@ -368,19 +368,24 @@ module Rufus
         ) unless @times == nil || @times.is_a?(Fixnum)
 
         self.first_at =
-          opts[:first] || opts[:first_at] || opts[:first_in] || 0
+          opts[:first] || opts[:first_time] ||
+          opts[:first_at] || opts[:first_in] ||
+          0
         self.last_at =
           opts[:last] || opts[:last_at] || opts[:last_in]
       end
 
       def first_at=(first)
 
+        n = Time.now
+        first = n + 0.001 if first == :now || first == :immediately
+
         @first_at = Rufus::Scheduler.parse_to_time(first)
 
         raise ArgumentError.new(
           "cannot set first[_at|_in] in the past: " +
           "#{first.inspect} -> #{@first_at.inspect}"
-        ) if first != 0 && @first_at < Time.now
+        ) if first != 0 && @first_at < n
       end
 
       def last_at=(last)

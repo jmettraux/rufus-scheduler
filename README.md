@@ -366,7 +366,7 @@ end
 
 The :timeout option accepts either a duration (like "1d" or "2w3d") or a point in time (like "2013/12/12 12:00").
 
-### :first_at, :first_in, :first
+### :first_at, :first_in, :first, :first_time
 
 This option is for repeat jobs (cron / every) only.
 
@@ -391,6 +391,34 @@ Note: it's OK to change the first_at (a Time instance) directly:
 ```ruby
 job.first_at = Time.now + 10
 job.first_at = Rufus::Scheduler.parse('2029-12-12')
+```
+
+The first argument (in all its flavours) accepts a :now or :immediately value. That schedules the first occurence for immediate triggering. Consider:
+
+```ruby
+require 'rufus-scheduler'
+
+s = Rufus::Scheduler.new
+
+n = Time.now; p [ :scheduled_at, n, n.to_f ]
+
+s.every '3s', :first => :now do
+  n = Time.now; p [ :in, n, n.to_f ]
+end
+
+s.join
+
+```
+
+that'll output something like:
+
+```
+[:scheduled_at, 2014-01-22 22:21:21 +0900, 1390396881.344438]
+[:in, 2014-01-22 22:21:21 +0900, 1390396881.6453865]
+[:in, 2014-01-22 22:21:24 +0900, 1390396884.648807]
+[:in, 2014-01-22 22:21:27 +0900, 1390396887.651686]
+[:in, 2014-01-22 22:21:30 +0900, 1390396890.6571937]
+...
 ```
 
 ### :last_at, :last_in, :last
