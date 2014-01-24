@@ -178,6 +178,24 @@ describe Rufus::Scheduler::Job do
     end
   end
 
+  describe '#call' do
+
+    it 'calls the job (like it were a proc)' do
+
+      counter = 0
+
+      job =
+        @scheduler.schedule_in('0.5s') do
+          counter = counter + 1
+        end
+      job.call
+
+      sleep 0.8
+
+      counter.should == 2
+    end
+  end
+
   context 'job-local variables' do
 
     describe '#[]=' do

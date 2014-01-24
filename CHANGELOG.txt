@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 3.0.5    not yet released
 
+- implement Job#call, gh-97
 - implement :first => :now for repeat jobs, gh-96
 
 

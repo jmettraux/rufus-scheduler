@@ -699,6 +699,21 @@ job.keys
 
 Job-local variables are thread-safe.
 
+### call
+
+Job instances have a #call method. It simply calls the scheduled block or callable immediately.
+
+```ruby
+job =
+  @scheduler.schedule_every '10m' do |job|
+    # ...
+  end
+
+job.call
+```
+
+Warning: the Scheduler#on_error handler is not involved. Error handling is the responsibility of the caller.
+
 ## AtJob and InJob methods
 
 ### time

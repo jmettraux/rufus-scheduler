@@ -183,6 +183,15 @@ module Rufus
         #
         # might be necessary at some point
 
+      # Calls the callable (usually a block) wrapped in this Job instance.
+      #
+      # Warning: error rescueing is the responsibity of the caller.
+      #
+      def call
+
+        do_call(Time.now)
+      end
+
       protected
 
       def callback(meth, time)
@@ -209,6 +218,12 @@ module Rufus
         m.is_a?(Mutex) ? m : (@scheduler.mutexes[m.to_s] ||= Mutex.new)
       end
 
+      def do_call(time)
+
+        args = [ self, time ][0, @callable.arity]
+        @callable.call(*args)
+      end
+
       def do_trigger(time)
 
         t = Time.now
@@ -220,8 +235,7 @@ module Rufus
 
         @last_time = t
 
-        args = [ self, time ][0, @callable.arity]
-        @callable.call(*args)
+        do_call(time)
 
       rescue KillSignal
 
