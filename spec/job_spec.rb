@@ -196,6 +196,52 @@ describe Rufus::Scheduler::Job do
     end
   end
 
+  describe '#call(true)' do
+
+    it 'calls the job and let the scheduler handle errors' do
+
+      $err = nil
+
+      def @scheduler.on_error(job, err)
+        $err = "#{job.class} #{job.original} #{err.message}"
+      rescue
+        p $!
+      end
+
+      job =
+        @scheduler.schedule_in('1d') do
+          fail 'again'
+        end
+
+      job.call(true)
+
+      $err.should == 'Rufus::Scheduler::InJob 1d again'
+    end
+  end
+
+  describe '#call(false)' do
+
+    it 'calls the job and let errors slip through' do
+
+      job =
+        @scheduler.schedule_in('1d') do
+          fail 'fast'
+        end
+
+      begin
+
+        #job.call(false)
+        job.call # false is the default
+
+        false.should == true
+
+      rescue => ex
+
+        ex.message.should == 'fast'
+      end
+    end
+  end
+
   context 'job-local variables' do
 
     describe '#[]=' do

@@ -187,9 +187,9 @@ module Rufus
       #
       # Warning: error rescueing is the responsibity of the caller.
       #
-      def call
+      def call(do_rescue=false)
 
-        do_call(Time.now)
+        do_call(Time.now, do_rescue)
       end
 
       protected
@@ -218,10 +218,22 @@ module Rufus
         m.is_a?(Mutex) ? m : (@scheduler.mutexes[m.to_s] ||= Mutex.new)
       end
 
-      def do_call(time)
+      def do_call(time, do_rescue)
 
         args = [ self, time ][0, @callable.arity]
         @callable.call(*args)
+
+      rescue KillSignal => ks
+
+        raise ks unless do_rescue
+        # else discard
+
+      rescue StandardError => se
+
+        raise se unless do_rescue
+        @scheduler.on_error(self, se)
+
+      # exceptions above StandardError do pass through
       end
 
       def do_trigger(time)
@@ -235,15 +247,7 @@ module Rufus
 
         @last_time = t
 
-        do_call(time)
-
-      rescue KillSignal
-
-        # discard
-
-      rescue StandardError => se
-
-        @scheduler.on_error(self, se)
+        do_call(time, true)
 
       ensure
 

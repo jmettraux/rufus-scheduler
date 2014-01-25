@@ -714,6 +714,29 @@ job.call
 
 Warning: the Scheduler#on_error handler is not involved. Error handling is the responsibility of the caller.
 
+If the call has to be rescued by the error handler of the scheduler, ```call(true)``` might help:
+
+```ruby
+require 'rufus-scheduler'
+
+s = Rufus::Scheduler.new
+
+def s.on_error(job, err)
+  p [ 'error in scheduled job', job.class, job.original, err.message ]
+rescue
+  p $!
+end
+
+job =
+  s.schedule_in('1d') do
+    fail 'again'
+  end
+
+job.call(true)
+  #
+  # true lets the error_handler deal with error in the job call
+```
+
 ## AtJob and InJob methods
 
 ### time
