@@ -30,6 +30,8 @@
 
 == Feedback
 
+- Joe Taylor and Agis Anastasopoulos -
+  http://stackoverflow.com/questions/21280870 - :first => :now and Job#call
 - Gatis Tomsons - https://github.io/gacha - heavy work threads and lock errors
 - https://github.com/joast - missing .to_time_string alias (code and doc)
 - Tamir Duberstein - https://github.com/tamird - rdoc inaccuracies
