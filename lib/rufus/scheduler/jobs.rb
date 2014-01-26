@@ -223,14 +223,12 @@ module Rufus
         args = [ self, time ][0, @callable.arity]
         @callable.call(*args)
 
-      rescue KillSignal => ks
-
-        raise ks unless do_rescue
-        # else discard
-
       rescue StandardError => se
 
         raise se unless do_rescue
+
+        return if se.is_a?(KillSignal) # discard
+
         @scheduler.on_error(self, se)
 
       # exceptions above StandardError do pass through
