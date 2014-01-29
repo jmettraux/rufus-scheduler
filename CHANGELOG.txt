@@ -2,13 +2,13 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.0.5    not yet released
+== rufus-scheduler - 3.0.5    released 2014/01/30
 
 - implement Job#call(do_rescue=false), gh-97
 - implement :first => :now for repeat jobs, gh-96
 
 
-== rufus-scheduler - 3.0.4    released 2014/10/19
+== rufus-scheduler - 3.0.4    released 2014/01/19
 
 - make CronLine#frequency faster (to avoid 20s schedule_cron times)
 
