@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.0.6    not yet released
+== rufus-scheduler - 3.0.6    released 2014/02/14
 
 - avoid "can't be called from trap context" on Ruby 2.0, gh-98
 
