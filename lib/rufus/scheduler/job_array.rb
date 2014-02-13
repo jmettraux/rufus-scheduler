@@ -78,6 +78,13 @@ module Rufus
 
         @mutex.synchronize { @array.find { |j| j.job_id == job_id } }
       end
+
+      # Only used when shutting down, directly yields the underlying array.
+      #
+      def array
+
+        @array
+      end
     end
   end
 end
