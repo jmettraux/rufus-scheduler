@@ -127,6 +127,10 @@ module Rufus
         end
       end
 
+      def reschedule(time)
+        set_next_time(false, time)
+      end
+
       def unschedule
 
         @unscheduled_at = Time.now
