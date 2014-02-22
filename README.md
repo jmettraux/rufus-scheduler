@@ -249,6 +249,25 @@ The second argument is "time", it's the time when the job got cleared for trigge
 
 Note that time is the time when the job got cleared for triggering. If there are mutexes involved, now = mutex_wait_time + time...
 
+#### "every" jobs and changing the next_time in-flight
+
+It's OK to change the next_time of an every job in-flight:
+
+```ruby
+scheduler.every '10m' do |job|
+
+  # ...
+
+  status = determine_pie_status
+
+  job.next_time = Time.now + 30 * 60 if status == 'burnt'
+    #
+    # if burnt, wait 30 minutes for the oven to cool a bit
+end
+```
+
+It should work as well with cron jobs, not so with interval jobs whose next_time is computed after their block ends its current run.
+
 ### scheduling handler instances
 
 It's OK to pass any object, as long as it respond to #call(), when scheduling:
