@@ -30,6 +30,25 @@ describe Rufus::Scheduler::EveryJob do
     [ 2, 3 ].should include(counter)
   end
 
+  it 'lets its @next_time change in-flight' do
+
+    times = []
+
+    @scheduler.every '1s' do |job|
+      times << Time.now
+      job.next_time = Time.now + 3 if times.count == 2
+    end
+
+    sleep 0.3 while times.count < 3
+
+    #p [ times[1] - times[0], times[2] - times[1] ]
+
+    (times[1] - times[0]).should > 1.0
+    (times[1] - times[0]).should < 1.4
+    (times[2] - times[1]).should > 3.0
+    (times[2] - times[1]).should < 3.4
+  end
+
   context 'first_at/in' do
 
     it 'triggers for the first time at first_at' do
