@@ -30,6 +30,7 @@
 
 == Feedback
 
+- Tobias Bielohlawek - https://github.com/rngtng - missing assertion
 - Joe Taylor and Agis Anastasopoulos -
   http://stackoverflow.com/questions/21280870 - :first => :now and Job#call
 - Gatis Tomsons - https://github.io/gacha - heavy work threads and lock errors
