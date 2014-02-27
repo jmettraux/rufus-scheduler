@@ -20,12 +20,14 @@ describe Rufus::Scheduler do
         t[:name] == "rufus_scheduler_#{scheduler.object_id}_scheduler"
       }
 
-      t[:rufus_scheduler].should == scheduler
+      t.should_not be_nil
     end
 
     it 'sets a :rufus_scheduler thread local var' do
 
       scheduler = Rufus::Scheduler.new
+
+      t[:rufus_scheduler].should == scheduler
     end
 
     it 'accepts a :frequency => integer option' do
