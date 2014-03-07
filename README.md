@@ -1066,7 +1066,7 @@ If the lockfile mechanism here is not sufficient, you can plug your custom mecha
 
 ### :max_work_threads
 
-In rufus-scheduler 2.x, by default, each job triggering received its own, new, hthread of execution. In rufus-scheduler 3.x, execution happens in a work thread and the max work thread count defaults to 28.
+In rufus-scheduler 2.x, by default, each job triggering received its own, brand new, thread of execution. In rufus-scheduler 3.x, execution happens in a pooled work thread. The max work thread count (the pool size) defaults to 28.
 
 One can set this maximum value when starting the scheduler.
 
