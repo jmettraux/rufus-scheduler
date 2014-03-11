@@ -1284,6 +1284,57 @@ Unknown timezones, typos, will be rejected by tzinfo thus rufus-scheduler.
 On its own tzinfo derives the timezones from the system's information. On some system it needs some help, one can install the 'tzinfo-data' gem to provide the missing information.
 
 
+## so Rails?
+
+Yes, I know, all of the above is boring and you're only looking for a snippet to paste in your Ruby-on-Rails application to schedule...
+
+Here is an example initializer:
+
+```ruby
+#
+# config/initializers/scheduler.rb
+
+require 'rufus-scheduler'
+
+# Let's use the rufus-scheduler singleton
+#
+s = Rufus::Scheduler.singleton
+
+
+# Stupid recurrent task...
+#
+s.every '1m' do
+
+  Rails.logger.info "hello, it's #{Time.now}"
+end
+```
+
+And now you tell me that this is good, but you want to schedule stuff from your controller.
+
+Maybe:
+
+```ruby
+class ScheController < ApplicationController
+
+  # GET /sche/
+  #
+  def index
+
+    job_id =
+      Rufus::Scheduler.singleton.in '5s' do
+        Rails.logger.info "time flies, it's now #{Time.now}"
+      end
+
+    render :text => "scheduled job #{job_id}"
+  end
+end
+```
+
+The rufus-scheduler singleton is instantiated in the ```config/initializers/scheduler.rb``` file, it's then available throughout the webapp via ```Rufus::Scheduler.singleton```.
+
+*Warning*: this works well with single-process Ruby servers like Webrick and Thin. Using rufus-scheduler with Passenger or Unicorn requires a bit more knowledge and tuning, gently provided by a bit of googling and reading, see [Faq](#faq) above.
+
+
 ## support
 
 see [getting help](#getting-help) above.
