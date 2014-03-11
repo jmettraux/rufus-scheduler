@@ -476,5 +476,53 @@ describe Rufus::Scheduler::CronLine do
         # takes > 20s ...
     end
   end
+
+  context 'summer time' do
+
+    # cf gh-114
+    #
+    it 'schedules correctly through a switch to summer time' do
+
+      # find the summer jump
+
+      j = `zdump -v Europe/Berlin | grep "Sun Mar" | grep 2014`.split("\n")[0]
+      j = j.match(/^.+ (Sun Mar .+ UTC) /)[1]
+
+      # test
+
+      prev_tz = ENV['TZ']
+      ENV['TZ'] = 'Europe/Berlin'
+
+      j = Time.parse(j)
+      friday = j - 24 * 3600 * 2 + 10 * 3600 # two days before, around 1000
+      #p [ friday, friday.isdst, friday.wday ]
+
+      # verify the playground...
+      #
+      friday.isdst.should == false
+      (friday + 24 * 3600 * 3).isdst.should == true
+
+      begin
+
+        cl0 = Rufus::Scheduler::CronLine.new('02 00 * * 1,2,3,4,5')
+        cl1 = Rufus::Scheduler::CronLine.new('45 08 * * 1,2,3,4,5')
+
+        n0 = cl0.next_time(friday)
+        n1 = cl1.next_time(friday)
+
+        n0.strftime('%Y-%m-%d %H:%M:%S %^a').should ==
+          '2014-03-31 00:02:00 MON'
+        n1.strftime('%Y-%m-%d %H:%M:%S %^a').should ==
+          '2014-03-31 08:45:00 MON'
+
+        n0.isdst.should == true
+        n1.isdst.should == true
+
+      ensure
+
+        ENV['TZ'] = prev_tz
+      end
+    end
+  end
 end
 
