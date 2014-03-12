@@ -479,6 +479,8 @@ describe Rufus::Scheduler::CronLine do
 
   context 'summer time' do
 
+    # let's assume summer time jumps always occur on sundays
+
     # cf gh-114
     #
     it 'schedules correctly through a switch to summer time' do
@@ -513,13 +515,14 @@ describe Rufus::Scheduler::CronLine do
         n0 = cl0.next_time(friday)
         n1 = cl1.next_time(friday)
 
-        n0.strftime('%Y-%m-%d %H:%M:%S %^a').should ==
-          '2014-03-31 00:02:00 MON'
-        n1.strftime('%Y-%m-%d %H:%M:%S %^a').should ==
-          '2014-03-31 08:45:00 MON'
+        n0.strftime('%H:%M:%S %^a').should == '00:02:00 MON'
+        n1.strftime('%H:%M:%S %^a').should == '08:45:00 MON'
 
         n0.isdst.should == true
         n1.isdst.should == true
+
+        (n0 - 24 * 3600 * 3).strftime('%H:%M:%S %^a').should == '23:02:00 THU'
+        (n1 - 24 * 3600 * 3).strftime('%H:%M:%S %^a').should == '07:45:00 FRI'
       end
     end
   end
