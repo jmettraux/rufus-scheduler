@@ -490,19 +490,16 @@ describe Rufus::Scheduler::CronLine do
 
       # test
 
-      prev_tz = ENV['TZ']
-      ENV['TZ'] = 'Europe/Berlin'
+      in_zone 'Europe/Berlin' do
 
-      j = Time.parse(j)
-      friday = j - 24 * 3600 * 2 + 10 * 3600 # two days before, around 1000
-      #p [ friday, friday.isdst, friday.wday ]
+        j = Time.parse(j)
+        friday = j - 24 * 3600 * 2 + 10 * 3600 # two days before, around 1000
+        #p [ friday, friday.isdst, friday.wday ]
 
-      # verify the playground...
-      #
-      friday.isdst.should == false
-      (friday + 24 * 3600 * 3).isdst.should == true
-
-      begin
+        # verify the playground...
+        #
+        friday.isdst.should == false
+        (friday + 24 * 3600 * 3).isdst.should == true
 
         cl0 = Rufus::Scheduler::CronLine.new('02 00 * * 1,2,3,4,5')
         cl1 = Rufus::Scheduler::CronLine.new('45 08 * * 1,2,3,4,5')
@@ -517,10 +514,6 @@ describe Rufus::Scheduler::CronLine do
 
         n0.isdst.should == true
         n1.isdst.should == true
-
-      ensure
-
-        ENV['TZ'] = prev_tz
       end
     end
   end

@@ -35,6 +35,18 @@ def sleep_until_next_second
   while Time.now.sec == sec; sleep 0.2; end
 end
 
+def in_zone(zone_name, &block)
+
+  prev_tz = ENV['TZ']
+  ENV['TZ'] = zone_name
+
+  block.call
+
+ensure
+
+  ENV['TZ'] = prev_tz
+end
+
 
 #require 'rspec/expectations'
 
