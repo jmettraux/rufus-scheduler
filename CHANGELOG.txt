@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 3.0.7    not yet released
 
+- prevent skipping a day on swith to summertime, gh-114, thanks Matteo
+
 
 == rufus-scheduler - 3.0.6    released 2014/02/14
 
