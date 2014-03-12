@@ -483,7 +483,7 @@ describe Rufus::Scheduler::CronLine do
 
     # cf gh-114
     #
-    it 'schedules correctly through a switch to summer time' do
+    it 'schedules correctly through a switch into summer time' do
 
       #j = `zdump -v Europe/Berlin | grep "Sun Mar" | grep 2014`.split("\n")[0]
       #j = j.match(/^.+ (Sun Mar .+ UTC) /)[1]
@@ -523,6 +523,45 @@ describe Rufus::Scheduler::CronLine do
 
         (n0 - 24 * 3600 * 3).strftime('%H:%M:%S %^a').should == '23:02:00 THU'
         (n1 - 24 * 3600 * 3).strftime('%H:%M:%S %^a').should == '07:45:00 FRI'
+      end
+    end
+
+    it 'schedules correctly through a switch out of summer time' do
+
+      in_zone 'Europe/Berlin' do
+
+        # find the winter jump
+
+        j = Time.parse('2014-08-31 12:00')
+        loop do
+          jj = j + 24 * 3600
+          break if jj.isdst == false
+          j = jj
+        end
+
+        # test
+
+        friday = j - 24 * 3600 # one day before
+
+        # verify the playground...
+        #
+        friday.isdst.should == true
+        (friday + 24 * 3600 * 3).isdst.should == false
+
+        cl0 = Rufus::Scheduler::CronLine.new('02 00 * * 1,2,3,4,5')
+        cl1 = Rufus::Scheduler::CronLine.new('45 08 * * 1,2,3,4,5')
+
+        n0 = cl0.next_time(friday)
+        n1 = cl1.next_time(friday)
+
+        n0.strftime('%H:%M:%S %^a').should == '00:02:00 MON'
+        n1.strftime('%H:%M:%S %^a').should == '08:45:00 MON'
+
+        n0.isdst.should == false
+        n1.isdst.should == false
+
+        (n0 - 24 * 3600 * 3).strftime('%H:%M:%S %^a').should == '01:02:00 FRI'
+        (n1 - 24 * 3600 * 3).strftime('%H:%M:%S %^a').should == '09:45:00 FRI'
       end
     end
   end

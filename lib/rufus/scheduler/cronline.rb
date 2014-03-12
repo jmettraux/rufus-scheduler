@@ -132,7 +132,7 @@ class Rufus::Scheduler
         unless date_match?(time)
           dst = time.isdst
           time += (24 - time.hour) * 3600 - time.min * 60 - time.sec
-          time -= 3600 if time.isdst != dst
+          time -= 3600 if time.isdst != dst # not necessary for winter, but...
           next
         end
         unless sub_match?(time, :hour, @hours)
