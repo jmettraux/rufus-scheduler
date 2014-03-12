@@ -130,7 +130,10 @@ class Rufus::Scheduler
 
       loop do
         unless date_match?(time)
-          time += (24 - time.hour) * 3600 - time.min * 60 - time.sec; next
+          dst = time.isdst
+          time += (24 - time.hour) * 3600 - time.min * 60 - time.sec
+          time -= 3600 if time.isdst != dst
+          next
         end
         unless sub_match?(time, :hour, @hours)
           time += (60 - time.min) * 60 - time.sec; next
