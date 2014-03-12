@@ -483,18 +483,24 @@ describe Rufus::Scheduler::CronLine do
     #
     it 'schedules correctly through a switch to summer time' do
 
-      # find the summer jump
-
-      j = `zdump -v Europe/Berlin | grep "Sun Mar" | grep 2014`.split("\n")[0]
-      j = j.match(/^.+ (Sun Mar .+ UTC) /)[1]
-
-      # test
+      #j = `zdump -v Europe/Berlin | grep "Sun Mar" | grep 2014`.split("\n")[0]
+      #j = j.match(/^.+ (Sun Mar .+ UTC) /)[1]
+        # only works on system that have a zdump...
 
       in_zone 'Europe/Berlin' do
 
-        j = Time.parse(j)
-        friday = j - 24 * 3600 * 2 + 10 * 3600 # two days before, around 1000
-        #p [ friday, friday.isdst, friday.wday ]
+        # find the summer jump
+
+        j = Time.parse('2014-02-28 12:00')
+        loop do
+          jj = j + 24 * 3600
+          break if jj.isdst
+          j = jj
+        end
+
+        # test
+
+        friday = j - 24 * 3600 # one day before
 
         # verify the playground...
         #
