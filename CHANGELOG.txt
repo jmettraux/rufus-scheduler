@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 3.0.7    not yet released
 
+- add more info to the stderr error output (scheduler/tz info)
 - prevent skipping a day on swith to summertime, gh-114, thanks Matteo
 
 

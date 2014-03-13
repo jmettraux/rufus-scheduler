@@ -374,9 +374,12 @@ module Rufus
 
       pre = err.object_id.to_s
 
+      ms = {}; mutexes.each { |k, v| ms[k] = v.locked? }
+
       stderr.puts("{ #{pre} rufus-scheduler intercepted an error:")
       stderr.puts("  #{pre}   job:")
       stderr.puts("  #{pre}     #{job.class} #{job.original.inspect} #{job.opts.inspect}")
+      # TODO: eventually use a Job#detail or something like that
       stderr.puts("  #{pre}   error:")
       stderr.puts("  #{pre}     #{err.object_id}")
       stderr.puts("  #{pre}     #{err.class}")
@@ -384,6 +387,32 @@ module Rufus
       err.backtrace.each do |l|
         stderr.puts("  #{pre}       #{l}")
       end
+      stderr.puts("  #{pre}   tz:")
+      stderr.puts("  #{pre}     ENV['TZ']: #{ENV['TZ']}")
+      stderr.puts("  #{pre}     Time.now: #{Time.now}")
+      stderr.puts("  #{pre}   scheduler:")
+      stderr.puts("  #{pre}     object_id: #{object_id}")
+      stderr.puts("  #{pre}     opts:")
+      stderr.puts("  #{pre}       #{@opts.inspect}")
+      stderr.puts("  #{pre}       frequency: #{self.frequency}")
+      stderr.puts("  #{pre}       lockfile: #{@lockfile.inspect}")
+      stderr.puts("  #{pre}     down?: #{down?}")
+      stderr.puts("  #{pre}     threads: #{self.threads.size}")
+      stderr.puts("  #{pre}       thread: #{self.thread}")
+      stderr.puts("  #{pre}       thread_key: #{self.thread_key}")
+      stderr.puts("  #{pre}       work_threads: #{work_threads.size}")
+      stderr.puts("  #{pre}         active: #{work_threads(:active).size}")
+      stderr.puts("  #{pre}         vacant: #{work_threads(:vacant).size}")
+      stderr.puts("  #{pre}         max_work_threads: #{max_work_threads}")
+      stderr.puts("  #{pre}       mutexes: #{ms.inspect}")
+      stderr.puts("  #{pre}     jobs: #{jobs.size}")
+      stderr.puts("  #{pre}       at_jobs: #{at_jobs.size}")
+      stderr.puts("  #{pre}       in_jobs: #{in_jobs.size}")
+      stderr.puts("  #{pre}       every_jobs: #{every_jobs.size}")
+      stderr.puts("  #{pre}       interval_jobs: #{interval_jobs.size}")
+      stderr.puts("  #{pre}       cron_jobs: #{cron_jobs.size}")
+      stderr.puts("  #{pre}     running_jobs: #{running_jobs.size}")
+      stderr.puts("  #{pre}     work_queue: #{work_queue.size}")
       stderr.puts("} #{pre} .")
 
     rescue => e

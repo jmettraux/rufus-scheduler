@@ -91,6 +91,28 @@ describe Rufus::Scheduler do
     end
   end
 
+  context 'error information' do
+
+    it 'contains information about the error, the job and the scheduler' do
+
+      @scheduler.stderr = StringIO.new
+
+      @scheduler.in('0s') do
+        fail 'miserably'
+      end
+
+      sleep 0.5
+
+      s = @scheduler.stderr.string
+      #puts s
+
+      s.should match(/ENV\['TZ'\]:/)
+      s.should match(/down\?: false/)
+      s.should match(/work_threads: 1/)
+      s.should match(/running_jobs: 1/)
+    end
+  end
+
   context 'Rufus::Scheduler#on_error(&block)' do
 
     it 'intercepts all StandardError instances' do
