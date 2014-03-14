@@ -396,6 +396,7 @@ module Rufus
       stderr.puts("  #{pre}       #{@opts.inspect}")
       stderr.puts("  #{pre}       frequency: #{self.frequency}")
       stderr.puts("  #{pre}       lockfile: #{@lockfile.inspect}")
+      stderr.puts("  #{pre}     uptime: #{uptime} (#{uptime_s})")
       stderr.puts("  #{pre}     down?: #{down?}")
       stderr.puts("  #{pre}     threads: #{self.threads.size}")
       stderr.puts("  #{pre}       thread: #{self.thread}")

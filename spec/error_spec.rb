@@ -110,6 +110,7 @@ describe Rufus::Scheduler do
       s.should match(/down\?: false/)
       s.should match(/work_threads: 1/)
       s.should match(/running_jobs: 1/)
+      s.should match(/uptime: \d/)
     end
   end
 
