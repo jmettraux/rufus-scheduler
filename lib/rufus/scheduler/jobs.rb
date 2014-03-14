@@ -323,6 +323,11 @@ module Rufus
 
       alias time next_time
 
+      def occurences(time0, time1)
+
+        time >= time0 && time <= time1 ? [ time ] : []
+      end
+
       protected
 
       def determine_id
@@ -453,6 +458,13 @@ module Rufus
           @scheduled_at.to_f,
           opts.hash.abs
         ].map(&:to_s).join('_')
+      end
+
+      def occurences(time0, time1)
+
+        # TODO... might not be that easy for IntervalJob...
+
+        []
       end
     end
 

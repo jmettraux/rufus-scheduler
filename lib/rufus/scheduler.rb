@@ -370,6 +370,18 @@ module Rufus
       jobs(opts.merge(:running => true))
     end
 
+    def occurences(time0, time1, format=:x)
+
+      h = {}
+
+      jobs.each do |j|
+        os = j.occurences(time0, time1)
+        h[j] = os if os.any?
+      end
+
+      h
+    end
+
     def on_error(job, err)
 
       pre = err.object_id.to_s

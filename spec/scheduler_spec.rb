@@ -549,6 +549,20 @@ describe Rufus::Scheduler do
     end
   end
 
+  describe '#occurrences(time0, time1)' do
+
+    it 'returns a { job => [ times ] } of job occurrences' do
+
+      j0 = @scheduler.schedule_in '10m' do; end
+      j1 = @scheduler.schedule_every '5m' do; end
+
+      h = @scheduler.occurences(Time.now + 5 * 60, Time.now + 15 * 60)
+
+      #h.keys.should == [ j0, j1 ]
+      h.keys.should == [ j0 ]
+    end
+  end
+
   #--
   # management methods
   #++
