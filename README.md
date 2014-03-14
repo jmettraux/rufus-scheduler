@@ -900,6 +900,16 @@ Kills all the job (threads) and then shuts the scheduler down. Radical.
 
 Returns true if the scheduler has been shut down.
 
+### Scheduler#started_at
+
+Returns the Time instance at which the scheduler got started.
+
+### Scheduler #uptime / #uptime_s
+
+Returns since the count of seconds for which the scheduler has been running.
+
+```#uptime_s``` returns this count in a String easier to grasp for humans, like ```"3d12m45s123"```.
+
 ### Scheduler#join
 
 Let's the current thread join the scheduling thread in rufus-scheduler. The thread comes back when the scheduler gets shut down.
