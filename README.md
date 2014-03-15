@@ -613,7 +613,6 @@ job.callable
   # => #<MyHandler:0x0000000163ae88 @counter=0>
 ```
 
-
 ### scheduled_at
 
 Returns the Time instance when the job got created.
@@ -634,6 +633,12 @@ job = scheduler.schedule_every('1d') do; end
 job.scheduled_at
   # => 2013-07-17 23:48:54 +0900
 ```
+
+### last_work_time, mean_work_time
+
+The job keeps track of how long its work was in the `last_work_time` attribute. For a one time job (in, at) it's probably not very useful.
+
+The attribute `mean_work_time` contains a computed mean work time. It's recomputed after every run (if it's a repeat job).
 
 ### unschedule
 

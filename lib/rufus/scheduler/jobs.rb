@@ -45,6 +45,9 @@ module Rufus
       attr_reader :last_time
       attr_reader :unscheduled_at
       attr_reader :tags
+      attr_reader :count
+      attr_reader :last_work_time
+      attr_reader :mean_work_time
 
       # next trigger time
       #
@@ -96,6 +99,10 @@ module Rufus
 
         @tags = Array(opts[:tag] || opts[:tags]).collect { |t| t.to_s }
 
+        @count = 0
+        @last_work_time = 0.0
+        @mean_work_time = 0.0
+
         # tidy up options
 
         if @opts[:allow_overlap] == false || @opts[:allow_overlapping] == false
@@ -119,6 +126,8 @@ module Rufus
           callback(:on_pre_trigger, time)
 
         return if r == false
+
+        @count += 1
 
         if opts[:blocking]
           do_trigger(time)
@@ -249,6 +258,11 @@ module Rufus
 
       ensure
 
+        @last_work_time =
+          Time.now - Thread.current[:rufus_scheduler_time]
+        @mean_work_time =
+          ((@count - 1) * @mean_work_time + @last_work_time) / @count
+
         post_trigger(time)
 
         Thread.current[:rufus_scheduler_job] = nil
@@ -375,7 +389,6 @@ module Rufus
       attr_reader :first_at
       attr_accessor :last_at
       attr_accessor :times
-      attr_reader :count
 
       def initialize(scheduler, duration, opts, block)
 
@@ -384,7 +397,6 @@ module Rufus
         @paused_at = nil
 
         @times = opts[:times]
-        @count = 0
 
         raise ArgumentError.new(
           "cannot accept :times => #{@times.inspect}, not nil or an int"
@@ -436,7 +448,6 @@ module Rufus
         super
 
         @times -= 1 if @times
-        @count += 1
       end
 
       def pause

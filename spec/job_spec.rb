@@ -574,5 +574,58 @@ describe Rufus::Scheduler::Job do
       counter.should > 1
     end
   end
+
+  context 'work time' do
+
+    describe '#last_work_time' do
+
+      it 'starts at 0' do
+
+        job = @scheduler.schedule_every '5m' do; end
+
+        job.last_work_time.should == 0.0
+      end
+
+      it 'keeps track of how long the work was upon last trigger' do
+
+        job =
+          @scheduler.schedule_in '0.5s'  do
+            sleep 0.7
+          end
+
+        sleep 2
+
+        job.last_work_time.should > 0.7
+        job.last_work_time.should < 0.8
+      end
+    end
+
+    describe '#mean_work_time' do
+
+      it 'starts at 0' do
+
+        job = @scheduler.schedule_every '5m' do; end
+
+        job.mean_work_time.should == 0.0
+      end
+
+      it 'gathers work times and computes the mean' do
+
+        job =
+          @scheduler.schedule_every '0.5s' do |j|
+            #p j.last_work_time
+            #p j.mean_work_time
+            sleep 0.01 * (j.count + 1)
+          end
+
+        sleep 4.6
+
+        job.last_work_time.should > 0.08
+        job.last_work_time.should < 0.09
+        job.mean_work_time.should > 0.05
+        job.mean_work_time.should < 0.06
+      end
+    end
+  end
 end
 
