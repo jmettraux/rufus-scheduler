@@ -375,6 +375,7 @@ module Rufus
       attr_reader :first_at
       attr_accessor :last_at
       attr_accessor :times
+      attr_reader :count
 
       def initialize(scheduler, duration, opts, block)
 
@@ -383,6 +384,7 @@ module Rufus
         @paused_at = nil
 
         @times = opts[:times]
+        @count = 0
 
         raise ArgumentError.new(
           "cannot accept :times => #{@times.inspect}, not nil or an int"
@@ -433,7 +435,8 @@ module Rufus
 
         super
 
-        @times = @times - 1 if @times
+        @times -= 1 if @times
+        @count += 1
       end
 
       def pause

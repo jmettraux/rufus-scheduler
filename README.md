@@ -775,6 +775,10 @@ An alias to time.
 
 Returns the next time the job will trigger (hopefully).
 
+### count
+
+Returns how many times the job fired.
+
 ## EveryJob methods
 
 ### frequency

@@ -332,5 +332,24 @@ describe Rufus::Scheduler::RepeatJob do
       job.last_at.strftime('%c').should == 'Thu Dec 12 12:00:30 2030'
     end
   end
+
+  describe '#count' do
+
+    it 'starts at 0' do
+
+      job = @scheduler.schedule_every '5m' do; end
+
+      job.count.should == 0
+    end
+
+    it 'keeps track of how many times the job fired' do
+
+      job = @scheduler.schedule_every '0.5s' do; end
+
+      sleep(2.0)
+
+      job.count.should == 3
+    end
+  end
 end
 
