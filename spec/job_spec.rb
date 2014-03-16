@@ -620,7 +620,7 @@ describe Rufus::Scheduler::Job do
 
         sleep 4.6
 
-        job.last_work_time.should > 0.08
+        job.last_work_time.should >= 0.08
         job.last_work_time.should < 0.099
         job.mean_work_time.should > 0.05
         job.mean_work_time.should < 0.06
