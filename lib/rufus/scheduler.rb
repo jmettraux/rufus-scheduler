@@ -370,16 +370,27 @@ module Rufus
       jobs(opts.merge(:running => true))
     end
 
-    def occurences(time0, time1, format=:x)
+    def occurrences(time0, time1, format=:per_job)
 
       h = {}
 
       jobs.each do |j|
-        os = j.occurences(time0, time1)
+        os = j.occurrences(time0, time1)
         h[j] = os if os.any?
       end
 
-      h
+      if format == :timeline
+        a = []
+        h.each { |j, ts| ts.each { |t| a << [ t, j ] } }
+        a.sort_by { |(t, j)| t }
+      else
+        h
+      end
+    end
+
+    def timeline(time0, time1)
+
+      occurrences(time0, time1, :timeline)
     end
 
     def on_error(job, err)

@@ -553,13 +553,53 @@ describe Rufus::Scheduler do
 
     it 'returns a { job => [ times ] } of job occurrences' do
 
-      j0 = @scheduler.schedule_in '10m' do; end
-      j1 = @scheduler.schedule_every '5m' do; end
+      j0 = @scheduler.schedule_in '7m' do; end
+      j1 = @scheduler.schedule_at '10m' do; end
+      j2 = @scheduler.schedule_every '5m' do; end
+      j3 = @scheduler.schedule_interval '5m' do; end
+      j4 = @scheduler.schedule_cron '* * * * *' do; end
 
-      h = @scheduler.occurences(Time.now + 5 * 60, Time.now + 15 * 60)
+      h = @scheduler.occurrences(Time.now + 4 * 60, Time.now + 11 * 60)
 
-      #h.keys.should == [ j0, j1 ]
-      h.keys.should == [ j0 ]
+      h.size.should == 5
+      h[j0].should == [ j0.next_time ]
+      h[j1].should == [ j1.next_time ]
+      h[j2].size.should == 2
+      h[j3].size.should == 2
+      h[j4].size.should == 7
+    end
+
+    it 'returns a [ [ time, job ], ... ] of job occurrences when :timeline' do
+
+      j0 = @scheduler.schedule_in '5m' do; end
+      j1 = @scheduler.schedule_in '10m' do; end
+
+      a =
+        @scheduler.occurrences(Time.now + 4 * 60, Time.now + 11 * 60, :timeline)
+
+      a[0][0].should be_within_1s_of(Time.now + 5 * 60)
+      a[0][1].should == j0
+      a[1][0].should be_within_1s_of(Time.now + 10 * 60)
+      a[1][1].should == j1
+    end
+
+    it 'respects :first_at for repeat jobs'
+    it 'respects :times for repeat jobs'
+  end
+
+  describe '#timeline(time0, time1)' do
+
+    it 'returns a [ [ time, job ], ... ] of job occurrences' do
+
+      j0 = @scheduler.schedule_in '5m' do; end
+      j1 = @scheduler.schedule_in '10m' do; end
+
+      a = @scheduler.timeline(Time.now + 4 * 60, Time.now + 11 * 60)
+
+      a[0][0].should be_within_1s_of(Time.now + 5 * 60)
+      a[0][1].should == j0
+      a[1][0].should be_within_1s_of(Time.now + 10 * 60)
+      a[1][1].should == j1
     end
   end
 

@@ -337,7 +337,7 @@ module Rufus
 
       alias time next_time
 
-      def occurences(time0, time1)
+      def occurrences(time0, time1)
 
         time >= time0 && time <= time1 ? [ time ] : []
       end
@@ -473,13 +473,6 @@ module Rufus
           opts.hash.abs
         ].map(&:to_s).join('_')
       end
-
-      def occurences(time0, time1)
-
-        # TODO... might not be that easy for IntervalJob...
-
-        []
-      end
     end
 
     #
@@ -511,6 +504,20 @@ module Rufus
         ) if @frequency <= 0
 
         set_next_time(false, nil)
+      end
+
+      def occurrences(time0, time1)
+
+        nt = @next_time
+        a = []
+
+        loop do
+          break if nt > time1
+          a << nt if nt >= time0
+          nt = nt + @frequency
+        end
+
+        a
       end
 
       protected
@@ -546,6 +553,20 @@ module Rufus
         ) if @interval <= 0
 
         set_next_time(false, nil)
+      end
+
+      def occurrences(time0, time1)
+
+        nt = @next_time
+        a = []
+
+        loop do
+          break if nt > time1
+          a << nt if nt >= time0
+          nt = nt + @mean_work_time + @interval
+        end
+
+        a
       end
 
       protected
@@ -585,6 +606,20 @@ module Rufus
       def brute_frequency
 
         @cron_line.brute_frequency
+      end
+
+      def occurrences(time0, time1)
+
+        nt = @next_time
+        a = []
+
+        loop do
+          break if nt > time1
+          a << nt if nt >= time0
+          nt = @cron_line.next_time(nt)
+        end
+
+        a
       end
 
       protected
