@@ -473,6 +473,20 @@ module Rufus
           opts.hash.abs
         ].map(&:to_s).join('_')
       end
+
+      def occurrences(time0, time1)
+
+        nt = @next_time
+        a = []
+
+        loop do
+          break if nt > time1
+          a << nt if nt >= time0
+          nt = next_time_from(nt)
+        end
+
+        a
+      end
     end
 
     #
@@ -506,20 +520,6 @@ module Rufus
         set_next_time(false, nil)
       end
 
-      def occurrences(time0, time1)
-
-        nt = @next_time
-        a = []
-
-        loop do
-          break if nt > time1
-          a << nt if nt >= time0
-          nt = nt + @frequency
-        end
-
-        a
-      end
-
       protected
 
       def set_next_time(is_post, trigger_time)
@@ -534,6 +534,11 @@ module Rufus
           else
             @first_at
           end
+      end
+
+      def next_time_from(time)
+
+        time + @frequency
       end
     end
 
@@ -555,20 +560,6 @@ module Rufus
         set_next_time(false, nil)
       end
 
-      def occurrences(time0, time1)
-
-        nt = @next_time
-        a = []
-
-        loop do
-          break if nt > time1
-          a << nt if nt >= time0
-          nt = nt + @mean_work_time + @interval
-        end
-
-        a
-      end
-
       protected
 
       def set_next_time(is_post, trigger_time)
@@ -585,6 +576,11 @@ module Rufus
           else
             false
           end
+      end
+
+      def next_time_from(time)
+
+        time + @mean_work_time + @interval
       end
     end
 
@@ -608,25 +604,16 @@ module Rufus
         @cron_line.brute_frequency
       end
 
-      def occurrences(time0, time1)
-
-        nt = @next_time
-        a = []
-
-        loop do
-          break if nt > time1
-          a << nt if nt >= time0
-          nt = @cron_line.next_time(nt)
-        end
-
-        a
-      end
-
       protected
 
       def set_next_time(is_post, trigger_time)
 
         @next_time = @cron_line.next_time
+      end
+
+      def next_time_from(time)
+
+        @cron_line.next_time(time)
       end
     end
   end
