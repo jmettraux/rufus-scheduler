@@ -583,7 +583,16 @@ describe Rufus::Scheduler do
       a[1][1].should == j1
     end
 
-    it 'respects :first_at for repeat jobs'
+    it 'respects :first_at for repeat jobs' do
+
+      j0 = @scheduler.schedule_every '5m', :first_in => '10m' do; end
+
+      h = @scheduler.occurrences(Time.now + 4 * 60, Time.now + 16 * 60)
+
+      h[j0][0].should be_within_1s_of(Time.now + 10 * 60)
+      h[j0][1].should be_within_1s_of(Time.now + 15 * 60)
+    end
+
     it 'respects :times for repeat jobs'
   end
 
