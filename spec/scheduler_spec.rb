@@ -593,7 +593,14 @@ describe Rufus::Scheduler do
       h[j0][1].should be_within_1s_of(Time.now + 15 * 60)
     end
 
-    it 'respects :times for repeat jobs'
+    it 'respects :times for repeat jobs' do
+
+      j0 = @scheduler.schedule_every '1m', :times => 10 do; end
+
+      h = @scheduler.occurrences(Time.now + 4 * 60, Time.now + 16 * 60)
+
+      h[j0].size.should == 6
+    end
   end
 
   describe '#timeline(time0, time1)' do

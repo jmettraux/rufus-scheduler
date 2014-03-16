@@ -476,13 +476,20 @@ module Rufus
 
       def occurrences(time0, time1)
 
-        nt = @next_time
         a = []
 
+        nt = @next_time
+        ts = @times
+
         loop do
+
           break if nt > time1
+          break if ts && ts <= 0
+
           a << nt if nt >= time0
+
           nt = next_time_from(nt)
+          ts = ts - 1 if ts
         end
 
         a
