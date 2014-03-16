@@ -941,6 +941,16 @@ Note that the main schedule thread will be returned if it is currently running a
 
 Returns true if the arg is a currently scheduled job (see Job#scheduled?).
 
+### Scheduler#occurrences(time0, time1)
+
+Returns a hash ```{ job => [ t0, t1, ... ] }``` mapping jobs to their potential trigger time within the ```[ time0, time1 ]``` span.
+
+Please note that, for interval jobs, the ```#mean_work_time``` is used, so the result is only a prediction.
+
+### Scheduler#timeline(time0, time1)
+
+Like `#occurrences` but returns a list ```[ [ t0, job0 ], [ t1, job1 ], ... ]``` of time + job pairs.
+
 
 ## dealing with job errors
 

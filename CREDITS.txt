@@ -30,6 +30,7 @@
 
 == Feedback
 
+- kreynolds (tossrock) - inspiration for #occurrences
 - Matteo - https://github.com/m4ce - dst and cron issue
 - Tobias Bielohlawek - https://github.com/rngtng - missing assertion
 - Joe Taylor and Agis Anastasopoulos -

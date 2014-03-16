@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 3.0.7    not yet released
 
+- implement Scheduler #occurrences and #timeline, inspired by kreynolds
 - implement Job #last_work_time and #mean_work_time
 - implement Job#count
 - add more info to the stderr error output (scheduler/tz info)
