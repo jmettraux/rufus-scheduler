@@ -187,13 +187,13 @@ describe Rufus::Scheduler::RepeatJob do
             ft ||= Time.now
           end
 
-        sleep 0.5
+        sleep 0.7
 
         #p n.to_f
         #p job.first_at.to_f
         #p ft.to_f
 
-        job.first_at.should < n + 0.5
+        job.first_at.should < n + 0.7
         ft.should < job.first_at + @scheduler.frequency + 0.1
       end
     end
@@ -348,7 +348,8 @@ describe Rufus::Scheduler::RepeatJob do
 
       sleep(2.0)
 
-      job.count.should == 3
+      job.count.should >= 3
+      job.count.should <= 4
     end
   end
 end
