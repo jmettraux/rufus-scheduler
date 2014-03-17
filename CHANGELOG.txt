@@ -8,7 +8,7 @@
 - implement Job #last_work_time and #mean_work_time
 - implement Job#count
 - add more info to the stderr error output (scheduler/tz info)
-- prevent skipping a day on swith to summertime, gh-114, thanks Matteo
+- prevent skipping a day on switch to summertime, gh-114, thanks Matteo
 
 
 == rufus-scheduler - 3.0.6    released 2014/02/14
