@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.0.7    not yet released
+== rufus-scheduler - 3.0.7    released 2014/03/18
 
 - implement Scheduler #occurrences and #timeline, inspired by kreynolds
 - implement Job #last_work_time and #mean_work_time
