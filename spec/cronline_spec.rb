@@ -116,6 +116,13 @@ describe Rufus::Scheduler::CronLine do
         [ [0], [ 0, 10, 20, 30, 40, 50], nil, nil, nil, nil, nil, nil ])
     end
 
+    it 'rejects / for days (every other wednesday)' do
+
+      lambda {
+        Rufus::Scheduler::CronLine.new('* * * * wed/2')
+      }.should raise_error(ArgumentError)
+    end
+
     it 'does not support ranges for monthdays (sun#1-sun#2)' do
 
       lambda {
