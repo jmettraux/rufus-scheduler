@@ -145,3 +145,7 @@
       end
     end
 
+~~~
+
+[ ] scheduler.at('chronic string', chronic_options...)
+

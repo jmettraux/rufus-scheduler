@@ -2,6 +2,11 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 3.0.8    not yet released
+
+- let Rufus::Scheduler.parse use Chronic if present
+
+
 == rufus-scheduler - 3.0.7    released 2014/03/18
 
 - implement Scheduler #occurrences and #timeline, inspired by kreynolds

@@ -12,8 +12,8 @@ describe Rufus::Scheduler do
 
   describe '.parse' do
 
-    def parse(s)
-      Rufus::Scheduler.parse(s)
+    def parse(s, opts={})
+      Rufus::Scheduler.parse(s, opts)
     end
 
     it 'parses duration strings' do
@@ -76,6 +76,45 @@ describe Rufus::Scheduler do
       lambda {
         parse('nada')
       }.should raise_error(ArgumentError, 'couldn\'t parse "nada"')
+    end
+
+    def with_chronic(&block)
+      require 'chronic'
+      Object.const_set(:Khronic, Chronic) unless defined?(Khronic)
+      Object.const_set(:Chronic, Khronic) unless defined?(Chronic)
+      block.call
+    ensure
+      Object.send(:remove_const, :Chronic)
+    end
+
+    def without_chronic(&block) # for quick counter-tests ;-)
+      block.call
+    end
+
+    it 'does not use Chronic if not present' do
+
+      lambda { parse('03/27/2014 07:52:47') }.should raise_error(ArgumentError)
+    end
+
+    it 'uses Chronic if present' do
+
+      with_chronic do
+
+        t = parse('03/27/2014 07:52:47 PM')
+
+        t.strftime('%Y-%m-%d %H:%M:%S').should == '2014-03-27 19:52:47'
+      end
+    end
+
+    it 'passes options to Chronic' do
+
+      with_chronic do
+
+        t = parse('monday', :context => :past)
+
+        t.wday.should == 1
+        t.should < Time.now
+      end
     end
   end
 
