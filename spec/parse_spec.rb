@@ -80,16 +80,24 @@ describe Rufus::Scheduler do
 
     it 'does not use Chronic if not present' do
 
-      lambda { parse('03/27/2014 07:52:47') }.should raise_error(ArgumentError)
+      t = parse('next monday 7 PM')
+
+      n = Time.now
+
+      t.strftime('%Y-%m-%d %H:%M:%S').should ==
+        n.strftime('%Y-%m-%d') + ' 19:00:00'
     end
 
     it 'uses Chronic if present' do
 
       with_chronic do
 
-        t = parse('03/27/2014 07:52:47 PM')
+        t = parse('next monday 7 PM')
 
-        t.strftime('%Y-%m-%d %H:%M:%S').should == '2014-03-27 19:52:47'
+        t.wday.should == 1
+        t.hour.should == 19
+        t.min.should == 0
+        t.should > Time.now
       end
     end
 

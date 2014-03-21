@@ -71,9 +71,7 @@ module Rufus
 
       t = Time.parse(s)
 
-      t = tz.local_to_utc(t) if tz
-
-      t
+      tz ? tz.local_to_utc(t) : t
 
     rescue StandardError => se
 
