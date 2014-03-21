@@ -38,7 +38,6 @@ module Rufus
       parse_cron(o, opts) ||
       parse_in(o, opts) || # covers 'every' schedule strings
       parse_at(o, opts) ||
-      parse_chronic(o, opts) ||
       raise(ArgumentError.new("couldn't parse \"#{o}\""))
     end
 
@@ -52,6 +51,7 @@ module Rufus
     def self.parse_at(o, opts={})
 
       return o if o.is_a?(Time)
+      return Chronic.parse(o, opts) if defined?(Chronic)
 
       tz = nil
       s =
@@ -77,11 +77,6 @@ module Rufus
 
       return nil if opts[:no_error]
       raise se
-    end
-
-    def self.parse_chronic(o, opts)
-
-      defined?(Chronic) ? Chronic.parse(o, opts) : nil
     end
 
     def self.parse_cron(o, opts)

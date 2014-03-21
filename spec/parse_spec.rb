@@ -78,19 +78,6 @@ describe Rufus::Scheduler do
       }.should raise_error(ArgumentError, 'couldn\'t parse "nada"')
     end
 
-    def with_chronic(&block)
-      require 'chronic'
-      Object.const_set(:Khronic, Chronic) unless defined?(Khronic)
-      Object.const_set(:Chronic, Khronic) unless defined?(Chronic)
-      block.call
-    ensure
-      Object.send(:remove_const, :Chronic)
-    end
-
-    def without_chronic(&block) # for quick counter-tests ;-)
-      block.call
-    end
-
     it 'does not use Chronic if not present' do
 
       lambda { parse('03/27/2014 07:52:47') }.should raise_error(ArgumentError)

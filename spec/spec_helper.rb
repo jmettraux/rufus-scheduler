@@ -47,6 +47,25 @@ ensure
   ENV['TZ'] = prev_tz
 end
 
+def with_chronic(&block)
+
+  require 'chronic'
+
+  Object.const_set(:Khronic, Chronic) unless defined?(Khronic)
+  Object.const_set(:Chronic, Khronic) unless defined?(Chronic)
+
+  block.call
+
+ensure
+
+  Object.send(:remove_const, :Chronic)
+end
+
+def without_chronic(&block) # for quick counter-tests ;-)
+
+  block.call
+end
+
 
 #require 'rspec/expectations'
 
