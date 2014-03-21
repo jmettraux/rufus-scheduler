@@ -368,7 +368,8 @@ module Rufus
 
         super(scheduler, time, opts, block)
 
-        @next_time = Rufus::Scheduler.parse_at(time)
+        @next_time =
+          opts[:_t] || Rufus::Scheduler.parse_at(time, opts)
       end
     end
 
@@ -378,7 +379,9 @@ module Rufus
 
         super(scheduler, duration, opts, block)
 
-        @next_time = @scheduled_at + Rufus::Scheduler.parse_in(duration)
+        @next_time =
+          @scheduled_at +
+          opts[:_t] || Rufus::Scheduler.parse_in(duration, opts)
       end
     end
 
@@ -597,7 +600,7 @@ module Rufus
 
         super(scheduler, cronline, opts, block)
 
-        @cron_line = CronLine.new(cronline)
+        @cron_line = opts[:_t] || CronLine.new(cronline)
         @next_time = @cron_line.next_time
       end
 

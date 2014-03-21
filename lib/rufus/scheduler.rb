@@ -236,9 +236,9 @@ module Rufus
 
     def schedule(arg, callable=nil, opts={}, &block)
 
-      # TODO: eventually, spare one parse call
+      opts[:_t] = Scheduler.parse(arg, opts)
 
-      case Scheduler.parse(arg)
+      case opts[:_t]
         when CronLine then schedule_cron(arg, callable, opts, &block)
         when Time then schedule_at(arg, callable, opts, &block)
         else schedule_in(arg, callable, opts, &block)
@@ -247,9 +247,9 @@ module Rufus
 
     def repeat(arg, callable=nil, opts={}, &block)
 
-      # TODO: eventually, spare one parse call
+      opts[:_t] = Scheduler.parse(arg, opts)
 
-      case Scheduler.parse(arg)
+      case opts[:_t]
         when CronLine then schedule_cron(arg, callable, opts, &block)
         else schedule_every(arg, callable, opts, &block)
       end
@@ -612,8 +612,8 @@ module Rufus
       job_class =
         case job_type
           when :once
-            tt = Rufus::Scheduler.parse(t)
-            tt.is_a?(Time) ? AtJob : InJob
+            opts[:_t] ||= Rufus::Scheduler.parse(t, opts)
+            opts[:_t].is_a?(Time) ? AtJob : InJob
           when :every
             EveryJob
           when :interval

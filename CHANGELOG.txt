@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 3.0.8    not yet released
 
+- let schedule and schedule_at use Chronic if present
 - let Rufus::Scheduler.parse use Chronic if present
 
 

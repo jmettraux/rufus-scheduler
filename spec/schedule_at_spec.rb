@@ -110,7 +110,36 @@ describe Rufus::Scheduler do
       job.time.strftime('%c %z').should == 'Mon Dec 12 19:30:00 2050 +0000'
     end
 
-    it 'accepts a Chronic time string (if Chronic is present)'
+    it 'accepts a Chronic string (if Chronic is present)' do
+
+      with_chronic do
+
+        job = @scheduler.schedule_at('next tuesday at 12:00') {}
+
+        job.time.wday.should == 2
+        job.time.hour.should == 12
+        job.time.min.should == 0
+        job.time.should > Time.now
+      end
+    end
+
+    it 'accepts a Chronic string and Chronic options (if Chronic present)' do
+
+      with_chronic do
+
+        job =
+          @scheduler.schedule_at(
+            'may 27th at 12:00', :now => Time.local(Time.now.year + 2, 1, 1)
+          ) {}
+
+        job.time.year.should == Time.now.year + 2
+        job.time.month.should == 5
+        job.time.day.should == 27
+        job.time.hour.should == 12
+        job.time.min.should == 0
+      end
+    end
+
     it 'accepts an ActiveSupport time thinggy'
   end
 

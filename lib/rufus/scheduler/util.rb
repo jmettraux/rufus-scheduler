@@ -51,6 +51,8 @@ module Rufus
     def self.parse_at(o, opts={})
 
       return o if o.is_a?(Time)
+
+      # TODO: deal with tz if suffixed to Chronic string?
       return Chronic.parse(o, opts) if defined?(Chronic)
 
       tz = nil
