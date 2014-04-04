@@ -32,8 +32,9 @@ module Rufus
     #
     class JobArray
 
-      def initialize
+      def initialize timelapse_mode = false
 
+        @timelapse_mode = timelapse_mode
         @mutex = Mutex.new
         @array = []
       end
@@ -54,8 +55,26 @@ module Rufus
 
         to_a.sort_by { |j| j.next_time || (now + 1) }.each do |job|
 
-          break unless job.next_time
-          break if job.next_time > now
+          next unless job.next_time
+
+          #
+          # When timelapsing, be strict about which jobs to run.  Jobs in
+          # the past should be rescheduled; only actually run jobs that match
+          # the time exactly.
+          #
+          # (timelapse will visit every second within the given range.)
+          #
+          if @timelapse_mode
+            case job.next_time.to_i <=> now.to_i
+            when -1
+              job.reschedule(now)
+              next
+            when 1
+              next
+            end
+          else
+            next if job.next_time > now
+          end
 
           block.call(job)
         end

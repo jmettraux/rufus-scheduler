@@ -60,6 +60,7 @@ module Rufus
     MAX_WORK_THREADS = 28
 
     attr_accessor :frequency
+    attr_accessor :timelapse
     attr_reader :started_at
     attr_reader :thread
     attr_reader :thread_key
@@ -79,11 +80,17 @@ module Rufus
       @started_at = nil
       @paused = false
 
-      @jobs = JobArray.new
-
       @frequency = Rufus::Scheduler.parse(opts[:frequency] || 0.300)
       @mutexes = {}
 
+      @timelapse = opts[:timelapse]
+      if @timelapse.is_a?(Range)
+        raise ArgumentError.new(':timelapse Range must contain Times') unless @timelapse.first.is_a?(Time) && @timelapse.last.is_a?(Time)
+      else
+        raise ArgumentError.new(':timelapse must be a Range') unless @timelapse.nil?
+      end
+
+      @jobs = JobArray.new @timelapse
       @work_queue = Queue.new
 
       #@min_work_threads = opts[:min_work_threads] || MIN_WORK_THREADS
@@ -95,7 +102,7 @@ module Rufus
 
       lock || return
 
-      start
+      start unless @timelapse
     end
 
     # Returns a singleton Rufus::Scheduler instance
@@ -152,6 +159,11 @@ module Rufus
     end
 
     def join
+
+      # When using :timelapse, the jobs actually run when calling #join.
+      if @timelapse
+        return start
+      end
 
       fail NotRunningError.new(
         'cannot join scheduler that is not running'
@@ -546,6 +558,27 @@ module Rufus
 
     def start
 
+      # If using the :timelapse option, simply run through all specified time
+      # values, and run appropriate jobs immediately.
+      if @timelapse
+        @started_at = @timelapse.first
+
+        # Initialize all jobs for timelapse mode.
+        @jobs.to_a.each do |job|
+          job.timelapse = @timelapse
+        end
+
+        # For iterating, convert the timelapse range start/end to integers.
+        Range.new(@timelapse.first.to_i, @timelapse.last.to_i, @timelapse.exclude_end?).each do |t|
+          unschedule_jobs
+          trigger_jobs Time.at(t)
+          timeout_jobs
+        end
+
+        # When using :timelapse, do not go on to start the scheduler thread.
+        return
+      end
+
       @started_at = Time.now
 
       @thread =
@@ -571,9 +604,7 @@ module Rufus
       @jobs.delete_unscheduled
     end
 
-    def trigger_jobs
-
-      now = Time.now
+    def trigger_jobs now = Time.now
 
       @jobs.each(now) do |job|
 
@@ -604,7 +635,7 @@ module Rufus
 
       fail NotRunningError.new(
         'cannot schedule, scheduler is down or shutting down'
-      ) if @started_at == nil
+      ) if @started_at == nil && !@timelapse
 
       callable, opts = nil, callable if callable.is_a?(Hash)
       return_job_instance ||= opts[:job]
