@@ -510,6 +510,11 @@ module Rufus
       if @timelapse
         @started_at = @timelapse.first
 
+        # Initialize all jobs for timelapse mode.
+        @jobs.to_a.each do |job|
+          job.timelapse = @timelapse
+        end
+
         (@timelapse.first.to_i..@timelapse.last.to_i).each do |t|
           unschedule_jobs
           trigger_jobs Time.at(t)

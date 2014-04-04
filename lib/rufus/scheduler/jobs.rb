@@ -106,6 +106,11 @@ module Rufus
         end
       end
 
+      def timelapse=(range)
+        @timelapse = range
+        @scheduled_at = Time.at(range.first.to_i) # truncate to whole seconds
+      end
+
       alias job_id id
 
       def trigger(time)
@@ -395,6 +400,12 @@ module Rufus
           opts[:last] || opts[:last_at] || opts[:last_in]
       end
 
+      def timelapse=(range)
+        super
+        @first_at = @scheduled_at
+        @next_time = @first_at
+      end
+
       def first_at=(first)
 
         n = Time.now
@@ -555,6 +566,12 @@ module Rufus
         @next_time = @cron_line.next_time
       end
 
+      # Cron jobs need to trigger a reschedule when timelapse is initialized.
+      def timelapse=(range)
+        super
+        reschedule(range.first-1)
+      end
+
       def frequency
 
         @cron_line.frequency
@@ -569,7 +586,7 @@ module Rufus
 
       def set_next_time(is_post, trigger_time)
 
-        @next_time = @cron_line.next_time
+        @next_time = @cron_line.next_time(trigger_time)
       end
     end
   end

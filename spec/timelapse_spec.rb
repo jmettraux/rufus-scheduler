@@ -80,5 +80,38 @@ describe Rufus::Scheduler do
       @repeated_job.should == 2
     end
 
+    it 'supports cron-style jobs' do
+      time = Time.new(2014,4,4, 6,0,0)
+      scheduler = Rufus::Scheduler.new(:timelapse => time..(time+3600)) # Timelapse for one hour from 6am - 7am
+
+      @early_job = 0
+      @correct_job = 0
+      @late_job = 0
+      @repeated_job = 0
+
+      scheduler.cron '30 5 * * *' do
+        @early_job += 1
+      end
+
+      scheduler.cron '30 6 * * *' do
+        @correct_job += 1
+      end
+
+      scheduler.cron '30 7 * * *' do
+        @late_job += 1
+      end
+
+      scheduler.cron '* 6 * * *' do
+        @repeated_job += 1
+      end
+
+      scheduler.join
+
+      @early_job.should == 0
+      @correct_job.should == 1
+      @late_job.should == 0
+      @repeated_job.should == 60
+
+    end
   end
 end
