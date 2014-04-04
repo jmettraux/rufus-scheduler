@@ -542,7 +542,9 @@ module Rufus
       def set_next_time(is_post, trigger_time)
 
         @next_time =
-          if is_post
+          if @timelapse
+            trigger_time + @interval
+          elsif is_post
             Time.now + @interval
           elsif trigger_time.nil?
             if @first_at < Time.now

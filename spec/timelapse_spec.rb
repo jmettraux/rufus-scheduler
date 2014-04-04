@@ -65,7 +65,8 @@ describe Rufus::Scheduler do
       @early_job = 0
       @correct_job = 0
       @late_job = 0
-      @repeated_job = 0
+      @every_job = 0
+      @interval_job = 0
       @at_job = 0
 
       scheduler.in '10s' do
@@ -85,7 +86,11 @@ describe Rufus::Scheduler do
       end
 
       scheduler.every '30s' do
-        @repeated_job += 1
+        @every_job += 1
+      end
+
+      scheduler.interval '30s' do
+        @interval_job += 1
       end
 
       scheduler.join
@@ -94,7 +99,8 @@ describe Rufus::Scheduler do
       @correct_job.should == 1
       @late_job.should == 0
       @at_job.should == 1
-      @repeated_job.should == 3
+      @every_job.should == 3
+      @interval_job.should == 3
     end
 
     it 'supports cron-style jobs' do
