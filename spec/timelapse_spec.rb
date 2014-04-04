@@ -42,6 +42,23 @@ describe Rufus::Scheduler do
       scheduler.join
     end
 
+    it 'supports both inclusive and exclusive ranges' do
+      scheduler_inclusive = Rufus::Scheduler.new(:timelapse => (Time.now+60)..(Time.now+120))
+      scheduler_exclusive = Rufus::Scheduler.new(:timelapse => (Time.now+60)...(Time.now+120))
+
+      @repeated_job_inclusive = 0
+      @repeated_job_exclusive = 0
+
+      scheduler_inclusive.every('30s') { @repeated_job_inclusive += 1 }
+      scheduler_exclusive.every('30s') { @repeated_job_exclusive += 1 }
+
+      scheduler_inclusive.join
+      scheduler_exclusive.join
+
+      @repeated_job_inclusive.should == 3
+      @repeated_job_exclusive.should == 2
+    end
+
     it 'runs only the jobs that fall within the :timelapse time range' do
       scheduler = Rufus::Scheduler.new(:timelapse => (Time.now+60)..(Time.now+120))
 
@@ -77,7 +94,7 @@ describe Rufus::Scheduler do
       @correct_job.should == 1
       @late_job.should == 0
       @at_job.should == 1
-      @repeated_job.should == 2
+      @repeated_job.should == 3
     end
 
     it 'supports cron-style jobs' do

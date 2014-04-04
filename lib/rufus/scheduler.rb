@@ -515,7 +515,8 @@ module Rufus
           job.timelapse = @timelapse
         end
 
-        (@timelapse.first.to_i..@timelapse.last.to_i).each do |t|
+        # For iterating, convert the timelapse range start/end to integers.
+        Range.new(@timelapse.first.to_i, @timelapse.last.to_i, @timelapse.exclude_end?).each do |t|
           unschedule_jobs
           trigger_jobs Time.at(t)
           timeout_jobs
