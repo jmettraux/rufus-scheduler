@@ -1135,7 +1135,7 @@ Rufus::Scheduler.s.every '10s' { puts "hello, world!" }
 
 ## advanced lock schemes
 
-As seen above, rufus-scheduler proposes the :lockfile system out of the box. If in a group of schedulers only one is supposed to run, the lockfile mecha prevents schedulers that have not set/created the lockfile from running.
+As seen above, rufus-scheduler proposes the [:lockfile](#lockfile--mylockfiletxt) system out of the box. If in a group of schedulers only one is supposed to run, the lockfile mecha prevents schedulers that have not set/created the lockfile from running.
 
 There are situation where this is not sufficient.
 
