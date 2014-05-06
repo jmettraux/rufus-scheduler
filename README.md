@@ -407,7 +407,7 @@ scheduler.every '2d', :first_in => '10h' do
 end
 
 scheduler.cron '00 14 * * *', :first_in => '3d' do
-  # ... every day at 14h00, but start in 3 * 24 hours
+  # ... every day at 14h00, but start after 3 * 24 hours
 end
 ```
 
