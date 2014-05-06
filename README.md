@@ -394,8 +394,8 @@ This option is for repeat jobs (cron / every) only.
 
 It's used to specify the first time after which the repeat job should trigger for the first time.
 
-In the case of an "every" job, this will be the first time (module the scheduler frequency) the job triggers.
-For a "cron" job, it's the time after which the first schedule will trigger.
+In the case of an "every" job, this will be the first time (modulo the scheduler frequency) the job triggers.
+For a "cron" job, it's the time *after* which the first schedule will trigger.
 
 ```ruby
 scheduler.every '2d', :first_at => Time.now + 10 * 3600 do
@@ -404,6 +404,10 @@ end
 
 scheduler.every '2d', :first_in => '10h' do
   # ... every two days, but start in 10 hours
+end
+
+scheduler.cron '00 14 * * *', :first_in => '3d' do
+  # ... every day at 14h00, but start in 3 * 24 hours
 end
 ```
 
