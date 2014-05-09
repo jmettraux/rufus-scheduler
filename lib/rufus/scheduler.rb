@@ -165,6 +165,11 @@ module Rufus
       ! @started_at
     end
 
+    def up?
+
+      !! @started_at
+    end
+
     def paused?
 
       @paused

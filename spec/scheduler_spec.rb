@@ -769,6 +769,14 @@ describe Rufus::Scheduler do
     end
   end
 
+  describe '#up?' do
+
+    it 'returns true when the scheduler is up' do
+
+      @scheduler.up?.should == true
+    end
+  end
+
   #--
   # job methods
   #++
