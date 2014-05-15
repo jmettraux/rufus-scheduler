@@ -27,7 +27,7 @@ describe Rufus::Scheduler::EveryJob do
 
     sleep 3.5
 
-    [ 2, 3 ].should include(counter)
+    expect([ 2, 3 ]).to include(counter)
   end
 
   it 'lets its @next_time change in-flight' do
@@ -43,10 +43,10 @@ describe Rufus::Scheduler::EveryJob do
 
     #p [ times[1] - times[0], times[2] - times[1] ]
 
-    (times[1] - times[0]).should > 1.0
-    (times[1] - times[0]).should < 1.4
-    (times[2] - times[1]).should > 3.0
-    (times[2] - times[1]).should < 3.4
+    expect(times[1] - times[0]).to be > 1.0
+    expect(times[1] - times[0]).to be < 1.4
+    expect(times[2] - times[1]).to be > 3.0
+    expect(times[2] - times[1]).to be < 3.4
   end
 
   context 'first_at/in' do
@@ -63,8 +63,8 @@ describe Rufus::Scheduler::EveryJob do
       #p [ job.last_time, job.last_time.to_f ]
       #p [ job.first_at, job.first_at.to_f ]
 
-      job.first_at.should be_within_1s_of(t + 2)
-      job.last_time.should be_within_1s_of(job.first_at)
+      expect(job.first_at).to be_within_1s_of(t + 2)
+      expect(job.last_time).to be_within_1s_of(job.first_at)
     end
 
     describe '#first_at=' do
@@ -81,8 +81,8 @@ describe Rufus::Scheduler::EveryJob do
         fa1 = job.first_at
         nt1 = job.next_time
 
-        nt0.should == fa0
-        nt1.should == fa1
+        expect(nt0).to eq(fa0)
+        expect(nt1).to eq(fa1)
       end
     end
   end

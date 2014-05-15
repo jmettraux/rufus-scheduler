@@ -22,7 +22,7 @@ describe Rufus::Scheduler::JobArray do
 
       @array.push(DummyJob.new('a', Time.local(0)))
 
-      @array.to_a.collect(&:id).should == %w[ a ]
+      expect(@array.to_a.collect(&:id)).to eq(%w[ a ])
     end
 
     it 'pushes and remove duplicates' do
@@ -32,7 +32,7 @@ describe Rufus::Scheduler::JobArray do
       @array.push(j)
       @array.push(j)
 
-      @array.to_a.collect(&:id).should == %w[ a ]
+      expect(@array.to_a.collect(&:id)).to eq(%w[ a ])
     end
   end
 end

@@ -24,8 +24,8 @@ describe Rufus::Scheduler do
       @scheduler.every(10) do
       end
 
-      @scheduler.jobs.size.should == 1
-      @scheduler.jobs.first.class.should == Rufus::Scheduler::EveryJob
+      expect(@scheduler.jobs.size).to eq(1)
+      expect(@scheduler.jobs.first.class).to eq(Rufus::Scheduler::EveryJob)
     end
 
     it 'triggers a job (2 times)' do
@@ -38,7 +38,7 @@ describe Rufus::Scheduler do
 
       sleep 2.0
 
-      counter.should > 2
+      expect(counter).to be > 2
     end
 
     it 'does not remove the job after execution' do
@@ -48,23 +48,23 @@ describe Rufus::Scheduler do
 
       sleep 0.9
 
-      @scheduler.jobs.size.should == 1
+      expect(@scheduler.jobs.size).to eq(1)
     end
 
     it 'raises on negative frequencies' do
 
-      lambda {
+      expect {
         @scheduler.every(-1) do
         end
-      }.should raise_error(ArgumentError)
+      }.to raise_error(ArgumentError)
     end
 
     it 'raises on zero frequencies' do
 
-      lambda {
+      expect {
         @scheduler.every(0) do
         end
-      }.should raise_error(ArgumentError)
+      }.to raise_error(ArgumentError)
     end
 
     it 'does not reschedule if the job was unscheduled' do
@@ -83,16 +83,16 @@ describe Rufus::Scheduler do
 
       sleep 1.6
 
-      counter.should == c
+      expect(counter).to eq(c)
     end
 
     it 'raises if the job frequency is higher than the scheduler frequency' do
 
       @scheduler.frequency = 10
 
-      lambda {
+      expect {
         @scheduler.every '1s' do; end
-      }.should raise_error(ArgumentError)
+      }.to raise_error(ArgumentError)
     end
   end
 
@@ -102,7 +102,7 @@ describe Rufus::Scheduler do
 
       job = @scheduler.schedule_every('1h') do; end
 
-      job.frequency.should == 3600.0
+      expect(job.frequency).to eq(3600.0)
     end
   end
 end

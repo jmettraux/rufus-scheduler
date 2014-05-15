@@ -28,7 +28,7 @@ describe Rufus::Scheduler::AtJob do
 
       sleep 0.4
 
-      @scheduler.jobs.size.should == 0
+      expect(@scheduler.jobs.size).to eq(0)
     end
   end
 
@@ -38,8 +38,8 @@ describe Rufus::Scheduler::AtJob do
 
       job = @scheduler.schedule_at((t = Time.now) + 3600) {}
 
-      job.scheduled_at.to_i.should >= t.to_i - 1
-      job.scheduled_at.to_i.should <= t.to_i + 1
+      expect(job.scheduled_at.to_i).to be >= t.to_i - 1
+      expect(job.scheduled_at.to_i).to be <= t.to_i + 1
     end
   end
 
@@ -51,7 +51,7 @@ describe Rufus::Scheduler::AtJob do
 
       job = @scheduler.schedule_at t do; end
 
-      job.time.should == t
+      expect(job.time).to eq(t)
     end
   end
 end

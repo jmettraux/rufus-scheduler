@@ -18,64 +18,71 @@ describe Rufus::Scheduler do
 
     it 'parses duration strings' do
 
-      parse('1.0d1.0w1.0d').should == 777600.0
+      expect(parse('1.0d1.0w1.0d')).to eq(777600.0)
     end
 
     it 'parses datetimes' do
 
       # local
 
-      parse('Sun Nov 18 16:01:00 2012').strftime('%c').should ==
+      expect(parse('Sun Nov 18 16:01:00 2012').strftime('%c')).to eq(
         'Sun Nov 18 16:01:00 2012'
+      )
     end
 
     it 'parses datetimes with timezones' do
 
-      parse('Sun Nov 18 16:01:00 2012 Japan').getutc.strftime('%c').should ==
+      expect(parse('Sun Nov 18 16:01:00 2012 Japan').getutc.strftime('%c')).to eq(
         'Sun Nov 18 07:01:00 2012'
+      )
 
-      parse('Sun Nov 18 16:01:00 2012 Zulu').getutc.strftime('%c').should ==
+      expect(parse('Sun Nov 18 16:01:00 2012 Zulu').getutc.strftime('%c')).to eq(
         'Sun Nov 18 16:01:00 2012'
+      )
 
-      parse('Sun Nov 18 16:01:00 Japan 2012').getutc.strftime('%c').should ==
+      expect(parse('Sun Nov 18 16:01:00 Japan 2012').getutc.strftime('%c')).to eq(
         'Sun Nov 18 07:01:00 2012'
+      )
 
-      parse('Japan Sun Nov 18 16:01:00 2012').getutc.strftime('%c').should ==
+      expect(parse('Japan Sun Nov 18 16:01:00 2012').getutc.strftime('%c')).to eq(
         'Sun Nov 18 07:01:00 2012'
+      )
     end
 
     it 'parses datetimes with named timezones' do
 
-      parse(
+      expect(parse(
         'Sun Nov 18 16:01:00 2012 Europe/Berlin'
-      ).strftime('%c %z').should ==
+      ).strftime('%c %z')).to eq(
         'Sun Nov 18 15:01:00 2012 +0000'
+      )
     end
 
     it 'parses datetimes (with the local timezone implicitely)' do
 
       localzone = Time.now.strftime('%z')
 
-      parse('Sun Nov 18 16:01:00 2012').strftime('%c %z').should ==
+      expect(parse('Sun Nov 18 16:01:00 2012').strftime('%c %z')).to eq(
         "Sun Nov 18 16:01:00 2012 #{localzone}"
+      )
     end
 
     it 'parses cronlines' do
 
       out = parse('* * * * *')
 
-      out.class.should == Rufus::Scheduler::CronLine
-      out.original.should == '* * * * *'
+      expect(out.class).to eq(Rufus::Scheduler::CronLine)
+      expect(out.original).to eq('* * * * *')
 
-      parse('10 23 * * *').class.should == Rufus::Scheduler::CronLine
-      parse('* 23 * * *').class.should == Rufus::Scheduler::CronLine
+      expect(parse('10 23 * * *').class).to eq(Rufus::Scheduler::CronLine)
+      expect(parse('* 23 * * *').class).to eq(Rufus::Scheduler::CronLine)
     end
 
     it 'raises on unparseable input' do
 
-      lambda {
+      expect {
         parse('nada')
-      }.should raise_error(ArgumentError, 'couldn\'t parse "nada"')
+      }.to raise_error(ArgumentError, 'couldn\'t parse "nada"')
     end
 
     it 'does not use Chronic if not present' do
@@ -84,8 +91,9 @@ describe Rufus::Scheduler do
 
       n = Time.now
 
-      t.strftime('%Y-%m-%d %H:%M:%S').should ==
+      expect(t.strftime('%Y-%m-%d %H:%M:%S')).to eq(
         n.strftime('%Y-%m-%d') + ' 19:00:00'
+      )
     end
 
     it 'uses Chronic if present' do
@@ -94,10 +102,10 @@ describe Rufus::Scheduler do
 
         t = parse('next monday 7 PM')
 
-        t.wday.should == 1
-        t.hour.should == 19
-        t.min.should == 0
-        t.should > Time.now
+        expect(t.wday).to eq(1)
+        expect(t.hour).to eq(19)
+        expect(t.min).to eq(0)
+        expect(t).to be > Time.now
       end
     end
 
@@ -107,8 +115,8 @@ describe Rufus::Scheduler do
 
         t = parse('monday', :context => :past)
 
-        t.wday.should == 1
-        t.should < Time.now
+        expect(t.wday).to eq(1)
+        expect(t).to be < Time.now
       end
     end
   end
@@ -121,54 +129,54 @@ describe Rufus::Scheduler do
 
     it 'parses duration strings' do
 
-      pd('-1.0d1.0w1.0d').should == -777600.0
-      pd('-1d1w1d').should == -777600.0
-      pd('-1w2d').should == -777600.0
-      pd('-1h10s').should == -3610.0
-      pd('-1h').should == -3600.0
-      pd('-5.').should == -5.0
-      pd('-2.5s').should == -2.5
-      pd('-1s').should == -1.0
-      pd('-500').should == -500
-      pd('').should == 0.0
-      pd('5.0').should == 5.0
-      pd('0.5').should == 0.5
-      pd('.5').should == 0.5
-      pd('5.').should == 5.0
-      pd('500').should == 500
-      pd('1000').should == 1000
-      pd('1').should == 1.0
-      pd('1s').should == 1.0
-      pd('2.5s').should == 2.5
-      pd('1h').should == 3600.0
-      pd('1h10s').should == 3610.0
-      pd('1w2d').should == 777600.0
-      pd('1d1w1d').should == 777600.0
-      pd('1.0d1.0w1.0d').should == 777600.0
+      expect(pd('-1.0d1.0w1.0d')).to eq(-777600.0)
+      expect(pd('-1d1w1d')).to eq(-777600.0)
+      expect(pd('-1w2d')).to eq(-777600.0)
+      expect(pd('-1h10s')).to eq(-3610.0)
+      expect(pd('-1h')).to eq(-3600.0)
+      expect(pd('-5.')).to eq(-5.0)
+      expect(pd('-2.5s')).to eq(-2.5)
+      expect(pd('-1s')).to eq(-1.0)
+      expect(pd('-500')).to eq(-500)
+      expect(pd('')).to eq(0.0)
+      expect(pd('5.0')).to eq(5.0)
+      expect(pd('0.5')).to eq(0.5)
+      expect(pd('.5')).to eq(0.5)
+      expect(pd('5.')).to eq(5.0)
+      expect(pd('500')).to eq(500)
+      expect(pd('1000')).to eq(1000)
+      expect(pd('1')).to eq(1.0)
+      expect(pd('1s')).to eq(1.0)
+      expect(pd('2.5s')).to eq(2.5)
+      expect(pd('1h')).to eq(3600.0)
+      expect(pd('1h10s')).to eq(3610.0)
+      expect(pd('1w2d')).to eq(777600.0)
+      expect(pd('1d1w1d')).to eq(777600.0)
+      expect(pd('1.0d1.0w1.0d')).to eq(777600.0)
 
-      pd('.5m').should == 30.0
-      pd('5.m').should == 300.0
-      pd('1m.5s').should == 60.5
-      pd('-.5m').should == -30.0
+      expect(pd('.5m')).to eq(30.0)
+      expect(pd('5.m')).to eq(300.0)
+      expect(pd('1m.5s')).to eq(60.5)
+      expect(pd('-.5m')).to eq(-30.0)
 
-      pd('1').should == 1
-      pd('0.1').should == 0.1
-      pd('1s').should == 1
+      expect(pd('1')).to eq(1)
+      expect(pd('0.1')).to eq(0.1)
+      expect(pd('1s')).to eq(1)
     end
 
     it 'calls #to_s on its input' do
 
-      pd(0.1).should == 0.1
+      expect(pd(0.1)).to eq(0.1)
     end
 
     it 'raises on wrong duration strings' do
 
-      lambda { pd('-') }.should raise_error(ArgumentError)
-      lambda { pd('h') }.should raise_error(ArgumentError)
-      lambda { pd('whatever') }.should raise_error(ArgumentError)
-      lambda { pd('hms') }.should raise_error(ArgumentError)
+      expect { pd('-') }.to raise_error(ArgumentError)
+      expect { pd('h') }.to raise_error(ArgumentError)
+      expect { pd('whatever') }.to raise_error(ArgumentError)
+      expect { pd('hms') }.to raise_error(ArgumentError)
 
-      lambda { pd(' 1h ') }.should raise_error(ArgumentError)
+      expect { pd(' 1h ') }.to raise_error(ArgumentError)
     end
   end
 
@@ -176,7 +184,7 @@ describe Rufus::Scheduler do
 
     it 'is still around for libs using it out there' do
 
-      Rufus::Scheduler.parse_time_string('1d1w1d').should == 777600.0
+      expect(Rufus::Scheduler.parse_time_string('1d1w1d')).to eq(777600.0)
     end
   end
 
@@ -184,7 +192,7 @@ describe Rufus::Scheduler do
 
     it 'is still around for libs using it out there' do
 
-      Rufus::Scheduler.parse_duration_string('1d1w1d').should == 777600.0
+      expect(Rufus::Scheduler.parse_duration_string('1d1w1d')).to eq(777600.0)
     end
   end
 
@@ -196,32 +204,32 @@ describe Rufus::Scheduler do
 
     it 'turns integers into duration strings' do
 
-      td(0).should == '0s'
-      td(60).should == '1m'
-      td(61).should == '1m1s'
-      td(3661).should == '1h1m1s'
-      td(24 * 3600).should == '1d'
-      td(7 * 24 * 3600 + 1).should == '1w1s'
-      td(30 * 24 * 3600 + 1).should == '4w2d1s'
+      expect(td(0)).to eq('0s')
+      expect(td(60)).to eq('1m')
+      expect(td(61)).to eq('1m1s')
+      expect(td(3661)).to eq('1h1m1s')
+      expect(td(24 * 3600)).to eq('1d')
+      expect(td(7 * 24 * 3600 + 1)).to eq('1w1s')
+      expect(td(30 * 24 * 3600 + 1)).to eq('4w2d1s')
     end
 
     it 'ignores seconds and milliseconds if :drop_seconds => true' do
 
-      td(0, :drop_seconds => true).should == '0m'
-      td(5, :drop_seconds => true).should == '0m'
-      td(61, :drop_seconds => true).should == '1m'
+      expect(td(0, :drop_seconds => true)).to eq('0m')
+      expect(td(5, :drop_seconds => true)).to eq('0m')
+      expect(td(61, :drop_seconds => true)).to eq('1m')
     end
 
     it 'displays months if :months => true' do
 
-      td(1, :months => true).should == '1s'
-      td(30 * 24 * 3600 + 1, :months => true).should == '1M1s'
+      expect(td(1, :months => true)).to eq('1s')
+      expect(td(30 * 24 * 3600 + 1, :months => true)).to eq('1M1s')
     end
 
     it 'turns floats into duration strings' do
 
-      td(0.1).should == '100'
-      td(1.1).should == '1s100'
+      expect(td(0.1)).to eq('100')
+      expect(td(1.1)).to eq('1s100')
     end
   end
 
@@ -233,20 +241,20 @@ describe Rufus::Scheduler do
 
     it 'turns integers duration hashes' do
 
-      tdh(0).should == {}
-      tdh(60).should == { :m => 1 }
+      expect(tdh(0)).to eq({})
+      expect(tdh(60)).to eq({ :m => 1 })
     end
 
     it 'turns floats duration hashes' do
 
-      tdh(0.128).should == { :ms => 128 }
-      tdh(60.127).should == { :m => 1, :ms => 127 }
+      expect(tdh(0.128)).to eq({ :ms => 128 })
+      expect(tdh(60.127)).to eq({ :m => 1, :ms => 127 })
     end
 
     it 'drops seconds and milliseconds if :drop_seconds => true' do
 
-      tdh(61.127).should == { :m => 1, :s => 1, :ms => 127 }
-      tdh(61.127, :drop_seconds => true).should == { :m => 1 }
+      expect(tdh(61.127)).to eq({ :m => 1, :s => 1, :ms => 127 })
+      expect(tdh(61.127, :drop_seconds => true)).to eq({ :m => 1 })
     end
   end
 end

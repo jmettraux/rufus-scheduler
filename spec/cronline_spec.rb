@@ -16,13 +16,13 @@ describe Rufus::Scheduler::CronLine do
   end
 
   def match(line, time)
-    cl(line).matches?(time).should == true
+    expect(cl(line).matches?(time)).to eq(true)
   end
   def no_match(line, time)
-    cl(line).matches?(time).should == false
+    expect(cl(line).matches?(time)).to eq(false)
   end
   def to_a(line, array)
-    cl(line).to_array.should == array
+    expect(cl(line).to_array).to eq(array)
   end
 
   describe '.new' do
@@ -59,17 +59,17 @@ describe Rufus::Scheduler::CronLine do
 
     it 'rejects invalid weekday expressions' do
 
-      lambda { cl '0 17 * * MON_FRI' }.should raise_error
+      expect { cl '0 17 * * MON_FRI' }.to raise_error
         # underline instead of dash
 
-      lambda { cl '* * * * 9' }.should raise_error
-      lambda { cl '* * * * 0-12' }.should raise_error
-      lambda { cl '* * * * BLABLA' }.should raise_error
+      expect { cl '* * * * 9' }.to raise_error
+      expect { cl '* * * * 0-12' }.to raise_error
+      expect { cl '* * * * BLABLA' }.to raise_error
     end
 
     it 'rejects invalid cronlines' do
 
-      lambda { cl '* nada * * 9' }.should raise_error(ArgumentError)
+      expect { cl '* nada * * 9' }.to raise_error(ArgumentError)
     end
 
     it 'interprets cron strings with TZ correctly' do
@@ -84,8 +84,8 @@ describe Rufus::Scheduler::CronLine do
         '* * * * * * America/New_York',
         [ nil, nil, nil, nil, nil, nil, nil, 'America/New_York' ])
 
-      lambda { cl '* * * * * NotATimeZone' }.should raise_error
-      lambda { cl '* * * * * * NotATimeZone' }.should raise_error
+      expect { cl '* * * * * NotATimeZone' }.to raise_error
+      expect { cl '* * * * * * NotATimeZone' }.to raise_error
     end
 
     it 'interprets cron strings with / (slashes) correctly' do
@@ -118,16 +118,16 @@ describe Rufus::Scheduler::CronLine do
 
     it 'rejects / for days (every other wednesday)' do
 
-      lambda {
+      expect {
         Rufus::Scheduler::CronLine.new('* * * * wed/2')
-      }.should raise_error(ArgumentError)
+      }.to raise_error(ArgumentError)
     end
 
     it 'does not support ranges for monthdays (sun#1-sun#2)' do
 
-      lambda {
+      expect {
         Rufus::Scheduler::CronLine.new('* * * * sun#1-sun#2')
-      }.should raise_error(ArgumentError)
+      }.to raise_error(ArgumentError)
     end
 
     it 'accepts items with initial 0' do
@@ -150,27 +150,27 @@ describe Rufus::Scheduler::CronLine do
 
     it 'does not support ranges for L' do
 
-      lambda { cl '* * 15-L * *'}.should raise_error(ArgumentError)
-      lambda { cl '* * L/4 * *'}.should raise_error(ArgumentError)
+      expect { cl '* * 15-L * *'}.to raise_error(ArgumentError)
+      expect { cl '* * L/4 * *'}.to raise_error(ArgumentError)
     end
 
     it 'does not support multiple Ls' do
 
-      lambda { cl '* * L,L * *'}.should raise_error(ArgumentError)
+      expect { cl '* * L,L * *'}.to raise_error(ArgumentError)
     end
 
     it 'raises if L is used for something else than days' do
 
-      lambda { cl '* L * * *'}.should raise_error(ArgumentError)
+      expect { cl '* L * * *'}.to raise_error(ArgumentError)
     end
 
     it 'raises for out of range input' do
 
-      lambda { cl '60-62 * * * *'}.should raise_error(ArgumentError)
-      lambda { cl '62 * * * *'}.should raise_error(ArgumentError)
-      lambda { cl '60 * * * *'}.should raise_error(ArgumentError)
-      lambda { cl '* 25-26 * * *'}.should raise_error(ArgumentError)
-      lambda { cl '* 25 * * *'}.should raise_error(ArgumentError)
+      expect { cl '60-62 * * * *'}.to raise_error(ArgumentError)
+      expect { cl '62 * * * *'}.to raise_error(ArgumentError)
+      expect { cl '60 * * * *'}.to raise_error(ArgumentError)
+      expect { cl '* 25-26 * * *'}.to raise_error(ArgumentError)
+      expect { cl '* 25 * * *'}.to raise_error(ArgumentError)
         #
         # as reported by Aimee Rose in
         # https://github.com/jmettraux/rufus-scheduler/pull/58
@@ -187,59 +187,59 @@ describe Rufus::Scheduler::CronLine do
 
       now = Time.at(0).getutc # Thu Jan 01 00:00:00 UTC 1970
 
-      nt('* * * * *', now).should == now + 60
-      nt('* * * * sun', now).should == now + 259200
-      nt('* * * * * *', now).should == now + 1
-      nt('* * 13 * fri', now).should == now + 3715200
+      expect(nt('* * * * *', now)).to eq(now + 60)
+      expect(nt('* * * * sun', now)).to eq(now + 259200)
+      expect(nt('* * * * * *', now)).to eq(now + 1)
+      expect(nt('* * 13 * fri', now)).to eq(now + 3715200)
 
-      nt('10 12 13 12 *', now).should == now + 29938200
+      expect(nt('10 12 13 12 *', now)).to eq(now + 29938200)
         # this one is slow (1 year == 3 seconds)
         #
         # historical note:
         # (comment made in 2006 or 2007, the underlying libs got better and
         # that slowness is gone)
 
-      nt('0 0 * * thu', now).should == now + 604800
-      nt('00 0 * * thu', now).should == now + 604800
+      expect(nt('0 0 * * thu', now)).to eq(now + 604800)
+      expect(nt('00 0 * * thu', now)).to eq(now + 604800)
 
-      nt('0 0 * * *', now).should == now + 24 * 3600
-      nt('0 24 * * *', now).should == now + 24 * 3600
+      expect(nt('0 0 * * *', now)).to eq(now + 24 * 3600)
+      expect(nt('0 24 * * *', now)).to eq(now + 24 * 3600)
 
       now = local(2008, 12, 31, 23, 59, 59, 0)
 
-      nt('* * * * *', now).should == now + 1
+      expect(nt('* * * * *', now)).to eq(now + 1)
     end
 
     it 'computes the next occurence correctly in UTC (TZ not specified)' do
 
       now = utc(1970, 1, 1)
 
-      nt('* * * * *', now).should == utc(1970, 1, 1, 0, 1)
-      nt('* * * * sun', now).should == utc(1970, 1, 4)
-      nt('* * * * * *', now).should == utc(1970, 1, 1, 0, 0, 1)
-      nt('* * 13 * fri', now).should == utc(1970, 2, 13)
+      expect(nt('* * * * *', now)).to eq(utc(1970, 1, 1, 0, 1))
+      expect(nt('* * * * sun', now)).to eq(utc(1970, 1, 4))
+      expect(nt('* * * * * *', now)).to eq(utc(1970, 1, 1, 0, 0, 1))
+      expect(nt('* * 13 * fri', now)).to eq(utc(1970, 2, 13))
 
-      nt('10 12 13 12 *', now).should == utc(1970, 12, 13, 12, 10)
+      expect(nt('10 12 13 12 *', now)).to eq(utc(1970, 12, 13, 12, 10))
         # this one is slow (1 year == 3 seconds)
-      nt('* * 1 6 *', now).should == utc(1970, 6, 1)
+      expect(nt('* * 1 6 *', now)).to eq(utc(1970, 6, 1))
 
-      nt('0 0 * * thu', now).should == utc(1970, 1, 8)
+      expect(nt('0 0 * * thu', now)).to eq(utc(1970, 1, 8))
     end
 
     it 'computes the next occurence correctly in local TZ (TZ not specified)' do
 
       now = local(1970, 1, 1)
 
-      nt('* * * * *', now).should == local(1970, 1, 1, 0, 1)
-      nt('* * * * sun', now).should == local(1970, 1, 4)
-      nt('* * * * * *', now).should == local(1970, 1, 1, 0, 0, 1)
-      nt('* * 13 * fri', now).should == local(1970, 2, 13)
+      expect(nt('* * * * *', now)).to eq(local(1970, 1, 1, 0, 1))
+      expect(nt('* * * * sun', now)).to eq(local(1970, 1, 4))
+      expect(nt('* * * * * *', now)).to eq(local(1970, 1, 1, 0, 0, 1))
+      expect(nt('* * 13 * fri', now)).to eq(local(1970, 2, 13))
 
-      nt('10 12 13 12 *', now).should == local(1970, 12, 13, 12, 10)
+      expect(nt('10 12 13 12 *', now)).to eq(local(1970, 12, 13, 12, 10))
         # this one is slow (1 year == 3 seconds)
-      nt('* * 1 6 *', now).should == local(1970, 6, 1)
+      expect(nt('* * 1 6 *', now)).to eq(local(1970, 6, 1))
 
-      nt('0 0 * * thu', now).should == local(1970, 1, 8)
+      expect(nt('0 0 * * thu', now)).to eq(local(1970, 1, 8))
     end
 
     it 'computes the next occurence correctly in UTC (TZ specified)' do
@@ -249,15 +249,15 @@ describe Rufus::Scheduler::CronLine do
       now = tz.local_to_utc(local(1970, 1, 1))
         # Midnight in zone, UTC
 
-      nt("* * * * * #{zone}", now).should == utc(1969, 12, 31, 23, 1)
-      nt("* * * * sun #{zone}", now).should == utc(1970, 1, 3, 23)
-      nt("* * * * * * #{zone}", now).should == utc(1969, 12, 31, 23, 0, 1)
-      nt("* * 13 * fri #{zone}", now).should == utc(1970, 2, 12, 23)
+      expect(nt("* * * * * #{zone}", now)).to eq(utc(1969, 12, 31, 23, 1))
+      expect(nt("* * * * sun #{zone}", now)).to eq(utc(1970, 1, 3, 23))
+      expect(nt("* * * * * * #{zone}", now)).to eq(utc(1969, 12, 31, 23, 0, 1))
+      expect(nt("* * 13 * fri #{zone}", now)).to eq(utc(1970, 2, 12, 23))
 
-      nt("10 12 13 12 * #{zone}", now).should == utc(1970, 12, 13, 11, 10)
-      nt("* * 1 6 * #{zone}", now).should == utc(1970, 5, 31, 23)
+      expect(nt("10 12 13 12 * #{zone}", now)).to eq(utc(1970, 12, 13, 11, 10))
+      expect(nt("* * 1 6 * #{zone}", now)).to eq(utc(1970, 5, 31, 23))
 
-      nt("0 0 * * thu #{zone}", now).should == utc(1970, 1, 7, 23)
+      expect(nt("0 0 * * thu #{zone}", now)).to eq(utc(1970, 1, 7, 23))
     end
 
     #it 'computes the next occurence correctly in local TZ (TZ specified)' do
@@ -276,45 +276,45 @@ describe Rufus::Scheduler::CronLine do
 
     it 'computes the next time correctly when there is a sun#2 involved' do
 
-      nt('* * * * sun#1', local(1970, 1, 1)).should == local(1970, 1, 4)
-      nt('* * * * sun#2', local(1970, 1, 1)).should == local(1970, 1, 11)
+      expect(nt('* * * * sun#1', local(1970, 1, 1))).to eq(local(1970, 1, 4))
+      expect(nt('* * * * sun#2', local(1970, 1, 1))).to eq(local(1970, 1, 11))
 
-      nt('* * * * sun#2', local(1970, 1, 12)).should == local(1970, 2, 8)
+      expect(nt('* * * * sun#2', local(1970, 1, 12))).to eq(local(1970, 2, 8))
     end
 
     it 'computes the next time correctly when there is a sun#2,sun#3 involved' do
 
-      nt('* * * * sun#2,sun#3', local(1970, 1, 1)).should == local(1970, 1, 11)
-      nt('* * * * sun#2,sun#3', local(1970, 1, 12)).should == local(1970, 1, 18)
+      expect(nt('* * * * sun#2,sun#3', local(1970, 1, 1))).to eq(local(1970, 1, 11))
+      expect(nt('* * * * sun#2,sun#3', local(1970, 1, 12))).to eq(local(1970, 1, 18))
     end
 
     it 'understands sun#L' do
 
-      nt('* * * * sun#L', local(1970, 1, 1)).should == local(1970, 1, 25)
+      expect(nt('* * * * sun#L', local(1970, 1, 1))).to eq(local(1970, 1, 25))
     end
 
     it 'understands sun#-1' do
 
-      nt('* * * * sun#-1', local(1970, 1, 1)).should == local(1970, 1, 25)
+      expect(nt('* * * * sun#-1', local(1970, 1, 1))).to eq(local(1970, 1, 25))
     end
 
     it 'understands sun#-2' do
 
-      nt('* * * * sun#-2', local(1970, 1, 1)).should == local(1970, 1, 18)
+      expect(nt('* * * * sun#-2', local(1970, 1, 1))).to eq(local(1970, 1, 18))
     end
 
     it 'computes the next time correctly when "L" (last day of month)' do
 
-      nt('* * L * *', lo(1970, 1, 1)).should == lo(1970, 1, 31)
-      nt('* * L * *', lo(1970, 2, 1)).should == lo(1970, 2, 28)
-      nt('* * L * *', lo(1972, 2, 1)).should == lo(1972, 2, 29)
-      nt('* * L * *', lo(1970, 4, 1)).should == lo(1970, 4, 30)
+      expect(nt('* * L * *', lo(1970, 1, 1))).to eq(lo(1970, 1, 31))
+      expect(nt('* * L * *', lo(1970, 2, 1))).to eq(lo(1970, 2, 28))
+      expect(nt('* * L * *', lo(1972, 2, 1))).to eq(lo(1972, 2, 29))
+      expect(nt('* * L * *', lo(1970, 4, 1))).to eq(lo(1970, 4, 30))
     end
 
     it 'returns a time with subseconds chopped off' do
 
-      nt('* * * * *', Time.now).usec.should == 0
-      nt('* * * * *', Time.now).iso8601(10).match(/\.0+[^\d]/).should_not == nil
+      expect(nt('* * * * *', Time.now).usec).to eq(0)
+      expect(nt('* * * * *', Time.now).iso8601(10).match(/\.0+[^\d]/)).not_to eq(nil)
     end
   end
 
@@ -326,12 +326,12 @@ describe Rufus::Scheduler::CronLine do
 
     it 'returns the previous time the cron should have triggered' do
 
-      pt('* * * * sun', lo(1970, 1, 1)).should == lo(1969, 12, 28, 23, 59, 00)
-      pt('* * 13 * *', lo(1970, 1, 1)).should == lo(1969, 12, 13, 23, 59, 00)
-      pt('0 12 13 * *', lo(1970, 1, 1)).should == lo(1969, 12, 13, 12, 00)
-      pt('0 0 2 1 *', lo(1970, 1, 1)).should == lo(1969, 1, 2, 0, 00)
+      expect(pt('* * * * sun', lo(1970, 1, 1))).to eq(lo(1969, 12, 28, 23, 59, 00))
+      expect(pt('* * 13 * *', lo(1970, 1, 1))).to eq(lo(1969, 12, 13, 23, 59, 00))
+      expect(pt('0 12 13 * *', lo(1970, 1, 1))).to eq(lo(1969, 12, 13, 12, 00))
+      expect(pt('0 0 2 1 *', lo(1970, 1, 1))).to eq(lo(1969, 1, 2, 0, 00))
 
-      pt('* * * * * sun', lo(1970, 1, 1)).should == lo(1969, 12, 28, 23, 59, 59)
+      expect(pt('* * * * * sun', lo(1970, 1, 1))).to eq(lo(1969, 12, 28, 23, 59, 59))
     end
   end
 
@@ -432,11 +432,11 @@ describe Rufus::Scheduler::CronLine do
 
       cl = Rufus::Scheduler::CronLine.new('* * * * *')
 
-      cl.monthdays(local(1970, 1, 1)).should == %w[ thu#1 thu#-5 ]
-      cl.monthdays(local(1970, 1, 7)).should == %w[ wed#1 wed#-4 ]
-      cl.monthdays(local(1970, 1, 14)).should == %w[ wed#2 wed#-3 ]
+      expect(cl.monthdays(local(1970, 1, 1))).to eq(%w[ thu#1 thu#-5 ])
+      expect(cl.monthdays(local(1970, 1, 7))).to eq(%w[ wed#1 wed#-4 ])
+      expect(cl.monthdays(local(1970, 1, 14))).to eq(%w[ wed#2 wed#-3 ])
 
-      cl.monthdays(local(2011, 3, 11)).should == %w[ fri#2 fri#-3 ]
+      expect(cl.monthdays(local(2011, 3, 11))).to eq(%w[ fri#2 fri#-3 ])
     end
   end
 
@@ -444,20 +444,20 @@ describe Rufus::Scheduler::CronLine do
 
     it 'returns the shortest delta between two occurrences' do
 
-      Rufus::Scheduler::CronLine.new(
-          '* * * * *').frequency.should == 60
-      Rufus::Scheduler::CronLine.new(
-          '* * * * * *').frequency.should == 1
+      expect(Rufus::Scheduler::CronLine.new(
+          '* * * * *').frequency).to eq(60)
+      expect(Rufus::Scheduler::CronLine.new(
+          '* * * * * *').frequency).to eq(1)
 
-      Rufus::Scheduler::CronLine.new(
-          '5 23 * * *').frequency.should == 24 * 3600
-      Rufus::Scheduler::CronLine.new(
-          '5 * * * *').frequency.should == 3600
-      Rufus::Scheduler::CronLine.new(
-          '10,20,30 * * * *').frequency.should == 600
+      expect(Rufus::Scheduler::CronLine.new(
+          '5 23 * * *').frequency).to eq(24 * 3600)
+      expect(Rufus::Scheduler::CronLine.new(
+          '5 * * * *').frequency).to eq(3600)
+      expect(Rufus::Scheduler::CronLine.new(
+          '10,20,30 * * * *').frequency).to eq(600)
 
-      Rufus::Scheduler::CronLine.new(
-          '10,20,30 * * * * *').frequency.should == 10
+      expect(Rufus::Scheduler::CronLine.new(
+          '10,20,30 * * * * *').frequency).to eq(10)
     end
   end
 
@@ -465,17 +465,17 @@ describe Rufus::Scheduler::CronLine do
 
     it 'returns the shortest delta between two occurrences' do
 
-      Rufus::Scheduler::CronLine.new(
-          '* * * * *').brute_frequency.should == 60
-      Rufus::Scheduler::CronLine.new(
-          '* * * * * *').brute_frequency.should == 1
+      expect(Rufus::Scheduler::CronLine.new(
+          '* * * * *').brute_frequency).to eq(60)
+      expect(Rufus::Scheduler::CronLine.new(
+          '* * * * * *').brute_frequency).to eq(1)
 
-      Rufus::Scheduler::CronLine.new(
-          '5 23 * * *').brute_frequency.should == 24 * 3600
-      Rufus::Scheduler::CronLine.new(
-          '5 * * * *').brute_frequency.should == 3600
-      Rufus::Scheduler::CronLine.new(
-          '10,20,30 * * * *').brute_frequency.should == 600
+      expect(Rufus::Scheduler::CronLine.new(
+          '5 23 * * *').brute_frequency).to eq(24 * 3600)
+      expect(Rufus::Scheduler::CronLine.new(
+          '5 * * * *').brute_frequency).to eq(3600)
+      expect(Rufus::Scheduler::CronLine.new(
+          '10,20,30 * * * *').brute_frequency).to eq(600)
 
       #Rufus::Scheduler::CronLine.new(
       #    '10,20,30 * * * * *').brute_frequency.should == 10
@@ -513,8 +513,8 @@ describe Rufus::Scheduler::CronLine do
 
         # verify the playground...
         #
-        friday.isdst.should == false
-        (friday + 24 * 3600 * 3).isdst.should == true
+        expect(friday.isdst).to eq(false)
+        expect((friday + 24 * 3600 * 3).isdst).to eq(true)
 
         cl0 = Rufus::Scheduler::CronLine.new('02 00 * * 1,2,3,4,5')
         cl1 = Rufus::Scheduler::CronLine.new('45 08 * * 1,2,3,4,5')
@@ -522,14 +522,14 @@ describe Rufus::Scheduler::CronLine do
         n0 = cl0.next_time(friday)
         n1 = cl1.next_time(friday)
 
-        n0.strftime('%H:%M:%S %^a').should == '00:02:00 MON'
-        n1.strftime('%H:%M:%S %^a').should == '08:45:00 MON'
+        expect(n0.strftime('%H:%M:%S %^a')).to eq('00:02:00 MON')
+        expect(n1.strftime('%H:%M:%S %^a')).to eq('08:45:00 MON')
 
-        n0.isdst.should == true
-        n1.isdst.should == true
+        expect(n0.isdst).to eq(true)
+        expect(n1.isdst).to eq(true)
 
-        (n0 - 24 * 3600 * 3).strftime('%H:%M:%S %^a').should == '23:02:00 THU'
-        (n1 - 24 * 3600 * 3).strftime('%H:%M:%S %^a').should == '07:45:00 FRI'
+        expect((n0 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('23:02:00 THU')
+        expect((n1 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('07:45:00 FRI')
       end
     end
 
@@ -552,8 +552,8 @@ describe Rufus::Scheduler::CronLine do
 
         # verify the playground...
         #
-        friday.isdst.should == true
-        (friday + 24 * 3600 * 3).isdst.should == false
+        expect(friday.isdst).to eq(true)
+        expect((friday + 24 * 3600 * 3).isdst).to eq(false)
 
         cl0 = Rufus::Scheduler::CronLine.new('02 00 * * 1,2,3,4,5')
         cl1 = Rufus::Scheduler::CronLine.new('45 08 * * 1,2,3,4,5')
@@ -561,14 +561,14 @@ describe Rufus::Scheduler::CronLine do
         n0 = cl0.next_time(friday)
         n1 = cl1.next_time(friday)
 
-        n0.strftime('%H:%M:%S %^a').should == '00:02:00 MON'
-        n1.strftime('%H:%M:%S %^a').should == '08:45:00 MON'
+        expect(n0.strftime('%H:%M:%S %^a')).to eq('00:02:00 MON')
+        expect(n1.strftime('%H:%M:%S %^a')).to eq('08:45:00 MON')
 
-        n0.isdst.should == false
-        n1.isdst.should == false
+        expect(n0.isdst).to eq(false)
+        expect(n1.isdst).to eq(false)
 
-        (n0 - 24 * 3600 * 3).strftime('%H:%M:%S %^a').should == '01:02:00 FRI'
-        (n1 - 24 * 3600 * 3).strftime('%H:%M:%S %^a').should == '09:45:00 FRI'
+        expect((n0 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('01:02:00 FRI')
+        expect((n1 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('09:45:00 FRI')
       end
     end
   end

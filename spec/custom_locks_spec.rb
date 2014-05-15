@@ -39,8 +39,8 @@ describe Rufus::Scheduler do
 
       sleep 0.7
 
-      count.should == 0
-      s.counter.should == 1
+      expect(count).to eq(0)
+      expect(s.counter).to eq(1)
     end
   end
 end

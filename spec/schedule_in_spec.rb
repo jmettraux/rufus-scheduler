@@ -24,8 +24,8 @@ describe Rufus::Scheduler do
       @scheduler.in(3600) do
       end
 
-      @scheduler.jobs.size.should == 1
-      @scheduler.jobs.first.class.should == Rufus::Scheduler::InJob
+      expect(@scheduler.jobs.size).to eq(1)
+      expect(@scheduler.jobs.first.class).to eq(Rufus::Scheduler::InJob)
     end
 
     it 'triggers a job' do
@@ -38,7 +38,7 @@ describe Rufus::Scheduler do
 
       sleep 0.9
 
-      a.should == true
+      expect(a).to eq(true)
     end
 
     it 'removes the job after execution' do
@@ -48,7 +48,7 @@ describe Rufus::Scheduler do
 
       sleep 0.700
 
-      @scheduler.jobs.size.should == 0
+      expect(@scheduler.jobs.size).to eq(0)
     end
   end
 
@@ -58,16 +58,16 @@ describe Rufus::Scheduler do
 
       job = @scheduler.schedule_in(3600) {}
 
-      job.original.should == 3600
+      expect(job.original).to eq(3600)
     end
 
     it 'accepts a duration string' do
 
       job = @scheduler.schedule_in('1h') {}
 
-      job.original.should == '1h'
-      job.time.should >= job.scheduled_at + 3509
-      job.time.should <= job.scheduled_at + 3601
+      expect(job.original).to eq('1h')
+      expect(job.time).to be >= job.scheduled_at + 3509
+      expect(job.time).to be <= job.scheduled_at + 3601
     end
 
     it 'accepts an ActiveSupport .from_now thinggy'
