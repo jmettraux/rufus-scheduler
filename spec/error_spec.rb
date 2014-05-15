@@ -43,8 +43,8 @@ describe Rufus::Scheduler do
 
       sleep 2
 
-      counter.should > 2
-      $stderr.string.should match(/argh/)
+      expect(counter).to be > 2
+      expect($stderr.string).to match(/argh/)
     end
   end
 
@@ -69,8 +69,8 @@ describe Rufus::Scheduler do
 
       sleep 2
 
-      mfh.counter.should > 2
-      $stderr.string.should match(/ouch/)
+      expect(mfh.counter).to be > 2
+      expect($stderr.string).to match(/ouch/)
     end
   end
 
@@ -86,8 +86,8 @@ describe Rufus::Scheduler do
 
       sleep 0.5
 
-      @scheduler.stderr.string.should match(/intercepted an error/)
-      @scheduler.stderr.string.should match(/miserably/)
+      expect(@scheduler.stderr.string).to match(/intercepted an error/)
+      expect(@scheduler.stderr.string).to match(/miserably/)
     end
   end
 
@@ -106,11 +106,11 @@ describe Rufus::Scheduler do
       s = @scheduler.stderr.string
       #puts s
 
-      s.should match(/ENV\['TZ'\]:/)
-      s.should match(/down\?: false/)
-      s.should match(/work_threads: 1/)
-      s.should match(/running_jobs: 1/)
-      s.should match(/uptime: \d/)
+      expect(s).to match(/ENV\['TZ'\]:/)
+      expect(s).to match(/down\?: false/)
+      expect(s).to match(/work_threads: 1/)
+      expect(s).to match(/running_jobs: 1/)
+      expect(s).to match(/uptime: \d/)
     end
   end
 
@@ -132,7 +132,7 @@ describe Rufus::Scheduler do
 
       sleep 0.5
 
-      $message.should == 'Rufus::Scheduler::InJob 0s miserably'
+      expect($message).to eq('Rufus::Scheduler::InJob 0s miserably')
     end
   end
 end

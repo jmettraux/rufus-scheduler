@@ -25,7 +25,7 @@ describe Rufus::Scheduler do
       line = File.read('.rufus-scheduler.lock')
 
       #p line
-      line.should match(/pid: #{$$}/)
+      expect(line).to match(/pid: #{$$}/)
     end
 
     it '"flocks" the lock file' do
@@ -34,7 +34,7 @@ describe Rufus::Scheduler do
 
       f = File.new('.rufus-scheduler.lock', 'a')
 
-      f.flock(File::LOCK_NB | File::LOCK_EX).should == false
+      expect(f.flock(File::LOCK_NB | File::LOCK_EX)).to eq(false)
     end
 
     it 'prevents newer schedulers from starting' do
@@ -42,8 +42,8 @@ describe Rufus::Scheduler do
       s0 = Rufus::Scheduler.new :lockfile => '.rufus-scheduler.lock'
       s1 = Rufus::Scheduler.new :lockfile => '.rufus-scheduler.lock'
 
-      s0.started_at.should_not == nil
-      s1.started_at.should == nil
+      expect(s0.started_at).not_to eq(nil)
+      expect(s1.started_at).to eq(nil)
     end
 
     it 'releases the lockfile when shutting down' do
@@ -54,7 +54,7 @@ describe Rufus::Scheduler do
 
       f = File.new('.rufus-scheduler.lock', 'a')
 
-      f.flock(File::LOCK_NB | File::LOCK_EX).should == 0
+      expect(f.flock(File::LOCK_NB | File::LOCK_EX)).to eq(0)
     end
   end
 end

@@ -20,31 +20,33 @@ describe Rufus::Scheduler do
         t[:name] == "rufus_scheduler_#{scheduler.object_id}_scheduler"
       }
 
-      t[:rufus_scheduler].should == scheduler
+      expect(t[:rufus_scheduler]).to eq(scheduler)
     end
 
     it 'sets :name and :rufus_scheduler in the scheduler thread local vars' do
 
       scheduler = Rufus::Scheduler.new
 
-      scheduler.thread[:name].should ==
+      expect(scheduler.thread[:name]).to eq(
         "rufus_scheduler_#{scheduler.object_id}_scheduler"
-      scheduler.thread[:rufus_scheduler].should ==
+      )
+      expect(scheduler.thread[:rufus_scheduler]).to eq(
         scheduler
+      )
     end
 
     it 'accepts a :frequency => integer option' do
 
       scheduler = Rufus::Scheduler.new(:frequency => 2)
 
-      scheduler.frequency.should == 2
+      expect(scheduler.frequency).to eq(2)
     end
 
     it 'accepts a :frequency => "2h1m" option' do
 
       scheduler = Rufus::Scheduler.new(:frequency => '2h1m')
 
-      scheduler.frequency.should == 3600 * 2 + 60
+      expect(scheduler.frequency).to eq(3600 * 2 + 60)
     end
 
     it 'accepts a :thread_name option' do
@@ -53,7 +55,7 @@ describe Rufus::Scheduler do
 
       t = Thread.list.find { |t| t[:name] == 'oliphant' }
 
-      t[:rufus_scheduler].should == scheduler
+      expect(t[:rufus_scheduler]).to eq(scheduler)
     end
 
     #it 'accepts a :min_work_threads option' do
@@ -65,7 +67,7 @@ describe Rufus::Scheduler do
 
       scheduler = Rufus::Scheduler.new(:max_work_threads => 9)
 
-      scheduler.max_work_threads.should == 9
+      expect(scheduler.max_work_threads).to eq(9)
     end
   end
 
@@ -85,7 +87,7 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      j.should == job
+      expect(j).to eq(job)
     end
 
     it 'passes the trigger time as second block argument' do
@@ -95,7 +97,7 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      t.class.should == Time
+      expect(t.class).to eq(Time)
     end
 
     class MyHandler
@@ -116,7 +118,7 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      mh.counter.should == 1
+      expect(mh.counter).to eq(1)
     end
 
     class MyOtherHandler
@@ -135,7 +137,7 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      job.handler.counter.should == 1
+      expect(job.handler.counter).to eq(1)
     end
 
     it 'accepts a class as callable' do
@@ -150,16 +152,16 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      job.handler.value.should == 7
+      expect(job.handler.value).to eq(7)
     end
 
     it 'raises if the scheduler is shutting down' do
 
       @scheduler.shutdown
 
-      lambda {
+      expect {
         @scheduler.in('0s') { puts 'hhhhhhhhhhhello!!' }
-      }.should raise_error(Rufus::Scheduler::NotRunningError)
+      }.to raise_error(Rufus::Scheduler::NotRunningError)
     end
   end
 
@@ -196,23 +198,23 @@ describe Rufus::Scheduler do
 
       j = @scheduler.schedule '1s' do; end
 
-      j.class.should == Rufus::Scheduler::InJob
-      j.original.should == '1s'
+      expect(j.class).to eq(Rufus::Scheduler::InJob)
+      expect(j.original).to eq('1s')
     end
 
     it 'accepts a point in time and schedules an AtJob' do
 
       j = @scheduler.schedule '2070/12/24 23:00' do; end
 
-      j.class.should == Rufus::Scheduler::AtJob
-      j.next_time.strftime('%Y %m %d').should == '2070 12 24'
+      expect(j.class).to eq(Rufus::Scheduler::AtJob)
+      expect(j.next_time.strftime('%Y %m %d')).to eq('2070 12 24')
     end
 
     it 'accepts a cron string and schedules a CronJob' do
 
       j = @scheduler.schedule '* * * * *' do; end
 
-      j.class.should == Rufus::Scheduler::CronJob
+      expect(j.class).to eq(Rufus::Scheduler::CronJob)
     end
   end
 
@@ -222,14 +224,14 @@ describe Rufus::Scheduler do
 
       j = @scheduler.repeat '1s' do; end
 
-      j.class.should == Rufus::Scheduler::EveryJob
+      expect(j.class).to eq(Rufus::Scheduler::EveryJob)
     end
 
     it 'accepts a cron string and schedules a CronJob' do
 
       j = @scheduler.repeat '* * * * *' do; end
 
-      j.class.should == Rufus::Scheduler::CronJob
+      expect(j.class).to eq(Rufus::Scheduler::CronJob)
     end
   end
 
@@ -239,22 +241,22 @@ describe Rufus::Scheduler do
 
       job = @scheduler.schedule_in '10d' do; end
 
-      job.unscheduled_at.should == nil
+      expect(job.unscheduled_at).to eq(nil)
 
       @scheduler.unschedule(job.id)
 
-      job.unscheduled_at.should_not == nil
+      expect(job.unscheduled_at).not_to eq(nil)
     end
 
     it 'accepts jobs' do
 
       job = @scheduler.schedule_in '10d' do; end
 
-      job.unscheduled_at.should == nil
+      expect(job.unscheduled_at).to eq(nil)
 
       @scheduler.unschedule(job)
 
-      job.unscheduled_at.should_not == nil
+      expect(job.unscheduled_at).not_to eq(nil)
     end
 
     it 'carefully unschedules repeat jobs' do
@@ -272,7 +274,7 @@ describe Rufus::Scheduler do
       @scheduler.unschedule(job)
 
       sleep 1.5
-      counter.should == c
+      expect(counter).to eq(c)
     end
   end
 
@@ -280,7 +282,7 @@ describe Rufus::Scheduler do
 
     it 'returns the uptime as a float' do
 
-      @scheduler.uptime.should >= 0.0
+      expect(@scheduler.uptime).to be >= 0.0
     end
   end
 
@@ -290,7 +292,7 @@ describe Rufus::Scheduler do
 
       sleep 1
 
-      @scheduler.uptime_s.should match(/^[12]s\d+$/)
+      expect(@scheduler.uptime_s).to match(/^[12]s\d+$/)
     end
   end
 
@@ -300,13 +302,13 @@ describe Rufus::Scheduler do
 
       t = Thread.new { @scheduler.join; Thread.current['a'] = 'over' }
 
-      t['a'].should == nil
+      expect(t['a']).to eq(nil)
 
       @scheduler.shutdown
 
       sleep(1)
 
-      t['a'].should == 'over'
+      expect(t['a']).to eq('over')
     end
   end
 
@@ -314,7 +316,7 @@ describe Rufus::Scheduler do
 
     it 'returns nil if there is no corresponding Job instance' do
 
-      @scheduler.job('nada').should == nil
+      expect(@scheduler.job('nada')).to eq(nil)
     end
 
     it 'returns the corresponding Job instance' do
@@ -323,7 +325,7 @@ describe Rufus::Scheduler do
 
       sleep(1) # give it some time to get scheduled
 
-      @scheduler.job(job_id).job_id.should == job_id
+      expect(@scheduler.job(job_id).job_id).to eq(job_id)
     end
   end
 
@@ -353,7 +355,7 @@ describe Rufus::Scheduler do
 
     it 'just lists the main thread (scheduler thread) when no job is scheduled' do
 
-      @scheduler.threads.should == [ @scheduler.thread ]
+      expect(@scheduler.threads).to eq([ @scheduler.thread ])
     end
 
     it 'lists all the threads a scheduler uses' do
@@ -364,7 +366,7 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      @scheduler.threads.size.should == 2
+      expect(@scheduler.threads.size).to eq(2)
     end
   end
 
@@ -372,9 +374,9 @@ describe Rufus::Scheduler do
 
     it 'returns an empty array when the scheduler has not yet done anything' do
 
-      @scheduler.work_threads.should == []
-      @scheduler.work_threads(:all).should == []
-      @scheduler.work_threads(:vacant).should == []
+      expect(@scheduler.work_threads).to eq([])
+      expect(@scheduler.work_threads(:all)).to eq([])
+      expect(@scheduler.work_threads(:vacant)).to eq([])
     end
 
     it 'lists the [vacant] work threads in the pool' do
@@ -389,13 +391,13 @@ describe Rufus::Scheduler do
       sleep 0.7
 
       if @scheduler.work_threads.size == 1
-        @scheduler.work_threads.size.should == 1
-        @scheduler.work_threads(:all).size.should == 1
-        @scheduler.work_threads(:vacant).size.should == 0
+        expect(@scheduler.work_threads.size).to eq(1)
+        expect(@scheduler.work_threads(:all).size).to eq(1)
+        expect(@scheduler.work_threads(:vacant).size).to eq(0)
       else
-        @scheduler.work_threads.size.should == 2
-        @scheduler.work_threads(:all).size.should == 2
-        @scheduler.work_threads(:vacant).size.should == 1
+        expect(@scheduler.work_threads.size).to eq(2)
+        expect(@scheduler.work_threads(:all).size).to eq(2)
+        expect(@scheduler.work_threads(:vacant).size).to eq(1)
       end
     end
   end
@@ -404,7 +406,7 @@ describe Rufus::Scheduler do
 
     it 'returns [] when there are no jobs running' do
 
-      @scheduler.work_threads(:active).should == []
+      expect(@scheduler.work_threads(:active)).to eq([])
     end
 
     it 'returns the list of threads of the running jobs' do
@@ -416,14 +418,14 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      @scheduler.work_threads(:active).size.should == 1
+      expect(@scheduler.work_threads(:active).size).to eq(1)
 
       t = @scheduler.work_threads(:active).first
 
-      t.class.should == Thread
-      t[@scheduler.thread_key].should == true
-      t[:rufus_scheduler_job].should == job
-      t[:rufus_scheduler_time].should_not == nil
+      expect(t.class).to eq(Thread)
+      expect(t[@scheduler.thread_key]).to eq(true)
+      expect(t[:rufus_scheduler_job]).to eq(job)
+      expect(t[:rufus_scheduler_time]).not_to eq(nil)
     end
 
     it 'does not return threads from other schedulers' do
@@ -437,7 +439,7 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      scheduler.work_threads(:active).should == []
+      expect(scheduler.work_threads(:active)).to eq([])
 
       scheduler.shutdown
     end
@@ -459,7 +461,7 @@ describe Rufus::Scheduler do
 
     it 'returns the max job thread count' do
 
-      @scheduler.max_work_threads.should == 28
+      expect(@scheduler.max_work_threads).to eq(28)
     end
   end
 
@@ -469,7 +471,7 @@ describe Rufus::Scheduler do
 
       @scheduler.max_work_threads = 14
 
-      @scheduler.max_work_threads.should == 14
+      expect(@scheduler.max_work_threads).to eq(14)
     end
   end
 
@@ -497,7 +499,7 @@ describe Rufus::Scheduler do
 
     it 'returns [] when there are no running jobs' do
 
-      @scheduler.running_jobs.should == []
+      expect(@scheduler.running_jobs).to eq([])
     end
 
     it 'returns a list of running Job instances' do
@@ -509,8 +511,8 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      job.running?.should == true
-      @scheduler.running_jobs.should == [ job ]
+      expect(job.running?).to eq(true)
+      expect(@scheduler.running_jobs).to eq([ job ])
     end
 
     it 'does not return twice the same job' do
@@ -522,8 +524,8 @@ describe Rufus::Scheduler do
 
       sleep 1.5
 
-      job.running?.should == true
-      @scheduler.running_jobs.should == [ job ]
+      expect(job.running?).to eq(true)
+      expect(@scheduler.running_jobs).to eq([ job ])
     end
   end
 
@@ -540,12 +542,15 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      @scheduler.running_jobs(:tag => 't0').map(&:original).should ==
+      expect(@scheduler.running_jobs(:tag => 't0').map(&:original)).to eq(
         %w[ 0.1s ]
-      @scheduler.running_jobs(:tag => 't1').map(&:original).should ==
+      )
+      expect(@scheduler.running_jobs(:tag => 't1').map(&:original)).to eq(
         %w[ 0.2s ]
-      @scheduler.running_jobs(:tags => %w[ t0 t1 ]).map(&:original).should ==
+      )
+      expect(@scheduler.running_jobs(:tags => %w[ t0 t1 ]).map(&:original)).to eq(
         []
+      )
     end
   end
 
@@ -561,12 +566,12 @@ describe Rufus::Scheduler do
 
       h = @scheduler.occurrences(Time.now + 4 * 60, Time.now + 11 * 60)
 
-      h.size.should == 5
-      h[j0].should == [ j0.next_time ]
-      h[j1].should == [ j1.next_time ]
-      h[j2].size.should == 2
-      h[j3].size.should == 2
-      h[j4].size.should == 7
+      expect(h.size).to eq(5)
+      expect(h[j0]).to eq([ j0.next_time ])
+      expect(h[j1]).to eq([ j1.next_time ])
+      expect(h[j2].size).to eq(2)
+      expect(h[j3].size).to eq(2)
+      expect(h[j4].size).to eq(7)
     end
 
     it 'returns a [ [ time, job ], ... ] of job occurrences when :timeline' do
@@ -577,10 +582,10 @@ describe Rufus::Scheduler do
       a =
         @scheduler.occurrences(Time.now + 4 * 60, Time.now + 11 * 60, :timeline)
 
-      a[0][0].should be_within_1s_of(Time.now + 5 * 60)
-      a[0][1].should == j0
-      a[1][0].should be_within_1s_of(Time.now + 10 * 60)
-      a[1][1].should == j1
+      expect(a[0][0]).to be_within_1s_of(Time.now + 5 * 60)
+      expect(a[0][1]).to eq(j0)
+      expect(a[1][0]).to be_within_1s_of(Time.now + 10 * 60)
+      expect(a[1][1]).to eq(j1)
     end
 
     it 'respects :first_at for repeat jobs' do
@@ -589,8 +594,8 @@ describe Rufus::Scheduler do
 
       h = @scheduler.occurrences(Time.now + 4 * 60, Time.now + 16 * 60)
 
-      h[j0][0].should be_within_1s_of(Time.now + 10 * 60)
-      h[j0][1].should be_within_1s_of(Time.now + 15 * 60)
+      expect(h[j0][0]).to be_within_1s_of(Time.now + 10 * 60)
+      expect(h[j0][1]).to be_within_1s_of(Time.now + 15 * 60)
     end
 
     it 'respects :times for repeat jobs' do
@@ -599,7 +604,7 @@ describe Rufus::Scheduler do
 
       h = @scheduler.occurrences(Time.now + 4 * 60, Time.now + 16 * 60)
 
-      h[j0].size.should == 6
+      expect(h[j0].size).to eq(6)
     end
   end
 
@@ -612,10 +617,10 @@ describe Rufus::Scheduler do
 
       a = @scheduler.timeline(Time.now + 4 * 60, Time.now + 11 * 60)
 
-      a[0][0].should be_within_1s_of(Time.now + 5 * 60)
-      a[0][1].should == j0
-      a[1][0].should be_within_1s_of(Time.now + 10 * 60)
-      a[1][1].should == j1
+      expect(a[0][0]).to be_within_1s_of(Time.now + 5 * 60)
+      expect(a[0][1]).to eq(j0)
+      expect(a[1][0]).to be_within_1s_of(Time.now + 10 * 60)
+      expect(a[1][1]).to eq(j1)
     end
   end
 
@@ -629,7 +634,7 @@ describe Rufus::Scheduler do
 
       @scheduler.shutdown
 
-      @scheduler.uptime.should == nil
+      expect(@scheduler.uptime).to eq(nil)
     end
 
     it 'shuts the scheduler down' do
@@ -643,14 +648,14 @@ describe Rufus::Scheduler do
         t[:name] == "rufus_scheduler_#{@scheduler.object_id}"
       }
 
-      t.should == nil
+      expect(t).to eq(nil)
     end
 
     it 'has a #stop alias' do
 
       @scheduler.stop
 
-      @scheduler.uptime.should == nil
+      expect(@scheduler.uptime).to eq(nil)
     end
 
     #it 'has a #close alias'
@@ -671,10 +676,10 @@ describe Rufus::Scheduler do
 
       @scheduler.shutdown(:wait)
 
-      counter.should == 1
-      @scheduler.uptime.should == nil
-      @scheduler.running_jobs.should == []
-      @scheduler.threads.should == []
+      expect(counter).to eq(1)
+      expect(@scheduler.uptime).to eq(nil)
+      expect(@scheduler.running_jobs).to eq([])
+      expect(@scheduler.threads).to eq([])
     end
   end
 
@@ -699,10 +704,10 @@ describe Rufus::Scheduler do
 
       sleep 1.4
 
-      counter.should == 0
-      @scheduler.uptime.should == nil
-      @scheduler.running_jobs.should == []
-      @scheduler.threads.should == []
+      expect(counter).to eq(0)
+      expect(@scheduler.uptime).to eq(nil)
+      expect(@scheduler.running_jobs).to eq([])
+      expect(@scheduler.threads).to eq([])
     end
   end
 
@@ -716,7 +721,7 @@ describe Rufus::Scheduler do
 
       sleep(3)
 
-      job.last_time.should == nil
+      expect(job.last_time).to eq(nil)
     end
   end
 
@@ -731,7 +736,7 @@ describe Rufus::Scheduler do
       @scheduler.resume
       sleep(2)
 
-      job.last_time.should_not == nil
+      expect(job.last_time).not_to eq(nil)
     end
   end
 
@@ -740,17 +745,17 @@ describe Rufus::Scheduler do
     it 'returns true if the scheduler is paused' do
 
       @scheduler.pause
-      @scheduler.paused?.should == true
+      expect(@scheduler.paused?).to eq(true)
     end
 
     it 'returns false if the scheduler is not paused' do
 
-      @scheduler.paused?.should == false
+      expect(@scheduler.paused?).to eq(false)
 
       @scheduler.pause
       @scheduler.resume
 
-      @scheduler.paused?.should == false
+      expect(@scheduler.paused?).to eq(false)
     end
   end
 
@@ -760,12 +765,12 @@ describe Rufus::Scheduler do
 
       @scheduler.shutdown
 
-      @scheduler.down?.should == true
+      expect(@scheduler.down?).to eq(true)
     end
 
     it 'returns false when the scheduler is up' do
 
-      @scheduler.down?.should == false
+      expect(@scheduler.down?).to eq(false)
     end
   end
 
@@ -773,7 +778,7 @@ describe Rufus::Scheduler do
 
     it 'returns true when the scheduler is up' do
 
-      @scheduler.up?.should == true
+      expect(@scheduler.up?).to eq(true)
     end
   end
 
@@ -785,7 +790,7 @@ describe Rufus::Scheduler do
 
     it 'is empty at the beginning' do
 
-      @scheduler.jobs.should == []
+      expect(@scheduler.jobs).to eq([])
     end
 
     it 'returns the list of scheduled jobs' do
@@ -797,7 +802,7 @@ describe Rufus::Scheduler do
 
       jobs = @scheduler.jobs
 
-      jobs.collect { |j| j.original }.sort.should == %w[ 10d 1w ]
+      expect(jobs.collect { |j| j.original }.sort).to eq(%w[ 10d 1w ])
     end
 
     it 'returns all the jobs (even those pending reschedule)' do
@@ -808,7 +813,7 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      @scheduler.jobs.size.should == 1
+      expect(@scheduler.jobs.size).to eq(1)
     end
 
     it 'does not return unscheduled jobs' do
@@ -822,7 +827,7 @@ describe Rufus::Scheduler do
 
       job.unschedule
 
-      @scheduler.jobs.size.should == 0
+      expect(@scheduler.jobs.size).to eq(0)
     end
   end
 
@@ -830,8 +835,8 @@ describe Rufus::Scheduler do
 
     it 'returns [] when there are no jobs with the corresponding tag' do
 
-      @scheduler.jobs(:tag => 'nada').should == []
-      @scheduler.jobs(:tags => %w[ nada hello ]).should == []
+      expect(@scheduler.jobs(:tag => 'nada')).to eq([])
+      expect(@scheduler.jobs(:tags => %w[ nada hello ])).to eq([])
     end
 
     it 'returns the jobs with the corresponding tag' do
@@ -840,12 +845,15 @@ describe Rufus::Scheduler do
       @scheduler.every '2h', :tag => %w[ t0 t1 ] do; end
       @scheduler.every '3h' do; end
 
-      @scheduler.jobs(:tags => 't0').map(&:original).sort.should ==
+      expect(@scheduler.jobs(:tags => 't0').map(&:original).sort).to eq(
         %w[ 10d 2h ]
-      @scheduler.jobs(:tags => 't1').map(&:original).sort.should ==
+      )
+      expect(@scheduler.jobs(:tags => 't1').map(&:original).sort).to eq(
         %w[ 2h ]
-      @scheduler.jobs(:tags => [ 't1', 't0' ]).map(&:original).sort.should ==
+      )
+      expect(@scheduler.jobs(:tags => [ 't1', 't0' ]).map(&:original).sort).to eq(
         %w[ 2h ]
+      )
     end
   end
 
@@ -859,7 +867,7 @@ describe Rufus::Scheduler do
 
       jobs = @scheduler.every_jobs
 
-      jobs.collect { |j| j.original }.sort.should == %w[ 5m ]
+      expect(jobs.collect { |j| j.original }.sort).to eq(%w[ 5m ])
     end
   end
 
@@ -873,7 +881,7 @@ describe Rufus::Scheduler do
 
       jobs = @scheduler.at_jobs
 
-      jobs.collect { |j| j.original }.sort.should == [ '2030/12/12 12:10:00' ]
+      expect(jobs.collect { |j| j.original }.sort).to eq([ '2030/12/12 12:10:00' ])
     end
   end
 
@@ -887,7 +895,7 @@ describe Rufus::Scheduler do
 
       jobs = @scheduler.in_jobs
 
-      jobs.collect { |j| j.original }.sort.should == %w[ 10d ]
+      expect(jobs.collect { |j| j.original }.sort).to eq(%w[ 10d ])
     end
   end
 
@@ -902,7 +910,7 @@ describe Rufus::Scheduler do
 
       jobs = @scheduler.cron_jobs
 
-      jobs.collect { |j| j.original }.sort.should == [ '* * * * *' ]
+      expect(jobs.collect { |j| j.original }.sort).to eq([ '* * * * *' ])
     end
   end
 
@@ -918,7 +926,7 @@ describe Rufus::Scheduler do
 
       jobs = @scheduler.interval_jobs
 
-      jobs.collect { |j| j.original }.sort.should == %w[ 7m ]
+      expect(jobs.collect { |j| j.original }.sort).to eq(%w[ 7m ])
     end
   end
 
@@ -943,7 +951,7 @@ describe Rufus::Scheduler do
 
       sleep 0.7
 
-      $out.should == [ "pre #{job_id}", job_id ]
+      expect($out).to eq([ "pre #{job_id}", job_id ])
     end
 
     it 'accepts the job and the triggerTime as argument' do
@@ -960,9 +968,9 @@ describe Rufus::Scheduler do
 
       sleep 0.7
 
-      $tt.class.should == Time
-      $tt.should > start
-      $tt.should < Time.now
+      expect($tt.class).to eq(Time)
+      expect($tt).to be > start
+      expect($tt).to be < Time.now
     end
 
     context 'when it returns false' do
@@ -983,7 +991,7 @@ describe Rufus::Scheduler do
 
         sleep 0.7
 
-        $out.should == [ "pre #{job_id}" ]
+        expect($out).to eq([ "pre #{job_id}" ])
       end
     end
   end
@@ -1005,7 +1013,7 @@ describe Rufus::Scheduler do
 
       sleep 0.7
 
-      $out.should == [ job_id, "post #{job_id}" ]
+      expect($out).to eq([ job_id, "post #{job_id}" ])
     end
   end
 
@@ -1025,8 +1033,8 @@ describe Rufus::Scheduler do
       s0 = Rufus::Scheduler.singleton
       s1 = Rufus::Scheduler.s
 
-      s0.class.should == Rufus::Scheduler
-      s1.object_id.should == s0.object_id
+      expect(s0.class).to eq(Rufus::Scheduler)
+      expect(s1.object_id).to eq(s0.object_id)
     end
 
     it 'accepts initialization parameters' do
@@ -1034,7 +1042,7 @@ describe Rufus::Scheduler do
       s = Rufus::Scheduler.singleton(:max_work_threads => 77)
       s = Rufus::Scheduler.singleton(:max_work_threads => 42)
 
-      s.max_work_threads.should == 77
+      expect(s.max_work_threads).to eq(77)
     end
   end
 end

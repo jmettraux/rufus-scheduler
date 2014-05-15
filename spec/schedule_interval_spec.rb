@@ -24,8 +24,8 @@ describe Rufus::Scheduler do
       @scheduler.interval(10) do
       end
 
-      @scheduler.jobs.size.should == 1
-      @scheduler.jobs.first.class.should == Rufus::Scheduler::IntervalJob
+      expect(@scheduler.jobs.size).to eq(1)
+      expect(@scheduler.jobs.first.class).to eq(Rufus::Scheduler::IntervalJob)
     end
 
     it 'triggers a job (2 times)' do
@@ -38,7 +38,7 @@ describe Rufus::Scheduler do
 
       sleep 2.0
 
-      counter.should > 2
+      expect(counter).to be > 2
     end
 
     it 'triggers, but reschedules after the trigger execution' do
@@ -55,7 +55,7 @@ describe Rufus::Scheduler do
       t = Time.now
       sleep 0.1 while chronos.size < 4 && Time.now < t + 5
 
-      chronos.size.should == 4
+      expect(chronos.size).to eq(4)
 
       deltas = chronos.collect(&:last).compact
 
@@ -63,7 +63,7 @@ describe Rufus::Scheduler do
       #pp deltas
 
       deltas.each do |d|
-        d.should >= 0.9
+        expect(d).to be >= 0.9
       end
     end
 
@@ -78,31 +78,31 @@ describe Rufus::Scheduler do
 
       sleep 1.6
 
-      @scheduler.jobs(:all).size.should == 1
+      expect(@scheduler.jobs(:all).size).to eq(1)
 
       job.unschedule
       c = counter
 
       sleep 1.6
 
-      counter.should == c
-      @scheduler.jobs(:all).size.should == 0
+      expect(counter).to eq(c)
+      expect(@scheduler.jobs(:all).size).to eq(0)
     end
 
     it 'raises on negative intervals' do
 
-      lambda {
+      expect {
         @scheduler.interval(-1) do
         end
-      }.should raise_error(ArgumentError)
+      }.to raise_error(ArgumentError)
     end
 
     it 'raises on zero intervals' do
 
-      lambda {
+      expect {
         @scheduler.interval(0) do
         end
-      }.should raise_error(ArgumentError)
+      }.to raise_error(ArgumentError)
     end
 
     #it 'raises if the job frequency is higher than the scheduler frequency' do
@@ -121,7 +121,7 @@ describe Rufus::Scheduler do
 
       job = @scheduler.schedule_interval('1h') do; end
 
-      job.interval.should == 3600
+      expect(job.interval).to eq(3600)
     end
   end
 end

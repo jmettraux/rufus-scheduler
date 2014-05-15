@@ -23,7 +23,7 @@ describe Rufus::Scheduler::IntervalJob do
 
       job = @scheduler.schedule_interval('1h') do; end
 
-      job.interval.should == 3600
+      expect(job.interval).to eq(3600)
     end
   end
 
@@ -41,8 +41,8 @@ describe Rufus::Scheduler::IntervalJob do
       #p [ job.last_time, job.last_time.to_f ]
       #p [ job.first_at, job.first_at.to_f ]
 
-      job.first_at.should be_within_1s_of(t + 2)
-      job.last_time.should be_within_1s_of(job.first_at)
+      expect(job.first_at).to be_within_1s_of(t + 2)
+      expect(job.last_time).to be_within_1s_of(job.first_at)
     end
 
     describe '#first_at=' do
@@ -59,8 +59,8 @@ describe Rufus::Scheduler::IntervalJob do
         fa1 = job.first_at
         nt1 = job.next_time
 
-        nt0.should == fa0
-        nt1.should == fa1
+        expect(nt0).to eq(fa0)
+        expect(nt1).to eq(fa1)
       end
     end
   end

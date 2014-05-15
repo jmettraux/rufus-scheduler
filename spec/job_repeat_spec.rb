@@ -28,7 +28,7 @@ describe Rufus::Scheduler::RepeatJob do
           counter += 1
         end
 
-      counter.should == 0
+      expect(counter).to eq(0)
 
       while counter < 1; sleep(0.1); end
 
@@ -36,7 +36,7 @@ describe Rufus::Scheduler::RepeatJob do
 
       sleep(1)
 
-      counter.should == 1
+      expect(counter).to eq(1)
     end
   end
 
@@ -48,14 +48,14 @@ describe Rufus::Scheduler::RepeatJob do
 
       job.pause
 
-      job.paused?.should == true
+      expect(job.paused?).to eq(true)
     end
 
     it 'returns false if the job is not paused' do
 
       job = @scheduler.schedule_every('10s') do; end
 
-      job.paused?.should == false
+      expect(job.paused?).to eq(false)
     end
   end
 
@@ -75,7 +75,7 @@ describe Rufus::Scheduler::RepeatJob do
 
       sleep(1.5)
 
-      counter.should > 1
+      expect(counter).to be > 1
     end
 
     it 'has no effect on a not paused job' do
@@ -84,7 +84,7 @@ describe Rufus::Scheduler::RepeatJob do
 
       job.resume
 
-      job.paused?.should == false
+      expect(job.paused?).to eq(false)
     end
   end
 
@@ -101,7 +101,7 @@ describe Rufus::Scheduler::RepeatJob do
 
       sleep(2.6)
 
-      counter.should == 3
+      expect(counter).to eq(3)
     end
 
     it 'is OK when passed a nil instead of an integer' do
@@ -115,14 +115,14 @@ describe Rufus::Scheduler::RepeatJob do
 
       sleep(2.5)
 
-      counter.should > 3
+      expect(counter).to be > 3
     end
 
     it 'raises when passed something else than nil or an integer' do
 
-      lambda {
+      expect {
         @scheduler.schedule_every '0.5s', :times => 'nada' do; end
-      }.should raise_error(ArgumentError)
+      }.to raise_error(ArgumentError)
     end
   end
 
@@ -134,7 +134,7 @@ describe Rufus::Scheduler::RepeatJob do
 
       job = @scheduler.schedule_every '0.5s', :first => t do; end
 
-      job.first_at.should == t
+      expect(job.first_at).to eq(t)
     end
 
     it 'accepts a time string' do
@@ -143,8 +143,8 @@ describe Rufus::Scheduler::RepeatJob do
 
       job = @scheduler.schedule_every '0.5s', :first => t.to_s do; end
 
-      job.first_at.to_s.should == t.to_s
-      job.first_at.zone.should == t.zone
+      expect(job.first_at.to_s).to eq(t.to_s)
+      expect(job.first_at.zone).to eq(t.zone)
     end
 
     it 'only lets the job trigger after the :first' do
@@ -159,20 +159,20 @@ describe Rufus::Scheduler::RepeatJob do
 
       sleep(1)
 
-      counter.should == 0
+      expect(counter).to eq(0)
 
       sleep(1)
 
-      counter.should > 0
+      expect(counter).to be > 0
     end
 
     it 'raises on points in the past' do
 
-      lambda {
+      expect {
 
         @scheduler.schedule_every '0.5s', :first => Time.now - 60 do; end
 
-      }.should raise_error(ArgumentError)
+      }.to raise_error(ArgumentError)
     end
 
     context ':first_time => :now/:immediately' do
@@ -193,8 +193,8 @@ describe Rufus::Scheduler::RepeatJob do
         #p job.first_at.to_f
         #p ft.to_f
 
-        job.first_at.should < n + 0.7
-        ft.should < job.first_at + @scheduler.frequency + 0.1
+        expect(job.first_at).to be < n + 0.7
+        expect(ft).to be < job.first_at + @scheduler.frequency + 0.1
       end
     end
   end
@@ -207,8 +207,8 @@ describe Rufus::Scheduler::RepeatJob do
 
       job = @scheduler.schedule_every '0.5s', :first => '1h' do; end
 
-      job.first_at.should >= t + 3600
-      job.first_at.should < t + 3601
+      expect(job.first_at).to be >= t + 3600
+      expect(job.first_at).to be < t + 3601
     end
 
     it 'accepts a duration in seconds (integer)' do
@@ -217,15 +217,15 @@ describe Rufus::Scheduler::RepeatJob do
 
       job = @scheduler.schedule_every '0.5s', :first => 3600 do; end
 
-      job.first_at.should >= t + 3600
-      job.first_at.should < t + 3601
+      expect(job.first_at).to be >= t + 3600
+      expect(job.first_at).to be < t + 3601
     end
 
     it 'raises if the argument cannot be used' do
 
-      lambda {
+      expect {
         @scheduler.every '0.5s', :first => :nada do; end
-      }.should raise_error(ArgumentError)
+      }.to raise_error(ArgumentError)
     end
   end
 
@@ -236,7 +236,7 @@ describe Rufus::Scheduler::RepeatJob do
       job = @scheduler.schedule_every '0.5s', :first => 3600 do; end
       job.first_at = '2030-12-12 12:00:30'
 
-      job.first_at.strftime('%c').should == 'Thu Dec 12 12:00:30 2030'
+      expect(job.first_at.strftime('%c')).to eq('Thu Dec 12 12:00:30 2030')
     end
   end
 
@@ -248,7 +248,7 @@ describe Rufus::Scheduler::RepeatJob do
 
       job = @scheduler.schedule_every '0.5s', :last => t do; end
 
-      job.last_at.should == t
+      expect(job.last_at).to eq(t)
     end
 
     it 'unschedules the job after the last_at time' do
@@ -267,9 +267,9 @@ describe Rufus::Scheduler::RepeatJob do
       sleep 3
 
       #counter.should == 3
-      [ 3, 4 ].should include(counter)
-      tt.should < t
-      @scheduler.jobs.should_not include(job)
+      expect([ 3, 4 ]).to include(counter)
+      expect(tt).to be < t
+      expect(@scheduler.jobs).not_to include(job)
     end
 
     it 'accepts a time string' do
@@ -278,17 +278,17 @@ describe Rufus::Scheduler::RepeatJob do
 
       job = @scheduler.schedule_every '0.5s', :last => t.to_s do; end
 
-      job.last_at.to_s.should == t.to_s
-      job.last_at.zone.should == t.zone
+      expect(job.last_at.to_s).to eq(t.to_s)
+      expect(job.last_at.zone).to eq(t.zone)
     end
 
     it 'raises on a point in the past' do
 
-      lambda {
+      expect {
 
         @scheduler.every '0.5s', :last => Time.now - 60 do; end
 
-      }.should raise_error(ArgumentError)
+      }.to raise_error(ArgumentError)
     end
   end
 
@@ -300,8 +300,8 @@ describe Rufus::Scheduler::RepeatJob do
 
       job = @scheduler.schedule_every '0.5s', :last_in => '2s' do; end
 
-      job.last_at.should >= t + 2
-      job.last_at.should < t + 2.5
+      expect(job.last_at).to be >= t + 2
+      expect(job.last_at).to be < t + 2.5
     end
 
     it 'accepts a duration in seconds (integer)' do
@@ -310,15 +310,15 @@ describe Rufus::Scheduler::RepeatJob do
 
       job = @scheduler.schedule_every '0.5s', :last_in => 2.0 do; end
 
-      job.last_at.should >= t + 2
-      job.last_at.should < t + 2.5
+      expect(job.last_at).to be >= t + 2
+      expect(job.last_at).to be < t + 2.5
     end
 
     it 'raises if the argument is worthless' do
 
-      lambda {
+      expect {
         @scheduler.every '0.5s', :last => :nada do; end
-      }.should raise_error(ArgumentError)
+      }.to raise_error(ArgumentError)
     end
   end
 
@@ -329,7 +329,7 @@ describe Rufus::Scheduler::RepeatJob do
       job = @scheduler.schedule_every '0.5s', :last_in => 10.0 do; end
       job.last_at = '2030-12-12 12:00:30'
 
-      job.last_at.strftime('%c').should == 'Thu Dec 12 12:00:30 2030'
+      expect(job.last_at.strftime('%c')).to eq('Thu Dec 12 12:00:30 2030')
     end
   end
 
@@ -339,7 +339,7 @@ describe Rufus::Scheduler::RepeatJob do
 
       job = @scheduler.schedule_every '5m' do; end
 
-      job.count.should == 0
+      expect(job.count).to eq(0)
     end
 
     it 'keeps track of how many times the job fired' do
@@ -348,8 +348,8 @@ describe Rufus::Scheduler::RepeatJob do
 
       sleep(2.0)
 
-      job.count.should >= 3
-      job.count.should <= 4
+      expect(job.count).to be >= 3
+      expect(job.count).to be <= 4
     end
   end
 end

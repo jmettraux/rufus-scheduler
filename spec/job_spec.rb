@@ -38,7 +38,7 @@ describe Rufus::Scheduler::Job do
 
       job = @scheduler.schedule_in '10d' do; end
 
-      job.last_time.should == nil
+      expect(job.last_time).to eq(nil)
     end
 
     it 'returns the last time the job fired' do
@@ -47,7 +47,7 @@ describe Rufus::Scheduler::Job do
 
       sleep 0.4
 
-      job.last_time.should_not == nil
+      expect(job.last_time).not_to eq(nil)
     end
   end
 
@@ -57,7 +57,7 @@ describe Rufus::Scheduler::Job do
 
       job = @scheduler.in('1d', :job => true) {}
 
-      job.threads.size.should == 0
+      expect(job.threads.size).to eq(0)
     end
 
     it 'returns an empty list after the job terminated' do
@@ -66,7 +66,7 @@ describe Rufus::Scheduler::Job do
 
       sleep 0.8
 
-      job.threads.size.should == 0
+      expect(job.threads.size).to eq(0)
     end
 
     it 'lists the threads the job currently runs in' do
@@ -78,10 +78,10 @@ describe Rufus::Scheduler::Job do
 
       sleep 0.4
 
-      job.threads.size.should == 1
+      expect(job.threads.size).to eq(1)
 
       t = job.threads.first
-      t[:rufus_scheduler_job].should == job
+      expect(t[:rufus_scheduler_job]).to eq(job)
     end
   end
 
@@ -95,7 +95,7 @@ describe Rufus::Scheduler::Job do
 
       job.kill
 
-      Thread.list.size.should == tls
+      expect(Thread.list.size).to eq(tls)
     end
 
     it 'makes the threads vacant' do
@@ -120,13 +120,13 @@ describe Rufus::Scheduler::Job do
       v1 = @scheduler.work_threads(:vacant).size
       a1 = @scheduler.work_threads(:active).size
 
-      counter.should == 0
+      expect(counter).to eq(0)
 
-      v0.should == 0
-      a0.should == 1
+      expect(v0).to eq(0)
+      expect(a0).to eq(1)
 
-      v1.should == 1
-      a1.should == 0
+      expect(v1).to eq(1)
+      expect(a1).to eq(0)
     end
   end
 
@@ -136,7 +136,7 @@ describe Rufus::Scheduler::Job do
 
       job = @scheduler.in('1d', :job => true) {}
 
-      job.running?.should == false
+      expect(job.running?).to eq(false)
     end
 
     it 'returns true when the job is running in at least one thread' do
@@ -145,7 +145,7 @@ describe Rufus::Scheduler::Job do
 
       sleep 0.4
 
-      job.running?.should == true
+      expect(job.running?).to eq(true)
     end
   end
 
@@ -155,7 +155,7 @@ describe Rufus::Scheduler::Job do
 
       job = @scheduler.schedule_in('1d') {}
 
-      job.scheduled?.should == true
+      expect(job.scheduled?).to eq(true)
     end
 
     it 'returns false when the job is not scheduled' do
@@ -164,7 +164,7 @@ describe Rufus::Scheduler::Job do
 
       sleep 0.4
 
-      job.scheduled?.should == false
+      expect(job.scheduled?).to eq(false)
     end
 
     it 'returns true for repeat jobs that are running' do
@@ -173,8 +173,8 @@ describe Rufus::Scheduler::Job do
 
       sleep 1
 
-      job.running?.should == true
-      job.scheduled?.should == true
+      expect(job.running?).to eq(true)
+      expect(job.scheduled?).to eq(true)
     end
   end
 
@@ -192,7 +192,7 @@ describe Rufus::Scheduler::Job do
 
       sleep 0.8
 
-      counter.should == 2
+      expect(counter).to eq(2)
     end
   end
 
@@ -215,7 +215,7 @@ describe Rufus::Scheduler::Job do
 
       job.call(true)
 
-      $err.should == 'Rufus::Scheduler::InJob 1d again'
+      expect($err).to eq('Rufus::Scheduler::InJob 1d again')
     end
   end
 
@@ -233,11 +233,11 @@ describe Rufus::Scheduler::Job do
         #job.call(false)
         job.call # false is the default
 
-        false.should == true
+        expect(false).to eq(true)
 
       rescue => ex
 
-        ex.message.should == 'fast'
+        expect(ex.message).to eq('fast')
       end
     end
   end
@@ -256,7 +256,7 @@ describe Rufus::Scheduler::Job do
 
         sleep 3
 
-        job[:counter].should > 1
+        expect(job[:counter]).to be > 1
       end
     end
 
@@ -266,7 +266,7 @@ describe Rufus::Scheduler::Job do
 
         job = @scheduler.schedule_in '1s' do; end
 
-        job[:nada].should == nil
+        expect(job[:nada]).to eq(nil)
       end
 
       it 'returns the value of a job-local variable' do
@@ -274,7 +274,7 @@ describe Rufus::Scheduler::Job do
         job = @scheduler.schedule_in '1s' do; end
         job[:x] = :y
 
-        job[:x].should == :y
+        expect(job[:x]).to eq(:y)
       end
     end
 
@@ -285,7 +285,7 @@ describe Rufus::Scheduler::Job do
         job = @scheduler.schedule_in '1s' do; end
         job[:x] = :y
 
-        job.key?(:x).should == true
+        expect(job.key?(:x)).to eq(true)
       end
     end
 
@@ -298,7 +298,7 @@ describe Rufus::Scheduler::Job do
         job['hello'] = :z
         job[123] = {}
 
-        job.keys.sort_by { |k| k.to_s }.should == [ 123, 'hello', :x ]
+        expect(job.keys.sort_by { |k| k.to_s }).to eq([ 123, 'hello', :x ])
       end
     end
   end
@@ -309,21 +309,21 @@ describe Rufus::Scheduler::Job do
 
       job = @scheduler.in '10d', :job => true, :tag => 't0' do; end
 
-      job.tags.should == %w[ t0 ]
+      expect(job.tags).to eq(%w[ t0 ])
     end
 
     it 'accepts an array of tags' do
 
       job = @scheduler.in '10d', :job => true, :tag => %w[ t0 t1 ] do; end
 
-      job.tags.should == %w[ t0 t1 ]
+      expect(job.tags).to eq(%w[ t0 t1 ])
     end
 
     it 'turns tags into strings' do
 
       job = @scheduler.in '10d', :job => true, :tags => [ 1, 2 ] do; end
 
-      job.tags.should == %w[ 1 2 ]
+      expect(job.tags).to eq(%w[ 1 2 ])
     end
   end
 
@@ -338,11 +338,11 @@ describe Rufus::Scheduler::Job do
 
       sleep 0.4
 
-      job.threads.first.should == @scheduler.thread
+      expect(job.threads.first).to eq(@scheduler.thread)
 
       sleep 1.4
 
-      job.threads.size.should == 0
+      expect(job.threads.size).to eq(0)
     end
   end
 
@@ -357,11 +357,11 @@ describe Rufus::Scheduler::Job do
 
       sleep 0.4
 
-      job.threads.first.should_not == @scheduler.thread
+      expect(job.threads.first).not_to eq(@scheduler.thread)
 
       sleep 1.4
 
-      job.threads.size.should == 0
+      expect(job.threads.size).to eq(0)
     end
   end
 
@@ -378,7 +378,7 @@ describe Rufus::Scheduler::Job do
 
         sleep 3
 
-        job.threads.size.should > 1
+        expect(job.threads.size).to be > 1
       end
     end
 
@@ -393,7 +393,7 @@ describe Rufus::Scheduler::Job do
 
         sleep 3
 
-        job.threads.size.should == 1
+        expect(job.threads.size).to eq(1)
       end
     end
   end
@@ -416,14 +416,14 @@ describe Rufus::Scheduler::Job do
         sleep 0.7
 
         if j0.threads.any?
-          j0.threads.size.should == 1
-          j1.threads.size.should == 0
+          expect(j0.threads.size).to eq(1)
+          expect(j1.threads.size).to eq(0)
         else
-          j0.threads.size.should == 0
-          j1.threads.size.should == 1
+          expect(j0.threads.size).to eq(0)
+          expect(j1.threads.size).to eq(1)
         end
 
-        @scheduler.mutexes.keys.should == %w[ vladivostok ]
+        expect(@scheduler.mutexes.keys).to eq(%w[ vladivostok ])
       end
     end
 
@@ -439,14 +439,14 @@ describe Rufus::Scheduler::Job do
         sleep 0.7
 
         if j0.threads.any?
-          j0.threads.size.should == 1
-          j1.threads.size.should == 0
+          expect(j0.threads.size).to eq(1)
+          expect(j1.threads.size).to eq(0)
         else
-          j0.threads.size.should == 0
-          j1.threads.size.should == 1
+          expect(j0.threads.size).to eq(0)
+          expect(j1.threads.size).to eq(1)
         end
 
-        @scheduler.mutexes.keys.should == []
+        expect(@scheduler.mutexes.keys).to eq([])
       end
     end
 
@@ -466,14 +466,14 @@ describe Rufus::Scheduler::Job do
         sleep 0.7
 
         if j0.threads.any?
-          j0.threads.size.should == 1
-          j1.threads.size.should == 0
+          expect(j0.threads.size).to eq(1)
+          expect(j1.threads.size).to eq(0)
         else
-          j0.threads.size.should == 0
-          j1.threads.size.should == 1
+          expect(j0.threads.size).to eq(0)
+          expect(j1.threads.size).to eq(1)
         end
 
-        @scheduler.mutexes.keys.sort.should == %w[ a b ]
+        expect(@scheduler.mutexes.keys.sort).to eq(%w[ a b ])
       end
     end
   end
@@ -498,8 +498,8 @@ describe Rufus::Scheduler::Job do
 
       sleep(3)
 
-      counter.should == 1
-      toe.class.should == Rufus::Scheduler::TimeoutError
+      expect(counter).to eq(1)
+      expect(toe.class).to eq(Rufus::Scheduler::TimeoutError)
     end
 
     it 'interrupts the job it is stashed to (point in time)' do
@@ -518,7 +518,7 @@ describe Rufus::Scheduler::Job do
 
       sleep(3)
 
-      counter.should == 1
+      expect(counter).to eq(1)
     end
 
     it 'starts timing when the job enters successfully all its mutexes' do
@@ -542,11 +542,11 @@ describe Rufus::Scheduler::Job do
 
       sleep 3
 
-      t0.should <= t1
+      expect(t0).to be <= t1
 
       d = t2 - t1
-      d.should >= 1.0
-      d.should < 1.5
+      expect(d).to be >= 1.0
+      expect(d).to be < 1.5
     end
 
     it 'emits the timeout information to $stderr (default #on_error)' do
@@ -557,7 +557,7 @@ describe Rufus::Scheduler::Job do
 
       sleep 2
 
-      $stderr.string.should match(/Rufus::Scheduler::TimeoutError/)
+      expect($stderr.string).to match(/Rufus::Scheduler::TimeoutError/)
     end
 
     it 'does not prevent a repeat job from recurring' do
@@ -571,7 +571,7 @@ describe Rufus::Scheduler::Job do
 
       sleep 3
 
-      counter.should > 1
+      expect(counter).to be > 1
     end
   end
 
@@ -583,7 +583,7 @@ describe Rufus::Scheduler::Job do
 
         job = @scheduler.schedule_every '5m' do; end
 
-        job.last_work_time.should == 0.0
+        expect(job.last_work_time).to eq(0.0)
       end
 
       it 'keeps track of how long the work was upon last trigger' do
@@ -595,8 +595,8 @@ describe Rufus::Scheduler::Job do
 
         sleep 2
 
-        job.last_work_time.should >= 0.7
-        job.last_work_time.should < 0.8
+        expect(job.last_work_time).to be >= 0.7
+        expect(job.last_work_time).to be < 0.8
       end
     end
 
@@ -606,7 +606,7 @@ describe Rufus::Scheduler::Job do
 
         job = @scheduler.schedule_every '5m' do; end
 
-        job.mean_work_time.should == 0.0
+        expect(job.mean_work_time).to eq(0.0)
       end
 
       it 'gathers work times and computes the mean' do
@@ -620,10 +620,10 @@ describe Rufus::Scheduler::Job do
 
         sleep 4.6
 
-        job.last_work_time.should >= 0.08
-        job.last_work_time.should < 0.099
-        job.mean_work_time.should > 0.05
-        job.mean_work_time.should < 0.06
+        expect(job.last_work_time).to be >= 0.08
+        expect(job.last_work_time).to be < 0.099
+        expect(job.mean_work_time).to be > 0.05
+        expect(job.mean_work_time).to be < 0.06
       end
     end
   end

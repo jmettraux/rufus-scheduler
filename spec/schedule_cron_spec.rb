@@ -38,16 +38,16 @@ describe Rufus::Scheduler do
       sleep_until_next_second
       sleep 0.3 # be sure to be well into the second
 
-      counter.should == 2
+      expect(counter).to eq(2)
     end
 
     it 'raises if the job frequency is higher than the scheduler frequency' do
 
       @scheduler.frequency = 10
 
-      lambda {
+      expect {
         @scheduler.cron '* * * * * *' do; end
-      }.should raise_error(ArgumentError)
+      }.to raise_error(ArgumentError)
     end
   end
 
@@ -57,9 +57,9 @@ describe Rufus::Scheduler do
 
       job = @scheduler.schedule_cron '* * * * *' do; end
 
-      job.class.should == Rufus::Scheduler::CronJob
-      job.original.should == '* * * * *'
-      job.job_id.should match(/^cron_/)
+      expect(job.class).to eq(Rufus::Scheduler::CronJob)
+      expect(job.original).to eq('* * * * *')
+      expect(job.job_id).to match(/^cron_/)
     end
   end
 end

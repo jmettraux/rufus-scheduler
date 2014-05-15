@@ -25,7 +25,7 @@ describe Rufus::Scheduler::CronJob do
 
       sleep_until_next_minute
 
-      (job.last_time.to_i % 10).should == 0
+      expect(job.last_time.to_i % 10).to eq(0)
     end
   end
 
@@ -59,8 +59,8 @@ describe Rufus::Scheduler::CronJob do
       #p [ job.last_time, job.last_time.to_f ]
       #p [ job.first_at, job.first_at.to_f ]
 
-      job.first_at.should be_within_1s_of(t + 3)
-      job.last_time.should == nil
+      expect(job.first_at).to be_within_1s_of(t + 3)
+      expect(job.last_time).to eq(nil)
     end
 
     it 'triggers for the first time at first_at' do
@@ -73,8 +73,8 @@ describe Rufus::Scheduler::CronJob do
       end
       sleep 4.5
 
-      job.first_at.should be_within_1s_of(t + 3)
-      first_time.should be_within_1s_of(job.first_at)
+      expect(job.first_at).to be_within_1s_of(t + 3)
+      expect(first_time).to be_within_1s_of(job.first_at)
     end
   end
 
@@ -93,11 +93,11 @@ describe Rufus::Scheduler::CronJob do
         first ||= Time.now
       end
 
-      (Time.now - n).should < 1.0
+      expect(Time.now - n).to be < 1.0
 
       loop do
         next unless first
-        (first - n).should < 4.0
+        expect(first - n).to be < 4.0
         break
       end
     end

@@ -21,9 +21,9 @@ describe Rufus::Scheduler do
 
     it 'raises if the block to schedule is missing' do
 
-      lambda {
+      expect {
         @scheduler.at(Time.now + 3600)
-      }.should raise_error(ArgumentError)
+      }.to raise_error(ArgumentError)
     end
 
     it 'returns a job id' do
@@ -32,8 +32,8 @@ describe Rufus::Scheduler do
         @scheduler.at(Time.now + 3600) do
         end
 
-      job_id.class.should == String
-      job_id.should match(/^at_/)
+      expect(job_id.class).to eq(String)
+      expect(job_id).to match(/^at_/)
     end
 
     it 'returns a job if :job => true' do
@@ -42,7 +42,7 @@ describe Rufus::Scheduler do
         @scheduler.at(Time.now + 3600, :job => true) do
         end
 
-      job.class.should == Rufus::Scheduler::AtJob
+      expect(job.class).to eq(Rufus::Scheduler::AtJob)
     end
 
     it 'adds a job' do
@@ -52,9 +52,9 @@ describe Rufus::Scheduler do
       @scheduler.at(t) do
       end
 
-      @scheduler.jobs.size.should == 1
-      @scheduler.jobs.first.class.should == Rufus::Scheduler::AtJob
-      @scheduler.jobs.first.time.should == t
+      expect(@scheduler.jobs.size).to eq(1)
+      expect(@scheduler.jobs.first.class).to eq(Rufus::Scheduler::AtJob)
+      expect(@scheduler.jobs.first.time).to eq(t)
     end
 
     it 'triggers a job' do
@@ -67,7 +67,7 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      a.should == true
+      expect(a).to eq(true)
     end
 
     it 'removes the job after execution' do
@@ -77,7 +77,7 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      @scheduler.jobs.size.should == 0
+      expect(@scheduler.jobs.size).to eq(0)
     end
 
     it 'accepts a Time instance' do
@@ -86,28 +86,28 @@ describe Rufus::Scheduler do
 
       job = @scheduler.at(t, :job => true) {}
 
-      job.time.should == t
+      expect(job.time).to eq(t)
     end
 
     it 'accepts a time string' do
 
       job = @scheduler.at('2100-12-12 20:30', :job => true) {}
 
-      job.time.should == Time.parse('2100-12-12 20:30')
+      expect(job.time).to eq(Time.parse('2100-12-12 20:30'))
     end
 
     it 'accepts a time string with a delta timezone' do
 
       job = @scheduler.at('2100-12-12 20:30 -0200', :job => true) {}
 
-      job.time.should == Time.parse('2100-12-12 20:30 -0200')
+      expect(job.time).to eq(Time.parse('2100-12-12 20:30 -0200'))
     end
 
     it 'accepts a time string with a named timezone' do
 
       job = @scheduler.at('2050-12-12 20:30 Europe/Berlin', :job => true) {}
 
-      job.time.strftime('%c %z').should == 'Mon Dec 12 19:30:00 2050 +0000'
+      expect(job.time.strftime('%c %z')).to eq('Mon Dec 12 19:30:00 2050 +0000')
     end
 
     it 'accepts a Chronic string (if Chronic is present)' do
@@ -116,10 +116,10 @@ describe Rufus::Scheduler do
 
         job = @scheduler.schedule_at('next tuesday at 12:00') {}
 
-        job.time.wday.should == 2
-        job.time.hour.should == 12
-        job.time.min.should == 0
-        job.time.should > Time.now
+        expect(job.time.wday).to eq(2)
+        expect(job.time.hour).to eq(12)
+        expect(job.time.min).to eq(0)
+        expect(job.time).to be > Time.now
       end
     end
 
@@ -132,11 +132,11 @@ describe Rufus::Scheduler do
             'may 27th at 12:00', :now => Time.local(Time.now.year + 2, 1, 1)
           ) {}
 
-        job.time.year.should == Time.now.year + 2
-        job.time.month.should == 5
-        job.time.day.should == 27
-        job.time.hour.should == 12
-        job.time.min.should == 0
+        expect(job.time.year).to eq(Time.now.year + 2)
+        expect(job.time.month).to eq(5)
+        expect(job.time.day).to eq(27)
+        expect(job.time.hour).to eq(12)
+        expect(job.time.min).to eq(0)
       end
     end
 
@@ -150,8 +150,8 @@ describe Rufus::Scheduler do
       job = @scheduler.schedule_at(Time.now + 3600) do
       end
 
-      job.class.should == Rufus::Scheduler::AtJob
-      job.id.should match(/^at_/)
+      expect(job.class).to eq(Rufus::Scheduler::AtJob)
+      expect(job.id).to match(/^at_/)
     end
   end
 end

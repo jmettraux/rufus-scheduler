@@ -21,7 +21,7 @@ describe Rufus::Scheduler do
 
     it 'starts with an empty thread pool' do
 
-      @scheduler.work_threads.size.should == 0
+      expect(@scheduler.work_threads.size).to eq(0)
     end
 
     it 'does not cross the max_work_threads threshold' do
@@ -42,7 +42,7 @@ describe Rufus::Scheduler do
       #  p t[:rufus_scheduler_job].class
       #end
 
-      @scheduler.work_threads.size.should == 5
+      expect(@scheduler.work_threads.size).to eq(5)
     end
 
     it 'does not cross the max_work_threads threshold (overlap: false)' do
@@ -63,7 +63,7 @@ describe Rufus::Scheduler do
       #  p t[:rufus_scheduler_job].class
       #end
 
-      @scheduler.work_threads.size.should == 5
+      expect(@scheduler.work_threads.size).to eq(5)
     end
 
     it 'does not execute unscheduled jobs' do
@@ -89,7 +89,7 @@ describe Rufus::Scheduler do
 
       sleep(2)
 
-      counter.should == 1
+      expect(counter).to eq(1)
     end
   end
 end
