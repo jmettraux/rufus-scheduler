@@ -133,26 +133,29 @@ describe Rufus::Scheduler::CronLine do
     it 'accepts items with initial 0' do
 
       to_a(
-        '09 * * * *', [ [0], [9], nil, nil, nil, nil, nil, nil ]
+        '09 * * * *', [ [0], [9], nil, nil, nil, nil, nil, nil ])
       to_a(
-        '09-12 * * * *', [ [0], [9, 10, 11, 12], nil, nil, nil, nil, nil, nil ]
+        '09-12 * * * *', [ [0], [9, 10, 11, 12], nil, nil, nil, nil, nil, nil ])
       to_a(
-        '07-08 * * * *', [ [0], [7, 8], nil, nil, nil, nil, nil, nil ]
+        '07-08 * * * *', [ [0], [7, 8], nil, nil, nil, nil, nil, nil ])
       to_a(
-        '* */08 * * *', [ [0], nil, [0, 8, 16], nil, nil, nil, nil, nil ]
+        '* */08 * * *', [ [0], nil, [0, 8, 16], nil, nil, nil, nil, nil ])
       to_a(
-        '* */07 * * *', [ [0], nil, [0, 7, 14, 21], nil, nil, nil, nil, nil ]
+        '* */07 * * *', [ [0], nil, [0, 7, 14, 21], nil, nil, nil, nil, nil ])
       to_a(
-        '* 01-09/04 * * *', [ [0], nil, [1, 5, 9], nil, nil, nil, nil, nil ]
+        '* 01-09/04 * * *', [ [0], nil, [1, 5, 9], nil, nil, nil, nil, nil ])
       to_a(
-        '* * * * 06', [ [0], nil, nil, nil, nil, [6], nil, nil ]
+        '* * * * 06', [ [0], nil, nil, nil, nil, [6], nil, nil ])
     end
 
     it 'interprets cron strings with L correctly' do
 
-      to_a '* * L * *', [[0], nil, nil, ['L'], nil, nil, nil, nil ]
-      to_a '* * 2-5,L * *', [[0], nil, nil, [2,3,4,5,'L'], nil, nil, nil, nil ]
-      to_a '* * */8,L * *', [[0], nil, nil, [1,9,17,25,'L'], nil, nil, nil, nil ]
+      to_a(
+        '* * L * *', [[0], nil, nil, ['L'], nil, nil, nil, nil ])
+      to_a(
+        '* * 2-5,L * *', [[0], nil, nil, [2,3,4,5,'L'], nil, nil, nil, nil ])
+      to_a(
+        '* * */8,L * *', [[0], nil, nil, [1,9,17,25,'L'], nil, nil, nil, nil ])
     end
 
     it 'does not support ranges for L' do
