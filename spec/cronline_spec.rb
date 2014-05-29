@@ -132,13 +132,20 @@ describe Rufus::Scheduler::CronLine do
 
     it 'accepts items with initial 0' do
 
-      to_a '09 * * * *', [ [0], [9], nil, nil, nil, nil, nil, nil ]
-      to_a '09-12 * * * *', [ [0], [9, 10, 11, 12], nil, nil, nil, nil, nil, nil ]
-      to_a '07-08 * * * *', [ [0], [7, 8], nil, nil, nil, nil, nil, nil ]
-      to_a '* */08 * * *', [ [0], nil, [0, 8, 16], nil, nil, nil, nil, nil ]
-      to_a '* */07 * * *', [ [0], nil, [0, 7, 14, 21], nil, nil, nil, nil, nil ]
-      to_a '* 01-09/04 * * *', [ [0], nil, [1, 5, 9], nil, nil, nil, nil, nil ]
-      to_a '* * * * 06', [ [0], nil, nil, nil, nil, [6], nil, nil ]
+      to_a(
+        '09 * * * *', [ [0], [9], nil, nil, nil, nil, nil, nil ]
+      to_a(
+        '09-12 * * * *', [ [0], [9, 10, 11, 12], nil, nil, nil, nil, nil, nil ]
+      to_a(
+        '07-08 * * * *', [ [0], [7, 8], nil, nil, nil, nil, nil, nil ]
+      to_a(
+        '* */08 * * *', [ [0], nil, [0, 8, 16], nil, nil, nil, nil, nil ]
+      to_a(
+        '* */07 * * *', [ [0], nil, [0, 7, 14, 21], nil, nil, nil, nil, nil ]
+      to_a(
+        '* 01-09/04 * * *', [ [0], nil, [1, 5, 9], nil, nil, nil, nil, nil ]
+      to_a(
+        '* * * * 06', [ [0], nil, nil, nil, nil, [6], nil, nil ]
     end
 
     it 'interprets cron strings with L correctly' do
@@ -282,10 +289,12 @@ describe Rufus::Scheduler::CronLine do
       expect(nt('* * * * sun#2', local(1970, 1, 12))).to eq(local(1970, 2, 8))
     end
 
-    it 'computes the next time correctly when there is a sun#2,sun#3 involved' do
+    it 'computes next time correctly when there is a sun#2,sun#3 involved' do
 
-      expect(nt('* * * * sun#2,sun#3', local(1970, 1, 1))).to eq(local(1970, 1, 11))
-      expect(nt('* * * * sun#2,sun#3', local(1970, 1, 12))).to eq(local(1970, 1, 18))
+      expect(
+        nt('* * * * sun#2,sun#3', local(1970, 1, 1))).to eq(local(1970, 1, 11))
+      expect(
+        nt('* * * * sun#2,sun#3', local(1970, 1, 12))).to eq(local(1970, 1, 18))
     end
 
     it 'understands sun#L' do
@@ -313,8 +322,10 @@ describe Rufus::Scheduler::CronLine do
 
     it 'returns a time with subseconds chopped off' do
 
-      expect(nt('* * * * *', Time.now).usec).to eq(0)
-      expect(nt('* * * * *', Time.now).iso8601(10).match(/\.0+[^\d]/)).not_to eq(nil)
+      expect(
+        nt('* * * * *', Time.now).usec).to eq(0)
+      expect(
+        nt('* * * * *', Time.now).iso8601(10).match(/\.0+[^\d]/)).not_to eq(nil)
     end
 
     # gh-127
@@ -344,12 +355,17 @@ describe Rufus::Scheduler::CronLine do
 
     it 'returns the previous time the cron should have triggered' do
 
-      expect(pt('* * * * sun', lo(1970, 1, 1))).to eq(lo(1969, 12, 28, 23, 59, 00))
-      expect(pt('* * 13 * *', lo(1970, 1, 1))).to eq(lo(1969, 12, 13, 23, 59, 00))
-      expect(pt('0 12 13 * *', lo(1970, 1, 1))).to eq(lo(1969, 12, 13, 12, 00))
-      expect(pt('0 0 2 1 *', lo(1970, 1, 1))).to eq(lo(1969, 1, 2, 0, 00))
+      expect(
+        pt('* * * * sun', lo(1970, 1, 1))).to eq(lo(1969, 12, 28, 23, 59, 00))
+      expect(
+        pt('* * 13 * *', lo(1970, 1, 1))).to eq(lo(1969, 12, 13, 23, 59, 00))
+      expect(
+        pt('0 12 13 * *', lo(1970, 1, 1))).to eq(lo(1969, 12, 13, 12, 00))
+      expect(
+        pt('0 0 2 1 *', lo(1970, 1, 1))).to eq(lo(1969, 1, 2, 0, 00))
 
-      expect(pt('* * * * * sun', lo(1970, 1, 1))).to eq(lo(1969, 12, 28, 23, 59, 59))
+      expect(
+        pt('* * * * * sun', lo(1970, 1, 1))).to eq(lo(1969, 12, 28, 23, 59, 59))
     end
 
     # gh-127
@@ -564,8 +580,10 @@ describe Rufus::Scheduler::CronLine do
         expect(n0.isdst).to eq(true)
         expect(n1.isdst).to eq(true)
 
-        expect((n0 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('23:02:00 THU')
-        expect((n1 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('07:45:00 FRI')
+        expect(
+          (n0 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('23:02:00 THU')
+        expect(
+          (n1 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('07:45:00 FRI')
       end
     end
 
@@ -603,8 +621,10 @@ describe Rufus::Scheduler::CronLine do
         expect(n0.isdst).to eq(false)
         expect(n1.isdst).to eq(false)
 
-        expect((n0 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('01:02:00 FRI')
-        expect((n1 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('09:45:00 FRI')
+        expect(
+          (n0 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('01:02:00 FRI')
+        expect(
+          (n1 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('09:45:00 FRI')
       end
     end
   end
