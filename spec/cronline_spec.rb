@@ -316,6 +316,24 @@ describe Rufus::Scheduler::CronLine do
       expect(nt('* * * * *', Time.now).usec).to eq(0)
       expect(nt('* * * * *', Time.now).iso8601(10).match(/\.0+[^\d]/)).not_to eq(nil)
     end
+
+    # gh-127
+    #
+    it 'survives TZInfo::AmbiguousTime' do
+
+      expect(
+        nt('0 30 1 31 10 * America/New_York', lo(2004, 10, 1))
+      ).to eq(lo(2004, 10, 31, 14, 30, 00))
+    end
+
+    # gh-127
+    #
+    it 'survives TZInfo::PeriodNotFound' do
+
+      expect(
+        nt('0 0 2 9 3 * America/New_York', lo(2014, 3, 1))
+      ).to eq(lo(2015, 3, 9, 15, 0, 0))
+    end
   end
 
   describe '#previous_time' do
@@ -332,6 +350,24 @@ describe Rufus::Scheduler::CronLine do
       expect(pt('0 0 2 1 *', lo(1970, 1, 1))).to eq(lo(1969, 1, 2, 0, 00))
 
       expect(pt('* * * * * sun', lo(1970, 1, 1))).to eq(lo(1969, 12, 28, 23, 59, 59))
+    end
+
+    # gh-127
+    #
+    it 'survives TZInfo::AmbiguousTime' do
+
+      expect(
+        pt('0 30 1 31 10 * America/New_York', lo(2004, 10, 31, 14, 30, 0))
+      ).to eq(lo(2003, 10, 31, 15, 30, 00))
+    end
+
+    # gh-127
+    #
+    it 'survives TZInfo::PeriodNotFound' do
+
+      expect(
+        pt('0 0 2 9 3 * America/New_York', lo(2015, 3, 9, 12, 0, 0))
+      ).to eq(lo(2013, 3, 9, 16, 0, 0))
     end
   end
 

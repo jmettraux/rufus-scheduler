@@ -149,6 +149,10 @@ class Rufus::Scheduler
       end
 
       global_time(time, from.utc?)
+
+    rescue TZInfo::PeriodNotFound
+
+      next_time(from + 3600)
     end
 
     # Returns the previous time the cronline matched. It's like next_time, but
@@ -180,6 +184,10 @@ class Rufus::Scheduler
       end
 
       global_time(time, from.utc?)
+
+    rescue TZInfo::PeriodNotFound
+
+      previous_time(time)
     end
 
     # Returns an array of 6 arrays (seconds, minutes, hours, days,
@@ -429,12 +437,19 @@ class Rufus::Scheduler
     end
 
     def local_time(time)
+
       time = @timezone ? @timezone.utc_to_local(time.getutc) : time
     end
 
     def global_time(time, from_in_utc)
+
       if @timezone
-        time = @timezone.local_to_utc(time)
+        time =
+          begin
+            @timezone.local_to_utc(time)
+          rescue TZInfo::AmbiguousTime
+            @timezone.local_to_utc(time, ! time.isdst)
+          end
         time = time.getlocal unless from_in_utc
       end
 
@@ -442,6 +457,7 @@ class Rufus::Scheduler
     end
 
     def round_to_seconds(time)
+
       # Ruby 1.8 doesn't have #round
       time.respond_to?(:round) ? time.round : time - time.usec * 1e-6
     end
