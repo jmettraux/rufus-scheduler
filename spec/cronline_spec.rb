@@ -192,6 +192,11 @@ describe Rufus::Scheduler::CronLine do
     def nt(cronline, now)
       Rufus::Scheduler::CronLine.new(cronline).next_time(now)
     end
+    def ntz(cronline, now)
+      tz = cronline.split.last
+      tu = nt(cronline, now).utc
+      in_zone(tz) { tu.getlocal }
+    end
 
     it 'computes the next occurence correctly' do
 
@@ -339,8 +344,9 @@ describe Rufus::Scheduler::CronLine do
     it 'survives TZInfo::AmbiguousTime' do
 
       expect(
-        nt('30 1 31 10 * America/New_York', utc(2004, 10, 1))
-      ).to eq(utc(2004, 10, 31, 5, 30, 00))
+        ntz('30 1 31 10 * America/New_York',
+        ltz('America/New_York', 2004, 10, 1))
+      ).to eq(ltz('America/New_York', 2004, 10, 31, 1, 30, 0))
     end
 
     # gh-127
@@ -348,8 +354,9 @@ describe Rufus::Scheduler::CronLine do
     it 'survives TZInfo::PeriodNotFound' do
 
       expect(
-        nt('0 2 9 3 * America/New_York', utc(2014, 3, 1))
-      ).to eq(utc(2015, 3, 9, 6, 0, 0))
+        ntz('0 2 9 3 * America/New_York',
+        ltz('America/New_York', 2014, 3, 1))
+      ).to eq(ltz('America/New_York', 2015, 3, 9, 2, 0, 0))
     end
   end
 
@@ -357,6 +364,11 @@ describe Rufus::Scheduler::CronLine do
 
     def pt(cronline, now)
       Rufus::Scheduler::CronLine.new(cronline).previous_time(now)
+    end
+    def ptz(cronline, now)
+      tz = cronline.split.last
+      tu = pt(cronline, now).utc
+      in_zone(tz) { tu.getlocal }
     end
 
     it 'returns the previous time the cron should have triggered' do
@@ -382,8 +394,9 @@ describe Rufus::Scheduler::CronLine do
     it 'survives TZInfo::AmbiguousTime' do
 
       expect(
-        pt('30 1 31 10 * America/New_York', utc(2004, 10, 31, 14, 30, 0))
-      ).to eq(utc(2004, 10, 31, 5, 30, 00))
+        ptz('30 1 31 10 * America/New_York',
+        ltz('America/New_York', 2004, 10, 31, 14, 30, 0))
+      ).to eq(ltz('America/New_York', 2004, 10, 31, 1, 30, 0))
     end
 
     # gh-127
@@ -391,8 +404,9 @@ describe Rufus::Scheduler::CronLine do
     it 'survives TZInfo::PeriodNotFound' do
 
       expect(
-        pt('0 2 9 3 * America/New_York', utc(2015, 3, 9, 12, 0, 0))
-      ).to eq(utc(2015, 3, 9, 6, 0, 0))
+        ptz('0 2 9 3 * America/New_York',
+        ltz('America/New_York', 2015, 3, 9, 12, 0, 0))
+      ).to eq(ltz('America/New_York', 2015, 3, 9, 2, 0, 0))
     end
   end
 

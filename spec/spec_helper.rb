@@ -23,6 +23,16 @@ def utc(*args)
   Time.utc(*args)
 end
 
+def ltz(tz, *args)
+
+  in_zone(tz) { Time.local(*args) }
+end
+
+def ltu(tz, *args)
+
+  in_zone(tz) { Time.local(*args) }.getutc
+end
+
 def sleep_until_next_minute
 
   min = Time.now.min

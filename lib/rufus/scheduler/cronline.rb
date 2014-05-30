@@ -438,7 +438,7 @@ class Rufus::Scheduler
 
     def local_time(time)
 
-      time = @timezone ? @timezone.utc_to_local(time.getutc) : time
+      @timezone ? @timezone.utc_to_local(time.getutc) : time
     end
 
     def global_time(time, from_in_utc)
@@ -448,7 +448,7 @@ class Rufus::Scheduler
           begin
             @timezone.local_to_utc(time)
           rescue TZInfo::AmbiguousTime
-            @timezone.local_to_utc(time, ! time.isdst)
+            @timezone.local_to_utc(time, time.isdst)
           end
         time = time.getlocal unless from_in_utc
       end
