@@ -5,6 +5,9 @@
 # Wed Apr 17 06:00:59 JST 2013
 #
 
+puts "RUBY_VERSION: #{RUBY_VERSION}"
+puts "RUBY_PLATFORM: #{RUBY_PLATFORM}"
+
 Thread.abort_on_exception = true
 
 
@@ -74,6 +77,16 @@ end
 def without_chronic(&block) # for quick counter-tests ;-)
 
   block.call
+end
+
+def ruby18?
+
+  !! RUBY_VERSION.match(/^1\.8\./)
+end
+
+def jruby?
+
+  !! RUBY_PLATFORM.match(/java/)
 end
 
 
