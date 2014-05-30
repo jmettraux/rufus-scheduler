@@ -343,10 +343,21 @@ describe Rufus::Scheduler::CronLine do
     #
     it 'survives TZInfo::AmbiguousTime' do
 
-      expect(
-        ntz('30 1 31 10 * America/New_York',
-        ltz('America/New_York', 2004, 10, 1))
-      ).to eq(ltz('America/New_York', 2004, 10, 31, 1, 30, 0))
+      if ruby18? or jruby?
+        expect(
+          ntz(
+            '30 1 31 10 * America/New_York',
+            ltz('America/New_York', 2004, 10, 1)
+          ).strftime('%Y-%m-%d %H:%M:%S')
+        ).to eq('2004-10-31 01:30:00')
+      else
+        expect(
+          ntz(
+            '30 1 31 10 * America/New_York',
+            ltz('America/New_York', 2004, 10, 1)
+          )
+        ).to eq(ltz('America/New_York', 2004, 10, 31, 1, 30, 0))
+      end
     end
 
     # gh-127
@@ -354,8 +365,10 @@ describe Rufus::Scheduler::CronLine do
     it 'survives TZInfo::PeriodNotFound' do
 
       expect(
-        ntz('0 2 9 3 * America/New_York',
-        ltz('America/New_York', 2014, 3, 1))
+        ntz(
+          '0 2 9 3 * America/New_York',
+          ltz('America/New_York', 2014, 3, 1)
+        )
       ).to eq(ltz('America/New_York', 2015, 3, 9, 2, 0, 0))
     end
   end
@@ -393,10 +406,21 @@ describe Rufus::Scheduler::CronLine do
     #
     it 'survives TZInfo::AmbiguousTime' do
 
-      expect(
-        ptz('30 1 31 10 * America/New_York',
-        ltz('America/New_York', 2004, 10, 31, 14, 30, 0))
-      ).to eq(ltz('America/New_York', 2004, 10, 31, 1, 30, 0))
+      if ruby18? or jruby?
+        expect(
+          ptz(
+            '30 1 31 10 * America/New_York',
+            ltz('America/New_York', 2004, 10, 31, 14, 30, 0)
+          ).strftime('%Y-%m-%d %H:%M:%S')
+        ).to eq('2004-10-31 01:30:00')
+      else
+        expect(
+          ptz(
+            '30 1 31 10 * America/New_York',
+            ltz('America/New_York', 2004, 10, 31, 14, 30, 0)
+          )
+        ).to eq(ltz('America/New_York', 2004, 10, 31, 1, 30, 0))
+      end
     end
 
     # gh-127
@@ -404,8 +428,10 @@ describe Rufus::Scheduler::CronLine do
     it 'survives TZInfo::PeriodNotFound' do
 
       expect(
-        ptz('0 2 9 3 * America/New_York',
-        ltz('America/New_York', 2015, 3, 9, 12, 0, 0))
+        ptz(
+          '0 2 9 3 * America/New_York',
+          ltz('America/New_York', 2015, 3, 9, 12, 0, 0)
+        )
       ).to eq(ltz('America/New_York', 2015, 3, 9, 2, 0, 0))
     end
   end
