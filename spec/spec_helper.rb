@@ -10,10 +10,21 @@ puts "RUBY_PLATFORM: #{RUBY_PLATFORM}"
 
 Thread.abort_on_exception = true
 
-
 require 'stringio'
 require 'rufus-scheduler'
 
+#
+# misc helper methods
+
+def ruby18?
+
+  !! RUBY_VERSION.match(/^1\.8\./)
+end
+
+def jruby?
+
+  !! RUBY_PLATFORM.match(/java/)
+end
 
 def local(*args)
 
@@ -79,16 +90,9 @@ def without_chronic(&block) # for quick counter-tests ;-)
   block.call
 end
 
-def ruby18?
 
-  !! RUBY_VERSION.match(/^1\.8\./)
-end
-
-def jruby?
-
-  !! RUBY_PLATFORM.match(/java/)
-end
-
+#
+# matchers
 
 #require 'rspec/expectations'
 
@@ -113,6 +117,9 @@ RSpec::Matchers.define :be_within_1s_of do |expected|
   end
 end
 
+
+#
+# configure
 
 #RSpec.configure do |config|
 #end

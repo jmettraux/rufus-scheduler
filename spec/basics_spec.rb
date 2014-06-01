@@ -19,6 +19,8 @@ describe 'basics' do
 
     it 'accepts a timezone final argument' do
 
+      pending if jruby? or ruby18?
+
       expect(
         tts(Time.new(2014, 1, 1, 1, 0, 0, '+01:00'))
       ).to eq('2014-01-01 01:00:00 +0100')
