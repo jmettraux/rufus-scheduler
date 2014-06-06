@@ -31,6 +31,7 @@
 
 == Feedback
 
+- junhanamaki - https://github.com/junhanamaki - #next_time and dst ambiguities
 - kreynolds (tossrock) - inspiration for #occurrences
 - Matteo - https://github.com/m4ce - dst and cron issue
 - Tobias Bielohlawek - https://github.com/rngtng - missing assertion
