@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 3.0.8    not yet released
 
+- handle TZInfo errors on DST transitions, thanks https://github.com/junhanamaki
+- implement Scheduler#up?
 - let schedule and schedule_at use Chronic if present
 - let Rufus::Scheduler.parse use Chronic if present
 
