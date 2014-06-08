@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.0.8    not yet released
+== rufus-scheduler - 3.0.8    released 2014/06/09
 
 - handle TZInfo errors on DST transitions, thanks https://github.com/junhanamaki
 - implement Scheduler#up?
