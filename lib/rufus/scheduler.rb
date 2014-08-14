@@ -96,13 +96,15 @@ module Rufus
       @thread_key = "rufus_scheduler_#{self.object_id}"
 
       if lockfile = opts[:lockfile]
-        @lock = Rufus::Lock::Flock.new(lockfile)
+        @scheduler_lock = Rufus::Lock::Flock.new(lockfile)
       else
-        @lock = opts[:lock] || Rufus::Lock::Null.new
+        @scheduler_lock = opts[:scheduler_lock] || Rufus::Lock::Null.new
       end
 
-      # Preemptively attempt to grab the lock
-      @lock.lock || return
+      @job_lock = opts[:job_lock] || Rufus::Lock::Null.new
+
+      # If we can't grab the @scheduler_lock, don't run.
+      @scheduler_lock.lock || return
 
       start
     end
@@ -145,7 +147,7 @@ module Rufus
         kill_all_work_threads
       end
 
-      @lock.unlock
+      unlock
     end
 
     alias stop shutdown
@@ -344,20 +346,30 @@ module Rufus
     # Out of the box, rufus-scheduler proposes the
     # :lockfile => 'path/to/lock/file' scheduler start option. It makes
     # it easy for schedulers on the same machine to determine which should
-    # run (to first to write the lockfile and lock it). It uses "man 2 flock"
+    # run (the first to write the lockfile and lock it). It uses "man 2 flock"
     # so it probably won't work reliably on distributed file systems.
     #
-    # If one needs to use a special/different locking mechanism, providing
-    # overriding implementation for this #lock and the #unlock complement is
-    # easy.
+    # If one needs to use a special/different locking mechanism, the scheduler
+    # accepts :scheduler_lock => lock_object. lock_object only needs to respond to #lock
+    # and #unlock, and both of these methods should be idempotent.
+    #
+    # Look at rufus/lock/flock.rb for an example.
     #
     def lock
-      @lock.lock
+      @scheduler_lock.lock
     end
+
     # Sister method to #lock, is called when the scheduler shuts down.
     #
     def unlock
-      @lock.unlock
+      @job_lock.unlock
+      @scheduler_lock.unlock
+    end
+
+    # Callback called when a job is triggered. If the lock cannot be acquired,
+    # the job won't run (though it'll still be scheduled to run again if necessary).
+    def confirm_lock
+      @job_lock.lock
     end
 
     # Returns true if this job is currently scheduled.
@@ -459,7 +471,8 @@ module Rufus
       stderr.puts("  #{pre}     opts:")
       stderr.puts("  #{pre}       #{@opts.inspect}")
       stderr.puts("  #{pre}       frequency: #{self.frequency}")
-      stderr.puts("  #{pre}       lock: #{@lock.inspect}")
+      stderr.puts("  #{pre}       scheduler_lock: #{@scheduler_lock.inspect}")
+      stderr.puts("  #{pre}       job_lock: #{@job_lock.inspect}")
       stderr.puts("  #{pre}     uptime: #{uptime} (#{uptime_s})")
       stderr.puts("  #{pre}     down?: #{down?}")
       stderr.puts("  #{pre}     threads: #{self.threads.size}")
@@ -587,7 +600,6 @@ module Rufus
     end
 
     def do_schedule(job_type, t, callable, opts, return_job_instance, block)
-
       fail NotRunningError.new(
         'cannot schedule, scheduler is down or shutting down'
       ) if @started_at == nil
