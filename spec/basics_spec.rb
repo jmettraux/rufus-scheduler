@@ -19,7 +19,7 @@ describe 'basics' do
 
     it 'accepts a timezone final argument' do
 
-      pending if jruby? or ruby18?
+      pending("no worky on jruby or ruby18") if jruby? or ruby18?
 
       expect(
         tts(Time.new(2014, 1, 1, 1, 0, 0, '+01:00'))
