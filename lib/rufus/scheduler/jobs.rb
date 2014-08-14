@@ -117,7 +117,7 @@ module Rufus
 
       def trigger(time)
 
-        set_next_time(false, time)
+        set_next_time(time)
 
         return if opts[:overlap] == false && running?
 
@@ -272,7 +272,7 @@ module Rufus
 
       def post_trigger(time)
 
-        set_next_time(true, time)
+        set_next_time(time, true)
 
         callback(:on_post_trigger, time)
       end
@@ -356,7 +356,7 @@ module Rufus
 
       # There is no next_time for one time jobs, hence the false.
       #
-      def set_next_time(is_post, trigger_time)
+      def set_next_time(trigger_time, is_post=false)
 
         @next_time = is_post ? nil : false
       end
@@ -527,12 +527,12 @@ module Rufus
           "of #{@frequency.inspect} (#{@original.inspect})"
         ) if @frequency <= 0
 
-        set_next_time(false, nil)
+        set_next_time(nil)
       end
 
       protected
 
-      def set_next_time(is_post, trigger_time)
+      def set_next_time(trigger_time, is_post=false)
 
         return if is_post
 
@@ -567,12 +567,12 @@ module Rufus
           "of #{@interval.inspect} (#{@original.inspect})"
         ) if @interval <= 0
 
-        set_next_time(false, nil)
+        set_next_time(nil)
       end
 
       protected
 
-      def set_next_time(is_post, trigger_time)
+      def set_next_time(trigger_time, is_post=false)
 
         @next_time =
           if is_post
@@ -616,7 +616,7 @@ module Rufus
 
       protected
 
-      def set_next_time(is_post, trigger_time)
+      def set_next_time(trigger_time, is_post=false)
 
         @next_time = @cron_line.next_time
       end
