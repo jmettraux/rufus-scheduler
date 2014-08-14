@@ -65,7 +65,7 @@ module Rufus
 
         @mutex.synchronize {
 
-          @array.delete_if { |j| j.next_time.nil? || j.unscheduled_at }
+          @array.delete_if { |j| !j.next_time || j.unscheduled_at }
         }
       end
 

@@ -102,7 +102,7 @@ module Rufus
       end
 
       # Preemptively attempt to grab the lock
-      @lock.lock || return
+      @lock.lock
 
       start
     end
@@ -360,6 +360,12 @@ module Rufus
       @lock.unlock
     end
 
+    # Callback called when a job is triggered. If the lock cannot be confirmed,
+    # the job won't run (though it'll still be scheduled to run again if necessary).
+    def confirm_lock
+      @lock.lock
+    end
+
     # Returns true if this job is currently scheduled.
     #
     # Takes extra care to answer true if the job is a repeat job
@@ -587,7 +593,6 @@ module Rufus
     end
 
     def do_schedule(job_type, t, callable, opts, return_job_instance, block)
-
       fail NotRunningError.new(
         'cannot schedule, scheduler is down or shutting down'
       ) if @started_at == nil

@@ -37,13 +37,21 @@ describe Rufus::Scheduler do
       expect(f.flock(File::LOCK_NB | File::LOCK_EX)).to eq(false)
     end
 
-    it 'prevents newer schedulers from starting' do
+    it 'prevents newer schedulers from running jobs' do
 
       s0 = Rufus::Scheduler.new :lockfile => '.rufus-scheduler.lock'
       s1 = Rufus::Scheduler.new :lockfile => '.rufus-scheduler.lock'
 
-      expect(s0.started_at).not_to eq(nil)
-      expect(s1.started_at).to eq(nil)
+      counter = 0
+      job = proc { counter += 1 }
+      s0.schedule_in(0, job)
+      s1.schedule_in(0, job)
+
+      expect(s0).to be_up
+      expect(s1).to be_up
+
+      loop until s0.jobs.empty? && s1.jobs.empty?
+      expect(counter).to be(1)
     end
 
     it 'releases the lockfile when shutting down' do
