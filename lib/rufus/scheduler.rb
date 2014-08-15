@@ -33,6 +33,8 @@ module Rufus
 
   class Scheduler
 
+    require 'rufus/lock/null'
+    require 'rufus/lock/flock'
     require 'rufus/scheduler/util'
     require 'rufus/scheduler/jobs'
     require 'rufus/scheduler/cronline'
@@ -93,7 +95,16 @@ module Rufus
 
       @thread_key = "rufus_scheduler_#{self.object_id}"
 
-      lock || return
+      if lockfile = opts[:lockfile]
+        @scheduler_lock = Rufus::Lock::Flock.new(lockfile)
+      else
+        @scheduler_lock = opts[:scheduler_lock] || Rufus::Lock::Null.new
+      end
+
+      @job_lock = opts[:job_lock] || Rufus::Lock::Null.new
+
+      # If we can't grab the @scheduler_lock, don't run.
+      @scheduler_lock.lock || return
 
       start
     end
@@ -324,6 +335,43 @@ module Rufus
       @jobs[job_id]
     end
 
+    # Returns true if the scheduler has acquired the [exclusive] lock and
+    # thus may run.
+    #
+    # Most of the time, a scheduler is run alone and this method should
+    # return true. It is useful in cases where among a group of applications
+    # only one of them should run the scheduler. For schedulers that should
+    # not run, the method should return false.
+    #
+    # Out of the box, rufus-scheduler proposes the
+    # :lockfile => 'path/to/lock/file' scheduler start option. It makes
+    # it easy for schedulers on the same machine to determine which should
+    # run (the first to write the lockfile and lock it). It uses "man 2 flock"
+    # so it probably won't work reliably on distributed file systems.
+    #
+    # If one needs to use a special/different locking mechanism, the scheduler
+    # accepts :scheduler_lock => lock_object. lock_object only needs to respond to #lock
+    # and #unlock, and both of these methods should be idempotent.
+    #
+    # Look at rufus/lock/flock.rb for an example.
+    #
+    def lock
+      @scheduler_lock.lock
+    end
+
+    # Sister method to #lock, is called when the scheduler shuts down.
+    #
+    def unlock
+      @job_lock.unlock
+      @scheduler_lock.unlock
+    end
+
+    # Callback called when a job is triggered. If the lock cannot be acquired,
+    # the job won't run (though it'll still be scheduled to run again if necessary).
+    def confirm_lock
+      @job_lock.lock
+    end
+
     # Returns true if this job is currently scheduled.
     #
     # Takes extra care to answer true if the job is a repeat job
@@ -423,7 +471,8 @@ module Rufus
       stderr.puts("  #{pre}     opts:")
       stderr.puts("  #{pre}       #{@opts.inspect}")
       stderr.puts("  #{pre}       frequency: #{self.frequency}")
-      stderr.puts("  #{pre}       lockfile: #{@lockfile.inspect}")
+      stderr.puts("  #{pre}       scheduler_lock: #{@scheduler_lock.inspect}")
+      stderr.puts("  #{pre}       job_lock: #{@job_lock.inspect}")
       stderr.puts("  #{pre}     uptime: #{uptime} (#{uptime_s})")
       stderr.puts("  #{pre}     down?: #{down?}")
       stderr.puts("  #{pre}     threads: #{self.threads.size}")
@@ -466,61 +515,6 @@ module Rufus
       else
         [ job(job_or_job_id), job_or_job_id ]
       end
-    end
-
-    # Returns true if the scheduler has acquired the [exclusive] lock and
-    # thus may run.
-    #
-    # Most of the time, a scheduler is run alone and this method should
-    # return true. It is useful in cases where among a group of applications
-    # only one of them should run the scheduler. For schedulers that should
-    # not run, the method should return false.
-    #
-    # Out of the box, rufus-scheduler proposes the
-    # :lockfile => 'path/to/lock/file' scheduler start option. It makes
-    # it easy for schedulers on the same machine to determine which should
-    # run (to first to write the lockfile and lock it). It uses "man 2 flock"
-    # so it probably won't work reliably on distributed file systems.
-    #
-    # If one needs to use a special/different locking mechanism, providing
-    # overriding implementation for this #lock and the #unlock complement is
-    # easy.
-    #
-    def lock
-
-      @lockfile = nil
-
-      return true unless f = @opts[:lockfile]
-
-      raise ArgumentError.new(
-        ":lockfile argument must be a string, not a #{f.class}"
-      ) unless f.is_a?(String)
-
-      FileUtils.mkdir_p(File.dirname(f))
-
-      f = File.new(f, File::RDWR | File::CREAT)
-      locked = f.flock(File::LOCK_NB | File::LOCK_EX)
-
-      return false unless locked
-
-      now = Time.now
-
-      f.print("pid: #{$$}, ")
-      f.print("scheduler.object_id: #{self.object_id}, ")
-      f.print("time: #{now}, ")
-      f.print("timestamp: #{now.to_f}")
-      f.flush
-
-      @lockfile = f
-
-      true
-    end
-
-    # Sister method to #lock, is called when the scheduler shuts down.
-    #
-    def unlock
-
-      @lockfile.flock(File::LOCK_UN) if @lockfile
     end
 
     def terminate_all_jobs
@@ -606,7 +600,6 @@ module Rufus
     end
 
     def do_schedule(job_type, t, callable, opts, return_job_instance, block)
-
       fail NotRunningError.new(
         'cannot schedule, scheduler is down or shutting down'
       ) if @started_at == nil
