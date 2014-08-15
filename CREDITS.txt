@@ -4,6 +4,7 @@
 
 == Contributors
 
+- ecin (https://github.com/ecin) new lock mecha
 - Adam Jonas (https://github.com/adamjonas) migrate specs to "expect"
 - Yassen Bantchev (https://github.com/yassenb) CronLine#previous_time rewrite
 - Eric Lindvall (https://github.com/eric) Zookeeper locked example
@@ -31,7 +32,6 @@
 
 == Feedback
 
-- ecin - https://github.com/ecin - set_next_time() ambiguity
 - junhanamaki - https://github.com/junhanamaki - #next_time and dst ambiguities
 - kreynolds (tossrock) - inspiration for #occurrences
 - Matteo - https://github.com/m4ce - dst and cron issue
