@@ -350,25 +350,31 @@ module Rufus
     # so it probably won't work reliably on distributed file systems.
     #
     # If one needs to use a special/different locking mechanism, the scheduler
-    # accepts :scheduler_lock => lock_object. lock_object only needs to respond to #lock
+    # accepts :scheduler_lock => lock_object. lock_object only needs to respond
+    # to #lock
     # and #unlock, and both of these methods should be idempotent.
     #
     # Look at rufus/lock/flock.rb for an example.
     #
     def lock
+
       @scheduler_lock.lock
     end
 
     # Sister method to #lock, is called when the scheduler shuts down.
     #
     def unlock
+
       @job_lock.unlock
       @scheduler_lock.unlock
     end
 
     # Callback called when a job is triggered. If the lock cannot be acquired,
-    # the job won't run (though it'll still be scheduled to run again if necessary).
+    # the job won't run (though it'll still be scheduled to run again if
+    # necessary).
+    #
     def confirm_lock
+
       @job_lock.lock
     end
 
@@ -600,6 +606,7 @@ module Rufus
     end
 
     def do_schedule(job_type, t, callable, opts, return_job_instance, block)
+
       fail NotRunningError.new(
         'cannot schedule, scheduler is down or shutting down'
       ) if @started_at == nil

@@ -2,7 +2,8 @@
 #
 # Specifying rufus-scheduler
 #
-# Tue Aug 13 05:58:48 JST 2013
+# Sat Aug 16 05:43:06 JST 2014
+# added by @ecin
 #
 
 require 'spec_helper'
@@ -11,6 +12,7 @@ require 'spec_helper'
 describe Rufus::Lock::Flock do
 
   before :each do
+
     @lock_path = '.rufus-scheduler.lock'
     @lock = Rufus::Lock::Flock.new(@lock_path)
   end
@@ -24,6 +26,7 @@ describe Rufus::Lock::Flock do
   context ':lock => Rufus::Lock::File.new(path)' do
 
     it 'writes down a .rufus-scheduler.lock file' do
+
       @lock.lock
 
       line = File.read(@lock_path)
@@ -32,6 +35,7 @@ describe Rufus::Lock::Flock do
     end
 
     it '"flocks" the lock file' do
+
       @lock.lock
 
       f = File.new(@lock_path, 'a')

@@ -1,4 +1,13 @@
+
+#
+# Specifying rufus-scheduler
+#
+# Sat Aug 16 05:42:11 JST 2014
+# added by @ecin
+#
+
 require 'spec_helper'
+
 
 describe Rufus::Scheduler do
 
@@ -17,6 +26,7 @@ describe Rufus::Scheduler do
     end
 
     it "only starts if it can acquire a scheduler lock" do
+
       main = Rufus::Scheduler.new :scheduler_lock => AlwaysLock.new
       backup = Rufus::Scheduler.new :scheduler_lock => NeverLock.new
 
@@ -25,6 +35,7 @@ describe Rufus::Scheduler do
     end
 
     it "only runs jobs when it can acquire a job lock" do
+
       main = Rufus::Scheduler.new :job_lock => AlwaysLock.new
       backup = Rufus::Scheduler.new :job_lock => NeverLock.new
 
@@ -43,7 +54,6 @@ describe Rufus::Scheduler do
       expect(backup.jobs.first.next_time).to be(false)
       expect(counter).to eq(1)
     end
-
   end
-
 end
+
