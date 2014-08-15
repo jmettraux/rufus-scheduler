@@ -32,12 +32,11 @@ module Rufus
 
   class Scheduler
 
-    require 'rufus/lock/null'
-    require 'rufus/lock/flock'
     require 'rufus/scheduler/util'
     require 'rufus/scheduler/jobs'
     require 'rufus/scheduler/cronline'
     require 'rufus/scheduler/job_array'
+    require 'rufus/scheduler/locks'
 
     VERSION = '3.0.8'
 
@@ -94,13 +93,14 @@ module Rufus
 
       @thread_key = "rufus_scheduler_#{self.object_id}"
 
-      if lockfile = opts[:lockfile]
-        @scheduler_lock = Rufus::Lock::Flock.new(lockfile)
-      else
-        @scheduler_lock = opts[:scheduler_lock] || Rufus::Lock::Null.new
-      end
+      @scheduler_lock =
+        if lockfile = opts[:lockfile]
+          Rufus::Scheduler::Lock::Flock.new(lockfile)
+        else
+          opts[:scheduler_lock] || Rufus::Scheduler::Lock::Null.new
+        end
 
-      @job_lock = opts[:job_lock] || Rufus::Lock::Null.new
+      @job_lock = opts[:job_lock] || Rufus::Scheduler::Lock::Null.new
 
       # If we can't grab the @scheduler_lock, don't run.
       @scheduler_lock.lock || return

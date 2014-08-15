@@ -9,12 +9,12 @@
 require 'spec_helper'
 
 
-describe Rufus::Lock::Flock do
+describe Rufus::Scheduler::Lock::Flock do
 
   before :each do
 
     @lock_path = '.rufus-scheduler.lock'
-    @lock = Rufus::Lock::Flock.new(@lock_path)
+    @lock = Rufus::Scheduler::Lock::Flock.new(@lock_path)
   end
 
   after :each do
