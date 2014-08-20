@@ -89,6 +89,8 @@ There is no EventMachine-based scheduler anymore.
 
 So you need help. People can help you, but first help them help you, and don't waste their time. Provide a complete description of the issue. If it works on A but not on B and others have to ask you: "so what is different between A and B" you are wasting everyone's time.
 
+"hello" and "thanks" are not swear words.
+
 Go read [how to report bugs effectively](http://www.chiark.greenend.org.uk/~sgtatham/bugs.html), twice.
 
 Update: [help_help.md](https://gist.github.com/jmettraux/310fed75f568fd731814) might help help you.
@@ -1097,6 +1099,53 @@ This is useful in environments where the Ruby process holding the scheduler gets
 
 If the lockfile mechanism here is not sufficient, you can plug your custom mechanism. It's explained in [advanced lock schemes](#advanced-lock-schemes) below.
 
+### :scheduler_lock => instance
+
+The scheduler lock is an object that responds to `#lock` and `#unlock`. The scheduler calls `#lock` when starting up. If the answer is `false`, the scheduler stops its initialization work and won't schedule anything.
+
+Here is a sample of a scheduler lock that only lets the scheduler on host "coffee.example.com" start:
+```ruby
+class HostLock
+  def initialize(lock_name)
+    @lock_name = lock_name
+  end
+  def lock
+    @lock_name == `hostname -f`.strip
+  end
+  def unlock
+    true
+  end
+end
+
+scheduler =
+  Rufus::Scheduler.new(:scheduler_lock => HostLock.new('coffee.example.com'))
+```
+
+By default, the scheduler_lock is an instance of `Rufus::Scheduler::NullLock`, with a `#lock` that returns true.
+
+### :trigger_lock => instance
+
+The trigger lock in an object that responds to `#lock`. The scheduler calls that method on the job lock right before triggering any job. If the answer is false, the trigger doesn't happen, the job is not done (at least not in this scheduler).
+
+Here is a (stupid) PingLock example, it'll only trigger if an "other host" is not responding to ping. Do not use that in production, you don't want to fork a ping process for each trigger attempt...
+```ruby
+class PingLock
+  def initialize(other_host)
+    @other_host = other_host
+  end
+  def lock
+    ! system("ping -c 1 #{@other_host}")
+  end
+end
+
+scheduler =
+  Rufus::Scheduler.new(:trigger_lock => PingLock.new('main.example.com'))
+```
+
+By default, the trigger_lock is an instance of `Rufus::Scheduler::NullLock`, with a `#lock` that always returns true.
+
+As explained in [advanced lock schemes](#advanced-lock-schemes), another way to tune that behaviour is by overriding the scheduler's `#confirm_lock` method. (You could also do that with an `#on_pre_trigger` callback).
+
 ### :max_work_threads
 
 In rufus-scheduler 2.x, by default, each job triggering received its own, brand new, thread of execution. In rufus-scheduler 3.x, execution happens in a pooled work thread. The max work thread count (the pool size) defaults to 28.
@@ -1182,6 +1231,14 @@ The methods #lock and #unlock are overriden and #confirm_lock is provided,
 to make sure that the lock is still valid.
 
 The #confirm_lock method is called right before a job triggers (if it is provided). The more generic callback #on_pre_trigger is called right after #confirm_lock.
+
+### :scheduler_lock and :trigger_lock
+
+(introduced in rufus-scheduler 3.0.9).
+
+Another way of prodiving `#lock`, `#unlock` and `#confirm_lock` to a rufus-scheduler is by using the `:scheduler_lock` and `:trigger_lock` options.
+
+TODO
 
 
 ## parsing cronlines and time strings
