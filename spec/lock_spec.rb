@@ -34,10 +34,10 @@ describe Rufus::Scheduler do
       expect(backup).to be_down
     end
 
-    it "only runs jobs when it can acquire a job lock" do
+    it "only triggers jobs when it can acquire a trigger lock" do
 
-      main = Rufus::Scheduler.new :job_lock => AlwaysLock.new
-      backup = Rufus::Scheduler.new :job_lock => NeverLock.new
+      main = Rufus::Scheduler.new(:trigger_lock => AlwaysLock.new)
+      backup = Rufus::Scheduler.new(:trigger_lock => NeverLock.new)
 
       expect(main).to be_up
       expect(backup).to be_up

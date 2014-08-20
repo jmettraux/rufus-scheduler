@@ -100,7 +100,7 @@ module Rufus
           opts[:scheduler_lock] || Rufus::Scheduler::NullLock.new
         end
 
-      @job_lock = opts[:job_lock] || Rufus::Scheduler::NullLock.new
+      @trigger_lock = opts[:trigger_lock] || Rufus::Scheduler::NullLock.new
 
       # If we can't grab the @scheduler_lock, don't run.
       @scheduler_lock.lock || return
@@ -364,7 +364,7 @@ module Rufus
     #
     def unlock
 
-      @job_lock.unlock
+      @trigger_lock.unlock
       @scheduler_lock.unlock
     end
 
@@ -374,7 +374,7 @@ module Rufus
     #
     def confirm_lock
 
-      @job_lock.lock
+      @trigger_lock.lock
     end
 
     # Returns true if this job is currently scheduled.
@@ -477,7 +477,7 @@ module Rufus
       stderr.puts("  #{pre}       #{@opts.inspect}")
       stderr.puts("  #{pre}       frequency: #{self.frequency}")
       stderr.puts("  #{pre}       scheduler_lock: #{@scheduler_lock.inspect}")
-      stderr.puts("  #{pre}       job_lock: #{@job_lock.inspect}")
+      stderr.puts("  #{pre}       trigger_lock: #{@trigger_lock.inspect}")
       stderr.puts("  #{pre}     uptime: #{uptime} (#{uptime_s})")
       stderr.puts("  #{pre}     down?: #{down?}")
       stderr.puts("  #{pre}     threads: #{self.threads.size}")
