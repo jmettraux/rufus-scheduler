@@ -27,65 +27,68 @@ require 'fileutils'
 
 class Rufus::Scheduler
 
-  module Lock
+  #
+  # A lock that can always be acquired
+  #
+  class NullLock
 
+    # Locking is always successful.
     #
-    # A lock that can always be acquired
-    #
-    class Null
+    def lock; true; end
 
-      def lock; true; end
-      def locked?; true; end
-      def unlock; true; end
+    def locked?; true; end
+    def unlock; true; end
+  end
+
+  #
+  # The standard flock mecha, with its own class thanks to @ecin
+  #
+  class FileLock
+
+    attr_reader :path
+
+    def initialize(path)
+
+      @path = path.to_s
     end
 
+    # Locking is successful if this Ruby process can create and lock
+    # its lockfile (at the given path).
     #
-    # The standard flock mecha, with its own class thanks to @ecin
-    #
-    class Flock
+    def lock
 
-      attr_reader :path
+      return true if locked?
 
-      def initialize(path)
+      @lockfile = nil
 
-        @path = path.to_s
-      end
+      FileUtils.mkdir_p(::File.dirname(@path))
 
-      def lock
+      file = File.new(@path, File::RDWR | File::CREAT)
+      locked = file.flock(File::LOCK_NB | File::LOCK_EX)
 
-        return true if locked?
+      return false unless locked
 
-        @lockfile = nil
+      now = Time.now
 
-        FileUtils.mkdir_p(::File.dirname(@path))
+      file.print("pid: #{$$}, ")
+      file.print("scheduler.object_id: #{self.object_id}, ")
+      file.print("time: #{now}, ")
+      file.print("timestamp: #{now.to_f}")
+      file.flush
 
-        file = File.new(@path, File::RDWR | File::CREAT)
-        locked = file.flock(File::LOCK_NB | File::LOCK_EX)
+      @lockfile = file
 
-        return false unless locked
+      true
+    end
 
-        now = Time.now
+    def unlock
 
-        file.print("pid: #{$$}, ")
-        file.print("scheduler.object_id: #{self.object_id}, ")
-        file.print("time: #{now}, ")
-        file.print("timestamp: #{now.to_f}")
-        file.flush
+      !! (@lockfile && @lockfile.flock(File::LOCK_UN))
+    end
 
-        @lockfile = file
+    def locked?
 
-        true
-      end
-
-      def unlock
-
-        !!(@lockfile.flock(File::LOCK_UN) if @lockfile)
-      end
-
-      def locked?
-
-        !!(@lockfile.flock(File::LOCK_NB | File::LOCK_EX) if @lockfile)
-      end
+      !! (@lockfile && @lockfile.flock(File::LOCK_NB | File::LOCK_EX))
     end
   end
 end

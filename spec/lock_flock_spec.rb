@@ -9,12 +9,12 @@
 require 'spec_helper'
 
 
-describe Rufus::Scheduler::Lock::Flock do
+describe Rufus::Scheduler::FileLock do
 
   before :each do
 
     @lock_path = '.rufus-scheduler.lock'
-    @lock = Rufus::Scheduler::Lock::Flock.new(@lock_path)
+    @lock = Rufus::Scheduler::FileLock.new(@lock_path)
   end
 
   after :each do
@@ -23,7 +23,7 @@ describe Rufus::Scheduler::Lock::Flock do
     FileUtils.rm_f('lock.txt')
   end
 
-  context ':lock => Rufus::Lock::File.new(path)' do
+  context ':scheduler_lock => Rufus::Scheduler::FileLock.new(path)' do
 
     it 'writes down a .rufus-scheduler.lock file' do
 

@@ -95,12 +95,12 @@ module Rufus
 
       @scheduler_lock =
         if lockfile = opts[:lockfile]
-          Rufus::Scheduler::Lock::Flock.new(lockfile)
+          Rufus::Scheduler::FileLock.new(lockfile)
         else
-          opts[:scheduler_lock] || Rufus::Scheduler::Lock::Null.new
+          opts[:scheduler_lock] || Rufus::Scheduler::NullLock.new
         end
 
-      @job_lock = opts[:job_lock] || Rufus::Scheduler::Lock::Null.new
+      @job_lock = opts[:job_lock] || Rufus::Scheduler::NullLock.new
 
       # If we can't grab the @scheduler_lock, don't run.
       @scheduler_lock.lock || return
@@ -353,7 +353,7 @@ module Rufus
     # to #lock
     # and #unlock, and both of these methods should be idempotent.
     #
-    # Look at rufus/lock/flock.rb for an example.
+    # Look at rufus/scheduler/locks.rb for an example.
     #
     def lock
 

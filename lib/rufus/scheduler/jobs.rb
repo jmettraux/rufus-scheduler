@@ -119,13 +119,14 @@ module Rufus
 
         set_next_time(time)
 
-        return if opts[:overlap] == false && running?
-
-        r =
+        return if (
+          opts[:overlap] == false &&
+          running?
+        )
+        return if (
           callback(:confirm_lock, time) &&
           callback(:on_pre_trigger, time)
-
-        return if r == false
+        ) == false
 
         @count += 1
 
