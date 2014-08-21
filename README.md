@@ -1099,7 +1099,9 @@ This is useful in environments where the Ruby process holding the scheduler gets
 
 If the lockfile mechanism here is not sufficient, you can plug your custom mechanism. It's explained in [advanced lock schemes](#advanced-lock-schemes) below.
 
-### :scheduler_lock => instance
+### :scheduler_lock
+
+(since rufus-scheduler 3.0.9)
 
 The scheduler lock is an object that responds to `#lock` and `#unlock`. The scheduler calls `#lock` when starting up. If the answer is `false`, the scheduler stops its initialization work and won't schedule anything.
 
@@ -1123,7 +1125,9 @@ scheduler =
 
 By default, the scheduler_lock is an instance of `Rufus::Scheduler::NullLock`, with a `#lock` that returns true.
 
-### :trigger_lock => instance
+### :trigger_lock
+
+(since rufus-scheduler 3.0.9)
 
 The trigger lock in an object that responds to `#lock`. The scheduler calls that method on the job lock right before triggering any job. If the answer is false, the trigger doesn't happen, the job is not done (at least not in this scheduler).
 
@@ -1238,7 +1242,13 @@ The #confirm_lock method is called right before a job triggers (if it is provide
 
 Another way of prodiving `#lock`, `#unlock` and `#confirm_lock` to a rufus-scheduler is by using the `:scheduler_lock` and `:trigger_lock` options.
 
-TODO
+See [:trigger_lock](#trigger_lock) and [:scheduler_lock](#scheduler_lock).
+
+The scheduler lock may be used to prevent a scheduler from starting, while a trigger lock prevents individual jobs from triggering (the scheduler goes on scheduling).
+
+One has to be careful with what goes in `#confirm_lock` or in a trigger lock, as it gets called before each trigger.
+
+Warning: you may think you're heading towards "high availability" by using a trigger lock and having lots of schedulers at hand. It may be so if you limit yourself to scheduling the same set of jobs at scheduler startup. But if you add schedules at runtime, they stay local to their scheduler. There is no magic that propagates the jobs to all the schedulers in your pack.
 
 
 ## parsing cronlines and time strings
