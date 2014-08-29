@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Sterling Paramore (https://github.com/gnilrets) underscore TZ fix
 - ecin (https://github.com/ecin) new lock mecha
 - Adam Jonas (https://github.com/adamjonas) migrate specs to "expect"
 - Yassen Bantchev (https://github.com/yassenb) CronLine#previous_time rewrite

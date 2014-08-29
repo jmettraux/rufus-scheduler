@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 3.0.9    not yet released
 
+- fix TZ with underscores, thanks https://github.com/gnilrets
 - integrate https://github.com/ecin Lock mecha
 
 
