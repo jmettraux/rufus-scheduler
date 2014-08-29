@@ -46,7 +46,7 @@ module Rufus
       o.is_a?(String) ? parse_duration(o, opts) : o
     end
 
-    TZ_REGEX = /\b((?:[a-zA-Z][a-zA-z0-9\-+]+)(?:\/[a-zA-Z0-9\-+]+)?)\b/
+    TZ_REGEX = /\b((?:[a-zA-Z][a-zA-z0-9\-+]+)(?:\/[a-zA-Z0-9_\-+]+)?)\b/
 
     def self.parse_at(o, opts={})
 

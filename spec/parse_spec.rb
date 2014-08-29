@@ -47,6 +47,11 @@ describe Rufus::Scheduler do
       expect(parse('Japan Sun Nov 18 16:01:00 2012').getutc.strftime('%c')).to eq(
         'Sun Nov 18 07:01:00 2012'
       )
+
+      expect(parse('Sun Nov 18 16:01:00 2012 America/New_York').getutc.strftime('%c')).to eq(
+        'Sun Nov 18 21:01:00 2012'
+      )
+
     end
 
     it 'parses datetimes with named timezones' do
