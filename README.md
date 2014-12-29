@@ -9,6 +9,8 @@ Job scheduler for Ruby (at, cron, in and every jobs).
 **Note**: maybe are you looking for the [README of rufus-scheduler 2.x](https://github.com/jmettraux/rufus-scheduler/blob/two/README.rdoc)?
 
 Quickstart:
+
+Make the file /config/initializers/my_tasks_scheduler.rb:
 ```ruby
 require 'rufus-scheduler'
 
