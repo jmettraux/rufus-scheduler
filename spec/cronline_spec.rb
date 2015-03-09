@@ -371,6 +371,12 @@ describe Rufus::Scheduler::CronLine do
         )
       ).to eq(ltz('America/New_York', 2015, 3, 9, 2, 0, 0))
     end
+
+    it 'correctly increments through Daylight Savings Time' do
+      expect(
+        nt('* * * * * America/Los_Angeles', Time.utc(2015, 3, 8, 9, 59))
+      ).to eq(Time.utc(2015, 3, 8, 10, 00))
+    end
   end
 
   describe '#previous_time' do
@@ -433,6 +439,12 @@ describe Rufus::Scheduler::CronLine do
           ltz('America/New_York', 2015, 3, 9, 12, 0, 0)
         )
       ).to eq(ltz('America/New_York', 2015, 3, 9, 2, 0, 0))
+    end
+
+    it 'correctly decrements through Daylight Savings Time' do
+      expect(
+        pt('* * * * * America/Los_Angeles', Time.utc(2015, 3, 8, 10, 00))
+      ).to eq(Time.utc(2015, 3, 8, 9, 59))
     end
   end
 
