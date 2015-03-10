@@ -129,21 +129,22 @@ class Rufus::Scheduler
       time = time + 1
 
       loop do
+
         unless date_match?(time)
-          dst = time.isdst
-          time += (24 - time.hour) * 3600 - time.min * 60 - time.sec
-          time -= 3600 if time.isdst != dst # not necessary for winter, but...
+          time = tadd(time, (24 - time.hour) * 3600 - time.min * 60 - time.sec)
           next
         end
         unless sub_match?(time, :hour, @hours)
-          time += (60 - time.min) * 60 - time.sec; next
+          time = tadd(time, (60 - time.min) * 60 - time.sec)
+          next
         end
         unless sub_match?(time, :min, @minutes)
-          time += 60 - time.sec; next
+          time = tadd(time, 60 - time.sec)
+          next
         end
         unless sub_match?(time, :sec, @seconds)
-          #time += 1; next
-          time = next_second(time); next
+          time = next_second(time)
+          next
         end
 
         break
@@ -280,6 +281,29 @@ class Rufus::Scheduler
     end
 
     protected
+
+    def find_transition_time(t0, t3)
+
+      s = (t3 - t0).to_i / 2
+
+      return t3 if s == 0
+
+      t1 = t0 + s
+      t2 = t0 + 2 * s
+
+      return find_transition_time(t0, t1) if t0.isdst != t1.isdst
+      return find_transition_time(t1, t2) if t1.isdst != t2.isdst
+      return find_transition_time(t2, t3)
+    end
+
+    def tadd(time, seconds)
+
+      time1 = time + seconds
+
+      return time1 if time1.isdst == time.isdst
+
+      find_transition_time(time, time1)
+    end
 
     def next_second(time)
 

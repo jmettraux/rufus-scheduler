@@ -684,13 +684,6 @@ describe Rufus::Scheduler::CronLine do
       ).to eq(Time.utc(2015, 3, 8, 10, 00))
     end
 
-    it 'correctly decrements through a DST transition' do
-
-      expect(
-        pt('* * * * * America/Los_Angeles', Time.utc(2015, 3, 8, 10, 00))
-      ).to eq(Time.utc(2015, 3, 8, 9, 59))
-    end
-
     it 'correctly increments every minute through a DST transition' do
 
       in_zone 'America/Los_Angeles' do
@@ -707,7 +700,7 @@ describe Rufus::Scheduler::CronLine do
 
         expect(points).to eq(
           [
-            '01:58:00l 09:59:00u',
+            '01:58:00l 09:58:00u',
             '01:59:00l 09:59:00u',
             '03:00:00l 10:00:00u',
             '03:01:00l 10:01:00u'
@@ -715,6 +708,15 @@ describe Rufus::Scheduler::CronLine do
         )
       end
     end
+
+    it 'correctly decrements through a DST transition' do
+
+      expect(
+        pt('* * * * * America/Los_Angeles', Time.utc(2015, 3, 8, 10, 00))
+      ).to eq(Time.utc(2015, 3, 8, 9, 59))
+    end
+
+    it 'correctly decrements every minute through a DST transition'
   end
 end
 
