@@ -93,22 +93,6 @@ class Rufus::Scheduler
       true
     end
 
-    def next_second(time)
-
-      secs = @seconds.sort
-
-      if time.sec > secs.last
-        time += secs.last + 60 - time.sec
-      else
-        secs.shift while secs.first < time.sec
-        time += secs.first - time.sec
-      end
-
-      time
-    end
-    #
-    protected :next_second
-
     # Returns the next time that this cron line is supposed to 'fire'
     #
     # This is raw, 3 secs to iterate over 1 year on my macbook :( brutal.
@@ -296,6 +280,20 @@ class Rufus::Scheduler
     end
 
     protected
+
+    def next_second(time)
+
+      secs = @seconds.sort
+
+      if time.sec > secs.last
+        time += secs.last + 60 - time.sec
+      else
+        secs.shift while secs.first < time.sec
+        time += secs.first - time.sec
+      end
+
+      time
+    end
 
     WEEKDAYS = %w[ sun mon tue wed thu fri sat ]
     DAY_S = 24 * 3600
