@@ -2,6 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 3.0.10    not yet released
+
+
 == rufus-scheduler - 3.0.9    released 2014/08/30
 
 - fix TZ with underscores, thanks https://github.com/gnilrets
