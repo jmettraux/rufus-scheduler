@@ -697,19 +697,20 @@ describe Rufus::Scheduler::CronLine do
 
         line = cl('* * * * * America/Los_Angeles')
 
-        t = Time.local(2015, 3, 8, 1, 58)
+        t = Time.local(2015, 3, 8, 1, 57)
 
         points =
-          [ 0, 1, 2 ].collect do
+          [ 0, 1, 2, 3 ].collect do
             t = line.next_time(t)
-            [ t.strftime('%H:%M:%Sl'), t.dup.utc.strftime('%H:%M:%Sd') ]
+            t.strftime('%H:%M:%Sl') + ' ' + t.dup.utc.strftime('%H:%M:%Su')
           end
 
         expect(points).to eq(
           [
-            [ '01:59:00l', '09:59:00d' ],
-            [ '03:00:00l', '10:00:00d' ],
-            [ '03:00:01l', '10:00:01d' ]
+            '01:58:00l 09:59:00u',
+            '01:59:00l 09:59:00u',
+            '03:00:00l 10:00:00u',
+            '03:01:00l 10:01:00u'
           ]
         )
       end
