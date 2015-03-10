@@ -49,13 +49,16 @@ describe Rufus::Scheduler::EveryJob do
     expect(times[2] - times[1]).to be < 3.4
   end
 
-  context 'Daylight Savings Time' do
+  context 'summer time' do
+
     it 'triggers correctly through a DST transition' do
+
       job = described_class.new(@scheduler, '1m', {}, lambda {})
       t1 = ltz('America/Los_Angeles', 2015, 3, 8, 1, 55)
       t2 = ltz('America/Los_Angeles', 2015, 3, 8, 3, 05)
       job.next_time = t1
       occurrences = job.occurrences(t1, t2)
+
       expect(occurrences.length).to eq(11)
     end
   end

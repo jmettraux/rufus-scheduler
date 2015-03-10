@@ -15,6 +15,24 @@ describe Rufus::Scheduler::CronLine do
     Rufus::Scheduler::CronLine.new(cronline_string)
   end
 
+  def nt(cronline, now)
+    Rufus::Scheduler::CronLine.new(cronline).next_time(now)
+  end
+  def ntz(cronline, now)
+    tz = cronline.split.last
+    tu = nt(cronline, now).utc
+    in_zone(tz) { tu.getlocal }
+  end
+
+  def pt(cronline, now)
+    Rufus::Scheduler::CronLine.new(cronline).previous_time(now)
+  end
+  def ptz(cronline, now)
+    tz = cronline.split.last
+    tu = pt(cronline, now).utc
+    in_zone(tz) { tu.getlocal }
+  end
+
   def match(line, time)
     expect(cl(line).matches?(time)).to eq(true)
   end
@@ -189,15 +207,6 @@ describe Rufus::Scheduler::CronLine do
 
   describe '#next_time' do
 
-    def nt(cronline, now)
-      Rufus::Scheduler::CronLine.new(cronline).next_time(now)
-    end
-    def ntz(cronline, now)
-      tz = cronline.split.last
-      tu = nt(cronline, now).utc
-      in_zone(tz) { tu.getlocal }
-    end
-
     it 'computes the next occurence correctly' do
 
       now = Time.at(0).getutc # Thu Jan 01 00:00:00 UTC 1970
@@ -371,24 +380,9 @@ describe Rufus::Scheduler::CronLine do
         )
       ).to eq(ltz('America/New_York', 2015, 3, 9, 2, 0, 0))
     end
-
-    it 'correctly increments through Daylight Savings Time' do
-      expect(
-        nt('* * * * * America/Los_Angeles', Time.utc(2015, 3, 8, 9, 59))
-      ).to eq(Time.utc(2015, 3, 8, 10, 00))
-    end
   end
 
   describe '#previous_time' do
-
-    def pt(cronline, now)
-      Rufus::Scheduler::CronLine.new(cronline).previous_time(now)
-    end
-    def ptz(cronline, now)
-      tz = cronline.split.last
-      tu = pt(cronline, now).utc
-      in_zone(tz) { tu.getlocal }
-    end
 
     it 'returns the previous time the cron should have triggered' do
 
@@ -439,12 +433,6 @@ describe Rufus::Scheduler::CronLine do
           ltz('America/New_York', 2015, 3, 9, 12, 0, 0)
         )
       ).to eq(ltz('America/New_York', 2015, 3, 9, 2, 0, 0))
-    end
-
-    it 'correctly decrements through Daylight Savings Time' do
-      expect(
-        pt('* * * * * America/Los_Angeles', Time.utc(2015, 3, 8, 10, 00))
-      ).to eq(Time.utc(2015, 3, 8, 9, 59))
     end
   end
 
@@ -687,6 +675,20 @@ describe Rufus::Scheduler::CronLine do
         expect(
           (n1 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('09:45:00 FRI')
       end
+    end
+
+    it 'correctly increments through a DST transition' do
+
+      expect(
+        nt('* * * * * America/Los_Angeles', Time.utc(2015, 3, 8, 9, 59))
+      ).to eq(Time.utc(2015, 3, 8, 10, 00))
+    end
+
+    it 'correctly decrements through a DST transition' do
+
+      expect(
+        pt('* * * * * America/Los_Angeles', Time.utc(2015, 3, 8, 10, 00))
+      ).to eq(Time.utc(2015, 3, 8, 9, 59))
     end
   end
 end
