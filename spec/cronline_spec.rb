@@ -690,6 +690,30 @@ describe Rufus::Scheduler::CronLine do
         pt('* * * * * America/Los_Angeles', Time.utc(2015, 3, 8, 10, 00))
       ).to eq(Time.utc(2015, 3, 8, 9, 59))
     end
+
+    it 'correctly increments every minute through a DST transition' do
+
+      in_zone 'America/Los_Angeles' do
+
+        line = cl('* * * * * America/Los_Angeles')
+
+        t = Time.local(2015, 3, 8, 1, 58)
+
+        points =
+          [ 0, 1, 2 ].collect do
+            t = line.next_time(t)
+            [ t.strftime('%H:%M:%Sl'), t.dup.utc.strftime('%H:%M:%Sd') ]
+          end
+
+        expect(points).to eq(
+          [
+            [ '01:59:00l', '09:59:00d' ],
+            [ '03:00:00l', '10:00:00d' ],
+            [ '03:00:01l', '10:00:01d' ]
+          ]
+        )
+      end
+    end
   end
 end
 
