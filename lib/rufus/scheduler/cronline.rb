@@ -154,7 +154,8 @@ class Rufus::Scheduler
 
     rescue TZInfo::PeriodNotFound
 
-      next_time(from + 3600)
+      #next_time(from + 3600)
+      next_time(from + 3600) - 3600
     end
 
     # Returns the previous time the cronline matched. It's like next_time, but
@@ -488,6 +489,8 @@ class Rufus::Scheduler
             @timezone.local_to_utc(time)
           rescue TZInfo::AmbiguousTime
             @timezone.local_to_utc(time, time.isdst)
+          #rescue TZInfo::PeriodNotFound
+            # goes straight back to caller
           end
         time = time.getlocal unless from_in_utc
       end
