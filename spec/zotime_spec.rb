@@ -61,8 +61,8 @@ describe Rufus::Scheduler::ZoTime do
       zt = Rufus::Scheduler::ZoTime.new(1193898300, 'America/Los_Angeles')
       t = zt.utc
 
-      expect(t.strftime('%Y/%m/%d %H:%M:%S %Z')
-        ).to eq('2007/11/01 06:25:00 UTC')
+      expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s')
+        ).to eq('2007/11/01 06:25:00 UTC 1193898300')
     end
   end
 
@@ -74,6 +74,42 @@ describe Rufus::Scheduler::ZoTime do
       zt.add(111)
 
       expect(zt.seconds).to eq(1193898300 + 111)
+    end
+
+    it 'goes into DST' do
+
+      zt =
+        Rufus::Scheduler::ZoTime.new(
+          Time.gm(2015, 3, 8, 9, 59, 59),
+          'America/Los_Angeles')
+
+      t0 = zt.time
+      zt.add(1)
+      t1 = zt.time
+
+      st0 = t0.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t0.isdst}"
+      st1 = t1.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t1.isdst}"
+
+      expect(st0).to eq('2015/03/08 01:59:59 PST 1425808799 false')
+      expect(st1).to eq('2015/03/08 03:00:00 PDT 1425808800 true')
+    end
+
+    it 'goes out of DST' do
+
+      zt =
+        Rufus::Scheduler::ZoTime.new(
+          Time.gm(2014, 10, 26, 00, 59, 59),
+          'Europe/Berlin')
+
+      t0 = zt.time
+      zt.add(1)
+      t1 = zt.time
+
+      st0 = t0.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t0.isdst}"
+      st1 = t1.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t1.isdst}"
+
+      expect(st0).to eq('2014/10/26 02:59:59 CEST 1414285199 true')
+      expect(st1).to eq('2014/10/26 02:00:00 CET 1414285200 false')
     end
   end
 
