@@ -122,5 +122,42 @@ describe Rufus::Scheduler::ZoTime do
       expect(zt.to_f).to eq(1193898300)
     end
   end
+
+  describe '.is_timezone?' do
+
+    it 'returns true when passed a string describing a timezone'
+
+    context 'when TZInfo present' do
+
+      it 'returns true when passed a string describing a timezone'
+    end
+  end
+
+  describe '.parse' do
+
+    it 'parses a time string' do
+
+      zt =
+        Rufus::Scheduler::ZoTime.parse(
+          '2015/03/08 01:59:59 America/Los_Angeles')
+      t = zt.time
+
+      expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
+        ).to eq('2015/03/08 01:59:59 PST 1425808799 false')
+    end
+
+    it 'returns nil when it cannot parse' do
+
+      zt = Rufus::Scheduler::ZoTime.parse('2015/03/08 01:59:59 Nada/Nada')
+
+      expect(zt).to eq(nil)
+    end
+
+    context 'when TZInfo present' do
+
+      it 'parses a time string'
+      it 'returns nil when it cannot parse'
+    end
+  end
 end
 
