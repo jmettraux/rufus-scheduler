@@ -33,6 +33,7 @@ module Rufus
   class Scheduler
 
     require 'rufus/scheduler/util'
+    require 'rufus/scheduler/zotime'
     require 'rufus/scheduler/jobs'
     require 'rufus/scheduler/cronline'
     require 'rufus/scheduler/job_array'

@@ -23,69 +23,48 @@
 #++
 
 
-module Rufus
+class Rufus::Scheduler
 
-  class Scheduler
+  #
+  # Zon{ing|ed}Time, whatever.
+  #
+  class ZoTime
 
-    #
-    # The array rufus-scheduler uses to keep jobs in order (next to trigger
-    # first).
-    #
-    class JobArray
+    attr_accessor :seconds
+    attr_accessor :zone
 
-      def initialize
+    def initialize(s, zone)
 
-        @mutex = Mutex.new
-        @array = []
-      end
+      @seconds = s.to_f
+      @zone = zone
+    end
 
-      def push(job)
+    def time
 
-        @mutex.synchronize { @array << job unless @array.index(job) }
+      in_zone {
+        t = Time.at(@seconds)
+        t.sec # force Time instance to "compute" itself...
+        t
+      }
+    end
 
-        self
-      end
+    def utc
 
-      def size
+      time.utc
+    end
 
-        @array.size
-      end
+    protected
 
-      def each(now, &block)
+    def in_zone(&block)
 
-        to_a.sort_by { |j| j.next_time || (now + 1) }.each do |job|
+      ptz = ENV['TZ']
+      ENV['TZ'] = @zone
 
-          break unless job.next_time
-          break if job.next_time > now
+      block.call
 
-          block.call(job)
-        end
-      end
+    ensure
 
-      def delete_unscheduled
-
-        @mutex.synchronize {
-
-          @array.delete_if { |j| j.next_time.nil? || j.unscheduled_at }
-        }
-      end
-
-      def to_a
-
-        @mutex.synchronize { @array.dup }
-      end
-
-      def [](job_id)
-
-        @mutex.synchronize { @array.find { |j| j.job_id == job_id } }
-      end
-
-      # Only used when shutting down, directly yields the underlying array.
-      #
-      def array
-
-        @array
-      end
+      ENV['TZ'] = ptz
     end
   end
 end
