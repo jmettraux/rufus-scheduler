@@ -66,9 +66,25 @@ describe Rufus::Scheduler::ZoTime do
     end
   end
 
-  describe '#+' do
+  describe '#add' do
 
-    it 'adds seconds to @seconds'
+    it 'adds seconds' do
+
+      zt = Rufus::Scheduler::ZoTime.new(1193898300, 'Europe/Paris')
+      zt.add(111)
+
+      expect(zt.seconds).to eq(1193898300 + 111)
+    end
+  end
+
+  describe '#to_f' do
+
+    it 'returns the @seconds' do
+
+      zt = Rufus::Scheduler::ZoTime.new(1193898300, 'Europe/Paris')
+
+      expect(zt.to_f).to eq(1193898300)
+    end
   end
 end
 

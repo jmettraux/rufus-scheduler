@@ -41,16 +41,28 @@ class Rufus::Scheduler
 
     def time
 
-      in_zone {
+      in_zone do
+
         t = Time.at(@seconds)
         t.sec # force Time instance to "compute" itself...
+
         t
-      }
+      end
     end
 
     def utc
 
       time.utc
+    end
+
+    def add(s)
+
+      @seconds += s.to_f
+    end
+
+    def to_f
+
+      @seconds
     end
 
     protected
