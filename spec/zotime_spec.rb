@@ -35,11 +35,6 @@ describe Rufus::Scheduler::ZoTime do
 
       expect(zt.seconds.to_i).to eq(1193898300)
     end
-
-    context 'when TZInfo present' do
-
-      it 'uses TZInfo to resolve time zones'
-    end
   end
 
   describe '#time' do
@@ -146,7 +141,20 @@ describe Rufus::Scheduler::ZoTime do
 
   describe '.parse' do
 
-    it 'parses a time string' do
+    it 'parses a time string without a timezone' do
+
+      zt =
+        in_zone('Europe/Moscow') {
+          Rufus::Scheduler::ZoTime.parse('2015/03/08 01:59:59')
+        }
+
+      t = zt.time
+
+      expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
+        ).to eq('2015/03/08 01:59:59 MSK 1425808799 false')
+    end
+
+    it 'parses a time string with a timezone' do
 
       zt =
         Rufus::Scheduler::ZoTime.parse(

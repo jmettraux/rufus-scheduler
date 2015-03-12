@@ -78,6 +78,10 @@ class Rufus::Scheduler
           is_timezone?(m) ? '' : m
         }
 
+      zone ||= Time.now.zone
+
+      return nil unless is_timezone?(zone)
+
       begin
         DateTime.parse(o)
       rescue
@@ -99,11 +103,10 @@ class Rufus::Scheduler
       zt = ZoTime.new(0, str)
       t = zt.time
 
+      return !! (TZInfo::Timezone.get(str) rescue nil) if defined?(::TZInfo)
+
       return false if t.zone == ''
       return false if t.zone == 'UTC' && str != 'UTC'
-      return true if t.zone != str
-
-      return !! (TZInfo::Timezone.get(str) rescue nil) if defined?(::TZInfo)
 
       true
     end
