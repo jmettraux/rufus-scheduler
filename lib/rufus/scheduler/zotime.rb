@@ -94,14 +94,18 @@ class Rufus::Scheduler
 
       return false if str == nil
 
+      return true if Time.zone_offset(str)
+
       zt = ZoTime.new(0, str)
       t = zt.time
 
       return false if t.zone == ''
+      return false if t.zone == 'UTC' && str != 'UTC'
       return true if t.zone != str
-      return true if t.zone == 'UTC'
 
-      false
+      return !! (TZInfo::Timezone.get(str) rescue nil) if defined?(::TZInfo)
+
+      true
     end
 
     def in_zone(&block)

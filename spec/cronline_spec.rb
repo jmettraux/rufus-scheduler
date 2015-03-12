@@ -5,7 +5,6 @@
 # Sat Mar 21 12:55:27 JST 2009
 #
 
-require 'tzinfo'
 require 'spec_helper'
 
 

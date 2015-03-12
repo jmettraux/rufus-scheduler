@@ -125,11 +125,22 @@ describe Rufus::Scheduler::ZoTime do
 
   describe '.is_timezone?' do
 
-    it 'returns true when passed a string describing a timezone'
+    def is_timezone?(o); Rufus::Scheduler::ZoTime.is_timezone?(o); end
 
-    context 'when TZInfo present' do
+    it 'returns true when passed a string describing a timezone' do
 
-      it 'returns true when passed a string describing a timezone'
+      expect(is_timezone?('Asia/Tokyo')).to eq(true)
+      expect(is_timezone?('Europe/Paris')).to eq(true)
+      expect(is_timezone?('UTC')).to eq(true)
+      expect(is_timezone?('PST')).to eq(true)
+      expect(is_timezone?('+09:00')).to eq(true)
+      expect(is_timezone?('-01:30')).to eq(true)
+    end
+
+    it 'returns false when it cannot make sense of the timezone' do
+
+      expect(is_timezone?('Asia/Paris')).to eq(false)
+      expect(is_timezone?('YTC')).to eq(false)
     end
   end
 
@@ -151,12 +162,6 @@ describe Rufus::Scheduler::ZoTime do
       zt = Rufus::Scheduler::ZoTime.parse('2015/03/08 01:59:59 Nada/Nada')
 
       expect(zt).to eq(nil)
-    end
-
-    context 'when TZInfo present' do
-
-      it 'parses a time string'
-      it 'returns nil when it cannot parse'
     end
   end
 end
