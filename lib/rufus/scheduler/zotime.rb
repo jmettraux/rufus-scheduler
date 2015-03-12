@@ -109,6 +109,19 @@ class Rufus::Scheduler
       true
     end
 
+    LLATZ_REX = Regexp.new(
+      "^(" +
+        "Z" + "|" +
+        "[A-Z]{3,4}" + "|" +
+        "[A-Za-z]+\/[A-Za-z]+" + "|" +
+        "[+-][0-1][0-9]:?[0-5][0-9]" +
+      ")$")
+
+    def self.looks_like_a_timezone?(str)
+
+      !! LLATZ_REX.match(str)
+    end
+
     def in_zone(&block)
 
       ptz = ENV['TZ']

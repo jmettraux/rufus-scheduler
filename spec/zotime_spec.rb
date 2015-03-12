@@ -140,6 +140,37 @@ describe Rufus::Scheduler::ZoTime do
     end
   end
 
+  describe '.looks_like_a_timezone?' do
+
+    def llat?(o); Rufus::Scheduler::ZoTime.looks_like_a_timezone?(o); end
+
+    it 'may return true' do
+
+      expect(llat?('Asia/Tokyo')).to eq(true)
+      expect(llat?('Europe/Paris')).to eq(true)
+      expect(llat?('UTC')).to eq(true)
+      expect(llat?('PST')).to eq(true)
+      expect(llat?('+09:00')).to eq(true)
+      expect(llat?('-01:30')).to eq(true)
+
+      expect(llat?('Asia/Paris')).to eq(true)
+      expect(llat?('YTC')).to eq(true)
+      expect(llat?('Nada/Nada')).to eq(true)
+
+      expect(llat?('Z')).to eq(true)
+    end
+
+    it 'may return false' do
+
+      expect(llat?('14:00')).to eq(false)
+      expect(llat?('14:00:14')).to eq(false)
+      expect(llat?('2014/12/11')).to eq(false)
+      expect(llat?('2014-12-11')).to eq(false)
+      expect(llat?('Wed')).to eq(false)
+      expect(llat?('+25:00')).to eq(false)
+    end
+  end
+
   describe '.parse' do
 
     it 'parses a time string without a timezone' do
