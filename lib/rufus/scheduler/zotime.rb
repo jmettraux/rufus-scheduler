@@ -65,33 +65,30 @@ class Rufus::Scheduler
       @seconds
     end
 
-    TZ_REGEX = /\b((?:[a-zA-Z][a-zA-z0-9\-+]+)(?:\/[a-zA-Z0-9_\-+]+)?)\b/
-      # yes, duplication, this one or this other must die
-
     def self.parse(str)
 
-      zone = nil
-
-      s =
-        str.gsub(TZ_REGEX) { |m|
-          zone ||= m
-          is_timezone?(m) ? '' : m
-        }
-
-      zone ||= Time.now.zone
-
-      return nil unless is_timezone?(zone)
-
       begin
-        DateTime.parse(o)
+        DateTime.parse(str)
       rescue
         raise ArgumentError, "no time information in #{o.inspect}"
       end if RUBY_VERSION < '1.9.0'
 
-      zt = ZoTime.new(0, zone)
+      zone = nil
+
+      s =
+        str.gsub(/\S+/) { |m|
+          if is_timezone?(m)
+            zone ||= m
+            ''
+          else
+            m
+          end
+        }
+
+      zt = ZoTime.new(0, zone || ENV['TZ'])
       zt.in_zone { zt.seconds = Time.parse(s).to_f }
 
-      zt
+      zt.seconds == nil ? nil : zt
     end
 
     def self.is_timezone?(str)
@@ -107,6 +104,7 @@ class Rufus::Scheduler
 
       return false if t.zone == ''
       return false if t.zone == 'UTC' && str != 'UTC'
+      return false if str.start_with?(t.zone)
 
       true
     end

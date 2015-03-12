@@ -136,6 +136,7 @@ describe Rufus::Scheduler::ZoTime do
 
       expect(is_timezone?('Asia/Paris')).to eq(false)
       expect(is_timezone?('YTC')).to eq(false)
+      expect(is_timezone?('Nada/Nada')).to eq(false)
     end
   end
 
@@ -149,9 +150,12 @@ describe Rufus::Scheduler::ZoTime do
         }
 
       t = zt.time
+      u = zt.utc
 
       expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
-        ).to eq('2015/03/08 01:59:59 MSK 1425808799 false')
+        ).to eq('2015/03/08 01:59:59 MSK 1425769199 false')
+      expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
+        ).to eq('2015/03/07 22:59:59 UTC 1425769199 false')
     end
 
     it 'parses a time string with a timezone' do
@@ -159,10 +163,14 @@ describe Rufus::Scheduler::ZoTime do
       zt =
         Rufus::Scheduler::ZoTime.parse(
           '2015/03/08 01:59:59 America/Los_Angeles')
+
       t = zt.time
+      u = zt.utc
 
       expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
         ).to eq('2015/03/08 01:59:59 PST 1425808799 false')
+      expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
+        ).to eq('2015/03/08 09:59:59 UTC 1425808799 false')
     end
 
     it 'returns nil when it cannot parse' do
