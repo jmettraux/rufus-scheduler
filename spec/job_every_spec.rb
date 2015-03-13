@@ -53,7 +53,7 @@ describe Rufus::Scheduler::EveryJob do
 
     it 'triggers correctly through a DST transition' do
 
-      job = described_class.new(@scheduler, '1m', {}, lambda {})
+      job = Rufus::Scheduler::EveryJob.new(@scheduler, '1m', {}, lambda {})
       t1 = ltz('America/Los_Angeles', 2015, 3, 8, 1, 55)
       t2 = ltz('America/Los_Angeles', 2015, 3, 8, 3, 05)
       job.next_time = t1
