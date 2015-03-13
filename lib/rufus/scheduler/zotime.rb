@@ -65,7 +65,11 @@ class Rufus::Scheduler
       @seconds
     end
 
-    def self.parse(str)
+    def self.parse(str, opts={})
+
+      if defined?(::Chronic) && t = ::Chronic.parse(str, opts)
+        return ZoTime.new(t, ENV['TZ'])
+      end
 
       begin
         DateTime.parse(str)
@@ -98,6 +102,7 @@ class Rufus::Scheduler
       return false if str == nil
 
       return true if Time.zone_offset(str)
+      return true if str == 'Zulu' || str == 'Z'
 
       return !! (TZInfo::Timezone.get(str) rescue nil) if defined?(::TZInfo)
 
@@ -113,7 +118,7 @@ class Rufus::Scheduler
 
     LLATZ_REX = Regexp.new(
       "^(" +
-        "Z" + "|" +
+        "Z(ulu)?" + "|" +
         "[A-Z]{3,4}" + "|" +
         "[A-Za-z]+\/[A-Za-z_]+" + "|" +
         "[+-][0-1][0-9]:?[0-5][0-9]" +

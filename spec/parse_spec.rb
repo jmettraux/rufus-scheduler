@@ -12,53 +12,51 @@ describe Rufus::Scheduler do
 
   describe '.parse' do
 
-    def parse(s, opts={})
-      Rufus::Scheduler.parse(s, opts)
-    end
+    def pa(s, opts={}); Rufus::Scheduler.parse(s, opts); end
 
     it 'parses duration strings' do
 
-      expect(parse('1.0d1.0w1.0d')).to eq(777600.0)
+      expect(pa('1.0d1.0w1.0d')).to eq(777600.0)
     end
 
     it 'parses datetimes' do
 
       # local
 
-      expect(parse('Sun Nov 18 16:01:00 2012').strftime('%c')).to eq(
+      expect(pa('Sun Nov 18 16:01:00 2012').strftime('%c')).to eq(
         'Sun Nov 18 16:01:00 2012'
       )
     end
 
     it 'parses datetimes with timezones' do
 
-      expect(parse('Sun Nov 18 16:01:00 2012 Japan').getutc.strftime('%c')).to eq(
+      expect(pa('Sun Nov 18 16:01:00 2012 Japan').getutc.strftime('%c')).to eq(
         'Sun Nov 18 07:01:00 2012'
       )
 
-      expect(parse('Sun Nov 18 16:01:00 2012 Zulu').getutc.strftime('%c')).to eq(
+      expect(pa('Sun Nov 18 16:01:00 2012 Zulu').getutc.strftime('%c')).to eq(
         'Sun Nov 18 16:01:00 2012'
       )
 
-      expect(parse('Sun Nov 18 16:01:00 Japan 2012').getutc.strftime('%c')).to eq(
+      expect(pa('Sun Nov 18 16:01:00 Japan 2012').getutc.strftime('%c')).to eq(
         'Sun Nov 18 07:01:00 2012'
       )
 
-      expect(parse('Japan Sun Nov 18 16:01:00 2012').getutc.strftime('%c')).to eq(
+      expect(pa('Japan Sun Nov 18 16:01:00 2012').getutc.strftime('%c')).to eq(
         'Sun Nov 18 07:01:00 2012'
       )
 
-      expect(parse('Sun Nov 18 16:01:00 2012 America/New_York').getutc.strftime('%c')).to eq(
-        'Sun Nov 18 21:01:00 2012'
-      )
+      expect(
+        pa('Sun Nov 18 16:01:00 2012 America/New_York').getutc.strftime('%c')
+      ).to eq('Sun Nov 18 21:01:00 2012')
     end
 
     it 'parses datetimes with named timezones' do
 
-      expect(parse(
+      expect(pa(
         'Sun Nov 18 16:01:00 2012 Europe/Berlin'
       ).strftime('%c %z')).to eq(
-        'Sun Nov 18 15:01:00 2012 +0000'
+        'Sun Nov 18 16:01:00 2012 +0100'
       )
     end
 
@@ -66,32 +64,32 @@ describe Rufus::Scheduler do
 
       localzone = Time.now.strftime('%z')
 
-      expect(parse('Sun Nov 18 16:01:00 2012').strftime('%c %z')).to eq(
+      expect(pa('Sun Nov 18 16:01:00 2012').strftime('%c %z')).to eq(
         "Sun Nov 18 16:01:00 2012 #{localzone}"
       )
     end
 
     it 'parses cronlines' do
 
-      out = parse('* * * * *')
+      out = pa('* * * * *')
 
       expect(out.class).to eq(Rufus::Scheduler::CronLine)
       expect(out.original).to eq('* * * * *')
 
-      expect(parse('10 23 * * *').class).to eq(Rufus::Scheduler::CronLine)
-      expect(parse('* 23 * * *').class).to eq(Rufus::Scheduler::CronLine)
+      expect(pa('10 23 * * *').class).to eq(Rufus::Scheduler::CronLine)
+      expect(pa('* 23 * * *').class).to eq(Rufus::Scheduler::CronLine)
     end
 
     it 'raises on unparseable input' do
 
       expect {
-        parse('nada')
+        pa('nada')
       }.to raise_error(ArgumentError, 'couldn\'t parse "nada"')
     end
 
     it 'does not use Chronic if not present' do
 
-      t = parse('next monday 7 PM')
+      t = pa('next monday 7 PM')
 
       n = Time.now
 
@@ -104,7 +102,7 @@ describe Rufus::Scheduler do
 
       with_chronic do
 
-        t = parse('next monday 7 PM')
+        t = pa('next monday 7 PM')
 
         expect(t.wday).to eq(1)
         expect(t.hour).to eq(19)
@@ -117,7 +115,7 @@ describe Rufus::Scheduler do
 
       with_chronic do
 
-        t = parse('monday', :context => :past)
+        t = pa('monday', :context => :past)
 
         expect(t.wday).to eq(1)
         expect(t).to be < Time.now
