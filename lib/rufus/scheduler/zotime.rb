@@ -77,13 +77,15 @@ class Rufus::Scheduler
 
       s =
         str.gsub(/\S+/) { |m|
-          if is_timezone?(m)
+          if looks_like_a_timezone?(m)
             zone ||= m
             ''
           else
             m
           end
         }
+
+      return nil unless zone.nil? || is_timezone?(zone)
 
       zt = ZoTime.new(0, zone || ENV['TZ'])
       zt.in_zone { zt.seconds = Time.parse(s).to_f }
@@ -97,10 +99,10 @@ class Rufus::Scheduler
 
       return true if Time.zone_offset(str)
 
+      return !! (TZInfo::Timezone.get(str) rescue nil) if defined?(::TZInfo)
+
       zt = ZoTime.new(0, str)
       t = zt.time
-
-      return !! (TZInfo::Timezone.get(str) rescue nil) if defined?(::TZInfo)
 
       return false if t.zone == ''
       return false if t.zone == 'UTC' && str != 'UTC'
@@ -113,7 +115,7 @@ class Rufus::Scheduler
       "^(" +
         "Z" + "|" +
         "[A-Z]{3,4}" + "|" +
-        "[A-Za-z]+\/[A-Za-z]+" + "|" +
+        "[A-Za-z]+\/[A-Za-z_]+" + "|" +
         "[+-][0-1][0-9]:?[0-5][0-9]" +
       ")$")
 

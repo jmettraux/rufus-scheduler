@@ -147,6 +147,7 @@ describe Rufus::Scheduler::ZoTime do
     it 'may return true' do
 
       expect(llat?('Asia/Tokyo')).to eq(true)
+      expect(llat?('America/Los_Angeles')).to eq(true)
       expect(llat?('Europe/Paris')).to eq(true)
       expect(llat?('UTC')).to eq(true)
       expect(llat?('PST')).to eq(true)
