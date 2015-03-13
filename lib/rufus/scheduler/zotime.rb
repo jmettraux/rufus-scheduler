@@ -102,7 +102,7 @@ class Rufus::Scheduler
       return false if str == nil
 
       return true if Time.zone_offset(str)
-      return true if str == 'Zulu' || str == 'Z'
+      return true if str == 'Zulu'
 
       return !! (TZInfo::Timezone.get(str) rescue nil) if defined?(::TZInfo)
 
@@ -121,7 +121,7 @@ class Rufus::Scheduler
         "Z(ulu)?" + "|" +
         "[A-Z]{3,4}" + "|" +
         "[A-Za-z]+\/[A-Za-z_]+" + "|" +
-        "[+-][0-1][0-9]:?[0-5][0-9]" +
+        #"[+-][0-1][0-9]:?[0-5][0-9]" +
       ")$")
 
     def self.looks_like_a_timezone?(str)

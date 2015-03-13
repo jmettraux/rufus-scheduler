@@ -127,6 +127,9 @@ describe Rufus::Scheduler::ZoTime do
       expect(is_timezone?('Asia/Tokyo')).to eq(true)
       expect(is_timezone?('Europe/Paris')).to eq(true)
       expect(is_timezone?('UTC')).to eq(true)
+      expect(is_timezone?('GMT')).to eq(true)
+      expect(is_timezone?('Z')).to eq(true)
+      expect(is_timezone?('Zulu')).to eq(true)
       expect(is_timezone?('PST')).to eq(true)
       expect(is_timezone?('+09:00')).to eq(true)
       expect(is_timezone?('-01:30')).to eq(true)
@@ -151,8 +154,6 @@ describe Rufus::Scheduler::ZoTime do
       expect(llat?('Europe/Paris')).to eq(true)
       expect(llat?('UTC')).to eq(true)
       expect(llat?('PST')).to eq(true)
-      expect(llat?('+09:00')).to eq(true)
-      expect(llat?('-01:30')).to eq(true)
 
       expect(llat?('Asia/Paris')).to eq(true)
       expect(llat?('YTC')).to eq(true)
@@ -169,6 +170,9 @@ describe Rufus::Scheduler::ZoTime do
       expect(llat?('2014-12-11')).to eq(false)
       expect(llat?('Wed')).to eq(false)
       expect(llat?('+25:00')).to eq(false)
+
+      expect(llat?('+09:00')).to eq(false)
+      expect(llat?('-01:30')).to eq(false)
     end
   end
 
@@ -190,7 +194,7 @@ describe Rufus::Scheduler::ZoTime do
         ).to eq('2015/03/07 22:59:59 UTC 1425769199 false')
     end
 
-    it 'parses a time string with a timezone' do
+    it 'parses a time string with a full name timezone' do
 
       zt =
         Rufus::Scheduler::ZoTime.parse(
@@ -203,6 +207,38 @@ describe Rufus::Scheduler::ZoTime do
         ).to eq('2015/03/08 01:59:59 PST 1425808799 false')
       expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
         ).to eq('2015/03/08 09:59:59 UTC 1425808799 false')
+    end
+
+    it 'parses a time string with a delta timezone' do
+
+      zt =
+        in_zone('Europe/Berlin') {
+          Rufus::Scheduler::ZoTime.parse('2015-12-13 12:30 -0200')
+        }
+
+      t = zt.time
+      u = zt.utc
+
+      expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
+        ).to eq('2015/12/13 15:30:00 CET 1450017000 false')
+      expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
+        ).to eq('2015/12/13 14:30:00 UTC 1450017000 false')
+    end
+
+    it 'parses a time string with a delta (:) timezone' do
+
+      zt =
+        in_zone('Europe/Berlin') {
+          Rufus::Scheduler::ZoTime.parse('2015-12-13 12:30 -02:00')
+        }
+
+      t = zt.time
+      u = zt.utc
+
+      expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
+        ).to eq('2015/12/13 15:30:00 CET 1450017000 false')
+      expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
+        ).to eq('2015/12/13 14:30:00 UTC 1450017000 false')
     end
 
     it 'returns nil when it cannot parse' do

@@ -340,7 +340,7 @@ module Rufus
 
       def occurrences(time0, time1)
 
-        time >= time0 && time <= time1 ? [ time ] : []
+        (time >= time0 && time <= time1) ? [ time ] : []
       end
 
       protected

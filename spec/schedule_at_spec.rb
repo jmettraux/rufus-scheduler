@@ -107,7 +107,7 @@ describe Rufus::Scheduler do
 
       job = @scheduler.at('2050-12-12 20:30 Europe/Berlin', :job => true) {}
 
-      expect(job.time.strftime('%c %z')).to eq('Mon Dec 12 19:30:00 2050 +0000')
+      expect(job.time.strftime('%c %z')).to eq('Mon Dec 12 20:30:00 2050 +0100')
     end
 
     it 'accepts a Chronic string (if Chronic is present)' do
