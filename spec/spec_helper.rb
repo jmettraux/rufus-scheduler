@@ -107,7 +107,7 @@ RSpec::Matchers.define :be_within_1s_of do |expected|
     end
   end
 
-  failure_message_for_should do |actual|
+  failure_message do |actual|
 
     if actual.respond_to?(:asctime)
       "expected #{actual.inspect} to be within 1 second of #{expected}"
