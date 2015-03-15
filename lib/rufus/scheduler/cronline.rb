@@ -83,9 +83,7 @@ class Rufus::Scheduler
     #
     def matches?(time)
 
-      time = Time.at(time) unless time.kind_of?(Time)
-
-      time = @timezone.utc_to_local(time.getutc) if @timezone
+      time = ZoTime.new(time.to_f, @timezone || ENV['TZ']).time
 
       return false unless sub_match?(time, :sec, @seconds)
       return false unless sub_match?(time, :min, @minutes)
@@ -158,34 +156,34 @@ class Rufus::Scheduler
     #
     def previous_time(from=Time.now)
 
-      time = local_time(from)
-      time = round_to_seconds(time)
-
-      # start at the previous second
-      time = time - 1
+      time = nil
+      zotime = ZoTime.new(from.to_i - 1, @timezone || ENV['TZ'])
 
       loop do
+
+        time = zotime.time
+
         unless date_match?(time)
-          time -= time.hour * 3600 + time.min * 60 + time.sec + 1; next
+          zotime.substract(time.hour * 3600 + time.min * 60 + time.sec + 1)
+          next
         end
         unless sub_match?(time, :hour, @hours)
-          time -= time.min * 60 + time.sec + 1; next
+          zotime.substract(time.min * 60 + time.sec + 1)
+          next
         end
         unless sub_match?(time, :min, @minutes)
-          time -= time.sec + 1; next
+          zotime.substract(time.sec + 1)
+          next
         end
         unless sub_match?(time, :sec, @seconds)
-          time -= 1; next
+          zotime.substract(1)
+          next
         end
 
         break
       end
 
-      global_time(time, from.utc?)
-
-    rescue TZInfo::PeriodNotFound
-
-      previous_time(time)
+      time
     end
 
     # Returns an array of 6 arrays (seconds, minutes, hours, days,

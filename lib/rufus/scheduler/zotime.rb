@@ -67,6 +67,11 @@ class Rufus::Scheduler
       @seconds += s.to_f
     end
 
+    def substract(s)
+
+      @seconds -= s.to_f
+    end
+
     def to_f
 
       @seconds
