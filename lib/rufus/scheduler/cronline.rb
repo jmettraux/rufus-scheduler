@@ -451,30 +451,6 @@ class Rufus::Scheduler
 
       [ "#{WEEKDAYS[date.wday]}##{pos}", "#{WEEKDAYS[date.wday]}##{neg}" ]
     end
-
-    #def local_time(time)
-    #  @timezone ? @timezone.utc_to_local(time.getutc) : time
-    #end
-
-    #def global_time(time, from_in_utc)
-    #  if @timezone
-    #    time =
-    #      #begin
-    #        @timezone.local_to_utc(time)
-    #      #rescue TZInfo::AmbiguousTime
-    #      #  @timezone.local_to_utc(time, time.isdst)
-    #      #rescue TZInfo::PeriodNotFound
-    #        # goes straight back to caller
-    #      #end
-    #    time = time.getlocal unless from_in_utc
-    #  end
-    #  time
-    #end
-
-    #def round_to_seconds(time)
-    #  # Ruby 1.8 doesn't have #round
-    #  time.respond_to?(:round) ? time.round : time - time.usec * 1e-6
-    #end
   end
 end
 
