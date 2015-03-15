@@ -208,45 +208,32 @@ describe Rufus::Scheduler::CronLine do
 
     it 'computes the next occurence correctly' do
 
-      now = Time.at(0).getutc # Thu Jan 01 00:00:00 UTC 1970
+      in_zone 'Europe/Berlin' do
 
-      expect(nt('* * * * *', now)).to eq(now + 60)
-      expect(nt('* * * * sun', now)).to eq(now + 259200)
-      expect(nt('* * * * * *', now)).to eq(now + 1)
-      expect(nt('* * 13 * fri', now)).to eq(now + 3715200)
+        now = Time.at(0) - 3600
 
-      expect(nt('10 12 13 12 *', now)).to eq(now + 29938200)
-        # this one is slow (1 year == 3 seconds)
-        #
-        # historical note:
-        # (comment made in 2006 or 2007, the underlying libs got better and
-        # that slowness is gone)
+        expect(nt('* * * * *', now)).to eq(now + 60)
+        expect(nt('* * * * sun', now)).to eq(now + 259200)
+        expect(nt('* * * * * *', now)).to eq(now + 1)
+        expect(nt('* * 13 * fri', now)).to eq(now + 3715200)
 
-      expect(nt('0 0 * * thu', now)).to eq(now + 604800)
-      expect(nt('00 0 * * thu', now)).to eq(now + 604800)
+        expect(nt('10 12 13 12 *', now)).to eq(now + 29938200)
+          # this one is slow (1 year == 3 seconds)
+          #
+          # historical note:
+          # (comment made in 2006 or 2007, the underlying libs got better and
+          # that slowness is gone)
 
-      expect(nt('0 0 * * *', now)).to eq(now + 24 * 3600)
-      expect(nt('0 24 * * *', now)).to eq(now + 24 * 3600)
+        expect(nt('0 0 * * thu', now)).to eq(now + 604800)
+        expect(nt('00 0 * * thu', now)).to eq(now + 604800)
 
-      now = local(2008, 12, 31, 23, 59, 59, 0)
+        expect(nt('0 0 * * *', now)).to eq(now + 24 * 3600)
+        expect(nt('0 24 * * *', now)).to eq(now + 24 * 3600)
 
-      expect(nt('* * * * *', now)).to eq(now + 1)
-    end
+        now = local(2008, 12, 31, 23, 59, 59, 0)
 
-    it 'computes the next occurence correctly in UTC (TZ not specified)' do
-
-      now = utc(1970, 1, 1)
-
-      expect(nt('* * * * *', now)).to eq(utc(1970, 1, 1, 0, 1))
-      expect(nt('* * * * sun', now)).to eq(utc(1970, 1, 4))
-      expect(nt('* * * * * *', now)).to eq(utc(1970, 1, 1, 0, 0, 1))
-      expect(nt('* * 13 * fri', now)).to eq(utc(1970, 2, 13))
-
-      expect(nt('10 12 13 12 *', now)).to eq(utc(1970, 12, 13, 12, 10))
-        # this one is slow (1 year == 3 seconds)
-      expect(nt('* * 1 6 *', now)).to eq(utc(1970, 6, 1))
-
-      expect(nt('0 0 * * thu', now)).to eq(utc(1970, 1, 8))
+        expect(nt('* * * * *', now)).to eq(now + 1)
+      end
     end
 
     it 'computes the next occurence correctly in local TZ (TZ not specified)' do
@@ -268,9 +255,7 @@ describe Rufus::Scheduler::CronLine do
     it 'computes the next occurence correctly in UTC (TZ specified)' do
 
       zone = 'Europe/Stockholm'
-      tz = TZInfo::Timezone.get(zone)
-      now = tz.local_to_utc(local(1970, 1, 1))
-        # Midnight in zone, UTC
+      now = in_zone(zone) { Time.local(1970, 1, 1) }
 
       expect(nt("* * * * * #{zone}", now)).to eq(utc(1969, 12, 31, 23, 1))
       expect(nt("* * * * sun #{zone}", now)).to eq(utc(1970, 1, 3, 23))
@@ -282,20 +267,6 @@ describe Rufus::Scheduler::CronLine do
 
       expect(nt("0 0 * * thu #{zone}", now)).to eq(utc(1970, 1, 7, 23))
     end
-
-    #it 'computes the next occurence correctly in local TZ (TZ specified)' do
-    #  zone = 'Europe/Stockholm'
-    #  tz = TZInfo::Timezone.get(zone)
-    #  now = tz.local_to_utc(utc(1970, 1, 1)).localtime
-    #    # Midnight in zone, local time
-    #  nt("* * * * * #{zone}", now).should == local(1969, 12, 31, 18, 1)
-    #  nt("* * * * sun #{zone}", now).should == local(1970, 1, 3, 18)
-    #  nt("* * * * * * #{zone}", now).should == local(1969, 12, 31, 18, 0, 1)
-    #  nt("* * 13 * fri #{zone}", now).should == local(1970, 2, 12, 18)
-    #  nt("10 12 13 12 * #{zone}", now).should == local(1970, 12, 13, 6, 10)
-    #  nt("* * 1 6 * #{zone}", now).should == local(1970, 5, 31, 19)
-    #  nt("0 0 * * thu #{zone}", now).should == local(1970, 1, 7, 18)
-    #end
 
     it 'computes the next time correctly when there is a sun#2 involved' do
 

@@ -54,8 +54,9 @@ class Rufus::Scheduler
 
       items = line.split
 
-      @timezone = (TZInfo::Timezone.get(items.last) rescue nil)
-      items.pop if @timezone
+      #@timezone = (TZInfo::Timezone.get(items.last) rescue nil)
+      #items.pop if @timezone
+      @timezone = items.pop if ZoTime.is_timezone?(items.last)
 
       raise ArgumentError.new(
         "not a valid cronline : '#{line}'"
@@ -122,40 +123,34 @@ class Rufus::Scheduler
     #
     def next_time(from=Time.now)
 
-      time = local_time(from)
-      time = round_to_seconds(time)
-
-      # start at the next second
-      time = time + 1
+      time = nil
+      zotime = ZoTime.new(from.to_i + 1, @timezone || ENV['TZ'])
 
       loop do
 
+        time = zotime.time
+
         unless date_match?(time)
-          time = tadd(time, (24 - time.hour) * 3600 - time.min * 60 - time.sec)
+          zotime.add((24 - time.hour) * 3600 - time.min * 60 - time.sec)
           next
         end
         unless sub_match?(time, :hour, @hours)
-          time = tadd(time, (60 - time.min) * 60 - time.sec)
+          zotime.add((60 - time.min) * 60 - time.sec)
           next
         end
         unless sub_match?(time, :min, @minutes)
-          time = tadd(time, 60 - time.sec)
+          zotime.add(60 - time.sec)
           next
         end
         unless sub_match?(time, :sec, @seconds)
-          time = next_second(time)
+          zotime.add(next_second(time))
           next
         end
 
         break
       end
 
-      global_time(time, from.utc?)
-
-    rescue TZInfo::PeriodNotFound
-
-      #next_time(from + 3600)
-      next_time(from + 3600) - 3600
+      time
     end
 
     # Returns the previous time the cronline matched. It's like next_time, but
@@ -207,7 +202,7 @@ class Rufus::Scheduler
         @months,
         @weekdays,
         @monthdays,
-        @timezone ? @timezone.name : nil
+        @timezone
       ]
     end
 
@@ -283,41 +278,15 @@ class Rufus::Scheduler
 
     protected
 
-    def find_transition_time(t0, t3)
-
-      s = (t3 - t0).to_i / 2
-
-      return t3 if s == 0
-
-      t1 = t0 + s
-      t2 = t0 + 2 * s
-
-      return find_transition_time(t0, t1) if t0.isdst != t1.isdst
-      return find_transition_time(t1, t2) if t1.isdst != t2.isdst
-      return find_transition_time(t2, t3)
-    end
-
-    def tadd(time, seconds)
-
-      time1 = time + seconds
-
-      return time1 if time1.isdst == time.isdst
-
-      find_transition_time(time, time1)
-    end
-
     def next_second(time)
 
       secs = @seconds.sort
 
-      if time.sec > secs.last
-        time += secs.last + 60 - time.sec
-      else
-        secs.shift while secs.first < time.sec
-        time += secs.first - time.sec
-      end
+      return secs.last + 60 - time.sec if time.sec > secs.last
 
-      time
+      secs.shift while secs.first < time.sec
+
+      secs.first - time.sec
     end
 
     WEEKDAYS = %w[ sun mon tue wed thu fri sat ]
@@ -476,33 +445,29 @@ class Rufus::Scheduler
       [ "#{WEEKDAYS[date.wday]}##{pos}", "#{WEEKDAYS[date.wday]}##{neg}" ]
     end
 
-    def local_time(time)
+    #def local_time(time)
+    #  @timezone ? @timezone.utc_to_local(time.getutc) : time
+    #end
 
-      @timezone ? @timezone.utc_to_local(time.getutc) : time
-    end
+    #def global_time(time, from_in_utc)
+    #  if @timezone
+    #    time =
+    #      #begin
+    #        @timezone.local_to_utc(time)
+    #      #rescue TZInfo::AmbiguousTime
+    #      #  @timezone.local_to_utc(time, time.isdst)
+    #      #rescue TZInfo::PeriodNotFound
+    #        # goes straight back to caller
+    #      #end
+    #    time = time.getlocal unless from_in_utc
+    #  end
+    #  time
+    #end
 
-    def global_time(time, from_in_utc)
-
-      if @timezone
-        time =
-          begin
-            @timezone.local_to_utc(time)
-          rescue TZInfo::AmbiguousTime
-            @timezone.local_to_utc(time, time.isdst)
-          #rescue TZInfo::PeriodNotFound
-            # goes straight back to caller
-          end
-        time = time.getlocal unless from_in_utc
-      end
-
-      time
-    end
-
-    def round_to_seconds(time)
-
-      # Ruby 1.8 doesn't have #round
-      time.respond_to?(:round) ? time.round : time - time.usec * 1e-6
-    end
+    #def round_to_seconds(time)
+    #  # Ruby 1.8 doesn't have #round
+    #  time.respond_to?(:round) ? time.round : time - time.usec * 1e-6
+    #end
   end
 end
 

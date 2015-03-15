@@ -37,6 +37,27 @@ describe Rufus::Scheduler::ZoTime do
     end
   end
 
+#  # New York      EST: UTC-5
+#  # summer (dst)  EDT: UTC-4
+#
+#  it "flips burgers" do
+#
+#    puts "---"
+#    t0 = ltz('America/New_York', 2004, 10, 31, 0, 30, 0)
+#    t1 = ltz('America/New_York', 2004, 10, 31, 1, 30, 0)
+#    p t0
+#    p t1
+#    puts "---"
+#    zt0 = Rufus::Scheduler::ZoTime.new(t0, 'America/New_York')
+#    zt1 = Rufus::Scheduler::ZoTime.new(t1, 'America/New_York')
+#    p zt0.time
+#    p zt1.time
+#    puts "---"
+#    zt0.add(3600)
+#    p zt0.time
+#    p zt1.time
+#  end
+
   describe '#time' do
 
     it 'returns a Time instance in with the right offset' do
