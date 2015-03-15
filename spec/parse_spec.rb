@@ -30,25 +30,25 @@ describe Rufus::Scheduler do
 
     it 'parses datetimes with timezones' do
 
-      expect(pa('Sun Nov 18 16:01:00 2012 Japan').getutc.strftime('%c')).to eq(
-        'Sun Nov 18 07:01:00 2012'
-      )
+      expect(
+        pa('Sun Nov 18 16:01:00 2012 Asia/Singapore').getutc.strftime('%c %z')
+      ).to eq('Sun Nov 18 08:01:00 2012 +0000')
 
       expect(pa('Sun Nov 18 16:01:00 2012 Zulu').getutc.strftime('%c')).to eq(
         'Sun Nov 18 16:01:00 2012'
       )
 
-      expect(pa('Sun Nov 18 16:01:00 Japan 2012').getutc.strftime('%c')).to eq(
-        'Sun Nov 18 07:01:00 2012'
-      )
-
-      expect(pa('Japan Sun Nov 18 16:01:00 2012').getutc.strftime('%c')).to eq(
-        'Sun Nov 18 07:01:00 2012'
-      )
+      expect(
+        pa('Sun Nov 18 16:01:00 Asia/Singapore 2012').getutc.strftime('%c %z')
+      ).to eq('Sun Nov 18 08:01:00 2012 +0000')
 
       expect(
-        pa('Sun Nov 18 16:01:00 2012 America/New_York').getutc.strftime('%c')
-      ).to eq('Sun Nov 18 21:01:00 2012')
+        pa('Asia/Singapore Sun Nov 18 16:01:00 2012').getutc.strftime('%c %z')
+      ).to eq('Sun Nov 18 08:01:00 2012 +0000')
+
+      expect(
+        pa('Sun Nov 18 16:01:00 2012 America/New_York').getutc.strftime('%c %z')
+      ).to eq('Sun Nov 18 21:01:00 2012 +0000')
     end
 
     it 'parses datetimes with named timezones' do
@@ -64,9 +64,9 @@ describe Rufus::Scheduler do
 
       localzone = Time.now.strftime('%z')
 
-      expect(pa('Sun Nov 18 16:01:00 2012').strftime('%c %z')).to eq(
-        "Sun Nov 18 16:01:00 2012 #{localzone}"
-      )
+      expect(
+        pa('Nov 18 16:01:00 2012').strftime('%c %z')
+      ).to eq("Sun Nov 18 16:01:00 2012 #{localzone}")
     end
 
     it 'parses cronlines' do
