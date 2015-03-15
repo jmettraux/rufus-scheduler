@@ -80,8 +80,13 @@ describe Rufus::Scheduler::ZoTime do
       zt.add(3600)
       ztt = zt.time
 
-      expect(ztt.strftime('%Y/%m/%d %H:%M:%S %Z %s')
-        ).to eq('2004/10/31 01:30:00 EST 1099204200')
+      if ruby18?
+        expect(ztt.strftime('%Y/%m/%d %H:%M:%S %Z %s')
+          ).to eq('2004/10/31 01:30:00 EST 1099153800')
+      else
+        expect(ztt.strftime('%Y/%m/%d %H:%M:%S %Z %s')
+          ).to eq('2004/10/31 01:30:00 EST 1099204200')
+      end
     end
   end
 
@@ -92,8 +97,13 @@ describe Rufus::Scheduler::ZoTime do
       zt = Rufus::Scheduler::ZoTime.new(1193898300, 'America/Los_Angeles')
       t = zt.utc
 
-      expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s')
-        ).to eq('2007/11/01 06:25:00 UTC 1193898300')
+      if ruby18?
+        expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s')
+          ).to eq('2007/11/01 06:25:00 GMT 1193865900')
+      else
+        expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s')
+          ).to eq('2007/11/01 06:25:00 UTC 1193898300')
+      end
     end
   end
 
@@ -121,8 +131,13 @@ describe Rufus::Scheduler::ZoTime do
       st0 = t0.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t0.isdst}"
       st1 = t1.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t1.isdst}"
 
-      expect(st0).to eq('2015/03/08 01:59:59 PST 1425808799 false')
-      expect(st1).to eq('2015/03/08 03:00:00 PDT 1425808800 true')
+      if ruby18?
+        expect(st0).to eq('2015/03/08 01:59:59 PST 1425747599 false')
+        expect(st1).to eq('2015/03/08 03:00:00 PDT 1425751200 true')
+      else
+        expect(st0).to eq('2015/03/08 01:59:59 PST 1425808799 false')
+        expect(st1).to eq('2015/03/08 03:00:00 PDT 1425808800 true')
+      end
     end
 
     it 'goes out of DST' do
@@ -145,10 +160,17 @@ describe Rufus::Scheduler::ZoTime do
       st2 = t2.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t2.isdst}"
       st3 = t3.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t3.isdst}"
 
-      expect(st0).to eq('2014/10/26 01:59:59 CEST 1414281599 true')
-      expect(st1).to eq('2014/10/26 02:00:00 CET 1414285200 false')
-      expect(st2).to eq('2014/10/26 02:00:00 CET 1414285200 false')
-      expect(st3).to eq('2014/10/26 02:00:01 CET 1414285201 false')
+      if ruby18?
+        expect(st0).to eq('2014/10/26 01:59:59 CEST 1414256399 true')
+        expect(st1).to eq('2014/10/26 02:00:00 CET 1414256400 false')
+        expect(st2).to eq('2014/10/26 02:00:00 CET 1414256400 false')
+        expect(st3).to eq('2014/10/26 02:00:01 CET 1414256401 false')
+      else
+        expect(st0).to eq('2014/10/26 01:59:59 CEST 1414281599 true')
+        expect(st1).to eq('2014/10/26 02:00:00 CET 1414285200 false')
+        expect(st2).to eq('2014/10/26 02:00:00 CET 1414285200 false')
+        expect(st3).to eq('2014/10/26 02:00:01 CET 1414285201 false')
+      end
 
       expect(t1 - t0).to eq(3601)
       expect(t2 - t1).to eq(0)
@@ -236,10 +258,17 @@ describe Rufus::Scheduler::ZoTime do
       t = zt.time
       u = zt.utc
 
-      expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
-        ).to eq('2015/03/08 01:59:59 MSK 1425769199 false')
-      expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
-        ).to eq('2015/03/07 22:59:59 UTC 1425769199 false')
+      if ruby18?
+        expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
+          ).to eq('2015/03/08 01:59:59 MSK 1425747599 false')
+        expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
+          ).to eq('2015/03/07 22:59:59 GMT 1425736799 false')
+      else
+        expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
+          ).to eq('2015/03/08 01:59:59 MSK 1425769199 false')
+        expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
+          ).to eq('2015/03/07 22:59:59 UTC 1425769199 false')
+      end
     end
 
     it 'parses a time string with a full name timezone' do
@@ -251,10 +280,17 @@ describe Rufus::Scheduler::ZoTime do
       t = zt.time
       u = zt.utc
 
-      expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
-        ).to eq('2015/03/08 01:59:59 PST 1425808799 false')
-      expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
-        ).to eq('2015/03/08 09:59:59 UTC 1425808799 false')
+      if ruby18?
+        expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
+          ).to eq('2015/03/08 01:59:59 PST 1425747599 false')
+        expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
+          ).to eq('2015/03/08 09:59:59 GMT 1425776399 false')
+      else
+        expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
+          ).to eq('2015/03/08 01:59:59 PST 1425808799 false')
+        expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
+          ).to eq('2015/03/08 09:59:59 UTC 1425808799 false')
+      end
     end
 
     it 'parses a time string with a delta timezone' do
@@ -267,10 +303,17 @@ describe Rufus::Scheduler::ZoTime do
       t = zt.time
       u = zt.utc
 
-      expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
-        ).to eq('2015/12/13 15:30:00 CET 1450017000 false')
-      expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
-        ).to eq('2015/12/13 14:30:00 UTC 1450017000 false')
+      if ruby18?
+        expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
+          ).to eq('2015/12/13 15:30:00 CET 1449988200 false')
+        expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
+          ).to eq('2015/12/13 14:30:00 GMT 1449984600 false')
+      else
+        expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
+          ).to eq('2015/12/13 15:30:00 CET 1450017000 false')
+        expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
+          ).to eq('2015/12/13 14:30:00 UTC 1450017000 false')
+      end
     end
 
     it 'parses a time string with a delta (:) timezone' do
@@ -283,10 +326,17 @@ describe Rufus::Scheduler::ZoTime do
       t = zt.time
       u = zt.utc
 
-      expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
-        ).to eq('2015/12/13 15:30:00 CET 1450017000 false')
-      expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
-        ).to eq('2015/12/13 14:30:00 UTC 1450017000 false')
+      if ruby18?
+        expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
+          ).to eq('2015/12/13 15:30:00 CET 1449988200 false')
+        expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
+          ).to eq('2015/12/13 14:30:00 GMT 1449984600 false')
+      else
+        expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t.isdst}"
+          ).to eq('2015/12/13 15:30:00 CET 1450017000 false')
+        expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{u.isdst}"
+          ).to eq('2015/12/13 14:30:00 UTC 1450017000 false')
+      end
     end
 
     it 'returns nil when it cannot parse' do
