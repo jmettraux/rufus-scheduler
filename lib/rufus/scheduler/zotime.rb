@@ -44,7 +44,14 @@ class Rufus::Scheduler
       in_zone do
 
         t = Time.at(@seconds)
-        t.sec # force Time instance to "compute" itself...
+
+        if t.isdst
+          t1 = Time.at(@seconds + 3600)
+          t = t1 if t.zone != t1.zone && t.hour == t1.hour && t.min == t1.min
+            # ambiguous TZ (getting out of DST)
+        else
+          t.hour # force t to compute itself
+        end
 
         t
       end

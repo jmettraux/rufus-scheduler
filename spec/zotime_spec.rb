@@ -37,26 +37,27 @@ describe Rufus::Scheduler::ZoTime do
     end
   end
 
-#  # New York      EST: UTC-5
-#  # summer (dst)  EDT: UTC-4
-#
-#  it "flips burgers" do
-#
-#    puts "---"
-#    t0 = ltz('America/New_York', 2004, 10, 31, 0, 30, 0)
-#    t1 = ltz('America/New_York', 2004, 10, 31, 1, 30, 0)
-#    p t0
-#    p t1
-#    puts "---"
-#    zt0 = Rufus::Scheduler::ZoTime.new(t0, 'America/New_York')
-#    zt1 = Rufus::Scheduler::ZoTime.new(t1, 'America/New_York')
-#    p zt0.time
-#    p zt1.time
-#    puts "---"
-#    zt0.add(3600)
-#    p zt0.time
-#    p zt1.time
-#  end
+  #it "flips burgers" do
+  #  puts "---"
+  #  t0 = ltz('America/New_York', 2004, 10, 31, 0, 30, 0)
+  #  t1 = ltz('America/New_York', 2004, 10, 31, 1, 30, 0)
+  #  p t0
+  #  p t1
+  #  puts "---"
+  #  zt0 = Rufus::Scheduler::ZoTime.new(t0, 'America/New_York')
+  #  zt1 = Rufus::Scheduler::ZoTime.new(t1, 'America/New_York')
+  #  p zt0.time
+  #  p zt1.time
+  #  puts "---"
+  #  zt0.add(3600)
+  #  p [ zt0.time, zt0.time.zone ]
+  #  p [ zt1.time, zt1.time.zone ]
+  #  #puts "---"
+  #  #zt0.add(3600)
+  #  #zt1.add(3600)
+  #  #p [ zt0.time, zt0.time.zone ]
+  #  #p [ zt1.time, zt1.time.zone ]
+  #end
 
   describe '#time' do
 
@@ -67,6 +68,20 @@ describe Rufus::Scheduler::ZoTime do
 
       expect(t.strftime('%Y/%m/%d %H:%M:%S %Z')
         ).to eq('2007/10/31 23:25:00 PDT')
+    end
+
+    # New York      EST: UTC-5
+    # summer (dst)  EDT: UTC-4
+
+    it 'chooses the non DST time when there is ambiguity' do
+
+      t = ltz('America/New_York', 2004, 10, 31, 0, 30, 0)
+      zt = Rufus::Scheduler::ZoTime.new(t, 'America/New_York')
+      zt.add(3600)
+      ztt = zt.time
+
+      expect(ztt.strftime('%Y/%m/%d %H:%M:%S %Z %s')
+        ).to eq('2004/10/31 01:30:00 EST 1099204200')
     end
   end
 
@@ -114,18 +129,30 @@ describe Rufus::Scheduler::ZoTime do
 
       zt =
         Rufus::Scheduler::ZoTime.new(
-          Time.gm(2014, 10, 26, 00, 59, 59),
+          ltz('Europe/Berlin', 2014, 10, 26, 01, 59, 59),
           'Europe/Berlin')
 
       t0 = zt.time
       zt.add(1)
       t1 = zt.time
+      zt.add(3600)
+      t2 = zt.time
+      zt.add(1)
+      t3 = zt.time
 
       st0 = t0.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t0.isdst}"
       st1 = t1.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t1.isdst}"
+      st2 = t2.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t2.isdst}"
+      st3 = t3.strftime('%Y/%m/%d %H:%M:%S %Z %s') + " #{t3.isdst}"
 
-      expect(st0).to eq('2014/10/26 02:59:59 CEST 1414285199 true')
+      expect(st0).to eq('2014/10/26 01:59:59 CEST 1414281599 true')
       expect(st1).to eq('2014/10/26 02:00:00 CET 1414285200 false')
+      expect(st2).to eq('2014/10/26 02:00:00 CET 1414285200 false')
+      expect(st3).to eq('2014/10/26 02:00:01 CET 1414285201 false')
+
+      expect(t1 - t0).to eq(3601)
+      expect(t2 - t1).to eq(0)
+      expect(t3 - t2).to eq(1)
     end
   end
 
