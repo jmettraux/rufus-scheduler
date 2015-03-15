@@ -176,7 +176,7 @@ class Rufus::Scheduler
           next
         end
         unless sub_match?(time, :sec, @seconds)
-          zotime.substract(1)
+          zotime.substract(prev_second(time))
           next
         end
 
@@ -285,6 +285,15 @@ class Rufus::Scheduler
       secs.shift while secs.first < time.sec
 
       secs.first - time.sec
+    end
+
+    def prev_second(time)
+
+      secs = @seconds.sort
+
+      secs.pop while time.sec < secs.last
+
+      time.sec - secs.last
     end
 
     WEEKDAYS = %w[ sun mon tue wed thu fri sat ]
