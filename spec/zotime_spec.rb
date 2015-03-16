@@ -30,10 +30,10 @@ describe Rufus::Scheduler::ZoTime do
 
       zt =
         Rufus::Scheduler::ZoTime.new(
-          Time.local(2007, 11, 1, 15, 25, 0, "+09:00"),
+          Time.utc(2007, 11, 1, 15, 25, 0),
           'America/Los_Angeles')
 
-      expect(zt.seconds.to_i).to eq(1193898300)
+      expect(zt.seconds.to_i).to eq(1193930700)
     end
   end
 
