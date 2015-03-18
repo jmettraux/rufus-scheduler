@@ -54,8 +54,6 @@ class Rufus::Scheduler
 
       items = line.split
 
-      #@timezone = (TZInfo::Timezone.get(items.last) rescue nil)
-      #items.pop if @timezone
       @timezone = items.pop if ZoTime.is_timezone?(items.last)
 
       raise ArgumentError.new(

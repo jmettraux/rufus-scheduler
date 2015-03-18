@@ -209,6 +209,9 @@ describe Rufus::Scheduler::ZoTime do
       expect(is_timezone?('Asia/Paris')).to eq(false)
       expect(is_timezone?('YTC')).to eq(false)
       expect(is_timezone?('Nada/Nada')).to eq(false)
+      expect(is_timezone?('7')).to eq(false)
+      expect(is_timezone?('06')).to eq(false)
+      expect(is_timezone?('sun#3')).to eq(false)
     end
   end
 

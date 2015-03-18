@@ -109,24 +109,13 @@ class Rufus::Scheduler
       zt.seconds == nil ? nil : zt
     end
 
-    def self.is_timezone?(str)
-
-      return false if str == nil
-
-      return true if Time.zone_offset(str)
-      return true if str == 'Zulu'
-
-      return !! (TZInfo::Timezone.get(str) rescue nil) if defined?(::TZInfo)
-
-      zt = ZoTime.new(0, str)
-      t = zt.time
-
-      return false if t.zone == ''
-      return false if t.zone == 'UTC' && str != 'UTC'
-      return false if str.start_with?(t.zone)
-
-      true
-    end
+    FLLATZ_REX = Regexp.new(
+      "^(" +
+        "Z(ulu)?" + "|" +
+        "[A-Z]{3,4}" + "|" +
+        "[A-Za-z]+\/[A-Za-z_]+" + "|" +
+        "[+-][0-1][0-9]:?[0-5][0-9]" +
+      ")$")
 
     LLATZ_REX = Regexp.new(
       "^(" +
@@ -139,6 +128,27 @@ class Rufus::Scheduler
     def self.looks_like_a_timezone?(str)
 
       !! LLATZ_REX.match(str)
+    end
+
+    def self.is_timezone?(str)
+
+      return false if str == nil
+
+      return true if Time.zone_offset(str)
+      return true if str == 'Zulu'
+
+      return !! (::TZInfo::Timezone.get(str) rescue nil) if defined?(::TZInfo)
+
+      zt = ZoTime.new(0, str)
+      t = zt.time
+
+      return false if t.zone == ''
+      return false if t.zone == 'UTC' && str != 'UTC'
+      return false if str.start_with?(t.zone)
+
+      return false if jruby? && ( ! FLLATZ_REX.match(str))
+
+      true
     end
 
     def in_zone(&block)
