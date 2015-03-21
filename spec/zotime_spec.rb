@@ -202,6 +202,8 @@ describe Rufus::Scheduler::ZoTime do
       expect(is_timezone?('PST')).to eq(true)
       expect(is_timezone?('+09:00')).to eq(true)
       expect(is_timezone?('-01:30')).to eq(true)
+      expect(is_timezone?('Japan')).to eq(true)
+      expect(is_timezone?('Turkey')).to eq(true)
     end
 
     it 'returns false when it cannot make sense of the timezone' do
@@ -212,6 +214,19 @@ describe Rufus::Scheduler::ZoTime do
       expect(is_timezone?('7')).to eq(false)
       expect(is_timezone?('06')).to eq(false)
       expect(is_timezone?('sun#3')).to eq(false)
+    end
+
+    pending 'returns true for all entries in the tzinfo list' do
+
+      File.readlines(
+        File.join(File.dirname(__FILE__), '../misc/tz_all.txt')
+      ).each do |tz|
+        tz = tz.strip
+        if tz.length > 0 && tz.match(/^[^#]/)
+          p tz
+          expect(is_timezone?(tz)).to eq(true)
+        end
+      end
     end
   end
 
@@ -230,6 +245,8 @@ describe Rufus::Scheduler::ZoTime do
       expect(llat?('Asia/Paris')).to eq(true)
       expect(llat?('YTC')).to eq(true)
       expect(llat?('Nada/Nada')).to eq(true)
+      #expect(llat?('Japan')).to eq(true)
+      #expect(llat?('Turkey')).to eq(true)
 
       expect(llat?('Z')).to eq(true)
     end
@@ -245,6 +262,19 @@ describe Rufus::Scheduler::ZoTime do
 
       expect(llat?('+09:00')).to eq(false)
       expect(llat?('-01:30')).to eq(false)
+    end
+
+    pending 'returns true for all entries in the tzinfo list' do
+
+      File.readlines(
+        File.join(File.dirname(__FILE__), '../misc/tz_all.txt')
+      ).each do |tz|
+        tz = tz.strip
+        if tz.length > 0 && tz.match(/^[^#]/)
+          p tz
+          expect(llat?(tz)).to eq(true)
+        end
+      end
     end
   end
 
