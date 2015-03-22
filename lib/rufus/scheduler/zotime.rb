@@ -79,8 +79,9 @@ class Rufus::Scheduler
 
     TZS = [
       '(SystemV/)?[A-Z]{3,4}([0-9][A-Z]{3})?',
-      '([A-Za-z_]+\/){0,2}[A-Za-z_-]+[0-9]*',
-      '(Etc/)?GMT([+-][0-9]{1,2})?'
+      '([A-Za-z_]+\/){0,2}[A-Z][A-Za-z_-]+[0-9]*',
+      '(Etc/)?GMT([+-][0-9]{1,2})?',
+      'Z'
       #'[+-][0-1][0-9]:?[0-5][0-9]'
     ]
     TZS_N_DELTA = TZS + [ '[+-][0-1][0-9]:?[0-5][0-9]' ]
@@ -104,7 +105,7 @@ class Rufus::Scheduler
 
       s =
         str.gsub(/\S+/) { |m|
-          if !! TIMEZONES_REX.match(m)
+          if TIMEZONES_REX.match(m)
             zone ||= m
             ''
           else

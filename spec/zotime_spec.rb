@@ -263,6 +263,7 @@ describe Rufus::Scheduler::ZoTime do
 
       expect(llat?('+09:00')).to eq(false)
       expect(llat?('-01:30')).to eq(false)
+      expect(llat?('-0200')).to eq(false)
     end
 
     it 'returns true for all entries in the tzinfo list' do
