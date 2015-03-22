@@ -230,11 +230,11 @@ describe Rufus::Scheduler::ZoTime do
     end
   end
 
-  describe '.looks_like_a_timezone?' do
+  describe '::TIMEZONES_REX' do
 
-    def llat?(o); Rufus::Scheduler::ZoTime.looks_like_a_timezone?(o); end
+    def llat?(s); !! Rufus::Scheduler::ZoTime::TIMEZONES_REX.match(s); end
 
-    it 'may return true' do
+    it 'may match' do
 
       expect(llat?('Asia/Tokyo')).to eq(true)
       expect(llat?('America/Los_Angeles')).to eq(true)
@@ -249,15 +249,16 @@ describe Rufus::Scheduler::ZoTime do
       #expect(llat?('Turkey')).to eq(true)
 
       expect(llat?('Z')).to eq(true)
+
+      expect(llat?('Wed')).to eq(true)
     end
 
-    it 'may return false' do
+    it 'may not match' do
 
       expect(llat?('14:00')).to eq(false)
       expect(llat?('14:00:14')).to eq(false)
       expect(llat?('2014/12/11')).to eq(false)
       expect(llat?('2014-12-11')).to eq(false)
-      expect(llat?('Wed')).to eq(false)
       expect(llat?('+25:00')).to eq(false)
 
       expect(llat?('+09:00')).to eq(false)

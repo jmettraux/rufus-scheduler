@@ -77,6 +77,17 @@ class Rufus::Scheduler
       @seconds
     end
 
+    TZS = [
+      '(SystemV/)?[A-Z]{3,4}([0-9][A-Z]{3})?',
+      '([A-Za-z_]+\/){0,2}[A-Za-z_-]+[0-9]*',
+      '(Etc/)?GMT([+-][0-9]{1,2})?'
+      #'[+-][0-1][0-9]:?[0-5][0-9]'
+    ]
+    TZS_N_DELTA = TZS + [ '[+-][0-1][0-9]:?[0-5][0-9]' ]
+    #
+    TIMEZONES_REX = Regexp.new("^(#{TZS.join('|')})$")
+    TIMEZONES_N_DELTA_REX = Regexp.new("^(#{TZS_N_DELTA.join('|')})$")
+
     def self.parse(str, opts={})
 
       if defined?(::Chronic) && t = ::Chronic.parse(str, opts)
@@ -93,7 +104,7 @@ class Rufus::Scheduler
 
       s =
         str.gsub(/\S+/) { |m|
-          if looks_like_a_timezone?(m)
+          if !! TIMEZONES_REX.match(m)
             zone ||= m
             ''
           else
@@ -107,26 +118,6 @@ class Rufus::Scheduler
       zt.in_zone { zt.seconds = Time.parse(s).to_f }
 
       zt.seconds == nil ? nil : zt
-    end
-
-    #FLLATZ_REX = Regexp.new(
-    #  "^(" +
-    #    "Z(ulu)?" + "|" +
-    #    "[A-Z]{3,4}" + "|" +
-    #    "[A-Za-z]+\/[A-Za-z_]+" + "|" +
-    #    "[+-][0-1][0-9]:?[0-5][0-9]" +
-    #  ")$")
-    LLATZ_REX = Regexp.new(
-      "^(" +
-        "(SystemV/)?[A-Z]{3,4}([0-9][A-Z]{3})?" + "|" +
-        "([A-Za-z_]+\/){0,2}[A-Za-z_-]+[0-9]*" + "|" +
-        "(Etc/)?GMT([+-][0-9]{1,2})?" + "|" +
-        "[+-][0-1][0-9]:?[0-5][0-9]" +
-      ")$")
-
-    def self.looks_like_a_timezone?(str)
-
-      !! LLATZ_REX.match(str)
     end
 
     def self.is_timezone?(str)
@@ -145,7 +136,7 @@ class Rufus::Scheduler
       return false if t.zone == 'UTC' && str != 'UTC'
       return false if str.start_with?(t.zone)
 
-      return false if jruby? && ! LLATZ_REX.match(str)
+      return false if jruby? && ! TIMEZONES_N_DELTA_REX.match(str)
 
       true
     end
