@@ -264,14 +264,14 @@ describe Rufus::Scheduler::ZoTime do
       expect(llat?('-01:30')).to eq(false)
     end
 
-    pending 'returns true for all entries in the tzinfo list' do
+    it 'returns true for all entries in the tzinfo list' do
 
       File.readlines(
         File.join(File.dirname(__FILE__), '../misc/tz_all.txt')
       ).each do |tz|
         tz = tz.strip
         if tz.length > 0 && tz.match(/^[^#]/)
-          p tz
+          #p tz
           expect(llat?(tz)).to eq(true)
         end
       end
