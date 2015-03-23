@@ -134,8 +134,7 @@ class Rufus::Scheduler
       t = zt.time
 
       return false if t.zone == ''
-      return false if t.zone == 'UTC' && str != 'UTC'
-      return false if str.start_with?(t.zone)
+      return false if str.match(/[a-z]/) && str.start_with?(t.zone)
 
       return false if jruby? && ! TIMEZONES_N_DELTA_REX.match(str)
 
@@ -144,14 +143,14 @@ class Rufus::Scheduler
 
     def in_zone(&block)
 
-      ptz = ENV['TZ']
+      current_timezone = ENV['TZ']
       ENV['TZ'] = @zone
 
       block.call
 
     ensure
 
-      ENV['TZ'] = ptz
+      ENV['TZ'] = current_timezone
     end
   end
 end

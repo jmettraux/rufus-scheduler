@@ -306,9 +306,9 @@ Asia/Qatar
 Asia/Qyzylorda
 Asia/Rangoon
 Asia/Riyadh
-Asia/Riyadh87
-Asia/Riyadh88
-Asia/Riyadh89
+#Asia/Riyadh87
+#Asia/Riyadh88
+#Asia/Riyadh89
 Asia/Saigon
 Asia/Sakhalin
 Asia/Samarkand
@@ -518,9 +518,9 @@ MST7MDT
 Mexico/BajaNorte
 Mexico/BajaSur
 Mexico/General
-Mideast/Riyadh87
-Mideast/Riyadh88
-Mideast/Riyadh89
+#Mideast/Riyadh87
+#Mideast/Riyadh88
+#Mideast/Riyadh89
 NZ
 NZ-CHAT
 Navajo
