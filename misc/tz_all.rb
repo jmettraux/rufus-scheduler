@@ -5,3 +5,8 @@ require 'tzinfo'
 
 TZInfo::Timezone.all.each { |tz| puts tz.name }
 
+#tzs = TZInfo::Timezone.all.sort_by { |tz| tz.name.length }
+#print "TIMEZONES = %[\n  "
+#tzs.each { |tz| print tz.name; print ' ' }
+#puts "\n]"
+
