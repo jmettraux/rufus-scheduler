@@ -206,8 +206,6 @@ describe Rufus::Scheduler::ZoTime do
       #expect(llat?('Turkey')).to eq(true)
 
       expect(llat?('Z')).to eq(true)
-
-      expect(llat?('Wed')).to eq(true)
     end
 
     it 'may not match' do
@@ -221,6 +219,10 @@ describe Rufus::Scheduler::ZoTime do
       expect(llat?('+09:00')).to eq(false)
       expect(llat?('-01:30')).to eq(false)
       expect(llat?('-0200')).to eq(false)
+
+      expect(llat?('Wed')).to eq(false)
+      expect(llat?('Sun')).to eq(false)
+      expect(llat?('Nov')).to eq(false)
     end
 
     it 'returns true for all entries in the tzinfo list' do
