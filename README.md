@@ -61,6 +61,7 @@ It does not persist your schedules. When the process is gone and the scheduler i
 
 * [whenever](https://github.com/javan/whenever) - let cron call back your Ruby code, trusted and reliable cron drives your schedule
 * [clockwork](https://github.com/tomykaira/clockwork) - rufus-scheduler inspired gem
+* [crono](https://github.com/plashchynski/crono) - an in-Rails cron scheduler
 
 (please note: rufus-scheduler is not a cron replacement)
 
