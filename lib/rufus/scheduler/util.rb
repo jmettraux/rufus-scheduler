@@ -48,9 +48,7 @@ module Rufus
 
     def self.parse_at(o, opts={})
 
-      zt = Rufus::Scheduler::ZoTime.parse(o, opts)
-
-      zt ? zt.time : nil
+      Rufus::Scheduler::ZoTime.parse(o, opts).time
 
     rescue StandardError => se
 

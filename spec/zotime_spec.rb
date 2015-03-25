@@ -382,11 +382,14 @@ describe Rufus::Scheduler::ZoTime do
       end
     end
 
-    it 'returns nil when it cannot parse' do
+    it 'takes the local TZ when it does not know the timezone' do
 
-      zt = Rufus::Scheduler::ZoTime.parse('2015/03/08 01:59:59 Nada/Nada')
+      in_zone 'Europe/Moscow' do
 
-      expect(zt).to eq(nil)
+        zt = Rufus::Scheduler::ZoTime.parse('2015/03/08 01:59:59 Nada/Nada')
+
+        expect(zt.time.zone).to eq('MSK')
+      end
     end
   end
 end
