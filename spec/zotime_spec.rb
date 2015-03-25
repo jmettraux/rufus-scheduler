@@ -187,42 +187,43 @@ describe Rufus::Scheduler::ZoTime do
     end
   end
 
-  describe 'TIMEZONES' do
+  describe '.envtzable?' do
 
-    def itzn?(s); Rufus::Scheduler::TIMEZONES.include?(s); end
+    def etza?(s); Rufus::Scheduler::ZoTime.envtzable?(s); end
 
-    it 'may match' do
+    it 'matches' do
 
-      expect(itzn?('Asia/Tokyo')).to eq(true)
-      expect(itzn?('America/Los_Angeles')).to eq(true)
-      expect(itzn?('Europe/Paris')).to eq(true)
-      expect(itzn?('UTC')).to eq(true)
-      expect(itzn?('PST')).to eq(true)
+      expect(etza?('Asia/Tokyo')).to eq(true)
+      expect(etza?('America/Los_Angeles')).to eq(true)
+      expect(etza?('Europe/Paris')).to eq(true)
+      expect(etza?('UTC')).to eq(true)
 
-      expect(itzn?('Asia/Paris')).to eq(true)
-      expect(itzn?('YTC')).to eq(true)
-      expect(itzn?('Nada/Nada')).to eq(true)
-      expect(itzn?('Japan')).to eq(true)
-      expect(itzn?('Turkey')).to eq(true)
-
-      expect(itzn?('Z')).to eq(true)
+      expect(etza?('Japan')).to eq(true)
+      expect(etza?('Turkey')).to eq(true)
     end
 
-    it 'may not match' do
+    it 'does not match' do
 
-      expect(itzn?('14:00')).to eq(false)
-      expect(itzn?('14:00:14')).to eq(false)
-      expect(itzn?('2014/12/11')).to eq(false)
-      expect(itzn?('2014-12-11')).to eq(false)
-      expect(itzn?('+25:00')).to eq(false)
+      expect(etza?('14:00')).to eq(false)
+      expect(etza?('14:00:14')).to eq(false)
+      expect(etza?('2014/12/11')).to eq(false)
+      expect(etza?('2014-12-11')).to eq(false)
+      expect(etza?('+25:00')).to eq(false)
 
-      expect(itzn?('+09:00')).to eq(false)
-      expect(itzn?('-01:30')).to eq(false)
-      expect(itzn?('-0200')).to eq(false)
+      expect(etza?('+09:00')).to eq(false)
+      expect(etza?('-01:30')).to eq(false)
+      expect(etza?('-0200')).to eq(false)
 
-      expect(itzn?('Wed')).to eq(false)
-      expect(itzn?('Sun')).to eq(false)
-      expect(itzn?('Nov')).to eq(false)
+      expect(etza?('Wed')).to eq(false)
+      expect(etza?('Sun')).to eq(false)
+      expect(etza?('Nov')).to eq(false)
+
+      expect(etza?('PST')).to eq(false)
+      expect(etza?('Z')).to eq(false)
+
+      expect(etza?('YTC')).to eq(false)
+      expect(etza?('Asia/Paris')).to eq(false)
+      expect(etza?('Nada/Nada')).to eq(false)
     end
 
     #it 'returns true for all entries in the tzinfo list' do

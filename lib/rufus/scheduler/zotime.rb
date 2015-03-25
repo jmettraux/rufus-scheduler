@@ -81,6 +81,11 @@ class Rufus::Scheduler
 
     DELTA_TZ_REX = /^[+-][0-1][0-9]:?[0-5][0-9]$/
 
+    def self.envtzable?(s)
+
+      TIMEZONES.include?(s)
+    end
+
     def self.parse(str, opts={})
 
       if defined?(::Chronic) && t = ::Chronic.parse(str, opts)
@@ -97,7 +102,7 @@ class Rufus::Scheduler
 
       s =
         str.gsub(/\S+/) { |m|
-          if TIMEZONES.contains(m)
+          if envtzable?(m)
             zone ||= m
             ''
           else
