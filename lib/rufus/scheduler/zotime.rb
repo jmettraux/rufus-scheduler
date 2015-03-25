@@ -79,7 +79,7 @@ class Rufus::Scheduler
       @seconds
     end
 
-    DELTA_TZ_REX = /^[+-][0-1][0-9]:?[0-5][0-9]$/
+    #DELTA_TZ_REX = /^[+-][0-1][0-9]:?[0-5][0-9]$/
 
     def self.envtzable?(s)
 
@@ -133,7 +133,7 @@ class Rufus::Scheduler
       return false if t.zone == ''
       return false if str.match(/[a-z]/) && str.start_with?(t.zone)
 
-      return false if jruby? && ! TIMEZONES_N_DELTA_REX.match(str)
+      return false if jruby? && ! envtzable?(str)
 
       true
     end
