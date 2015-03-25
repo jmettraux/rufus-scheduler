@@ -417,7 +417,7 @@ module Rufus
       def first_at=(first)
 
         n = Time.now
-        first = n + 0.001 if first == :now || first == :immediately
+        first = n + 0.003 if first == :now || first == :immediately
 
         @first_at = Rufus::Scheduler.parse_to_time(first)
 

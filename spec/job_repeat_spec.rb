@@ -189,6 +189,7 @@ describe Rufus::Scheduler::RepeatJob do
 
         sleep 0.7
 
+        #p Time.now.to_f
         #p n.to_f
         #p job.first_at.to_f
         #p ft.to_f
