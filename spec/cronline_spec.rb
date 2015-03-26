@@ -109,7 +109,10 @@ describe Rufus::Scheduler::CronLine do
 
       to_a(
         '0 */2 * * *',
-        [ [0], [0], (0..11).collect { |e| e * 2 }, nil, nil, nil, nil, nil ])
+        [ [0], [0], (0..23).select { |e| e.even? }, nil, nil, nil, nil, nil ])
+      to_a(
+        '0 0-23/2 * * *',
+        [ [0], [0], (0..23).select { |e| e.even? }, nil, nil, nil, nil, nil ])
       to_a(
         '0 7-23/2 * * *',
         [ [0], [0], (7..23).select { |e| e.odd? }, nil, nil, nil, nil, nil ])
