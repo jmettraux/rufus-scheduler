@@ -133,7 +133,7 @@ class Rufus::Scheduler
       return false if t.zone == ''
       return false if str.match(/[a-z]/) && str.start_with?(t.zone)
 
-      return false if jruby? && ! envtzable?(str)
+      return false if RUBY_PLATFORM.include?('java') && ! envtzable?(str)
 
       true
     end
