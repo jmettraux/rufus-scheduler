@@ -22,6 +22,8 @@
 # Made in Japan.
 #++
 
+require 'set'
+
 
 class Rufus::Scheduler
 
@@ -184,6 +186,19 @@ class Rufus::Scheduler
       time
     end
 
+    if RUBY_VERSION >= '1.9'
+      def toa(item)
+        item == nil ? nil : item.to_a
+      end
+    else
+      def toi(item); item.is_a?(String) ? item.hash.abs : item.to_i; end
+      protected :toi
+      def toa(item)
+        item.is_a?(Set) ? item.to_a.sort_by { |e| toi(e) } : item
+      end
+    end
+    protected :toa
+
     # Returns an array of 6 arrays (seconds, minutes, hours, days,
     # months, weekdays).
     # This method is used by the cronline unit tests.
@@ -191,13 +206,13 @@ class Rufus::Scheduler
     def to_array
 
       [
-        @seconds,
-        @minutes,
-        @hours,
-        @days,
-        @months,
-        @weekdays,
-        @monthdays,
+        toa(@seconds),
+        toa(@minutes),
+        toa(@hours),
+        toa(@days),
+        toa(@months),
+        toa(@weekdays),
+        toa(@monthdays),
         @timezone
       ]
     end
@@ -214,9 +229,10 @@ class Rufus::Scheduler
       return brute_frequency unless @seconds && @seconds.length > 1
 
       delta = 60
-      prev = @seconds[0]
+      secs = toa(@seconds)
+      prev = secs[0]
 
-      @seconds[1..-1].each do |sec|
+      secs[1..-1].each do |sec|
         d = sec - prev
         delta = d if d < delta
       end
@@ -350,7 +366,7 @@ class Rufus::Scheduler
         "found duplicates in #{item.inspect}"
       ) if r.uniq.size < r.size
 
-      r
+      Set.new(r)
     end
 
     RANGE_REGEX = /^(\*|\d{1,2})(?:-(\d{1,2}))?(?:\/(\d{1,2}))?$/

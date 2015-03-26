@@ -66,12 +66,20 @@ describe Rufus::Scheduler::CronLine do
 
       to_a '0 0 1 1 *', [ [0], [0], [0], [1], [1], nil, nil, nil ]
 
-      to_a '0 23-24 * * *', [ [0], [0], [23, 0], nil, nil, nil, nil, nil ]
+      if ruby18?
+        to_a '0 23-24 * * *', [ [0], [0], [0, 23], nil, nil, nil, nil, nil ]
+      else
+        to_a '0 23-24 * * *', [ [0], [0], [23, 0], nil, nil, nil, nil, nil ]
+      end
         #
         # as reported by Aimee Rose in
         # https://github.com/jmettraux/rufus-scheduler/issues/56
 
-      to_a '0 23-2 * * *', [ [0], [0], [23, 0, 1, 2], nil, nil, nil, nil, nil ]
+      if ruby18?
+        to_a '0 23-2 * * *', [ [0], [0], [0, 1, 2, 23], nil, nil, nil, nil, nil ]
+      else
+        to_a '0 23-2 * * *', [ [0], [0], [23, 0, 1, 2], nil, nil, nil, nil, nil ]
+      end
     end
 
     it 'rejects invalid weekday expressions' do
