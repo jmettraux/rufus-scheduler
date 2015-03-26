@@ -206,7 +206,7 @@ class Rufus::Scheduler
     # cron line.
     #
     # #brute_frequency, on the other hand, will compute the frequency by
-    # examining a whole, that can take more than seconds for a seconds
+    # examining a whole year, that can take more than seconds for a seconds
     # level cron...
     #
     def frequency
