@@ -280,7 +280,7 @@ class Rufus::Scheduler
         delta = d if d < delta
 
         break if @months == nil && t1.month == 2
-        break if t1.year == 2001
+        break if t1.year >= 2001
 
         t0 = t1
       end
