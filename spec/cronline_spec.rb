@@ -527,19 +527,19 @@ describe Rufus::Scheduler::CronLine do
     it 'returns the shortest delta between two occurrences' do
 
       expect(Rufus::Scheduler::CronLine.new(
-          '* * * * *').frequency).to eq(60)
+        '* * * * *').frequency).to eq(60)
       expect(Rufus::Scheduler::CronLine.new(
-          '* * * * * *').frequency).to eq(1)
+        '* * * * * *').frequency).to eq(1)
 
       expect(Rufus::Scheduler::CronLine.new(
-          '5 23 * * *').frequency).to eq(24 * 3600)
+        '5 23 * * *').frequency).to eq(24 * 3600)
       expect(Rufus::Scheduler::CronLine.new(
-          '5 * * * *').frequency).to eq(3600)
+        '5 * * * *').frequency).to eq(3600)
       expect(Rufus::Scheduler::CronLine.new(
-          '10,20,30 * * * *').frequency).to eq(600)
+        '10,20,30 * * * *').frequency).to eq(600)
 
       expect(Rufus::Scheduler::CronLine.new(
-          '10,20,30 * * * * *').frequency).to eq(10)
+        '10,20,30 * * * * *').frequency).to eq(10)
     end
   end
 
@@ -548,21 +548,29 @@ describe Rufus::Scheduler::CronLine do
     it 'returns the shortest delta between two occurrences' do
 
       expect(Rufus::Scheduler::CronLine.new(
-          '* * * * *').brute_frequency).to eq(60)
+        '* * * * *').brute_frequency).to eq(60)
       expect(Rufus::Scheduler::CronLine.new(
-          '* * * * * *').brute_frequency).to eq(1)
+        '* * * * * *').brute_frequency).to eq(1)
 
       expect(Rufus::Scheduler::CronLine.new(
-          '5 23 * * *').brute_frequency).to eq(24 * 3600)
+        '5 23 * * *').brute_frequency).to eq(24 * 3600)
       expect(Rufus::Scheduler::CronLine.new(
-          '5 * * * *').brute_frequency).to eq(3600)
+        '5 * * * *').brute_frequency).to eq(3600)
       expect(Rufus::Scheduler::CronLine.new(
-          '10,20,30 * * * *').brute_frequency).to eq(600)
+        '10,20,30 * * * *').brute_frequency).to eq(600)
 
       #Rufus::Scheduler::CronLine.new(
       #    '10,20,30 * * * * *').brute_frequency.should == 10
         #
         # takes > 20s ...
+    end
+
+    # some combos only appear every other year...
+    #
+    it 'does not go into an infinite loop' do
+
+      expect(Rufus::Scheduler::CronLine.new(
+        '1 2 3 4 5').brute_frequency).to eq(31622400)
     end
   end
 
