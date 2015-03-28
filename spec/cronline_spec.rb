@@ -701,7 +701,30 @@ describe Rufus::Scheduler::CronLine do
       ).to eq(Time.utc(2015, 3, 8, 9, 59))
     end
 
-    it 'correctly decrements every minute through a DST transition'
+    it 'correctly decrements every minute through a DST transition' do
+
+      in_zone 'America/Los_Angeles' do
+
+        line = cl('* * * * * America/Los_Angeles')
+
+        t = Time.local(2015, 3, 8, 3, 2)
+
+        points =
+          [ 0, 1, 2, 3 ].collect do
+            t = line.previous_time(t)
+            t.strftime('%H:%M:%Sl') + ' ' + t.dup.utc.strftime('%H:%M:%Su')
+          end
+
+        expect(points).to eq(
+          [
+            '03:01:00l 10:01:00u',
+            '03:00:00l 10:00:00u',
+            '01:59:00l 09:59:00u',
+            '01:58:00l 09:58:00u'
+          ]
+        )
+      end
+    end
   end
 end
 
