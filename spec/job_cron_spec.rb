@@ -115,10 +115,9 @@ describe Rufus::Scheduler::CronJob do
       ).to eq(nt)
     end
 
-    it 'returns the next trigger time (first_at => DateTime)' do
+    it 'returns the next trigger time (first_at => Time)' do
 
       ft = Time.parse('2100-12-31')
-      p ft
 
       job = @scheduler.schedule_cron('* * 1 * *', :first_at => ft) {}
 

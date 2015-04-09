@@ -602,7 +602,7 @@ module Rufus
         super(scheduler, cronline, opts, block)
 
         @cron_line = opts[:_t] || CronLine.new(cronline)
-        @next_time = @cron_line.next_time
+        set_next_time(nil)
       end
 
       def frequency
@@ -619,12 +619,23 @@ module Rufus
 
       def set_next_time(trigger_time, is_post=false)
 
-        @next_time = @cron_line.next_time
+        @next_time =
+          if is_post
+            @cron_line.next_time
+          elsif trigger_time.nil?
+            next_time_from(Time.now)
+          else
+            false
+          end
       end
 
       def next_time_from(time)
 
-        @cron_line.next_time(time)
+        if @first_at < time
+          @cron_line.next_time(time)
+        else
+          @first_at
+        end
       end
     end
   end
