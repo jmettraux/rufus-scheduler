@@ -102,5 +102,28 @@ describe Rufus::Scheduler::CronJob do
       end
     end
   end
+
+  describe '.next_time' do
+
+    it 'returns the next trigger time' do
+
+      n = Time.now
+      nt = Time.parse("#{n.year}-#{n.month + 1}-01")
+
+      expect(
+        @scheduler.schedule_cron('* * 1 * *', lambda {}).next_time
+      ).to eq(nt)
+    end
+
+    it 'returns the next trigger time (first_at => DateTime)' do
+
+      ft = Time.parse('2100-12-31')
+      p ft
+
+      job = @scheduler.schedule_cron('* * 1 * *', :first_at => ft) {}
+
+      expect(job.next_time).to eq(ft)
+    end
+  end
 end
 
