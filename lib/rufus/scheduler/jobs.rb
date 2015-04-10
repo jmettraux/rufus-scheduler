@@ -619,14 +619,18 @@ module Rufus
 
       def set_next_time(trigger_time, is_post=false)
 
-        @next_time =
-          if is_post
-            @cron_line.next_time
-          elsif trigger_time.nil?
-            next_time_from(Time.now)
-          else
-            false
-          end
+        #@next_time = @cron_line.next_time
+          #
+        #@next_time =
+        #  if is_post
+        #    @cron_line.next_time
+        #  elsif trigger_time.nil?
+        #    next_time_from(Time.now)
+        #  else
+        #    false
+        #  end
+          #
+        @next_time = next_time_from(trigger_time || Time.now)
       end
 
       def next_time_from(time)
