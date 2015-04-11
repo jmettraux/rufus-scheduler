@@ -409,12 +409,14 @@ module Rufus
         self.first_at =
           opts[:first] || opts[:first_time] ||
           opts[:first_at] || opts[:first_in] ||
-          0
+          nil
         self.last_at =
           opts[:last] || opts[:last_at] || opts[:last_in]
       end
 
       def first_at=(first)
+
+        return @first_at = nil if first == nil
 
         n = Time.now
         first = n + 0.003 if first == :now || first == :immediately
@@ -440,9 +442,6 @@ module Rufus
       def trigger(time)
 
         return if @paused_at
-        return if time < @first_at
-          #
-          # TODO: remove me when @first_at gets reworked
 
         return (@next_time = nil) if @times && @times < 1
         return (@next_time = nil) if @last_at && time >= @last_at
@@ -538,10 +537,8 @@ module Rufus
         return if is_post
 
         @next_time =
-          if trigger_time
-            trigger_time + @frequency
-          elsif @first_at < Time.now
-            Time.now + @frequency
+          if @first_at == nil || @first_at < Time.now
+            (trigger_time || Time.now) + @frequency
           else
             @first_at
           end
@@ -579,7 +576,7 @@ module Rufus
           if is_post
             Time.now + @interval
           elsif trigger_time.nil?
-            if @first_at < Time.now
+            if @first_at == nil || @first_at < Time.now
               Time.now + @interval
             else
               @first_at
@@ -619,23 +616,12 @@ module Rufus
 
       def set_next_time(trigger_time, is_post=false)
 
-        #@next_time = @cron_line.next_time
-          #
-        #@next_time =
-        #  if is_post
-        #    @cron_line.next_time
-        #  elsif trigger_time.nil?
-        #    next_time_from(Time.now)
-        #  else
-        #    false
-        #  end
-          #
         @next_time = next_time_from(trigger_time || Time.now)
       end
 
       def next_time_from(time)
 
-        if @first_at < time
+        if @first_at == nil || @first_at < time
           @cron_line.next_time(time)
         else
           @first_at
