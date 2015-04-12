@@ -602,7 +602,10 @@ describe Rufus::Scheduler do
 
       j0 = @scheduler.schedule_every '1m', :times => 10 do; end
 
-      h = @scheduler.occurrences(Time.now + 4 * 60, Time.now + 16 * 60)
+      t0 = Time.parse((Time.now + 5 * 60).strftime('%Y-%m-%d %H:%M:01'))
+      t1 = t0 + 12 * 60 - 1
+
+      h = @scheduler.occurrences(t0, t1)
 
       expect(h[j0].size).to eq(6)
     end
