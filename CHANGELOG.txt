@@ -2,7 +2,11 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.0.10    not yet released
+== rufus-scheduler - 3.1.0    released 2015/04/18
+
+- go without tzinfo (and its dependencies)
+- include @ketan's #next_time improvements
+- remove 2.x warning message on install
 
 
 == rufus-scheduler - 3.0.9    released 2014/08/30
