@@ -123,15 +123,16 @@ class Rufus::Scheduler
       return false if str == nil
 
       return true if Time.zone_offset(str)
-      return true if str == 'Zulu'
+      return true if %w[ Zulu UTC ].include?(str)
 
       return !! (::TZInfo::Timezone.get(str) rescue nil) if defined?(::TZInfo)
 
-      zt = ZoTime.new(0, str)
-      t = zt.time
+      t = ZoTime.new(0, str).time
 
       return false if t.zone == ''
+      return false if t.zone == 'UTC'
       return false if str.match(/[a-z]/) && str.start_with?(t.zone)
+        # 3 common fallbacks...
 
       return false if RUBY_PLATFORM.include?('java') && ! envtzable?(str)
 
