@@ -24,6 +24,10 @@
 
 require 'rufus/scheduler/zones'
 
+begin
+  require 'tzinfo'
+rescue LoadError
+end
 
 class Rufus::Scheduler
 
