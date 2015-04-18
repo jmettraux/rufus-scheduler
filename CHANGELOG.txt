@@ -2,7 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.1.1    not yet released
+== rufus-scheduler - 3.1.1    released 2015/04/19
+
+- fix ZoTime.is_timezone? on OSX, thanks https://github.com/yaauie
 
 
 == rufus-scheduler - 3.1.0    released 2015/04/18
