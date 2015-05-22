@@ -621,7 +621,7 @@ module Rufus
 
       def next_time_from(time)
 
-        if @first_at == nil || @first_at < time
+        if @first_at == nil || @first_at <= time
           @cron_line.next_time(time)
         else
           @first_at
