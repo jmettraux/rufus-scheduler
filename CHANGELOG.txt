@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.1.2    not yet released
+== rufus-scheduler - 3.1.2    released 2015/05/23
 
 - avoid cron/:first_at infinite loop, thanks https://github.com/pouellet
 
