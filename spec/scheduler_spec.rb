@@ -611,7 +611,7 @@ describe Rufus::Scheduler do
     end
   end
 
-  describe '#timeline(time0, time1)' do
+  describe '#timeline' do
 
     it 'returns a [ [ time, job ], ... ] of job occurrences' do
 
@@ -624,6 +624,21 @@ describe Rufus::Scheduler do
       expect(a[0][1]).to eq(j0)
       expect(a[1][0]).to be_within_1s_of(Time.now + 10 * 60)
       expect(a[1][1]).to eq(j1)
+    end
+
+    it 'should not lock when running timeline with a :first_at specified' do
+
+      now = Time.now
+
+      # scheduling a cron job with a first_at and running #timeline used
+      # to result in an infinite loop.
+
+      @scheduler.cron('* * * * * *', :first_at => now + 3) {}
+
+      jobs = @scheduler.timeline(now, now + 4)
+      expect(jobs.size).to be 2
+      expect(jobs[0][0]).to be_within_1s_of now + 3
+      expect(jobs[1][0]).to be_within_1s_of now + 4
     end
   end
 

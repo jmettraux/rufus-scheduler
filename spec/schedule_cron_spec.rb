@@ -62,20 +62,5 @@ describe Rufus::Scheduler do
       expect(job.job_id).to match(/^cron_/)
     end
   end
-
-  describe '#timeline' do
-    it 'should not lock when running timeline with a time_at specified' do
-      now = Time.now
-
-      # Scheduling a cron job with a first_at and running #timeline use
-      # to result in an infinite loop.
-      @scheduler.cron('* * * * * *', first_at: now + 3) {}
-
-      jobs = @scheduler.timeline(now, now + 4)
-      expect(jobs.size).to be 2
-      expect(jobs[0][0]).to be_within_1s_of now + 3
-      expect(jobs[1][0]).to be_within_1s_of now + 4
-    end
-  end
 end
 
