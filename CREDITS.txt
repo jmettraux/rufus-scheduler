@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Pascal Ouellet (https://github.com/pouellet) Scheduler#timeline loop fix
 - Ryan Biesemeyer (https://github.com/yaauie) ZoTime.is_timezone? on OSX
 - Ketan Padegaonkar (https://github.com/ketan) .brute_frequency improvement
 - Gabriel Gilder (https://github.com/ggilder) LA DST specs
