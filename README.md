@@ -78,7 +78,7 @@ There is no EventMachine-based scheduler anymore.
 Sir, I'll drive you right to the [tracks](#so-rails).
 
 
-## Notables changes:
+## Notable changes:
 
 * As said, no more EventMachine-based scheduler
 * ```scheduler.every('100') {``` will schedule every 100 seconds (previously, it would have been 0.1s). This aligns rufus-scheduler on Ruby's ```sleep(100)```
