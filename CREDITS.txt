@@ -37,6 +37,7 @@
 
 == Feedback
 
+- twitter @adefilaedward1 - typo in readme
 - Michael Guymon - https://github.com/mguymon - #next_time vs :first_at
 - junhanamaki - https://github.com/junhanamaki - #next_time and dst ambiguities
 - kreynolds (tossrock) - inspiration for #occurrences
