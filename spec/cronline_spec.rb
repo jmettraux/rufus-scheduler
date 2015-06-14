@@ -66,6 +66,8 @@ describe Rufus::Scheduler::CronLine do
 
       to_a '0 0 1 1 *', [ [0], [0], [0], [1], [1], nil, nil, nil ]
 
+      to_a '52 0 * * *', [ [0], [52], [0], nil, nil, nil, nil, nil ]
+
       if ruby18?
         to_a '0 23-24 * * *', [ [0], [0], [0, 23], nil, nil, nil, nil, nil ]
       else
