@@ -284,7 +284,7 @@ module Rufus
           Thread.new do
 
             Thread.current[@scheduler.thread_key] = true
-            Thread.current[:rufus_scheduler_job_thread] = true
+            Thread.current[:rufus_scheduler_work_thread] = true
 
             loop do
 
