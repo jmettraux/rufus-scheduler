@@ -592,12 +592,12 @@ module Rufus
 
         job = t[:rufus_scheduler_job]
         to = t[:rufus_scheduler_timeout]
+        ts = t[:rufus_scheduler_time]
 
-        next unless job && to
+        next unless job && to && ts
           # thread might just have become inactive (job -> nil)
 
-        ts = t[:rufus_scheduler_time]
-        to = to.is_a?(Time) ? to : ts + to     ### ts is nil...
+        to = to.is_a?(Time) ? to : ts + to
 
         next if to > Time.now
 
