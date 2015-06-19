@@ -39,7 +39,7 @@ module Rufus
     require 'rufus/scheduler/job_array'
     require 'rufus/scheduler/locks'
 
-    VERSION = '3.1.2'
+    VERSION = '3.1.3'
 
     #
     # A common error class for rufus-scheduler
@@ -597,7 +597,7 @@ module Rufus
           # thread might just have become inactive (job -> nil)
 
         ts = t[:rufus_scheduler_time]
-        to = to.is_a?(Time) ? to : ts + to
+        to = to.is_a?(Time) ? to : ts + to     ### ts is nil...
 
         next if to > Time.now
 
