@@ -609,12 +609,16 @@ describe Rufus::Scheduler::CronLine do
         '10,17,30 * * * *').frequency).to eq(7 * 60)
       expect(Rufus::Scheduler::CronLine.new(
         '10,23,30 * * * *').frequency).to eq(7 * 60)
+      expect(Rufus::Scheduler::CronLine.new(
+        '23,10,30 * * * *').frequency).to eq(7 * 60)
     end
     it 'spots B-A vs C-B asymmetry in six-field forms' do
       expect(Rufus::Scheduler::CronLine.new(
         '10,17,30 * * * * *').frequency).to eq(7)
       expect(Rufus::Scheduler::CronLine.new(
         '10,23,30 * * * * *').frequency).to eq(7) # FAILS: gives 13 not 7
+      expect(Rufus::Scheduler::CronLine.new(
+        '23,10,30 * * * *').frequency).to eq(7)
     end
 
     it 'handles crontab modulo syntax in five-field forms' do
