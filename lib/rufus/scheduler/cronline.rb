@@ -292,7 +292,7 @@ class Rufus::Scheduler
 
       secs = @seconds.sort
 
-      return secs.last + 60 - time.sec if time.sec > secs.last
+      return secs.first + 60 - time.sec if time.sec > secs.last
 
       secs.shift while secs.first < time.sec
 
