@@ -288,8 +288,6 @@ class Rufus::Scheduler
       delta
     end
 
-    protected
-
     def next_second(time)
 
       secs = @seconds.sort
@@ -309,6 +307,8 @@ class Rufus::Scheduler
 
       time.sec - secs.last
     end
+
+    protected
 
     WEEKDAYS = %w[ sun mon tue wed thu fri sat ]
     DAY_S = 24 * 3600

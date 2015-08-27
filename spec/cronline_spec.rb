@@ -32,6 +32,10 @@ describe Rufus::Scheduler::CronLine do
     in_zone(tz) { tu.getlocal }
   end
 
+  def ns(cronline, now)
+    Rufus::Scheduler::CronLine.new(cronline).next_second(now)
+  end
+
   def match(line, time)
     expect(cl(line).matches?(time)).to eq(true)
   end
@@ -82,6 +86,14 @@ describe Rufus::Scheduler::CronLine do
       else
         to_a '0 23-2 * * *', [ [0], [0], [23, 0, 1, 2], nil, nil, nil, nil, nil ]
       end
+
+      # modulo forms work for five-field forms
+      to_a '*/17 * * * *', [[0], [0, 17, 34, 51], nil, nil, nil, nil, nil, nil]
+      to_a '13 */17 * * *', [[0], [13], [0, 17], nil, nil, nil, nil, nil]
+
+      # modulo forms work for six-field forms
+      to_a '*/17 * * * * *', [[0, 17, 34, 51], nil, nil, nil, nil, nil, nil, nil]
+      to_a '13 */17 * * * *', [[13], [0, 17, 34, 51], nil, nil, nil, nil, nil, nil]
     end
 
     it 'rejects invalid weekday expressions' do
@@ -363,6 +375,54 @@ describe Rufus::Scheduler::CronLine do
         )
       ).to eq(ltz('America/New_York', 2015, 3, 9, 2, 0, 0))
     end
+
+    it 'understands six-field crontabs' do
+      expect(nt('* * * * * *',local(1970,1,1,1,1,1))).to(
+        eq(local(1970,1,1,1,1,2))
+      )
+      expect(nt('* * * * * *',local(1970,1,1,1,1,2))).to(
+        eq(local(1970,1,1,1,1,3))
+      )
+      expect(nt('*/10 * * * * *',local(1970,1,1,1,1,0))).to(
+        eq(local(1970,1,1,1,1,10))
+      )
+      expect(nt('*/10 * * * * *',local(1970,1,1,1,1,9))).to(
+        eq(local(1970,1,1,1,1,10))
+      )
+      expect(nt('*/10 * * * * *',local(1970,1,1,1,1,10))).to(
+        eq(local(1970,1,1,1,1,20))
+      )
+      expect(nt('*/10 * * * * *',local(1970,1,1,1,1,40))).to(
+        eq(local(1970,1,1,1,1,50))
+      )
+      expect(nt('*/10 * * * * *',local(1970,1,1,1,1,49))).to(
+        eq(local(1970,1,1,1,1,50))
+      )
+      expect(nt('*/10 * * * * *',local(1970,1,1,1,1,50))).to(
+        eq(local(1970,1,1,1,2,00)) # FAILS: skips a minute to 2:50, not 2:00
+      )
+    end
+  end
+
+  describe '#next_second' do
+    [
+      [ '*/10 * * * * *', local(1970,1,1,1,1, 0),  0 ], # 0 sec to  0s mark
+      [ '*/10 * * * * *', local(1970,1,1,1,1, 1),  9 ], # 9 sec to 10s mark
+      [ '*/10 * * * * *', local(1970,1,1,1,1, 9),  1 ], # 1 sec to 10s mark
+      [ '*/10 * * * * *', local(1970,1,1,1,1,10),  0 ], # 0 sec to 10s mark
+      [ '*/10 * * * * *', local(1970,1,1,1,1,11),  9 ], # 9 sec to 20s mark
+      [ '*/10 * * * * *', local(1970,1,1,1,1,19),  1 ], # 1 sec to 20s mark
+      [ '*/10 * * * * *', local(1970,1,1,1,1,20),  0 ], # 0 sec to 20s mark
+      [ '*/10 * * * * *', local(1970,1,1,1,1,21),  9 ], # 1 sec to 30s mark
+      # ...
+      [ '*/10 * * * * *', local(1970,1,1,1,1,49),  1 ], # 9 sec to 50s mark
+      [ '*/10 * * * * *', local(1970,1,1,1,1,50),  0 ], # 0 sec to 50s mark
+      [ '*/10 * * * * *', local(1970,1,1,1,1,51),  9 ], # FAILS: gives 59
+    ].each do |cronline,now,sec|
+      it "understands that next_second('#{cronline}',#{now}) is #{sec}" do
+        expect(ns(cronline,now)).to eq(sec)
+      end
+    end
   end
 
   describe '#previous_time' do
@@ -543,6 +603,32 @@ describe Rufus::Scheduler::CronLine do
       expect(Rufus::Scheduler::CronLine.new(
         '10,20,30 * * * * *').frequency).to eq(10)
     end
+
+    it 'spots B-A vs C-B asymmetry in five-field forms' do
+      expect(Rufus::Scheduler::CronLine.new(
+        '10,17,30 * * * *').frequency).to eq(7 * 60)
+      expect(Rufus::Scheduler::CronLine.new(
+        '10,23,30 * * * *').frequency).to eq(7 * 60)
+    end
+    it 'spots B-A vs C-B asymmetry in six-field forms' do
+      expect(Rufus::Scheduler::CronLine.new(
+        '10,17,30 * * * * *').frequency).to eq(7)
+      expect(Rufus::Scheduler::CronLine.new(
+        '10,23,30 * * * * *').frequency).to eq(7) # FAILS: gives 13 not 7
+    end
+
+    it 'handles crontab modulo syntax in five-field forms' do
+      expect(Rufus::Scheduler::CronLine.new(
+        '*/10 * * * *').frequency).to eq(10 * 60)
+      expect(Rufus::Scheduler::CronLine.new(
+        '* */10 * * *').frequency).to eq(10 * 60 * 60) # FAILS: gives only 60
+    end
+    it 'handles crontab modulo syntax in six-field forms' do
+      expect(Rufus::Scheduler::CronLine.new(
+        '*/10 * * * * *').frequency).to eq(10)
+      expect(Rufus::Scheduler::CronLine.new(
+        '* */10 * * * *').frequency).to eq(10 * 60) # FAILS: gives 1 not 600
+    end
   end
 
   describe '#brute_frequency' do
@@ -573,6 +659,32 @@ describe Rufus::Scheduler::CronLine do
 
       expect(Rufus::Scheduler::CronLine.new(
         '1 2 3 4 5').brute_frequency).to eq(31622400)
+    end
+
+    it 'spots B-A vs C-B asymmetry in five-field forms' do
+      expect(Rufus::Scheduler::CronLine.new(
+        '10,17,30 * * * *').brute_frequency).to eq(7 * 60)
+      expect(Rufus::Scheduler::CronLine.new(
+        '10,23,30 * * * *').brute_frequency).to eq(7 * 60)
+    end
+    it 'spots B-A vs C-B asymmetry in six-field forms' do
+      expect(Rufus::Scheduler::CronLine.new(
+        '10,17,30 * * * * *').brute_frequency).to eq(7) # FAILS: gives 60 not 7
+      expect(Rufus::Scheduler::CronLine.new(
+        '10,23,30 * * * * *').brute_frequency).to eq(7) # FAILS: gives 60 not 7
+    end
+
+    it 'handles crontab modulo syntax in five-field forms' do
+      expect(Rufus::Scheduler::CronLine.new(
+        '*/10 * * * *').brute_frequency).to eq(10 * 60)
+      expect(Rufus::Scheduler::CronLine.new(
+        '* */10 * * *').brute_frequency).to eq(10 * 60 * 60) # FAILS: gives 60
+    end
+    it 'handles crontab modulo syntax in six-field forms' do
+      expect(Rufus::Scheduler::CronLine.new(
+        '*/10 * * * * *').brute_frequency).to eq(10) # FAILS: gives 60 not 10
+      expect(Rufus::Scheduler::CronLine.new(
+        '* */10 * * * *').brute_frequency).to eq(10 * 60) # FAILS: gives 1
     end
   end
 
