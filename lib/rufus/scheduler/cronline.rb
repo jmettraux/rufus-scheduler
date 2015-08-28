@@ -186,23 +186,6 @@ class Rufus::Scheduler
       time
     end
 
-    def sc_sort(a)
-
-      a.sort_by { |e| e.is_a?(String) ? 61 : e.to_i }
-    end
-    protected :sc_sort
-
-    if RUBY_VERSION >= '1.9'
-      def toa(item)
-        item == nil ? nil : item.to_a
-      end
-    else
-      def toa(item)
-        item.is_a?(Set) ? sc_sort(item.to_a) : item
-      end
-    end
-    protected :toa
-
     # Returns an array of 6 arrays (seconds, minutes, hours, days,
     # months, weekdays).
     # This method is used by the cronline unit tests.
@@ -313,6 +296,21 @@ class Rufus::Scheduler
     end
 
     protected
+
+    def sc_sort(a)
+
+      a.sort_by { |e| e.is_a?(String) ? 61 : e.to_i }
+    end
+
+    if RUBY_VERSION >= '1.9'
+      def toa(item)
+        item == nil ? nil : item.to_a
+      end
+    else
+      def toa(item)
+        item.is_a?(Set) ? sc_sort(item.to_a) : item
+      end
+    end
 
     WEEKDAYS = %w[ sun mon tue wed thu fri sat ]
     DAY_S = 24 * 3600
