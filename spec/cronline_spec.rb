@@ -666,25 +666,25 @@ describe Rufus::Scheduler::CronLine do
       expect(Rufus::Scheduler::CronLine.new(
         '10,17,30 * * * * *').frequency).to eq(7)
       expect(Rufus::Scheduler::CronLine.new(
-        '10,23,30 * * * * *').frequency).to eq(7) # FAILS: gives 13 not 7
+        '10,23,30 * * * * *').frequency).to eq(7)
       expect(Rufus::Scheduler::CronLine.new(
         '23,10,30 * * * * *').frequency).to eq(7)
     end
 
-    it 'handles crontab modulo syntax in five-field forms' do
+    it 'handles crontab steps syntax in five-field forms' do
 
       expect(Rufus::Scheduler::CronLine.new(
         '*/10 * * * *').frequency).to eq(10 * 60)
       expect(Rufus::Scheduler::CronLine.new(
-        '* */10 * * *').frequency).to eq(10 * 60 * 60) # FAILS: gives only 60
+        '* */10 * * *').frequency).to eq(60) # "*" all minutes [0..59]
     end
 
-    it 'handles crontab modulo syntax in six-field forms' do
+    it 'handles crontab steps syntax in six-field forms' do
 
       expect(Rufus::Scheduler::CronLine.new(
         '*/10 * * * * *').frequency).to eq(10)
       expect(Rufus::Scheduler::CronLine.new(
-        '* */10 * * * *').frequency).to eq(10 * 60) # FAILS: gives 1 not 600
+        '* */10 * * * *').frequency).to eq(1) # "*" all seconds [0..59]
     end
   end
 
@@ -726,22 +726,22 @@ describe Rufus::Scheduler::CronLine do
     end
     it 'spots B-A vs C-B asymmetry in six-field forms' do
       expect(Rufus::Scheduler::CronLine.new(
-        '10,17,30 * * * * *').brute_frequency).to eq(7) # FAILS: gives 60 not 7
+        '10,17,30 * * * * *').brute_frequency).to eq(7)
       expect(Rufus::Scheduler::CronLine.new(
-        '10,23,30 * * * * *').brute_frequency).to eq(7) # FAILS: gives 60 not 7
+        '10,23,30 * * * * *').brute_frequency).to eq(7)
     end
 
     it 'handles crontab modulo syntax in five-field forms' do
       expect(Rufus::Scheduler::CronLine.new(
         '*/10 * * * *').brute_frequency).to eq(10 * 60)
       expect(Rufus::Scheduler::CronLine.new(
-        '* */10 * * *').brute_frequency).to eq(10 * 60 * 60) # FAILS: gives 60
+        '* */10 * * *').brute_frequency).to eq(60) # "*" all minutes [0..59]
     end
     it 'handles crontab modulo syntax in six-field forms' do
       expect(Rufus::Scheduler::CronLine.new(
-        '*/10 * * * * *').brute_frequency).to eq(10) # FAILS: gives 60 not 10
+        '*/10 * * * * *').brute_frequency).to eq(10)
       expect(Rufus::Scheduler::CronLine.new(
-        '* */10 * * * *').brute_frequency).to eq(10 * 60) # FAILS: gives 1
+        '* */10 * * * *').brute_frequency).to eq(1) # "*" all seconds [0..59]
     end
   end
 
