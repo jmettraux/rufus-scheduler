@@ -511,22 +511,18 @@ describe Rufus::Scheduler::CronLine do
       ).to eq(ltz('America/New_York', 2015, 3, 9, 2, 0, 0))
     end
 
-    # gh-163, surfaces via CronLine#brute_frequency problems
-    #
-    it 'computes correctly when * 0,10.20' do
+    it 'computes correctly when * 0,10,20' do
 
       expect(
         pt('* 0,10,20 * * *', lo(2000, 1, 1))).to eq(
-          lo(2000, 12, 31, 20, 00, 00))
+          lo(1999, 12, 31, 20, 59, 00))
     end
 
-    # gh-163, surfaces via CronLine#brute_frequency problems
-    #
     it 'computes correctly when * */10' do
 
       expect(
         pt('* */10 * * *', lo(2000, 1, 1))).to eq(
-          lo(2000, 12, 31, 20, 00, 00))
+          lo(1999, 12, 31, 20, 59, 00))
     end
   end
 
