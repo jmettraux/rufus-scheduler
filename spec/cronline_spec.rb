@@ -677,6 +677,8 @@ describe Rufus::Scheduler::CronLine do
         '*/10 * * * *').frequency).to eq(10 * 60)
       expect(Rufus::Scheduler::CronLine.new(
         '* */10 * * *').frequency).to eq(60) # "*" all minutes [0..59]
+      expect(Rufus::Scheduler::CronLine.new(
+        '0 */10 * * *').frequency).to eq(4 * 60 * 60) # 2000 to 0000
     end
 
     it 'handles crontab steps syntax in six-field forms' do
@@ -685,6 +687,8 @@ describe Rufus::Scheduler::CronLine do
         '*/10 * * * * *').frequency).to eq(10)
       expect(Rufus::Scheduler::CronLine.new(
         '* */10 * * * *').frequency).to eq(1) # "*" all seconds [0..59]
+      expect(Rufus::Scheduler::CronLine.new(
+        '0 */10 * * * *').frequency).to eq(10 * 60)
     end
   end
 
@@ -719,12 +723,15 @@ describe Rufus::Scheduler::CronLine do
     end
 
     it 'spots B-A vs C-B asymmetry in five-field forms' do
+
       expect(Rufus::Scheduler::CronLine.new(
         '10,17,30 * * * *').brute_frequency).to eq(7 * 60)
       expect(Rufus::Scheduler::CronLine.new(
         '10,23,30 * * * *').brute_frequency).to eq(7 * 60)
     end
+
     it 'spots B-A vs C-B asymmetry in six-field forms' do
+
       expect(Rufus::Scheduler::CronLine.new(
         '10,17,30 * * * * *').brute_frequency).to eq(7)
       expect(Rufus::Scheduler::CronLine.new(
@@ -732,16 +739,23 @@ describe Rufus::Scheduler::CronLine do
     end
 
     it 'handles crontab modulo syntax in five-field forms' do
+
       expect(Rufus::Scheduler::CronLine.new(
         '*/10 * * * *').brute_frequency).to eq(10 * 60)
       expect(Rufus::Scheduler::CronLine.new(
         '* */10 * * *').brute_frequency).to eq(60) # "*" all minutes [0..59]
+      expect(Rufus::Scheduler::CronLine.new(
+        '0 */10 * * *').brute_frequency).to eq(4 * 60 * 60) # 2000 to 0000
     end
+
     it 'handles crontab modulo syntax in six-field forms' do
+
       expect(Rufus::Scheduler::CronLine.new(
         '*/10 * * * * *').brute_frequency).to eq(10)
       expect(Rufus::Scheduler::CronLine.new(
         '* */10 * * * *').brute_frequency).to eq(1) # "*" all seconds [0..59]
+      expect(Rufus::Scheduler::CronLine.new(
+        '0 */10 * * * *').brute_frequency).to eq(10 * 60)
     end
   end
 
