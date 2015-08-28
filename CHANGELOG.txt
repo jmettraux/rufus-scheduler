@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.1.4    not yet released
+== rufus-scheduler - 3.1.4    released 2015/08/29
 
 - fix cron issue reported by Jesse https://github.com/jhw-at-prosperworks-com
 
