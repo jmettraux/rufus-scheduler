@@ -186,15 +186,19 @@ class Rufus::Scheduler
       time
     end
 
+    def sc_sort(a)
+
+      a.sort_by { |e| e.is_a?(String) ? 61 : e.to_i }
+    end
+    protected :sc_sort
+
     if RUBY_VERSION >= '1.9'
       def toa(item)
         item == nil ? nil : item.to_a
       end
     else
-      def toi(item); item.is_a?(String) ? item.hash.abs : item.to_i; end
-      protected :toi
       def toa(item)
-        item.is_a?(Set) ? item.to_a.sort_by { |e| toi(e) } : item
+        item.is_a?(Set) ? sc_sort(item.to_a) : item
       end
     end
     protected :toa
@@ -290,7 +294,7 @@ class Rufus::Scheduler
 
     def next_second(time)
 
-      secs = @seconds.to_a
+      secs = toa(@seconds)
 
       return secs.first + 60 - time.sec if time.sec > secs.last
 
@@ -301,7 +305,7 @@ class Rufus::Scheduler
 
     def prev_second(time)
 
-      secs = @seconds.to_a
+      secs = toa(@seconds)
 
       secs.pop while time.sec < secs.last
 
@@ -366,7 +370,7 @@ class Rufus::Scheduler
         "found duplicates in #{item.inspect}"
       ) if r.uniq.size < r.size
 
-      r = r.sort_by { |rr| rr.is_a?(String) ? 61 : rr.to_i }
+      r = sc_sort(r)
 
       Set.new(r)
     end
