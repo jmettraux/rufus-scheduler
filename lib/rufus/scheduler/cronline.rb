@@ -290,7 +290,7 @@ class Rufus::Scheduler
 
     def next_second(time)
 
-      secs = @seconds.sort
+      secs = @seconds.to_a
 
       return secs.first + 60 - time.sec if time.sec > secs.last
 
@@ -301,7 +301,7 @@ class Rufus::Scheduler
 
     def prev_second(time)
 
-      secs = @seconds.sort
+      secs = @seconds.to_a
 
       secs.pop while time.sec < secs.last
 
@@ -351,7 +351,7 @@ class Rufus::Scheduler
         end
       end
 
-      weekdays = weekdays.uniq if weekdays
+      weekdays = weekdays.uniq.sort if weekdays
 
       [ weekdays, monthdays ]
     end
@@ -365,6 +365,8 @@ class Rufus::Scheduler
       raise ArgumentError.new(
         "found duplicates in #{item.inspect}"
       ) if r.uniq.size < r.size
+
+      r = r.sort_by { |rr| rr.is_a?(String) ? 61 : rr.to_i }
 
       Set.new(r)
     end
