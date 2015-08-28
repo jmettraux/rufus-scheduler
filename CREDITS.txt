@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Jesse Willet (https://github.com/jhw-at-prosperworks-com) cron vs "*/10"
 - Pascal Ouellet (https://github.com/pouellet) Scheduler#timeline loop fix
 - Ryan Biesemeyer (https://github.com/yaauie) ZoTime.is_timezone? on OSX
 - Ketan Padegaonkar (https://github.com/ketan) .brute_frequency improvement
