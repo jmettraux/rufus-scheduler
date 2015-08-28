@@ -637,6 +637,7 @@ describe Rufus::Scheduler::CronLine do
     end
 
     it 'spots B-A vs C-B asymmetry in five-field forms' do
+
       expect(Rufus::Scheduler::CronLine.new(
         '10,17,30 * * * *').frequency).to eq(7 * 60)
       expect(Rufus::Scheduler::CronLine.new(
@@ -644,22 +645,27 @@ describe Rufus::Scheduler::CronLine do
       expect(Rufus::Scheduler::CronLine.new(
         '23,10,30 * * * *').frequency).to eq(7 * 60)
     end
+
     it 'spots B-A vs C-B asymmetry in six-field forms' do
+
       expect(Rufus::Scheduler::CronLine.new(
         '10,17,30 * * * * *').frequency).to eq(7)
       expect(Rufus::Scheduler::CronLine.new(
         '10,23,30 * * * * *').frequency).to eq(7) # FAILS: gives 13 not 7
       expect(Rufus::Scheduler::CronLine.new(
-        '23,10,30 * * * *').frequency).to eq(7)
+        '23,10,30 * * * * *').frequency).to eq(7)
     end
 
     it 'handles crontab modulo syntax in five-field forms' do
+
       expect(Rufus::Scheduler::CronLine.new(
         '*/10 * * * *').frequency).to eq(10 * 60)
       expect(Rufus::Scheduler::CronLine.new(
         '* */10 * * *').frequency).to eq(10 * 60 * 60) # FAILS: gives only 60
     end
+
     it 'handles crontab modulo syntax in six-field forms' do
+
       expect(Rufus::Scheduler::CronLine.new(
         '*/10 * * * * *').frequency).to eq(10)
       expect(Rufus::Scheduler::CronLine.new(

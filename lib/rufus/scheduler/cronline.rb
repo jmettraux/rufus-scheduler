@@ -215,16 +215,12 @@ class Rufus::Scheduler
 
       return brute_frequency unless @seconds && @seconds.length > 1
 
-      delta = 60
       secs = toa(@seconds)
-      prev = secs[0]
 
-      secs[1..-1].each do |sec|
+      secs[1..-1].inject([ secs[0], 60 ]) { |(prev, delta), sec|
         d = sec - prev
-        delta = d if d < delta
-      end
-
-      delta
+        [ sec, d < delta ? d : delta ]
+      }[1]
     end
 
     # Returns the shortest delta between two potential occurences of the
