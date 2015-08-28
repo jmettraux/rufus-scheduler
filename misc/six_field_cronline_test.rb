@@ -48,21 +48,30 @@ require 'rufus-scheduler'
 
 START_TIME ||= Time.now.to_f
 
-def log(msg)
-  delta_t = Time.now.to_f - START_TIME
-  printf "%7.3f: %s\n",delta_t,msg
-  STDOUT.flush
+def log(last_time, msg)
+
+  f = Time.now.to_f
+  delta_t = f - START_TIME
+  delta_l = f - last_time
+  printf("%7.3f: +%06.3f %s\n", delta_t, delta_l, msg)
+  $stdout.flush
+
+  f
 end
 
-log "#{$0}: using rufus-scheduler #{Rufus::Scheduler::VERSION}"
+puts "#{$0}: using rufus-scheduler #{Rufus::Scheduler::VERSION}"
 
 scheduler = Rufus::Scheduler.new
 
+elt = START_TIME
+clt = START_TIME
+
 scheduler.every '10s' do
-  log "every: 10s"
+  elt = log(elt, "every: 10s")
 end
 scheduler.cron '*/10 * * * * *' do
-  log "cron: '*/10 * * * * *'"
+  clt = log(clt, "cron: '*/10 * * * * *'")
 end
 
 scheduler.join
+
