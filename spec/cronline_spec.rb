@@ -432,7 +432,7 @@ describe Rufus::Scheduler::CronLine do
         eq(local(1970,1,1,1,1,50))
       )
       expect(nt('*/10 * * * * *',local(1970,1,1,1,1,50))).to(
-        eq(local(1970,1,1,1,2,00)) # FAILS: skips a minute to 2:50, not 2:00
+        eq(local(1970,1,1,1,2,00))
       )
     end
   end
@@ -450,9 +450,9 @@ describe Rufus::Scheduler::CronLine do
       # ...
       [ '*/10 * * * * *', local(1970,1,1,1,1,49),  1 ], # 9 sec to 50s mark
       [ '*/10 * * * * *', local(1970,1,1,1,1,50),  0 ], # 0 sec to 50s mark
-      [ '*/10 * * * * *', local(1970,1,1,1,1,51),  9 ], # FAILS: gives 59
-    ].each do |cronline,now,sec|
-      it "understands that next_second('#{cronline}',#{now}) is #{sec}" do
+      [ '*/10 * * * * *', local(1970,1,1,1,1,51),  9 ],
+    ].each do |cronline, now, sec|
+      it "ensures that next_second('#{cronline}', #{now}) is #{sec}" do
         expect(ns(cronline,now)).to eq(sec)
       end
     end
