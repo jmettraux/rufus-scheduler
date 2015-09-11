@@ -1399,6 +1399,7 @@ s = Rufus::Scheduler.singleton
 s.every '1m' do
 
   Rails.logger.info "hello, it's #{Time.now}"
+  Rails.logger.flush
 end
 ```
 
@@ -1426,6 +1427,21 @@ end
 The rufus-scheduler singleton is instantiated in the ```config/initializers/scheduler.rb``` file, it's then available throughout the webapp via ```Rufus::Scheduler.singleton```.
 
 *Warning*: this works well with single-process Ruby servers like Webrick and Thin. Using rufus-scheduler with Passenger or Unicorn requires a bit more knowledge and tuning, gently provided by a bit of googling and reading, see [Faq](#faq) above.
+
+### rails server -d
+
+(Written in reply to https://github.com/jmettraux/rufus-scheduler/issues/165 )
+
+There is the handy `rails server -d` that starts a development Rails as a daemon. The annoying thing is that the scheduler as seen above is started in the main process that then gets forked and daemonized. The rufus-scheduler thread (and any other thread) gets lost, no scheduling happens.
+
+I avoid running `-d` in development mode and bother about daemonizing only for production deployment.
+
+These are two well crafted articles on process daemonization, please read them:
+
+* http://www.mikeperham.com/2014/09/22/dont-daemonize-your-daemons/
+* http://www.mikeperham.com/2014/07/07/use-runit/
+
+If anyway, you need something like `rails server -d`, why not try `bundle exec unicorn -D` instead? In my (limited) experience, it worked out of the box (well, had to add `gem 'unicorn'` to `Gemfile` first).
 
 
 ## support
