@@ -1441,7 +1441,7 @@ These are two well crafted articles on process daemonization, please read them:
 * http://www.mikeperham.com/2014/09/22/dont-daemonize-your-daemons/
 * http://www.mikeperham.com/2014/07/07/use-runit/
 
-If anyway, you need something like `rails server -d`, why not try `bundle exec unicorn -D` instead? In my (limited) experience, it worked out of the box (well, had to add `gem 'unicorn'` to `Gemfile` first).
+If, anyway, you need something like `rails server -d`, why not try `bundle exec unicorn -D` instead? In my (limited) experience, it worked out of the box (well, had to add `gem 'unicorn'` to `Gemfile` first).
 
 
 ## support
