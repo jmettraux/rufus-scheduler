@@ -132,7 +132,7 @@ class Rufus::Scheduler
 
       return false if t.zone == ''
       return false if t.zone == 'UTC'
-      return false if t.utc_offset == 0 && t.zone == str[0, 3]
+      return false if t.utc_offset == 0 && str.start_with?(t.zone)
         # 3 common fallbacks...
 
       return false if RUBY_PLATFORM.include?('java') && ! envtzable?(str)
