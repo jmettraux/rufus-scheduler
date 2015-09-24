@@ -151,6 +151,7 @@ America/Argentina/Catamarca America/Indiana/Indianapolis
 America/North_Dakota/New_Salem America/Argentina/Rio_Gallegos
 America/Argentina/Buenos_Aires America/Argentina/ComodRivadavia
 ]
+TIMEZONEs = TIMEZONES.collect(&:downcase)
 
 ##
 ## http://en.wikipedia.org/wiki/List_of_time_zone_abbreviations

@@ -124,9 +124,11 @@ class Rufus::Scheduler
       return false if str == '*'
 
       return true if Time.zone_offset(str)
-      return true if str == 'Zulu' || str == 'UTC'
 
       return !! (::TZInfo::Timezone.get(str) rescue nil) if defined?(::TZInfo)
+
+      return true if TIMEZONES.include?(str)
+      return true if TIMEZONEs.include?(str)
 
       t = ZoTime.new(0, str).time
 
