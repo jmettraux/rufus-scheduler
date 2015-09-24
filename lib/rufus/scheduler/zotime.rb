@@ -123,6 +123,9 @@ class Rufus::Scheduler
       return false if str == nil
       return false if str == '*'
 
+      return false if str.index('#')
+        # "sun#2", etc... On OSX would go all the way to true
+
       return true if Time.zone_offset(str)
 
       return !! (::TZInfo::Timezone.get(str) rescue nil) if defined?(::TZInfo)
