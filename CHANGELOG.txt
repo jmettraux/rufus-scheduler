@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 3.1.5    not yet released
 
+- fix for "not a valid cronline" on "mingw" Ruby distributions, gh-166
+
 
 == rufus-scheduler - 3.1.4    released 2015/08/29
 

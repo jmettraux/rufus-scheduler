@@ -121,6 +121,7 @@ class Rufus::Scheduler
     def self.is_timezone?(str)
 
       return false if str == nil
+      return false if str == '*'
 
       return true if Time.zone_offset(str)
       return true if str == 'Zulu' || str == 'UTC'
@@ -131,7 +132,7 @@ class Rufus::Scheduler
 
       return false if t.zone == ''
       return false if t.zone == 'UTC'
-      return false if str.match(/[a-z]/) && str.start_with?(t.zone)
+      return false if t.utc_offset == 0 && t.zone == str[0, 3]
         # 3 common fallbacks...
 
       return false if RUBY_PLATFORM.include?('java') && ! envtzable?(str)
