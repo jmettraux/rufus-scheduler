@@ -2,6 +2,11 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 3.1.6    not yet released
+
+- fix job id uniqueness (JRuby), thanks 김성식 https://github.com/kssminus
+
+
 == rufus-scheduler - 3.1.5    released 2015-09-25
 
 - fix for "not a valid cronline" on "mingw" Ruby distributions, gh-166
