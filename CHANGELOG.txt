@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.1.6    not yet released
+== rufus-scheduler - 3.1.6    released 2015-10-01
 
 - fix job id uniqueness (JRuby), thanks 김성식 https://github.com/kssminus
 
