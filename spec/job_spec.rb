@@ -627,5 +627,35 @@ describe Rufus::Scheduler::Job do
       end
     end
   end
+
+  context 'one time job' do
+
+    describe '#determine_id' do
+
+      it 'returns unique ids' do
+
+        ids = []
+
+        10_000.times { ids << @scheduler.in('1y') {} }
+
+        expect(ids.uniq.length).to eq(ids.length)
+      end
+    end
+  end
+
+  context 'repeat job' do
+
+    describe '#determine_id' do
+
+      it 'returns unique ids' do
+
+        ids = []
+
+        10_000.times { ids << @scheduler.every('1y') {} }
+
+        expect(ids.uniq.length).to eq(ids.length)
+      end
+    end
+  end
 end
 
