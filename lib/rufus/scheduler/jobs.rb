@@ -351,7 +351,8 @@ module Rufus
           self.class.name.split(':').last.downcase[0..-4],
           @scheduled_at.to_f,
           @next_time.to_f,
-          opts.hash.abs
+          opts.hash.abs,
+          SecureRandom.random_number(1000)
         ].map(&:to_s).join('_')
       end
 
@@ -473,7 +474,8 @@ module Rufus
         [
           self.class.name.split(':').last.downcase[0..-4],
           @scheduled_at.to_f,
-          opts.hash.abs
+          opts.hash.abs,
+          SecureRandom.random_number(1000)
         ].map(&:to_s).join('_')
       end
 
