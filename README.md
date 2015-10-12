@@ -75,7 +75,7 @@ There is no EventMachine-based scheduler anymore.
 
 ## I don't know what this Ruby thing is, where are my Rails?
 
-Sir, I'll drive you right to the [tracks](#so-rails).
+I'll drive you right to the [tracks](#so-rails).
 
 
 ## Notable changes:
