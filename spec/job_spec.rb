@@ -176,6 +176,16 @@ describe Rufus::Scheduler::Job do
       expect(job.running?).to eq(true)
       expect(job.scheduled?).to eq(true)
     end
+
+    it 'returns false if job is unscheduled' do
+      job = @scheduler.schedule_interval('0.1s') { sleep 0.1 }
+      job.unschedule
+
+      sleep 0.3
+
+      expect(job.running?).to eq(false)
+      expect(job.scheduled?).to eq(false)
+    end
   end
 
   describe '#call' do

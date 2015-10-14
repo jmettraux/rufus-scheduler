@@ -387,7 +387,7 @@ module Rufus
 
       job, job_id = fetch(job_or_job_id)
 
-      !! (job && job.next_time != nil)
+      !! (job && job.unscheduled_at.nil? && job.next_time != nil)
     end
 
     # Lists all the threads associated with this scheduler.
