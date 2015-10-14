@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Claude Vessaz (https://github.com/claudeatsafe) ack #unscheduled_at in #scheduled?
 - 김성식 (https://github.com/kssminus) job id uniqueness effort
 - Jesse Willet (https://github.com/jhw-at-prosperworks-com) cron vs "*/10"
 - Pascal Ouellet (https://github.com/pouellet) Scheduler#timeline loop fix
@@ -39,6 +40,7 @@
 
 == Feedback
 
+- Suisea - https://github.com/suisea - readme rewording
 - Radek - http://stackoverflow.com/users/250422 - gh-166
 - Patrik Ragnarsson - https://github.com/dentarg - timeout vs nil, gh-156
 - twitter @adefilaedward1 - typo in readme
