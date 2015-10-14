@@ -2,6 +2,11 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 3.1.7    released 2015-10-15
+
+- ack #unscheduled_at in #scheduled?, by Claude https://github.com/claudeatsafe
+
+
 == rufus-scheduler - 3.1.6    released 2015-10-01
 
 - fix job id uniqueness (JRuby), thanks 김성식 https://github.com/kssminus
