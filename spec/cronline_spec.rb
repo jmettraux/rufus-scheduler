@@ -912,8 +912,8 @@ describe Rufus::Scheduler::CronLine do
     end
   end
 
-
   context 'fall time' do
+
     it 'correctly increments through a DST transition' do
 
       expect(
