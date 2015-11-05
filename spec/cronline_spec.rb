@@ -911,5 +911,72 @@ describe Rufus::Scheduler::CronLine do
       end
     end
   end
+
+
+  context 'fall time' do
+    it 'correctly increments through a DST transition' do
+
+      expect(
+        nt('* * * * * America/Los_Angeles', Time.utc(2015, 11, 1, 9, 59))
+      ).to eq(Time.utc(2015, 11, 1, 10, 00))
+    end
+
+    it 'correctly increments every minute through a DST transition' do
+
+      in_zone 'America/Los_Angeles' do
+
+        line = cl('* * * * * America/Los_Angeles')
+
+        t = Time.local(2015, 11, 1, 1, 57)
+
+        points =
+          [ 0, 1, 2, 3 ].collect do
+            t = line.next_time(t)
+            t.strftime('%H:%M:%Sl') + ' ' + t.dup.utc.strftime('%H:%M:%Su')
+          end
+
+        expect(points).to eq(
+          [
+            '01:58:00l 08:58:00u',
+            '01:59:00l 08:59:00u',
+            '01:00:00l 09:00:00u',
+            '01:01:00l 09:01:00u'
+          ]
+        )
+      end
+    end
+
+    it 'correctly decrements through a DST transition' do
+
+      expect(
+        pt('* * * * * America/Los_Angeles', Time.utc(2015, 11, 1, 10, 00))
+      ).to eq(Time.utc(2015, 11, 1, 9, 59))
+    end
+
+    it 'correctly decrements every minute through a DST transition' do
+
+      in_zone 'America/Los_Angeles' do
+
+        line = cl('* * * * * America/Los_Angeles')
+
+        t = Time.local(2015, 11, 1, 1, 2)
+
+        points =
+          [ 0, 1, 2, 3 ].collect do
+            t = line.previous_time(t)
+            t.strftime('%H:%M:%Sl') + ' ' + t.dup.utc.strftime('%H:%M:%Su')
+          end
+
+        expect(points).to eq(
+          [
+            '01:01:00l 09:01:00u',
+            '01:00:00l 09:00:00u',
+            '01:59:00l 08:59:00u',
+            '01:58:00l 08:58:00u'
+          ]
+        )
+      end
+    end
+  end
 end
 
