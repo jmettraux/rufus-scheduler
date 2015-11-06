@@ -860,22 +860,25 @@ describe Rufus::Scheduler::CronLine do
 
         line = cl('* * * * * America/Los_Angeles')
 
+        t0 = Time.local(2015, 3, 8, 1, 57)
         t = Time.local(2015, 3, 8, 1, 57)
 
         points =
-          [ 0, 1, 2, 3 ].collect do
+          (0..3).collect do
+            t0 = t0 + 60
             t = line.next_time(t)
-            t.strftime('%H:%M:%Sl') + ' ' + t.dup.utc.strftime('%H:%M:%Su')
+            [
+              t0.strftime('%H%M') + t0.dup.utc.strftime('(%H%M)'),
+              t.strftime('%H%M') + t.dup.utc.strftime('(%H%M)')
+            ].join(' ')
           end
 
-        expect(points).to eq(
-          [
-            '01:58:00l 09:58:00u',
-            '01:59:00l 09:59:00u',
-            '03:00:00l 10:00:00u',
-            '03:01:00l 10:01:00u'
-          ]
-        )
+        expect(points).to eq([
+          '0158(0958) 0158(0958)',
+          '0159(0959) 0159(0959)',
+          '0300(1000) 0300(1000)',
+          '0301(1001) 0301(1001)'
+        ])
       end
     end
 
@@ -892,22 +895,25 @@ describe Rufus::Scheduler::CronLine do
 
         line = cl('* * * * * America/Los_Angeles')
 
+        t0 = Time.local(2015, 3, 8, 3, 2)
         t = Time.local(2015, 3, 8, 3, 2)
 
         points =
-          [ 0, 1, 2, 3 ].collect do
+          (0..3).collect do
+            t0 = t0 - 60
             t = line.previous_time(t)
-            t.strftime('%H:%M:%Sl') + ' ' + t.dup.utc.strftime('%H:%M:%Su')
+            [
+              t0.strftime('%H%M') + t0.dup.utc.strftime('(%H%M)'),
+              t.strftime('%H%M') + t.dup.utc.strftime('(%H%M)')
+            ].join(' ')
           end
 
-        expect(points).to eq(
-          [
-            '03:01:00l 10:01:00u',
-            '03:00:00l 10:00:00u',
-            '01:59:00l 09:59:00u',
-            '01:58:00l 09:58:00u'
-          ]
-        )
+        expect(points).to eq([
+          '0301(1001) 0301(1001)',
+          '0300(1000) 0300(1000)',
+          '0159(0959) 0159(0959)',
+          '0158(0958) 0158(0958)'
+        ])
       end
     end
   end
@@ -927,22 +933,25 @@ describe Rufus::Scheduler::CronLine do
 
         line = cl('* * * * * America/Los_Angeles')
 
+        t0 = Time.local(2015, 11, 1, 1, 57)
         t = Time.local(2015, 11, 1, 1, 57)
 
         points =
-          [ 0, 1, 2, 3 ].collect do
+          (0..3).collect do
+            t0 = t0 + 60
             t = line.next_time(t)
-            t.strftime('%H:%M:%Sl') + ' ' + t.dup.utc.strftime('%H:%M:%Su')
+            [
+              t0.strftime('%H%M') + t0.dup.utc.strftime('(%H%M)'),
+              t.strftime('%H%M') + t.dup.utc.strftime('(%H%M)')
+            ].join(' ')
           end
 
-        expect(points).to eq(
-          [
-            '01:58:00l 08:58:00u',
-            '01:59:00l 08:59:00u',
-            '01:00:00l 09:00:00u',
-            '01:01:00l 09:01:00u'
-          ]
-        )
+        expect(points).to eq([
+          '0158(0858) 0158(0858)',
+          '0159(0859) 0159(0859)',
+          '0100(0900) 0100(0900)',
+          '0101(0901) 0101(0901)'
+        ])
       end
     end
 
@@ -959,22 +968,25 @@ describe Rufus::Scheduler::CronLine do
 
         line = cl('* * * * * America/Los_Angeles')
 
+        t0 = Time.local(2015, 11, 1, 1, 2)
         t = Time.local(2015, 11, 1, 1, 2)
 
         points =
-          [ 0, 1, 2, 3 ].collect do
+          (0..3).collect do
+            t0 = t0 - 60
             t = line.previous_time(t)
-            t.strftime('%H:%M:%Sl') + ' ' + t.dup.utc.strftime('%H:%M:%Su')
+            [
+              t0.strftime('%H%M') + t0.dup.utc.strftime('(%H%M)'),
+              t.strftime('%H%M') + t.dup.utc.strftime('(%H%M)')
+            ].join(' ')
           end
 
-        expect(points).to eq(
-          [
-            '01:01:00l 09:01:00u',
-            '01:00:00l 09:00:00u',
-            '01:59:00l 08:59:00u',
-            '01:58:00l 08:58:00u'
-          ]
-        )
+        expect(points).to eq([
+          '0101(0901) 0101(0901)',
+          '0100(0900) 0100(0900)',
+          '0159(0859) 0159(0859)',
+          '0158(0858) 0158(0858)'
+        ])
       end
     end
   end
