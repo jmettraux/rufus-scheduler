@@ -73,22 +73,17 @@ describe Rufus::Scheduler::ZoTime do
     # New York      EST: UTC-5
     # summer (dst)  EDT: UTC-4
 
-    it 'chooses the non DST time when there is ambiguity' do
+    it 'chooses the DST time when there is ambiguity' do
 
       t = ltz('America/New_York', 2004, 10, 31, 0, 30, 0)
       zt = Rufus::Scheduler::ZoTime.new(t, 'America/New_York')
       zt.add(3600)
       ztt = zt.time
 
-      expect(ztt.to_i).to eq(1099204200)
+      expect(ztt.to_i).to eq(1099204200 - 3600)
 
-      if ruby18?
-        expect(ztt.strftime('%Y/%m/%d %H:%M:%S %Z %z')
-          ).to eq('2004/10/31 01:30:00 EST -0500')
-      else
-        expect(ztt.strftime('%Y/%m/%d %H:%M:%S %Z %z')
-          ).to eq('2004/10/31 01:30:00 EST -0500')
-      end
+      expect(ztt.strftime('%Y/%m/%d %H:%M:%S %Z %z')
+        ).to eq('2004/10/31 01:30:00 EDT -0400')
     end
   end
 
@@ -162,17 +157,17 @@ describe Rufus::Scheduler::ZoTime do
       st3 = t3.strftime('%Y/%m/%d %H:%M:%S %Z') + " #{t3.isdst}"
 
       expect(t0.to_i).to eq(1414281599)
-      expect(t1.to_i).to eq(1414285200)
+      expect(t1.to_i).to eq(1414285200 - 3600)
       expect(t2.to_i).to eq(1414285200)
       expect(t3.to_i).to eq(1414285201)
 
       expect(st0).to eq('2014/10/26 01:59:59 CEST true')
-      expect(st1).to eq('2014/10/26 02:00:00 CET false')
+      expect(st1).to eq('2014/10/26 02:00:00 CEST true')
       expect(st2).to eq('2014/10/26 02:00:00 CET false')
       expect(st3).to eq('2014/10/26 02:00:01 CET false')
 
-      expect(t1 - t0).to eq(3601)
-      expect(t2 - t1).to eq(0)
+      expect(t1 - t0).to eq(1)
+      expect(t2 - t1).to eq(3600)
       expect(t3 - t2).to eq(1)
     end
   end

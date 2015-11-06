@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 3.1.8    not yet released
 
+- stop jumping eagerly out of DST
+
 
 == rufus-scheduler - 3.1.7    released 2015-10-15
 

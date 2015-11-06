@@ -47,13 +47,19 @@ class Rufus::Scheduler
 
         t = Time.at(@seconds)
 
-        if t.isdst
-          t1 = Time.at(@seconds + 3600)
-          t = t1 if t.zone != t1.zone && t.hour == t1.hour && t.min == t1.min
-            # ambiguous TZ (getting out of DST)
-        else
-          t.hour # force t to compute itself
-        end
+        #if t.isdst
+        #  t1 = Time.at(@seconds + 3600)
+        #  t = t1 if t.zone != t1.zone && t.hour == t1.hour && t.min == t1.min
+        #    # ambiguous TZ (getting out of DST)
+        #else
+        #  t.hour # force t to compute itself
+        #end
+          #
+          # jump out of DST as soon as possible, jumps 1h as seen from UTC
+
+        t.hour # force t to compute itself
+          #
+          # stay in DST as long as possible, no jump seen from UTC
 
         t
       end

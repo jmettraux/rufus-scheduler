@@ -403,7 +403,10 @@ describe Rufus::Scheduler::CronLine do
             '30 1 31 10 * America/New_York',
             ltz('America/New_York', 2004, 10, 1)
           )
-        ).to eq(ltz('America/New_York', 2004, 10, 31, 1, 30, 0))
+        ).to eq(
+          ltz('America/New_York', 0, 30, 1, 31, 10, 2004, nil, nil, true, nil)
+            # EDT summer time UTC-4
+        )
       end
     end
 
@@ -506,7 +509,10 @@ describe Rufus::Scheduler::CronLine do
             '30 1 31 10 * America/New_York',
             ltz('America/New_York', 2004, 10, 31, 14, 30, 0)
           )
-        ).to eq(ltz('America/New_York', 2004, 10, 31, 1, 30, 0))
+        ).to eq(
+          ltz('America/New_York', 0, 30, 1, 31, 10, 2004, nil, nil, false, nil)
+            # EST time UTC-5
+        )
       end
     end
 
@@ -960,7 +966,13 @@ describe Rufus::Scheduler::CronLine do
 
         line = cl('* * * * * America/Los_Angeles')
 
-        t = Time.local(2015, 11, 1, 1, 57)
+        #t = Time.local(2015, 11, 1, 1, 57)
+          #
+          # --> 2015-11-01 01:57:00 -0800 (already PST)
+
+        t = Time.local(0, 57, 1, 1, 11, 2015, nil, nil, true, nil)
+          #
+          # --> 2015-11-01 01:57:00 -0700 (still PDT)
 
         points =
           4.times.collect do
@@ -1022,13 +1034,19 @@ describe Rufus::Scheduler::CronLine do
           points << t1.to_compact_s
         end
 
-        expect(points).to eq(%w[
-          0050-7(0750)
-          0100-8(0800)
-          0110-8(0810)
-          0120-8(0820)
-          0130-8(0830)
-          0140-8(0840)
+        expect(points).to eq([
+          '0050-7(0750)', # | PDT
+          '0100-7(0800)', # |
+          '0110-7(0810)', # V
+          '0120-7(0820)',
+          '0130-7(0830)',
+          '0140-7(0840)',
+          '0150-7(0850)',
+          '0100-8(0900)', # + PST
+          '0110-8(0910)', # |
+          '0120-8(0920)', # V
+          '0130-8(0930)',
+          '0140-8(0940)'
         ])
       end
     end
