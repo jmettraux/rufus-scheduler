@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Alyssa Pohahau (https://github.com/alyssa) out of DST transition specs
 - Claude Vessaz (https://github.com/claudeatsafe) ack #unscheduled_at in #scheduled?
 - 김성식 (https://github.com/kssminus) job id uniqueness effort
 - Jesse Willet (https://github.com/jhw-at-prosperworks-com) cron vs "*/10"
