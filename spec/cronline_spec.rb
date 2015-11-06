@@ -9,14 +9,12 @@ require 'spec_helper'
 
 class Time
 
-  def to_compact_s(mode=:long)
+  def to_compact_s
 
     off = self.utc_offset / 3600
     off = off >= 0 ? "+#{off}" : off.to_s
 
-    self.strftime('%H%M') +
-    off +
-    (mode == :long ? self.dup.utc.strftime('(%H%M)') : '')
+    self.strftime('%H%M') + off + self.dup.utc.strftime('(%H%M)')
   end
 end
 
@@ -919,6 +917,32 @@ describe Rufus::Scheduler::CronLine do
         ])
       end
     end
+
+    it 'correctly increments when entering DST' do
+
+      in_zone 'America/Los_Angeles' do
+
+        line = cl('*/10 * * * * America/Los_Angeles')
+
+        t = Time.local(2015, 3, 8, 1, 40)
+        t1 = t.dup
+
+        points = []
+        while t1 - t < 1 * 3600
+          t1 = line.next_time(t1)
+          points << t1.to_compact_s
+        end
+
+        expect(points).to eq(%w[
+          0150-8(0950)
+          0300-7(1000)
+          0310-7(1010)
+          0320-7(1020)
+          0330-7(1030)
+          0340-7(1040)
+        ])
+      end
+    end
   end
 
   context 'fall time' do
@@ -979,6 +1003,32 @@ describe Rufus::Scheduler::CronLine do
           '0100-8(0900)',
           '0159-7(0859)',
           '0158-7(0858)'
+        ])
+      end
+    end
+
+    it 'correctly increments when leaving DST' do
+
+      in_zone 'America/Los_Angeles' do
+
+        line = cl('*/10 * * * * America/Los_Angeles')
+
+        t = Time.local(2015, 11, 1, 0, 40)
+        t1 = t.dup
+
+        points = []
+        while t1 - t < 2 * 3600
+          t1 = line.next_time(t1)
+          points << t1.to_compact_s
+        end
+
+        expect(points).to eq(%w[
+          0050-7(0750)
+          0100-8(0800)
+          0110-8(0810)
+          0120-8(0820)
+          0130-8(0830)
+          0140-8(0840)
         ])
       end
     end
