@@ -18,3 +18,7 @@ branches:
     - master
   #except:
   #  - master
+
+sudo: false
+cache: bundler
+
