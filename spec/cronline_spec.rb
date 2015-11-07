@@ -1002,7 +1002,15 @@ describe Rufus::Scheduler::CronLine do
 
         line = cl('* * * * * America/Los_Angeles')
 
-        t = Time.local(2015, 11, 1, 1, 2)
+        #t = Time.local(2015, 11, 1, 1, 2)
+          #
+          # Ruby 1.8 and JRuby (1.9) will make take the PDT version
+
+        t = Time.local(0, 2, 1, 1, 11, 2015, nil, nil, false, nil)
+          #
+          # ensure we choose PST
+
+        expect(t.zone).to eq('PST')
 
         points =
           (0..3).collect do
