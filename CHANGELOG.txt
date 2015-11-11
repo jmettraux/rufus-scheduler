@@ -2,6 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 3.1.9    not yet released
+
+
 == rufus-scheduler - 3.1.8    released 2015-11-10
 
 - stop jumping eagerly out of DST, fix for one hour jump when leaving DST
