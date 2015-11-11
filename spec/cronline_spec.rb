@@ -490,7 +490,7 @@ describe Rufus::Scheduler::CronLine do
 
         t = local(1970, 1, 1, 1, 1, 42)
 
-        expect(ps('43,44 * * * * *', t)).to eq(0)
+        expect(ps('43,44 * * * * *', t)).to eq(58)
       end
     end
   end
