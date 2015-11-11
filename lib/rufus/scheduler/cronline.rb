@@ -284,7 +284,7 @@ class Rufus::Scheduler
 
     def prev_second(time)
 
-      secs = toa(@seconds)
+      secs = [time.sec] + toa(@seconds)
 
       secs.pop while time.sec < secs.last
 

@@ -46,6 +46,9 @@ describe Rufus::Scheduler::CronLine do
   def ns(cronline, now)
     Rufus::Scheduler::CronLine.new(cronline).next_second(now)
   end
+  def ps(cronline, now)
+    Rufus::Scheduler::CronLine.new(cronline).prev_second(now)
+  end
 
   def match(line, time)
     expect(cl(line).matches?(time)).to eq(true)
@@ -469,6 +472,16 @@ describe Rufus::Scheduler::CronLine do
       it "ensures that next_second('#{cronline}', #{now}) is #{sec}" do
         expect(ns(cronline,now)).to eq(sec)
       end
+    end
+  end
+
+  describe '#prev_second' do
+    subject { ps('43,44 * * * * *', time) }
+
+    context 'when time sec is lower then all cron time' do
+      let(:time) { local(1970,1,1,1,1,42) }
+
+      it { is_expected.to eq 0 }
     end
   end
 
