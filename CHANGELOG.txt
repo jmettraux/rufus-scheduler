@@ -2,7 +2,10 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.1.9    not yet released
+== rufus-scheduler - 3.1.9    released 2015-11-12
+
+- fix potential RuntimeError in CronLine#prev_second,
+  by Alexandru https://github.com/alexandru-calinoiu
 
 
 == rufus-scheduler - 3.1.8    released 2015-11-10
