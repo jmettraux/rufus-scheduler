@@ -476,12 +476,22 @@ describe Rufus::Scheduler::CronLine do
   end
 
   describe '#prev_second' do
-    subject { ps('43,44 * * * * *', time) }
 
-    context 'when time sec is lower then all cron time' do
-      let(:time) { local(1970,1,1,1,1,42) }
+    it 'returns the time to the closest previous second' do
 
-      it { is_expected.to eq 0 }
+      t = local(1970, 1, 1, 1, 1, 42)
+
+      expect(ps('35,44 * * * * *', t)).to eq(7)
+    end
+
+    context 'when time sec is lower then all cron seconds' do
+
+      it 'returns the time to the last second a minute before' do
+
+        t = local(1970, 1, 1, 1, 1, 42)
+
+        expect(ps('43,44 * * * * *', t)).to eq(0)
+      end
     end
   end
 
