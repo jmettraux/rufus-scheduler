@@ -484,7 +484,7 @@ describe Rufus::Scheduler::CronLine do
       expect(ps('35,44 * * * * *', t)).to eq(7)
     end
 
-    context 'when time sec is lower then all cron seconds' do
+    context 'when time sec is lower then all cron seconds (gh-177)' do
 
       it 'returns the time to the last second a minute before' do
 
@@ -510,6 +510,27 @@ describe Rufus::Scheduler::CronLine do
 
       expect(
         pt('* * * * * sun', lo(1970, 1, 1))).to eq(lo(1969, 12, 28, 23, 59, 59))
+    end
+
+    it 'jumps to the previous minute if necessary (gh-177)' do
+
+      t = local(1970, 12, 31, 1, 1, 0) # vanilla
+      expect(pt('43,44 * * * * *', t)).to eq(lo(1970, 12, 31, 1, 0, 44))
+
+      t = local(1970, 12, 31, 1, 1, 30) # 30 < 43 <---- here!
+      expect(pt('43,44 * * * * *', t)).to eq(lo(1970, 12, 31, 1, 0, 44))
+
+      t = local(1970, 12, 31, 1, 1, 43) # 43 <= 43 < 44
+      expect(pt('43,44 * * * * *', t)).to eq(lo(1970, 12, 31, 1, 0, 44))
+
+      t = local(1970, 12, 31, 1, 1, 44) # 44 <= 44
+      expect(pt('43,44 * * * * *', t)).to eq(lo(1970, 12, 31, 1, 1, 43))
+
+      t = local(1970, 12, 31, 1, 1, 59) # 44 < 59
+      expect(pt('43,44 * * * * *', t)).to eq(lo(1970, 12, 31, 1, 1, 44))
+
+      t = local(1970, 12, 31, 1, 1, 30) # a bigger jump
+      expect(pt('43,44 10 * * * *', t)).to eq(lo(1970, 12, 31, 0, 10, 44))
     end
 
     # New York      EST: UTC-5
