@@ -123,7 +123,6 @@ Yes, issues can be reported in [rufus-scheduler issues](https://github.com/jmett
 * [I want a refund](http://blog.nodejitsu.com/getting-refunds-on-open-source-projects)
 * [Passenger and rufus-scheduler](http://stackoverflow.com/questions/18108719/debugging-rufus-scheduler/18156180#18156180)
 * [Passenger and rufus-scheduler (2)](http://stackoverflow.com/questions/21861387/rufus-cron-job-not-working-in-apache-passenger#answer-21868555)
-* [Unicorn and rufus-scheduler](https://jkraemer.net/running-rufus-scheduler-in-a-unicorn-rails-app)
 
 
 ## scheduling
