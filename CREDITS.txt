@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Jon McPherson (https://github.com/JonMcPherson) :first_in => 0 back
 - Calinoiu Alexandru Nicolae (https://github.com/alexandru-calinoiu) CronLine#prev_second fix
 - Alyssa Pohahau (https://github.com/alyssa) out of DST transition specs
 - Claude Vessaz (https://github.com/claudeatsafe) ack #unscheduled_at in #scheduled?

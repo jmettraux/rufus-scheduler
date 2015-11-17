@@ -4,6 +4,9 @@
 
 == rufus-scheduler - 3.1.10    not yet released
 
+- allow for :first_in => 0, gh-179 by https://github.com/JonMcPherson
+  for https://github.com/Shopify/dashing/commit/ea3730fa4
+
 
 == rufus-scheduler - 3.1.9    released 2015-11-12
 
