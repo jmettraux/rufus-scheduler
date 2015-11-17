@@ -175,9 +175,9 @@ describe Rufus::Scheduler::RepeatJob do
       }.to raise_error(ArgumentError)
     end
 
-    context ':first_time => :now/:immediately' do
+    context ':first_time => :now/:immediately/0' do
 
-      it 'schedules the first execution immediately' do
+      it 'schedules the first execution immediately (:first => :now)' do
 
         n = Time.now
         ft = nil
@@ -189,12 +189,25 @@ describe Rufus::Scheduler::RepeatJob do
 
         sleep 0.7
 
-        #p Time.now.to_f
-        #p n.to_f
-        #p job.first_at.to_f
-        #p ft.to_f
+        expect(job.first_at).to be < n + 0.7
+        expect(ft).not_to eq(nil)
+        expect(ft).to be < job.first_at + @scheduler.frequency + 0.1
+      end
+
+      it 'schedules the first execution immediately (:first_in => 0)' do
+
+        n = Time.now
+        ft = nil
+
+        job =
+          @scheduler.schedule_every '7s', :first_in => 0 do
+            ft ||= Time.now
+          end
+
+        sleep 0.7
 
         expect(job.first_at).to be < n + 0.7
+        expect(ft).not_to eq(nil)
         expect(ft).to be < job.first_at + @scheduler.frequency + 0.1
       end
     end
