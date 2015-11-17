@@ -210,6 +210,23 @@ describe Rufus::Scheduler::RepeatJob do
         expect(ft).not_to eq(nil)
         expect(ft).to be < job.first_at + @scheduler.frequency + 0.1
       end
+
+      it 'schedules the first execution immediately (:first_in => "0s")' do
+
+        n = Time.now
+        ft = nil
+
+        job =
+          @scheduler.schedule_every '7s', :first_in => '0s' do
+            ft ||= Time.now
+          end
+
+        sleep 0.7
+
+        expect(job.first_at).to be < n + 0.7
+        expect(ft).not_to eq(nil)
+        expect(ft).to be < job.first_at + @scheduler.frequency + 0.1
+      end
     end
   end
 
