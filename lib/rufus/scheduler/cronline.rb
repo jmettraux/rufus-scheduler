@@ -48,7 +48,7 @@ class Rufus::Scheduler
 
     def initialize(line)
 
-      raise ArgumentError.new(
+      fail ArgumentError.new(
         "not a string: #{line.inspect}"
       ) unless line.is_a?(String)
 
@@ -58,7 +58,7 @@ class Rufus::Scheduler
 
       @timezone = items.pop if ZoTime.is_timezone?(items.last)
 
-      raise ArgumentError.new(
+      fail ArgumentError.new(
         "not a valid cronline : '#{line}'"
       ) unless items.length == 5 or items.length == 6
 
@@ -73,7 +73,7 @@ class Rufus::Scheduler
 
       [ @seconds, @minutes, @hours, @months ].each do |es|
 
-        raise ArgumentError.new(
+        fail ArgumentError.new(
           "invalid cronline: '#{line}'"
         ) if es && es.find { |e| ! e.is_a?(Fixnum) }
       end
@@ -327,7 +327,7 @@ class Rufus::Scheduler
 
         if m = it.match(/^(.+)#(l|-?[12345])$/)
 
-          raise ArgumentError.new(
+          fail ArgumentError.new(
             "ranges are not supported for monthdays (#{it})"
           ) if m[1].index('-')
 
@@ -340,7 +340,7 @@ class Rufus::Scheduler
           expr = it.dup
           WEEKDAYS.each_with_index { |a, i| expr.gsub!(/#{a}/, i.to_s) }
 
-          raise ArgumentError.new(
+          fail ArgumentError.new(
             "invalid weekday expression (#{it})"
           ) if expr !~ /^0*[0-7](-0*[0-7])?$/
 
@@ -362,7 +362,7 @@ class Rufus::Scheduler
 
       r = item.split(',').map { |i| parse_range(i.strip, min, max) }.flatten
 
-      raise ArgumentError.new(
+      fail ArgumentError.new(
         "found duplicates in #{item.inspect}"
       ) if r.uniq.size < r.size
 
@@ -381,7 +381,7 @@ class Rufus::Scheduler
 
       m = item.match(RANGE_REGEX)
 
-      raise ArgumentError.new(
+      fail ArgumentError.new(
         "cannot parse #{item.inspect}"
       ) unless m
 
@@ -395,7 +395,7 @@ class Rufus::Scheduler
       inc = m[3]
       inc = inc ? inc.to_i : 1
 
-      raise ArgumentError.new(
+      fail ArgumentError.new(
         "#{item.inspect} is not in range #{min}..#{max}"
       ) if sta < min || edn > max
 

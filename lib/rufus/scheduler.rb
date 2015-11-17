@@ -629,7 +629,7 @@ module Rufus
 
       job = job_class.new(self, t, opts, block || callable)
 
-      raise ArgumentError.new(
+      fail ArgumentError.new(
         "job frequency (#{job.frequency}) is higher than " +
         "scheduler frequency (#{@frequency})"
       ) if job.respond_to?(:frequency) && job.frequency < @frequency

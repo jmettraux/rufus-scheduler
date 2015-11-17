@@ -38,7 +38,7 @@ module Rufus
       parse_cron(o, opts) ||
       parse_in(o, opts) || # covers 'every' schedule strings
       parse_at(o, opts) ||
-      raise(ArgumentError.new("couldn't parse \"#{o}\""))
+      fail(ArgumentError.new("couldn't parse \"#{o}\""))
     end
 
     def self.parse_in(o, opts={})
@@ -53,7 +53,7 @@ module Rufus
     rescue StandardError => se
 
       return nil if opts[:no_error]
-      raise se
+      fail se
     end
 
     def self.parse_cron(o, opts)
@@ -63,7 +63,7 @@ module Rufus
     rescue ArgumentError => ae
 
       return nil if opts[:no_error]
-      raise ae
+      fail ae
     end
 
     def self.parse_to_time(o)
@@ -72,7 +72,7 @@ module Rufus
       t = parse(t) if t.is_a?(String)
       t = Time.now + t if t.is_a?(Numeric)
 
-      raise ArgumentError.new(
+      fail ArgumentError.new(
         "cannot turn #{o.inspect} to a point in time, doesn't make sense"
       ) unless t.is_a?(Time)
 
@@ -132,7 +132,7 @@ module Rufus
       m = string.match(/^(-?)([\d\.#{DURATION_LETTERS}]+)$/)
 
       return nil if m.nil? && opts[:no_error]
-      raise ArgumentError.new("cannot parse '#{string}'") if m.nil?
+      fail ArgumentError.new("cannot parse '#{string}'") if m.nil?
 
       mod = m[1] == '-' ? -1.0 : 1.0
       val = 0.0
@@ -150,9 +150,7 @@ module Rufus
         elsif opts[:no_error]
           return nil
         else
-          raise ArgumentError.new(
-            "cannot parse '#{string}' (especially '#{s}')"
-          )
+          fail ArgumentError.new("cannot parse '#{string}' (especially '#{s}')")
         end
         break unless m && m[3]
         s = m[3]

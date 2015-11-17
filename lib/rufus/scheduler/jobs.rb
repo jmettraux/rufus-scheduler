@@ -91,7 +91,7 @@ module Rufus
 
         @id = determine_id
 
-        raise(
+        fail(
           ArgumentError,
           'missing block or callable to schedule',
           caller[2..-1]
@@ -235,7 +235,7 @@ module Rufus
 
       rescue StandardError => se
 
-        raise se unless do_rescue
+        fail se unless do_rescue
 
         return if se.is_a?(KillSignal) # discard
 
@@ -402,7 +402,7 @@ module Rufus
 
         @times = opts[:times]
 
-        raise ArgumentError.new(
+        fail ArgumentError.new(
           "cannot accept :times => #{@times.inspect}, not nil or an int"
         ) unless @times == nil || @times.is_a?(Fixnum)
 
@@ -438,7 +438,7 @@ module Rufus
 
         @last_at = last ? Rufus::Scheduler.parse_to_time(last) : nil
 
-        raise ArgumentError.new(
+        fail ArgumentError.new(
           "cannot set last[_at|_in] in the past: " +
           "#{last.inspect} -> #{@last_at.inspect}"
         ) if last && @last_at < Time.now
@@ -529,7 +529,7 @@ module Rufus
 
         @frequency = Rufus::Scheduler.parse_in(@original)
 
-        raise ArgumentError.new(
+        fail ArgumentError.new(
           "cannot schedule #{self.class} with a frequency " +
           "of #{@frequency.inspect} (#{@original.inspect})"
         ) if @frequency <= 0
@@ -567,7 +567,7 @@ module Rufus
 
         @interval = Rufus::Scheduler.parse_in(@original)
 
-        raise ArgumentError.new(
+        fail ArgumentError.new(
           "cannot schedule #{self.class} with an interval " +
           "of #{@interval.inspect} (#{@original.inspect})"
         ) if @interval <= 0

@@ -101,7 +101,7 @@ class Rufus::Scheduler
       begin
         DateTime.parse(str)
       rescue
-        raise ArgumentError, "no time information in #{o.inspect}"
+        fail ArgumentError, "no time information in #{o.inspect}"
       end if RUBY_VERSION < '1.9.0'
 
       zone = nil
