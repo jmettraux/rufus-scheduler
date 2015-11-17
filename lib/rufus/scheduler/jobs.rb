@@ -419,14 +419,14 @@ module Rufus
         return @first_at = nil if first == nil
 
         n = Time.now
-        first = n + 0.003 if first == :now || first == :immediately
+        first = n + 0.003 if first == :now || first == :immediately || first == 0
 
         @first_at = Rufus::Scheduler.parse_to_time(first)
 
         raise ArgumentError.new(
           "cannot set first[_at|_in] in the past: " +
           "#{first.inspect} -> #{@first_at.inspect}"
-        ) if first != 0 && @first_at < n
+        ) if @first_at < n
       end
 
       def last_at=(last)
