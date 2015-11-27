@@ -385,7 +385,7 @@ module Rufus
     #
     def scheduled?(job_or_job_id)
 
-      job, job_id = fetch(job_or_job_id)
+      job, _ = fetch(job_or_job_id)
 
       !! (job && job.unscheduled_at.nil? && job.next_time != nil)
     end
@@ -441,7 +441,7 @@ module Rufus
       if format == :timeline
         a = []
         h.each { |j, ts| ts.each { |t| a << [ t, j ] } }
-        a.sort_by { |(t, j)| t }
+        a.sort_by { |(t, _)| t }
       else
         h
       end
