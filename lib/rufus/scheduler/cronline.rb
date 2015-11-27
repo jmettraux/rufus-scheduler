@@ -43,7 +43,6 @@ class Rufus::Scheduler
     attr_reader :days
     attr_reader :months
     attr_reader :weekdays
-    attr_reader :monthdays
     attr_reader :timezone
 
     def initialize(line)
