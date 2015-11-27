@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 3.1.11    not yet released
 
+- Ruby warnings silenced by https://github.com/vivitar
+
 
 == rufus-scheduler - 3.1.10    released 2015-11-18
 
