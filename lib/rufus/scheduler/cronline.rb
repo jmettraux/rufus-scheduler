@@ -42,6 +42,7 @@ class Rufus::Scheduler
     attr_reader :hours
     attr_reader :days
     attr_reader :months
+    #attr_reader :monthdays # reader defined below
     attr_reader :weekdays
     attr_reader :timezone
 
