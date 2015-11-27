@@ -391,7 +391,7 @@ module Rufus
       attr_reader :paused_at
 
       attr_reader :first_at
-      attr_accessor :last_at
+      attr_reader :last_at
       attr_accessor :times
 
       def initialize(scheduler, duration, opts, block)
