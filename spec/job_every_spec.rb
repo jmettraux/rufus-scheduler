@@ -30,6 +30,22 @@ describe Rufus::Scheduler::EveryJob do
     expect([ 2, 3 ]).to include(counter)
   end
 
+#  it 'strives to follow the given frequency (gh-181)' do
+#
+#    duration = 60 * 60
+#    a = [ [ 0, Time.now ] ]
+#
+#    @scheduler.every '60s' do |x|
+#      n = Time.now
+#      d = n - a.last[1]
+#      a << [ d, n ]
+#      print "#{d}"
+#      print d >= 61 ? "...!!! " : " "
+#    end
+#
+#    sleep duration
+#  end
+
   it 'lets its @next_time change in-flight' do
 
     times = []
