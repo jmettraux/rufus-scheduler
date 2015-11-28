@@ -545,7 +545,7 @@ module Rufus
 
         @next_time =
           if @first_at == nil || @first_at < Time.now
-            (trigger_time || Time.now) + @frequency
+            (@next_time || trigger_time || Time.now) + @frequency
           else
             @first_at
           end
@@ -637,4 +637,3 @@ module Rufus
     end
   end
 end
-
