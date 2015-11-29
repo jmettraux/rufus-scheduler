@@ -543,9 +543,12 @@ module Rufus
 
         return if is_post
 
+        n = Time.now
+
         @next_time =
-          if @first_at == nil || @first_at < Time.now
-            (@next_time || trigger_time || Time.now) + @frequency
+          if @first_at == nil || @first_at < n
+            nt = (@next_time || trigger_time || n) + @frequency
+            nt > n ? nt : (trigger_time || n) + @frequency
           else
             @first_at
           end
@@ -637,3 +640,4 @@ module Rufus
     end
   end
 end
+

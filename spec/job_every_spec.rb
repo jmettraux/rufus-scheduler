@@ -59,7 +59,7 @@ describe Rufus::Scheduler::EveryJob do
 
     #p [ times[1] - times[0], times[2] - times[1] ]
 
-    expect(times[1] - times[0]).to be > 1.0
+    expect(times[1] - times[0]).to be > 0.9
     expect(times[1] - times[0]).to be < 1.4
     expect(times[2] - times[1]).to be > 3.0
     expect(times[2] - times[1]).to be < 3.4
