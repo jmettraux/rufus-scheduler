@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Balasankar C (https://github.com/balasankarc) fix CronJob spec vs December
 - Matthieu Rosinski (https://github.com/Korrigan) prevent "every" shifts
 - vivitar (https://github.com/vivitar) silenced a set of Ruby warnings
 - Jon McPherson (https://github.com/JonMcPherson) :first_in => 0 back
