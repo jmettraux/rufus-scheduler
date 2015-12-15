@@ -1427,6 +1427,34 @@ The rufus-scheduler singleton is instantiated in the ```config/initializers/sche
 
 *Warning*: this works well with single-process Ruby servers like Webrick and Thin. Using rufus-scheduler with Passenger or Unicorn requires a bit more knowledge and tuning, gently provided by a bit of googling and reading, see [Faq](#faq) above.
 
+### avoid scheduling when running the Ruby on Rails console
+
+(Written in reply to https://github.com/jmettraux/rufus-scheduler/issues/186 )
+
+If you don't want rufus-scheduler to kick in when running the Ruby on Rails console, you can wrap your initializer in a conditional:
+
+```ruby
+#
+# config/initializers/scheduler.rb
+
+require 'rufus-scheduler'
+
+s = Rufus::Scheduler.singleton
+
+
+unless defined?(Rails::Console)
+  # only schedule when not running from the Rails on Rails console
+
+  s.every '1m' do
+
+    Rails.logger.info "hello, it's #{Time.now}"
+    Rails.logger.flush
+  end
+end
+```
+
+It should work for Ruby on Rails 3 and 4.
+
 ### rails server -d
 
 (Written in reply to https://github.com/jmettraux/rufus-scheduler/issues/165 )

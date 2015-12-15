@@ -46,6 +46,7 @@
 
 == Feedback
 
+- Eduardo Maia - https://github.com/emaiax - rufus and the Rails console
 - Suisea - https://github.com/suisea - readme rewording
 - Radek - http://stackoverflow.com/users/250422 - gh-166
 - Patrik Ragnarsson - https://github.com/dentarg - timeout vs nil, gh-156
