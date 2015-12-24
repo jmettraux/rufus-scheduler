@@ -377,7 +377,7 @@ class Rufus::Scheduler
 
       return %w[ L ] if item == 'L'
 
-      item = '*' + item if item.match(/^\//)
+      item = '*' + item if item[0] == '/'
 
       m = item.match(RANGE_REGEX)
 
