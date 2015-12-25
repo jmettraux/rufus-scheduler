@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 3.2.0    not yet released
 
+- cache CronLine#brute_frequency results
 - "every" shift prevention by https://github.com/Korrigan
 - Ruby warnings silenced by https://github.com/vivitar
 

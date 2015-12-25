@@ -223,6 +223,10 @@ class Rufus::Scheduler
       }[1]
     end
 
+    # Caching facility. Currently only used for brute frequencies.
+    #
+    @cache = {}; class << self; attr_reader :cache; end
+
     # Returns the shortest delta between two potential occurences of the
     # schedule described by this cronline.
     #
@@ -239,15 +243,12 @@ class Rufus::Scheduler
     # Of course, this method can get VERY slow if you call on it a second-
     # based cronline...
     #
-    # Since it's a rarely used method, I haven't taken the time to make it
-    # smarter/faster.
-    #
-    # One obvious improvement would be to cache the result once computed...
-    #
-    # See https://github.com/jmettraux/rufus-scheduler/issues/89
-    # for a discussion about this method.
-    #
     def brute_frequency
+
+      key = "brute_frequency:#{@original}"
+
+      delta = self.class.cache[key]
+      return delta if delta
 
       delta = 366 * DAY_S
 
@@ -268,7 +269,7 @@ class Rufus::Scheduler
         t0 = t1
       end
 
-      delta
+      self.class.cache[key] = delta
     end
 
     def next_second(time)
