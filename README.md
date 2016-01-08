@@ -101,12 +101,6 @@ Go read [how to report bugs effectively](http://www.chiark.greenend.org.uk/~sgta
 
 Update: [help_help.md](https://gist.github.com/jmettraux/310fed75f568fd731814) might help help you.
 
-### on StackOverflow
-
-Use this [form](http://stackoverflow.com/questions/ask?tags=rufus-scheduler+ruby). It'll create a question flagged "rufus-scheduler" and "ruby".
-
-Here are the [questions tagged rufus-scheduler](http://stackoverflow.com/questions/tagged/rufus-scheduler).
-
 ### on IRC
 
 I sometimes haunt #ruote on freenode.net. The channel is not dedicated to rufus-scheduler, so if you ask a question, first mention it's about rufus-scheduler.
