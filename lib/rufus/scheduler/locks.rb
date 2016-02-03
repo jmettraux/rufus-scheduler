@@ -41,7 +41,7 @@ class Rufus::Scheduler
   end
 
   #
-  # The standard flock mecha, with its own class thanks to @ecin
+  # The standard flock mechanism, with its own class thanks to @ecin
   #
   class FileLock
 
