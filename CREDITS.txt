@@ -46,6 +46,7 @@
 
 == Feedback
 
+- Andrey Morskov - https://github.com/accessd - fix typographical error
 - Eduardo Maia - https://github.com/emaiax - rufus and the Rails console
 - Suisea - https://github.com/suisea - readme rewording
 - Radek - http://stackoverflow.com/users/250422 - gh-166
