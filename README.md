@@ -1,8 +1,8 @@
 
 # rufus-scheduler
 
-[![Build Status](https://secure.travis-ci.org/jmettraux/rufus-scheduler.png)](http://travis-ci.org/jmettraux/rufus-scheduler)
-[![Gem Version](https://badge.fury.io/rb/rufus-scheduler.png)](http://badge.fury.io/rb/rufus-scheduler)
+[![Build Status](https://secure.travis-ci.org/jmettraux/rufus-scheduler.svg)](http://travis-ci.org/jmettraux/rufus-scheduler)
+[![Gem Version](https://badge.fury.io/rb/rufus-scheduler.svg)](http://badge.fury.io/rb/rufus-scheduler)
 
 Job scheduler for Ruby (at, cron, in and every jobs).
 
