@@ -232,6 +232,12 @@ describe Rufus::Scheduler::CronLine do
       expect { cl '* L * * *'}.to raise_error(ArgumentError)
     end
 
+    it 'accepts negative days' do
+
+      to_a(
+        '* * 8,-8 * *', [[0], nil, nil, [-8,8], nil, nil, nil, nil ])
+    end
+
     it 'raises for out of range input' do
 
       expect { cl '60-62 * * * *'}.to raise_error(ArgumentError)
@@ -646,6 +652,20 @@ describe Rufus::Scheduler::CronLine do
 
       match '* * L * *', utc(1970, 1, 31)
       no_match '* * L * *', utc(1970, 1, 30)
+    end
+
+    it 'matches negative days' do
+
+      match '* * -2 * *', utc(1970, 1, 29)
+      match '* * -5--3 * *', utc(1970, 1, 27)
+      match '* * -5--3 * *', utc(1970, 1, 28)
+
+      match '* * -10--5/2 * *', utc(1970, 1, 21)
+      match '* * -10--5/2 * *', utc(1970, 1, 23)
+      match '* * -10--5/2 * *', utc(1970, 1, 25)
+      no_match '* * -10--5/2 * *', utc(1970, 1, 22)
+      no_match '* * -10--5/2 * *', utc(1970, 1, 24)
+      no_match '* * -10--5/2 * *', utc(1970, 1, 26)
     end
 
     it 'matches correctly when there is a sun#2,sun#3 involved' do

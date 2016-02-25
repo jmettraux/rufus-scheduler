@@ -67,7 +67,7 @@ class Rufus::Scheduler
       @seconds = offset == 1 ? parse_item(items[0], 0, 59) : [ 0 ]
       @minutes = parse_item(items[0 + offset], 0, 59)
       @hours = parse_item(items[1 + offset], 0, 24)
-      @days = parse_item(items[2 + offset], 1, 31)
+      @days = parse_item(items[2 + offset], -30, 31)
       @months = parse_item(items[3 + offset], 1, 12)
       @weekdays, @monthdays = parse_weekdays(items[4 + offset])
 
@@ -372,7 +372,7 @@ class Rufus::Scheduler
       Set.new(r)
     end
 
-    RANGE_REGEX = /^(\*|\d{1,2})(?:-(\d{1,2}))?(?:\/(\d{1,2}))?$/
+    RANGE_REGEX = /^(\*|-?\d{1,2})(?:-(-?\d{1,2}))?(?:\/(\d{1,2}))?$/
 
     def parse_range(item, min, max)
 
@@ -386,8 +386,10 @@ class Rufus::Scheduler
         "cannot parse #{item.inspect}"
       ) unless m
 
+      mmin = min == -30 ? 1 : min # days
+
       sta = m[1]
-      sta = sta == '*' ? min : sta.to_i
+      sta = sta == '*' ? mmin : sta.to_i
 
       edn = m[2]
       edn = edn ? edn.to_i : sta
@@ -405,7 +407,7 @@ class Rufus::Scheduler
 
       loop do
         v = val
-        v = 0 if max == 24 && v == 24
+        v = 0 if max == 24 && v == 24 # hours
         r << v
         break if inc == 1 && val == edn
         val += inc
@@ -423,9 +425,15 @@ class Rufus::Scheduler
       return true if values.nil?
 
       if accessor == :day
-        return true if values.include?('L') && (time + DAY_S).day == 1
+
+        values.each do |v|
+          return true if v == 'L' && (time + DAY_S).day == 1
+          return true if v.to_i < 0 && (time + (1 - v) * DAY_S).day == 1
+        end
       end
+
       if accessor == :hour
+
         return true if value == 0 && values.include?(24)
       end
 
