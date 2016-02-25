@@ -1,4 +1,7 @@
 
+.vimrc
+.viminfo
+
 .rspec
 Gemfile.lock
 
