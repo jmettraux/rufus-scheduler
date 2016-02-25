@@ -177,6 +177,8 @@ Interval jobs, trigger, execute and then trigger again after the interval elapse
 
 Cron jobs are based on the venerable cron utility (```man 5 crontab```). They trigger following a pattern given in (almost) the same language cron uses.
 
+#### 
+
 ### #schedule_x vs #x
 
 schedule_in, schedule_at, schedule_cron, etc will return the new Job instance.
@@ -1344,7 +1346,6 @@ Rufus::Scheduler.parse('* * * * mon#1').next_time
 L can be used in the "day" slot:
 
 In this example, the cronline is supposed to trigger every last day of the month at noon:
-
 ```ruby
 require 'rufus-scheduler'
 Time.now
@@ -1352,6 +1353,21 @@ Time.now
 Rufus::Scheduler.parse('00 12 L * *').next_time
   # => 2013-10-31 12:00:00 +0900
 ```
+
+#### negative day (x days before the end of the month)
+
+It's OK to pass negative values in the "day" slot:
+```ruby
+scheduler.cron '0 0 -5 * *' do
+  # do it at 00h00 5 days before the end of the month...
+end
+```
+
+Negative ranges (`-10--5-`: 10 days before the end of the month to 5 days before the end of the month) are OK, but mixed positive / negative ranges will raise an `ArgumentError`.
+
+Negative ranges with increments (`-10---2/2`) are accepted as well.
+
+Descending day ranges are not accepted (`10-8` or `-8--10` for example).
 
 
 ## a note about timezones
