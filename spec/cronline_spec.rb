@@ -238,6 +238,20 @@ describe Rufus::Scheduler::CronLine do
         '* * 8,-8 * *', [[0], nil, nil, [-8,8], nil, nil, nil, nil ])
     end
 
+    it 'accepts negative ranges' do
+
+      to_a(
+        '* * -10--8 * *', [[0], nil, nil, [-10,-9,-8], nil, nil, nil, nil ])
+      to_a(
+        '* * -8--10 * *', [[0], nil, nil, [-10,-9,-8], nil, nil, nil, nil ])
+    end
+
+    it 'rejects negative/positive ranges' do
+
+      expect { cl('* * 8--2 * *') }.to raise_error(ArgumentError)
+      expect { cl('* * -2-8 * *') }.to raise_error(ArgumentError)
+    end
+
     it 'raises for out of range input' do
 
       expect { cl '60-62 * * * *'}.to raise_error(ArgumentError)
@@ -656,7 +670,13 @@ describe Rufus::Scheduler::CronLine do
 
     it 'matches negative days' do
 
+      no_match '* * -2 * *', utc(1970, 1, 28)
       match '* * -2 * *', utc(1970, 1, 29)
+      no_match '* * -2 * *', utc(1970, 1, 30)
+    end
+
+    it 'matches negative day ranges' do
+
       match '* * -5--3 * *', utc(1970, 1, 27)
       match '* * -5--3 * *', utc(1970, 1, 28)
 

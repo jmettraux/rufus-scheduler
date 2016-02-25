@@ -399,6 +399,10 @@ class Rufus::Scheduler
       inc = inc ? inc.to_i : 1
 
       fail ArgumentError.new(
+        "#{item.inspect} positive/negative range not allowed"
+      ) if (sta < 0 && edn > 0) || (sta > 0 && edn < 0)
+
+      fail ArgumentError.new(
         "#{item.inspect} is not in range #{min}..#{max}"
       ) if sta < min || edn > max
 
