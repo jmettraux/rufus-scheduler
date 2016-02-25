@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 3.2.1    not yet released
 
+- introduce "days to end of month" in cron strings
+
 
 == rufus-scheduler - 3.2.0    released 2015-12-28
 
