@@ -234,25 +234,27 @@ describe Rufus::Scheduler::CronLine do
 
     it 'accepts negative days' do
 
-      to_a(
-        '* * 8,-8 * *', [[0], nil, nil, [-8,8], nil, nil, nil, nil ])
+      to_a('* * 8,-8 * *', [[0], nil, nil, [-8,8], nil, nil, nil, nil ])
     end
 
-    it 'accepts negative ranges' do
+    it 'accepts negative day ranges' do
 
-      to_a(
-        '* * -10--8 * *', [[0], nil, nil, [-10,-9,-8], nil, nil, nil, nil ])
-      to_a(
-        '* * -8--10 * *', [[0], nil, nil, [-10,-9,-8], nil, nil, nil, nil ])
+      to_a('* * -10--8 * *', [[0], nil, nil, [-10,-9,-8], nil, nil, nil, nil ])
     end
 
-    it 'rejects negative/positive ranges' do
+    it 'rejects day descending ranges' do
+
+      expect { cl('* * 10-8 * *') }.to raise_error(ArgumentError)
+      expect { cl('* * -8--10 * *') }.to raise_error(ArgumentError)
+    end
+
+    it 'rejects negative/positive day ranges' do
 
       expect { cl('* * 8--2 * *') }.to raise_error(ArgumentError)
       expect { cl('* * -2-8 * *') }.to raise_error(ArgumentError)
     end
 
-    it 'raises for out of range input' do
+    it 'rejects out of range input' do
 
       expect { cl '60-62 * * * *'}.to raise_error(ArgumentError)
       expect { cl '62 * * * *'}.to raise_error(ArgumentError)
