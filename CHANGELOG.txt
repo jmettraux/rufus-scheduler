@@ -2,6 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 3.2.1    not yet released
+
+
 == rufus-scheduler - 3.2.0    released 2015-12-28
 
 - cache CronLine#brute_frequency results, gh-188 and gh-89
