@@ -421,9 +421,13 @@ class Rufus::Scheduler
       value = time.send(accessor)
 
       return true if values.nil?
-      return true if values.include?('L') && (time + DAY_S).day == 1
 
-      return true if value == 0 && accessor == :hour && values.include?(24)
+      if accessor == :day
+        return true if values.include?('L') && (time + DAY_S).day == 1
+      end
+      if accessor == :hour
+        return true if value == 0 && values.include?(24)
+      end
 
       values.include?(value)
     end
