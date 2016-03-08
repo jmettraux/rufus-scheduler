@@ -10,6 +10,8 @@ Job scheduler for Ruby (at, cron, in and every jobs).
 
 Quickstart:
 ```ruby
+# quickstart.rb
+
 require 'rufus-scheduler'
 
 scheduler = Rufus::Scheduler.new
@@ -21,6 +23,7 @@ end
 scheduler.join
   # let the current thread join the scheduler thread
 ```
+(run with `ruby quickstart.rb`)
 
 Various forms of scheduling are supported:
 ```ruby
