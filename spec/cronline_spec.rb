@@ -234,18 +234,22 @@ describe Rufus::Scheduler::CronLine do
 
     it 'does not support ranges for L' do
 
-      expect { cl '* * 15-L * *' }.to raise_error(ArgumentError)
-      expect { cl '* * L/4 * *' }.to raise_error(ArgumentError)
+      expect { cl '* * 15-L * *' }.to raise_error(
+        ArgumentError, 'cannot parse "15-L"')
+      expect { cl '* * L/4 * *' }.to raise_error(
+        ArgumentError, 'cannot parse "L/4"')
     end
 
     it 'does not support multiple Ls' do
 
-      expect { cl '* * L,L * *' }.to raise_error(ArgumentError)
+      expect { cl '* * L,L * *' }.to raise_error(
+        ArgumentError, 'found duplicates in "L,L"')
     end
 
     it 'raises if L is used for something else than days' do
 
-      expect { cl '* L * * *' }.to raise_error(ArgumentError)
+      expect { cl '* L * * *' }.to raise_error(
+        ArgumentError, "invalid cronline: '* L * * *'")
     end
 
     it 'accepts negative days' do
@@ -260,26 +264,35 @@ describe Rufus::Scheduler::CronLine do
 
     it 'rejects day descending ranges' do
 
-      expect { cl('* * 10-8 * *') }.to raise_error(ArgumentError)
-      expect { cl('* * -8--10 * *') }.to raise_error(ArgumentError)
+      expect { cl('* * 10-8 * *') }.to raise_error(
+        ArgumentError, '"10-8" descending day ranges not allowed')
+      expect { cl('* * -8--10 * *') }.to raise_error(
+        ArgumentError, '"-8--10" descending day ranges not allowed')
     end
 
     it 'rejects negative/positive day ranges' do
 
-      expect { cl('* * 8--2 * *') }.to raise_error(ArgumentError)
-      expect { cl('* * -2-8 * *') }.to raise_error(ArgumentError)
+      expect { cl('* * 8--2 * *') }.to raise_error(
+        ArgumentError, '"8--2" positive/negative ranges not allowed')
+      expect { cl('* * -2-8 * *') }.to raise_error(
+        ArgumentError, '"-2-8" positive/negative ranges not allowed')
     end
 
     it 'rejects out of range input' do
 
-      expect { cl '60-62 * * * *' }.to raise_error(ArgumentError)
-      expect { cl '62 * * * *' }.to raise_error(ArgumentError)
-      expect { cl '60 * * * *' }.to raise_error(ArgumentError)
-      expect { cl '* 25-26 * * *' }.to raise_error(ArgumentError)
-      expect { cl '* 25 * * *' }.to raise_error(ArgumentError)
-        #
-        # as reported by Aimee Rose in
-        # https://github.com/jmettraux/rufus-scheduler/pull/58
+      expect { cl '60-62 * * * *' }.to raise_error(
+        ArgumentError, '"60-62" is not in range 0..59')
+      expect { cl '62 * * * *' }.to raise_error(
+        ArgumentError, '"62" is not in range 0..59')
+      expect { cl '60 * * * *' }.to raise_error(
+        ArgumentError, '"60" is not in range 0..59')
+      expect { cl '* 25-26 * * *' }.to raise_error(
+        ArgumentError, '"25-26" is not in range 0..24')
+      expect { cl '* 25 * * *' }.to raise_error(
+        ArgumentError, '"25" is not in range 0..24')
+          #
+          # as reported by Aimee Rose in
+          # https://github.com/jmettraux/rufus-scheduler/pull/58
     end
 
     it 'sorts seconds' do
