@@ -410,6 +410,10 @@ class Rufus::Scheduler
         "#{item.inspect} is not in range #{min}..#{max}"
       ) if sta < min || edn > max
 
+      fail ArgumentError.new(
+        "#{item.inspect} must be greater than zero"
+      ) if inc == 0
+
       r = []
       val = sta
 

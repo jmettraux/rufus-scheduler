@@ -216,6 +216,18 @@ describe Rufus::Scheduler::CronLine do
         '* * */8,L * *', [[0], nil, nil, [1,9,17,25,'L'], nil, nil, nil, nil ])
     end
 
+    # issue https://github.com/jmettraux/rufus-scheduler/issues/202
+    it 'rejects every syntax with not values' do
+      
+      expect {
+        Rufus::Scheduler::CronLine.new('*/0 * * * *')
+      }.to raise_error(ArgumentError)
+
+      expect {
+        Rufus::Scheduler::CronLine.new('* */0 * * *')
+      }.to raise_error(ArgumentError)
+    end
+
     it 'does not support ranges for L' do
 
       expect { cl '* * 15-L * *'}.to raise_error(ArgumentError)
