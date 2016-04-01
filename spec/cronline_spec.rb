@@ -218,7 +218,7 @@ describe Rufus::Scheduler::CronLine do
 
     # issue https://github.com/jmettraux/rufus-scheduler/issues/202
     it 'rejects every syntax with not values' do
-      
+
       expect {
         Rufus::Scheduler::CronLine.new('*/0 * * * *')
       }.to raise_error(ArgumentError)

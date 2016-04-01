@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Kyle Simukka (https://githuc.om/simook) raise on "*/0 * * * *"
 - Ryan McGeary (https://github.com/rmm5t) svg badges for the readme
 - Balasankar C (https://github.com/balasankarc) fix CronJob spec vs December
 - Matthieu Rosinski (https://github.com/Korrigan) prevent "every" shifts
