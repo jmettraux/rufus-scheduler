@@ -217,15 +217,19 @@ describe Rufus::Scheduler::CronLine do
     end
 
     # issue https://github.com/jmettraux/rufus-scheduler/issues/202
-    it 'rejects every syntax with not values' do
+    it 'rejects zero increments' do
 
       expect {
         Rufus::Scheduler::CronLine.new('*/0 * * * *')
-      }.to raise_error(ArgumentError)
+      }.to raise_error(
+        ArgumentError, '"*/0" increment must be greater than zero'
+      )
 
       expect {
         Rufus::Scheduler::CronLine.new('* */0 * * *')
-      }.to raise_error(ArgumentError)
+      }.to raise_error(
+        ArgumentError, '"*/0" increment must be greater than zero'
+      )
     end
 
     it 'does not support ranges for L' do

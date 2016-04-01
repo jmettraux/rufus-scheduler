@@ -411,7 +411,7 @@ class Rufus::Scheduler
       ) if sta < min || edn > max
 
       fail ArgumentError.new(
-        "#{item.inspect} must be greater than zero"
+        "#{item.inspect} increment must be greater than zero"
       ) if inc == 0
 
       r = []
