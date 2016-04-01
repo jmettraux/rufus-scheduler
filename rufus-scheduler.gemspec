@@ -28,7 +28,6 @@ job scheduler for Ruby (at, cron, in and every jobs).
 
   #s.add_runtime_dependency 'tzinfo'
 
-  s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '>= 2.13.0'
   s.add_development_dependency 'chronic'
   s.add_development_dependency 'tzinfo'
