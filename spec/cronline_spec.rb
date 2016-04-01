@@ -230,18 +230,18 @@ describe Rufus::Scheduler::CronLine do
 
     it 'does not support ranges for L' do
 
-      expect { cl '* * 15-L * *'}.to raise_error(ArgumentError)
-      expect { cl '* * L/4 * *'}.to raise_error(ArgumentError)
+      expect { cl '* * 15-L * *' }.to raise_error(ArgumentError)
+      expect { cl '* * L/4 * *' }.to raise_error(ArgumentError)
     end
 
     it 'does not support multiple Ls' do
 
-      expect { cl '* * L,L * *'}.to raise_error(ArgumentError)
+      expect { cl '* * L,L * *' }.to raise_error(ArgumentError)
     end
 
     it 'raises if L is used for something else than days' do
 
-      expect { cl '* L * * *'}.to raise_error(ArgumentError)
+      expect { cl '* L * * *' }.to raise_error(ArgumentError)
     end
 
     it 'accepts negative days' do
@@ -268,11 +268,11 @@ describe Rufus::Scheduler::CronLine do
 
     it 'rejects out of range input' do
 
-      expect { cl '60-62 * * * *'}.to raise_error(ArgumentError)
-      expect { cl '62 * * * *'}.to raise_error(ArgumentError)
-      expect { cl '60 * * * *'}.to raise_error(ArgumentError)
-      expect { cl '* 25-26 * * *'}.to raise_error(ArgumentError)
-      expect { cl '* 25 * * *'}.to raise_error(ArgumentError)
+      expect { cl '60-62 * * * *' }.to raise_error(ArgumentError)
+      expect { cl '62 * * * *' }.to raise_error(ArgumentError)
+      expect { cl '60 * * * *' }.to raise_error(ArgumentError)
+      expect { cl '* 25-26 * * *' }.to raise_error(ArgumentError)
+      expect { cl '* 25 * * *' }.to raise_error(ArgumentError)
         #
         # as reported by Aimee Rose in
         # https://github.com/jmettraux/rufus-scheduler/pull/58
