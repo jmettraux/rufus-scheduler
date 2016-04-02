@@ -103,7 +103,7 @@ describe Rufus::Scheduler::CronJob do
     end
   end
 
-  describe '.next_time' do
+  describe '#next_time' do
 
     it 'returns the next trigger time' do
 
@@ -111,13 +111,13 @@ describe Rufus::Scheduler::CronJob do
 
       nt =
         if n.month == 12
-          Time.parse("#{n.year + 1}-01-01")
+          Time.parse("#{n.year + 1}-01-02")
         else
-          Time.parse("#{n.year}-#{n.month + 1}-01")
+          Time.parse("#{n.year}-#{n.month + 1}-02")
         end
 
       expect(
-        @scheduler.schedule_cron('* * 1 * *', lambda {}).next_time
+        @scheduler.schedule_cron("0 0 2 * *", lambda {}).next_time
       ).to eq(nt)
     end
 
