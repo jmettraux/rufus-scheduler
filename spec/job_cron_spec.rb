@@ -109,11 +109,12 @@ describe Rufus::Scheduler::CronJob do
 
       n = Time.now
 
-      if n.month == 12
-        nt = Time.parse("#{n.year + 1}-01-01")
-      else
-        nt = Time.parse("#{n.year}-#{n.month + 1}-01")
-      end
+      nt =
+        if n.month == 12
+          Time.parse("#{n.year + 1}-01-01")
+        else
+          Time.parse("#{n.year}-#{n.month + 1}-01")
+        end
 
       expect(
         @scheduler.schedule_cron('* * 1 * *', lambda {}).next_time
