@@ -1460,7 +1460,7 @@ s = Rufus::Scheduler.singleton
 
 
 unless defined?(Rails::Console)
-  # only schedule when not running from the Rails on Rails console
+  # only schedule when not running from the Ruby on Rails console
 
   s.every '1m' do
 
