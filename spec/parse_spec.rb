@@ -178,7 +178,8 @@ describe Rufus::Scheduler do
       expect { pd('whatever') }.to raise_error(ArgumentError)
       expect { pd('hms') }.to raise_error(ArgumentError)
 
-      expect { pd(' 1h ') }.to raise_error(ArgumentError)
+      # not since .parse_duration rewrite
+      #expect { pd(' 1h ') }.to raise_error(ArgumentError)
     end
   end
 

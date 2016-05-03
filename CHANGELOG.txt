@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 3.2.1    not yet released
 
+- simplify .parse_duration (and trim input)
 - raise on "*/0 * * * *", by https://github.com/simook
 - introduce "days to end of month" in cron strings
 

@@ -125,38 +125,24 @@ module Rufus
     #
     def self.parse_duration(string, opts={})
 
-      string = string.to_s
+      s = string.to_s.strip
+      mod = s[0, 1] == '-' ? -1 : 1
+      s = s[1..-1] if mod == -1
 
-      return 0.0 if string == ''
+      ss = mod < 0 ? '-' : ''
+      r = 0.0
 
-      m = string.match(/^(-?)([\d\.#{DURATION_LETTERS}]+)$/)
-
-      return nil if m.nil? && opts[:no_error]
-      fail ArgumentError.new("cannot parse '#{string}'") if m.nil?
-
-      mod = m[1] == '-' ? -1.0 : 1.0
-      val = 0.0
-
-      s = m[2]
-
-      while s.length > 0
-        m = nil
-        if m = s.match(/^(\d+|\d+\.\d*|\d*\.\d+)([#{DURATION_LETTERS}])(.*)$/)
-          val += m[1].to_f * DURATIONS[m[2]]
-        elsif s.match(/^\d+$/)
-          val += s.to_i
-        elsif s.match(/^\d*\.\d*$/)
-          val += s.to_f
-        elsif opts[:no_error]
-          return nil
-        else
-          fail ArgumentError.new("cannot parse '#{string}' (especially '#{s}')")
-        end
-        break unless m && m[3]
-        s = m[3]
+      s.scan(/(\d*\.\d+|\d+\.?)([#{DURATION_LETTERS}]?)/) do |f, d|
+        ss += "#{f}#{d}"
+        r += f.to_f * (DURATIONS[d] || 1.0)
       end
 
-      mod * val
+      if ss == '-' || ss != string.to_s.strip
+        return nil if opts[:no_error]
+        fail ArgumentError.new("invalid time duration #{string.inspect}")
+      end
+
+      mod * r
     end
 
     class << self
