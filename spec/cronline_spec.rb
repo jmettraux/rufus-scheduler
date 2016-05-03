@@ -24,6 +24,9 @@ describe Rufus::Scheduler::CronLine do
   def cl(cronline_string)
     Rufus::Scheduler::CronLine.new(cronline_string)
   end
+  def cla(cronline_string)
+    Rufus::Scheduler::CronLine.new(cronline_string).to_a
+  end
 
   def nt(cronline, now)
     Rufus::Scheduler::CronLine.new(cronline).next_time(now)
@@ -57,7 +60,7 @@ describe Rufus::Scheduler::CronLine do
     expect(cl(line).matches?(time)).to eq(false)
   end
   def to_a(line, array)
-    expect(cl(line).to_array).to eq(array)
+    expect(cla(line)).to eq(array)
   end
 
   describe '.new' do
@@ -251,6 +254,8 @@ describe Rufus::Scheduler::CronLine do
       expect { cl '* L * * *' }.to raise_error(
         ArgumentError, "invalid cronline: '* L * * *'")
     end
+
+    it 'accepts L for day-of-week'
 
     it 'accepts negative days' do
 

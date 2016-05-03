@@ -188,9 +188,9 @@ class Rufus::Scheduler
 
     # Returns an array of 6 arrays (seconds, minutes, hours, days,
     # months, weekdays).
-    # This method is used by the cronline unit tests.
+    # This method is mostly used by the cronline specs.
     #
-    def to_array
+    def to_a
 
       [
         toa(@seconds),
@@ -203,6 +203,7 @@ class Rufus::Scheduler
         @timezone
       ]
     end
+    alias to_array to_a
 
     # Returns a quickly computed approximation of the frequency for this
     # cron line.
