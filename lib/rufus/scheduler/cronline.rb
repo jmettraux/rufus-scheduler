@@ -327,7 +327,7 @@ class Rufus::Scheduler
 
       items.each do |it|
 
-        if m = it.match(/^(.+)#(l|-?[12345])$/)
+        if m = it.match(/\A(.+)#(l|-?[12345])\z/)
 
           fail ArgumentError.new(
             "ranges are not supported for monthdays (#{it})"
@@ -344,7 +344,7 @@ class Rufus::Scheduler
 
           fail ArgumentError.new(
             "invalid weekday expression (#{it})"
-          ) if expr !~ /^0*[0-7](-0*[0-7])?$/
+          ) if expr !~ /\A0*[0-7](-0*[0-7])?\z/
 
           its = expr.index('-') ? parse_range(expr, 0, 7) : [ Integer(expr) ]
           its = its.collect { |i| i == 7 ? 0 : i }
@@ -373,7 +373,7 @@ class Rufus::Scheduler
       Set.new(r)
     end
 
-    RANGE_REGEX = /^(\*|-?\d{1,2})(?:-(-?\d{1,2}))?(?:\/(\d{1,2}))?$/
+    RANGE_REGEX = /\A(\*|-?\d{1,2})(?:-(-?\d{1,2}))?(?:\/(\d{1,2}))?\z/
 
     def parse_range(item, min, max)
 

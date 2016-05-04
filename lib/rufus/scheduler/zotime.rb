@@ -85,7 +85,7 @@ class Rufus::Scheduler
       @seconds
     end
 
-    #DELTA_TZ_REX = /^[+-][0-1][0-9]:?[0-5][0-9]$/
+    #DELTA_TZ_REX = /\A[+-][0-1][0-9]:?[0-5][0-9]\z/
 
     def self.envtzable?(s)
 

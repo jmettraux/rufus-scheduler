@@ -255,7 +255,14 @@ describe Rufus::Scheduler::CronLine do
         ArgumentError, "invalid cronline: '* L * * *'")
     end
 
-    it 'accepts L for day-of-week'
+    it 'accepts L for day-of-week' do
+
+      expect(
+        cla '* * * * 5L'
+      ).to eq(
+        :x
+      )
+    end
 
     it 'accepts negative days' do
 
