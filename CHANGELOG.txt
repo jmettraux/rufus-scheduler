@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.2.1    not yet released
+== rufus-scheduler - 3.2.1    released 2016-05-04
 
 - accept '* * * * 5L' (last friday) (equivalent to '* * * * 5#-1')
 - CronLine#to_a (#to_array aliasing to it)
