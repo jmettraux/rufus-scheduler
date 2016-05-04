@@ -320,12 +320,15 @@ class Rufus::Scheduler
 
       return nil if item == '*'
 
-      items = item.downcase.split(',')
-
       weekdays = nil
       monthdays = nil
 
-      items.each do |it|
+      item.downcase.split(',').each do |it|
+
+        WEEKDAYS.each_with_index { |a, i| it.gsub!(/#{a}/, i.to_s) }
+
+        it = it.gsub(/([^#])l/, '\1#-1')
+          # "5L" == "5#-1" == the last Friday
 
         if m = it.match(/\A(.+)#(l|-?[12345])\z/)
 
@@ -333,21 +336,19 @@ class Rufus::Scheduler
             "ranges are not supported for monthdays (#{it})"
           ) if m[1].index('-')
 
-          expr = it.gsub(/#l/, '#-1')
+          it = it.gsub(/#l/, '#-1')
 
-          (monthdays ||= []) << expr
+          (monthdays ||= []) << it
 
         else
 
-          expr = it.dup
-          WEEKDAYS.each_with_index { |a, i| expr.gsub!(/#{a}/, i.to_s) }
-
           fail ArgumentError.new(
-            "invalid weekday expression (#{it})"
-          ) if expr !~ /\A0*[0-7](-0*[0-7])?\z/
+            "invalid weekday expression (#{item})"
+          ) if it !~ /\A0*[0-7](-0*[0-7])?\z/
 
-          its = expr.index('-') ? parse_range(expr, 0, 7) : [ Integer(expr) ]
-          its = its.collect { |i| i == 7 ? 0 : i }
+          its =
+            (it.index('-') ? parse_range(it, 0, 7) : [ Integer(it) ])
+              .collect { |i| i == 7 ? 0 : i }
 
           (weekdays ||= []).concat(its)
         end
@@ -491,7 +492,7 @@ class Rufus::Scheduler
         neg = neg - 1
       end
 
-      [ "#{WEEKDAYS[date.wday]}##{pos}", "#{WEEKDAYS[date.wday]}##{neg}" ]
+      [ "#{date.wday}##{pos}", "#{date.wday}##{neg}" ]
     end
   end
 end

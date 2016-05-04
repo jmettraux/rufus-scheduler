@@ -260,7 +260,12 @@ describe Rufus::Scheduler::CronLine do
       expect(
         cla '* * * * 5L'
       ).to eq(
-        :x
+        [ [ 0 ], nil, nil, nil, nil, nil, [ '5#-1' ], nil ]
+      )
+      expect(
+        cla '* * * * FRIL'
+      ).to eq(
+        [ [ 0 ], nil, nil, nil, nil, nil, [ '5#-1' ], nil ]
       )
     end
 
@@ -418,14 +423,18 @@ describe Rufus::Scheduler::CronLine do
         nt('* * * * sun#2,sun#3', local(1970, 1, 12))).to eq(local(1970, 1, 18))
     end
 
-    it 'understands sun#L' do
+    it 'understands sun#L and co' do
 
+      expect(nt('* * * * sunL', local(1970, 1, 1))).to eq(local(1970, 1, 25))
       expect(nt('* * * * sun#L', local(1970, 1, 1))).to eq(local(1970, 1, 25))
+      expect(nt('* * * * sun#-1', local(1970, 1, 1))).to eq(local(1970, 1, 25))
     end
 
-    it 'understands sun#-1' do
+    it 'understands 0#L and co' do
 
-      expect(nt('* * * * sun#-1', local(1970, 1, 1))).to eq(local(1970, 1, 25))
+      expect(nt('* * * * 0L', local(1970, 1, 1))).to eq(local(1970, 1, 25))
+      expect(nt('* * * * 0#L', local(1970, 1, 1))).to eq(local(1970, 1, 25))
+      expect(nt('* * * * 0#-1', local(1970, 1, 1))).to eq(local(1970, 1, 25))
     end
 
     it 'understands sun#-2' do
@@ -759,7 +768,7 @@ describe Rufus::Scheduler::CronLine do
 
   describe '#monthdays' do
 
-    it 'returns the appropriate "sun#2"-like string' do
+    it 'returns the appropriate "0#2"-like string' do
 
       class Rufus::Scheduler::CronLine
         public :monthdays
@@ -767,11 +776,11 @@ describe Rufus::Scheduler::CronLine do
 
       cl = Rufus::Scheduler::CronLine.new('* * * * *')
 
-      expect(cl.monthdays(local(1970, 1, 1))).to eq(%w[ thu#1 thu#-5 ])
-      expect(cl.monthdays(local(1970, 1, 7))).to eq(%w[ wed#1 wed#-4 ])
-      expect(cl.monthdays(local(1970, 1, 14))).to eq(%w[ wed#2 wed#-3 ])
+      expect(cl.monthdays(local(1970, 1, 1))).to eq(%w[ 4#1 4#-5 ])
+      expect(cl.monthdays(local(1970, 1, 7))).to eq(%w[ 3#1 3#-4 ])
+      expect(cl.monthdays(local(1970, 1, 14))).to eq(%w[ 3#2 3#-3 ])
 
-      expect(cl.monthdays(local(2011, 3, 11))).to eq(%w[ fri#2 fri#-3 ])
+      expect(cl.monthdays(local(2011, 3, 11))).to eq(%w[ 5#2 5#-3 ])
     end
   end
 
