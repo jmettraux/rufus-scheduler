@@ -4,7 +4,7 @@
 
 == rufus-scheduler - 3.2.1    not yet released
 
-- accepts '* * * * 5L' (last friday) (equivalent to '* * * * 5#-1')
+- accept '* * * * 5L' (last friday) (equivalent to '* * * * 5#-1')
 - CronLine#to_a (#to_array aliasing to it)
 - simplify .parse_duration (and trim input)
 - raise on "*/0 * * * *", by https://github.com/simook
