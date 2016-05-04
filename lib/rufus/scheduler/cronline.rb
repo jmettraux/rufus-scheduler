@@ -346,9 +346,8 @@ class Rufus::Scheduler
             "invalid weekday expression (#{item})"
           ) if it !~ /\A0*[0-7](-0*[0-7])?\z/
 
-          its =
-            (it.index('-') ? parse_range(it, 0, 7) : [ Integer(it) ])
-              .collect { |i| i == 7 ? 0 : i }
+          its = it.index('-') ? parse_range(it, 0, 7) : [ Integer(it) ]
+          its = its.collect { |i| i == 7 ? 0 : i }
 
           (weekdays ||= []).concat(its)
         end
