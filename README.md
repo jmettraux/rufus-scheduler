@@ -123,7 +123,7 @@ Yes, issues can be reported in [rufus-scheduler issues](https://github.com/jmett
 * [Passenger and rufus-scheduler (2)](http://stackoverflow.com/questions/21861387/rufus-cron-job-not-working-in-apache-passenger#answer-21868555)
 * [Passenger in-depth spawn methods](https://www.phusionpassenger.com/library/indepth/ruby/spawn_methods/)
 * [Passenger in-depth spawn methods (smart spawning)](https://www.phusionpassenger.com/library/indepth/ruby/spawn_methods/#smart-spawning-hooks)
-* [The scheduler comes up when running the Rails console or a Rake task](https://github.com/jmettraux/rufus-scheduler#avoid-scheduling-when-running-the-ruby-on-rails-console-or-a-rake-task)
+* [The scheduler comes up when running the Rails console or a Rake task](#avoid-scheduling-when-running-the-ruby-on-rails-console-or-a-rake-task)
 * [I don't get any of this, I just want it to work in my Rails application](#so-rails)
 
 
