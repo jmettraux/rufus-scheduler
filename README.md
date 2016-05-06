@@ -1448,7 +1448,7 @@ The rufus-scheduler singleton is instantiated in the ```config/initializers/sche
 
 *Warning*: this works well with single-process Ruby servers like Webrick and Thin. Using rufus-scheduler with Passenger or Unicorn requires a bit more knowledge and tuning, gently provided by a bit of googling and reading, see [Faq](#faq) above.
 
-### avoid scheduling when running the Ruby on Rails console or a Rake task
+### avoid scheduling when running the Ruby on Rails console
 
 (Written in reply to https://github.com/jmettraux/rufus-scheduler/issues/186 )
 
