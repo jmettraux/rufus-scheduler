@@ -181,7 +181,7 @@ Interval jobs, trigger, execute and then trigger again after the interval elapse
 
 Cron jobs are based on the venerable cron utility (```man 5 crontab```). They trigger following a pattern given in (almost) the same language cron uses.
 
-#### 
+####
 
 ### #schedule_x vs #x
 
