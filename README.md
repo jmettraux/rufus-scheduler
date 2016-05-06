@@ -123,7 +123,7 @@ Yes, issues can be reported in [rufus-scheduler issues](https://github.com/jmett
 * [Passenger and rufus-scheduler (2)](http://stackoverflow.com/questions/21861387/rufus-cron-job-not-working-in-apache-passenger#answer-21868555)
 * [Passenger in-depth spawn methods](https://www.phusionpassenger.com/library/indepth/ruby/spawn_methods/)
 * [Passenger in-depth spawn methods (smart spawning)](https://www.phusionpassenger.com/library/indepth/ruby/spawn_methods/#smart-spawning-hooks)
-* [The scheduler comes up when running the Rails console](https://github.com/jmettraux/rufus-scheduler#avoid-scheduling-when-running-the-ruby-on-rails-console)
+* [The scheduler comes up when running the Rails console or a Rake task](https://github.com/jmettraux/rufus-scheduler#avoid-scheduling-when-running-the-ruby-on-rails-console-or-a-rake-task)
 * [I don't get any of this, I just want it to work in my Rails application](#so-rails)
 
 
@@ -1448,11 +1448,11 @@ The rufus-scheduler singleton is instantiated in the ```config/initializers/sche
 
 *Warning*: this works well with single-process Ruby servers like Webrick and Thin. Using rufus-scheduler with Passenger or Unicorn requires a bit more knowledge and tuning, gently provided by a bit of googling and reading, see [Faq](#faq) above.
 
-### avoid scheduling when running the Ruby on Rails console
+### avoid scheduling when running the Ruby on Rails console or a Rake task
 
 (Written in reply to https://github.com/jmettraux/rufus-scheduler/issues/186 )
 
-If you don't want rufus-scheduler to kick in when running the Ruby on Rails console, you can wrap your initializer in a conditional:
+If you don't want rufus-scheduler to kick in when running the Ruby on Rails console or invoking a rake task, you can wrap your initializer in a conditional:
 
 ```ruby
 #
