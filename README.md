@@ -641,13 +641,18 @@ job.scheduled_at
 ### last_time
 
 Returns the last time the job triggered (is usually nil for AtJob and InJob).
-k
 ```ruby
 job = scheduler.schedule_every('10s') do; end
-# ...
+
 job.scheduled_at
   # => 2013-07-17 23:48:54 +0900
+job.last_time
+  # => nil (since we've just scheduled it)
+
 # after 10 seconds
+
+job.scheduled_at
+  # => 2013-07-17 23:48:54 +0900 (same as above)
 job.last_time
   # => 2013-07-17 23:49:04 +0900
 ```
