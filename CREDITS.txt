@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Paulo Delgado (https://github.com/paulodelgado) counter ActiveRecord, gh-210
 - Anjali Sharma (https://github.com/anjali-sharma) enhance job#last_time example
 - Kyle Simukka (https://github.com/simook) raise on "*/0 * * * *"
 - Ryan McGeary (https://github.com/rmm5t) svg badges for the readme
