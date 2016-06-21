@@ -609,7 +609,7 @@ module Rufus
 
       fail NotRunningError.new(
         'cannot schedule, scheduler is down or shutting down'
-      ) if @started_at == nil
+      ) if @started_at.nil?
 
       callable, opts = nil, callable if callable.is_a?(Hash)
       return_job_instance ||= opts[:job]
