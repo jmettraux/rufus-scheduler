@@ -2,6 +2,11 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 3.2.2    not yet released
+
+- countered ActiveRecord 3.2.22 on gh-210, by https://github.com/paulodelgado
+
+
 == rufus-scheduler - 3.2.1    released 2016-05-04
 
 - accept '* * * * 5L' (last friday) (equivalent to '* * * * 5#-1')
