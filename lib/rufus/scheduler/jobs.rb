@@ -53,6 +53,10 @@ module Rufus
       #
       attr_accessor :next_time
 
+      # previous "next trigger time"
+      #
+      attr_accessor :previous_time
+
       # anything with a #call(job[, timet]) method,
       # what gets actually triggered
       #
@@ -117,6 +121,7 @@ module Rufus
 
       def trigger(time)
 
+        @previous_time = @next_time
         set_next_time(time)
 
         return if (

@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 3.2.2    not yet released
 
+- introduce Job#previous_time
 - countered ActiveRecord 3.2.22 on gh-210, by https://github.com/paulodelgado
 
 

@@ -657,6 +657,17 @@ job.last_time
   # => 2013-07-17 23:49:04 +0900
 ```
 
+### previous_time
+
+Returns the previous `#next_time`
+```ruby
+scheduler.every('10s') do |job|
+  puts "job scheduled for #{job.previous_time} triggered at #{Time.now}"
+  puts "next time will be around #{job.next_time}"
+  puts "."
+end
+```
+
 ### last_work_time, mean_work_time
 
 The job keeps track of how long its work was in the `last_work_time` attribute. For a one time job (in, at) it's probably not very useful.

@@ -54,5 +54,26 @@ describe Rufus::Scheduler::AtJob do
       expect(job.time).to eq(t)
     end
   end
+
+  describe '#previous_time' do
+
+    it 'returns the previous #time' do
+
+      t = Time.now + 1
+      t0 = nil
+      t1 = nil
+
+      job =
+        @scheduler.schedule_at t do |j|
+          t1 = Time.now
+          t0 = j.previous_time
+        end
+
+      sleep 1.4
+
+      expect(t0).to eq(t)
+      expect(t1).to be > t
+    end
+  end
 end
 
