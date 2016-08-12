@@ -69,7 +69,7 @@ describe Rufus::Scheduler do
 
       sleep 2
 
-      expect(mfh.counter).to be > 2
+      expect_any_instance_of(MyFailingHandler).to_not receive(:call)
       expect($stderr.string).to match(/ouch/)
     end
   end

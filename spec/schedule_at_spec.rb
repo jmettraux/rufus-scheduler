@@ -114,7 +114,7 @@ describe Rufus::Scheduler do
 
       with_chronic do
 
-        job = @scheduler.schedule_at('next tuesday at 12:00') {}
+        job = @scheduler.schedule_at(('next tuesday at 12:00'), {}.freeze) {}
 
         expect(job.time.wday).to eq(2)
         expect(job.time.hour).to eq(12)

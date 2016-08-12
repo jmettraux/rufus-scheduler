@@ -606,6 +606,8 @@ module Rufus
     end
 
     def do_schedule(job_type, t, callable, opts, return_job_instance, block)
+        callable = callable.dup if callable
+        opts = opts.dup
 
       fail NotRunningError.new(
         'cannot schedule, scheduler is down or shutting down'
