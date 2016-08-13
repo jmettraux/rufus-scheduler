@@ -253,6 +253,7 @@ module Rufus
     def schedule(arg, callable=nil, opts={}, &block)
 
       callable, opts = nil, callable if callable.is_a?(Hash)
+      opts = opts.dup
 
       opts[:_t] = Scheduler.parse(arg, opts)
 
@@ -266,6 +267,7 @@ module Rufus
     def repeat(arg, callable=nil, opts={}, &block)
 
       callable, opts = nil, callable if callable.is_a?(Hash)
+      opts = opts.dup
 
       opts[:_t] = Scheduler.parse(arg, opts)
 
@@ -616,6 +618,7 @@ module Rufus
       ) if @started_at.nil?
 
       callable, opts = nil, callable if callable.is_a?(Hash)
+      opts = opts.dup unless opts.has_key?(:_t)
 
       return_job_instance ||= opts[:job]
 

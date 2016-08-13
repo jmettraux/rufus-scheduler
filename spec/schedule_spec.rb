@@ -31,8 +31,9 @@ describe Rufus::Scheduler do
     it 'leaves the schedule option hash untouched (3 args)' do
 
       opts = { :x => :y }
+      callable = lambda {}
 
-      job = @scheduler.schedule('1s', :some_callable, opts) {}
+      job = @scheduler.schedule('1s', callable, opts)
 
       expect(opts.size).to eq(1)
     end
@@ -40,8 +41,24 @@ describe Rufus::Scheduler do
 
   describe '#at' do
 
-    it 'leaves the schedule option hash untouched (2 args)'
-    it 'leaves the schedule option hash untouched (3 args)'
+    it 'leaves the schedule option hash untouched (2 args)' do
+
+      opts = { :x => :y }
+
+      job = @scheduler.at(Time.now + 10, opts) {}
+
+      expect(opts.size).to eq(1)
+    end
+
+    it 'leaves the schedule option hash untouched (3 args)' do
+
+      opts = { :x => :y }
+      callable = lambda {}
+
+      job = @scheduler.at(Time.now + 10, callable, opts)
+
+      expect(opts.size).to eq(1)
+    end
   end
 end
 
