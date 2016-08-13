@@ -50,6 +50,7 @@
 
 == Feedback
 
+- d-m-u duhlmann - https://github.com/d-m-u - job opt hash preservation
 - Anjali Sharma - https://github.com/anjali-sharma - fix typographical error
 - Jonathan Campos - https://github.com/jonbcampos - negative cron day idea
 - Andrey Morskov - https://github.com/accessd - fix typographical error
