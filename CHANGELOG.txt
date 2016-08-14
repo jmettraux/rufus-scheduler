@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.2.2    not yet released
+== rufus-scheduler - 3.2.2    released 2016-08-14
 
 - job opt hash preservation, as suggested in gh-212, by https://github.com/d-m-u
 - introduce Job#previous_time
