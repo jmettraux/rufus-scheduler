@@ -371,6 +371,8 @@ Since, by default, jobs are triggered in their own new thread, job instances mig
 
 To prevent overlap, one can set :overlap => false. Such a job will not trigger if one of its instance is already running.
 
+The `:overlap` option is considered before the `:mutex` option when the scheduler is reviewing jobs for triggering.
+
 ### :mutex => mutex_instance / mutex_name / array of mutexes
 
 When a job with a mutex triggers, the job's block is executed with the mutex around it, preventing other jobs with the same mutex to enter (it makes the other jobs wait until it exits the mutex).
@@ -382,6 +384,8 @@ This is different from :overlap => false, which is, first, limited to instances 
 Array of mutexes: original idea and implementation by [Rainux Luo](https://github.com/rainux)
 
 Warning: creating lots of different mutexes is OK. Rufus-scheduler will place them in its Scheduler#mutexes hash... And they won't get garbage collected.
+
+The `:overlap` option is considered before the `:mutex` option when the scheduler is reviewing jobs for triggering.
 
 ### :timeout => duration or point in time
 
