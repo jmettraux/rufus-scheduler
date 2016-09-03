@@ -6,6 +6,8 @@
 
 Job scheduler for Ruby (at, cron, in and every jobs).
 
+It uses threads.
+
 **Note**: maybe are you looking for the [README of rufus-scheduler 2.x](https://github.com/jmettraux/rufus-scheduler/blob/two/README.rdoc)?
 
 Quickstart:
@@ -55,7 +57,7 @@ end
 
 ## non-features
 
-Rufus-scheduler (out of the box) is an in-process, in-memory scheduler.
+Rufus-scheduler (out of the box) is an in-process, in-memory scheduler. It uses threads.
 
 It does not persist your schedules. When the process is gone and the scheduler instance with it, the schedules are gone.
 
