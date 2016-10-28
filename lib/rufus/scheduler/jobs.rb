@@ -207,6 +207,15 @@ module Rufus
         do_call(Time.now, do_rescue)
       end
 
+      # Runs the job right now. Similar to #call but respects the job options
+      # and uses the rufus-scheduler "infrastructure" (work threads) to run
+      # the job. (`job.running?` will yield `true`).
+      #
+      def run
+
+        trigger(Time.now)
+      end
+
       protected
 
       def callback(meth, time)
@@ -321,6 +330,8 @@ module Rufus
           # but since it has to be done as quickly as possible.
           # So, whoever is running first (scheduler thread vs job thread)
           # sets this information
+
+        thread
       end
 
       def do_trigger_in_thread(time)

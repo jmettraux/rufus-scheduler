@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 3.2.3    not yet released
 
+- Implement Job#run for gh-214
+
 
 == rufus-scheduler - 3.2.2    released 2016-08-14
 
