@@ -263,6 +263,8 @@ describe Rufus::Scheduler::Job do
 
       job.run
 
+      sleep 0.5
+
       expect(a).to eq([ 0 ])
       expect(job.running?).to eq(true)
     end
