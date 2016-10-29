@@ -469,7 +469,7 @@ module Rufus
         return (@next_time = nil) if @times && @times < 1
         return (@next_time = nil) if @last_at && time >= @last_at
           #
-          # TODO: rework that, jobs are thus kept 1 step too much in @jobs
+          # TODO: rework that, it keeps jobs one step too much in @jobs
 
         super
 
