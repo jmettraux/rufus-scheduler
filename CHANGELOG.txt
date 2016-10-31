@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 3.2.3    not yet released
 
+- Fix .parse_to_time vs Date issue, as reported by @nsatragno
 - Implement Job#run for gh-214
 
 

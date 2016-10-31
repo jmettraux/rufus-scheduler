@@ -290,6 +290,15 @@ describe Rufus::Scheduler do
       )
     end
 
+    it 'accepts a duration String' do
+
+      expect(
+        Rufus::Scheduler.parse_to_time('1h')
+      ).to be_between(
+        Time.now + 3600 - 1, Time.now + 3600 + 1
+      )
+    end
+
     it 'accepts a Numeric' do
 
       expect(

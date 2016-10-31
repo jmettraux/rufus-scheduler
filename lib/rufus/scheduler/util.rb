@@ -69,11 +69,15 @@ module Rufus
     def self.parse_to_time(o)
 
       t = o
-      t = parse(t) if t.is_a?(String)
+      if t.is_a?(String)
+        t = parse(t)
+      elsif t.is_a?(Date)
+        t = t.to_time
+      end
       t = Time.now + t if t.is_a?(Numeric)
 
       fail ArgumentError.new(
-        "cannot turn #{o.inspect} to a point in time, doesn't make sense"
+        "cannot turn #{o.inspect} to a Time instance"
       ) unless t.is_a?(Time)
 
       t
