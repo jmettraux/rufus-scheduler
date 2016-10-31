@@ -260,5 +260,54 @@ describe Rufus::Scheduler do
       expect(tdh(61.127, :drop_seconds => true)).to eq({ :m => 1 })
     end
   end
+
+  describe '.parse_to_time' do
+
+    it 'accepts a Time' do
+
+      expect(
+        Rufus::Scheduler.parse_to_time(Time.utc(2016, 11, 01, 12, 30, 9))
+      ).to eq(
+        Time.utc(2016, 11, 01, 12, 30, 9)
+      )
+    end
+
+    it 'accepts a Date' do
+
+      expect(
+        Rufus::Scheduler.parse_to_time(Date.new(2016, 11, 01))
+      ).to eq(
+        Date.new(2016, 11, 01).to_time
+      )
+    end
+
+    it 'accepts a String' do
+
+      expect(
+        Rufus::Scheduler.parse_to_time('2016-11-01 12:30:09Z')
+      ).to eq(
+        Time.utc(2016, 11, 01, 12, 30, 9)
+      )
+    end
+
+    it 'accepts a Numeric' do
+
+      expect(
+        Rufus::Scheduler.parse_to_time(3600)
+      ).to be_between(
+        Time.now + 3600 - 1, Time.now + 3600 + 1
+      )
+    end
+
+    it 'rejects unparseable input' do
+
+      expect {
+        Rufus::Scheduler.parse_to_time('xxx')
+      }.to raise_error(ArgumentError, 'couldn\'t parse "xxx"')
+      expect {
+        Rufus::Scheduler.parse_to_time(Object.new)
+      }.to raise_error(ArgumentError, /\Acannot turn /)
+    end
+  end
 end
 
