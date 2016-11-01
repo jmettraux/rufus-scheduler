@@ -72,7 +72,8 @@ module Rufus
       if t.is_a?(String)
         t = parse(t)
       elsif t.is_a?(Date)
-        t = t.to_time
+        t = t.respond_to?(:to_time) ? t.to_time : Time.parse(t.to_s)
+          # works for Ruby 1.8 as well
       end
       t = Time.now + t if t.is_a?(Numeric)
 

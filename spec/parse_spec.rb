@@ -277,7 +277,7 @@ describe Rufus::Scheduler do
       expect(
         Rufus::Scheduler.parse_to_time(Date.new(2016, 11, 01))
       ).to eq(
-        Date.new(2016, 11, 01).to_time
+        Time.local(2016, 11, 01)
       )
     end
 
