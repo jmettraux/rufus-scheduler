@@ -61,6 +61,8 @@ Rufus-scheduler (out of the box) is an in-process, in-memory scheduler. It uses 
 
 It does not persist your schedules. When the process is gone and the scheduler instance with it, the schedules are gone.
 
+A rufus-scheduler instance will go on scheduling while it is present among the object in a Ruby process. To make it stop scheduling you have to call its [`#shutdown` method](#schedulershutdown).
+
 
 ## related and similar gems
 
