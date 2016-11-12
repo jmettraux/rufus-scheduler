@@ -36,6 +36,7 @@ class Rufus::Scheduler
     # The string used for creating this cronline instance.
     #
     attr_reader :original
+    attr_reader :original_timezone
 
     attr_reader :seconds
     attr_reader :minutes
@@ -53,10 +54,15 @@ class Rufus::Scheduler
       ) unless line.is_a?(String)
 
       @original = line
+      @original_timezone = nil
 
       items = line.split
 
-      @timezone = items.pop if ZoTime.is_timezone?(items.last)
+      #@timezone = items.pop if ZoTime.is_timezone?(items.last)
+      if tz = ZoTime.get_tzone(item.last)
+        @timezone = tz.name
+        @original_timezone = items.pop
+      end
 
       fail ArgumentError.new(
         "not a valid cronline : '#{line}'"

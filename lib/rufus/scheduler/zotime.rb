@@ -22,7 +22,8 @@
 # Made in Japan.
 #++
 
-require 'rufus/scheduler/zones'
+#require 'rufus/scheduler/zones'
+require 'tzinfo'
 
 
 class Rufus::Scheduler
@@ -38,37 +39,98 @@ class Rufus::Scheduler
     def initialize(s, zone)
 
       @seconds = s.to_f
-      @zone = zone
-    end
+      @zone = self.class.get_tzone(zone)
 
-    def time
-
-      in_zone do
-
-        t = Time.at(@seconds)
-
-        #if t.isdst
-        #  t1 = Time.at(@seconds + 3600)
-        #  t = t1 if t.zone != t1.zone && t.hour == t1.hour && t.min == t1.min
-        #    # ambiguous TZ (getting out of DST)
-        #else
-        #  t.hour # force t to compute itself
-        #end
-          #
-          # jump out of DST as soon as possible, jumps 1h as seen from UTC
-
-        t.hour # force t to compute itself
-          #
-          # stay in DST as long as possible, no jump seen from UTC
-
-        t
-      end
+      fail ArgumentError.new(
+        "cannot determine timezone from #{zone.inspect}"
+      ) unless @zone
     end
 
     def utc
 
-      time.utc
+      Time.utc(1970, 1, 1) + @seconds
     end
+
+    def to_time
+
+      u = utc; @zone.period_for_utc(u).to_local(u)
+    end
+
+    def to_i
+
+      @seconds.to_i
+    end
+
+    def is_dst?
+
+      @zone.period_for_utc(utc).std_offset != 0
+    end
+    alias isdst is_dst?
+
+    def zoneoff(colons=nil)
+
+      off = @zone.period_for_utc(utc).utc_total_offset
+
+      sn = off < 0 ? '-' : '+'; off = off.abs
+      hr = off / 3600
+      mn = (off % 3600) / 60
+      sc = 0
+
+      fmt =
+        if colons == ''
+          "%s%02d%02d"
+        elsif colons == ':'
+          "%s%02d:%02d"
+        else
+          "%s%02d:%02d:%02d"
+        end
+
+      fmt % [ sn, hr, mn, sc ]
+    end
+
+    def strftime(format)
+
+      format =
+        format.gsub /%(Z|:{0,2}z)/ do |f|
+          if f == '%Z'
+            @zone.period_for_utc(utc).abbreviation.to_s
+          else
+            zoneoff(f[1..-2])
+          end
+        end
+
+      to_time.strftime(format)
+    end
+
+    def time
+
+      self
+#      in_zone do
+#
+#        t = Time.at(@seconds)
+#
+#        #if t.isdst
+#        #  t1 = Time.at(@seconds + 3600)
+#        #  t = t1 if t.zone != t1.zone && t.hour == t1.hour && t.min == t1.min
+#        #    # ambiguous TZ (getting out of DST)
+#        #else
+#        #  t.hour # force t to compute itself
+#        #end
+#          #
+#          # jump out of DST as soon as possible, jumps 1h as seen from UTC
+#
+#        t.hour # force t to compute itself
+#          #
+#          # stay in DST as long as possible, no jump seen from UTC
+#
+#        t
+#      end
+    end
+
+#    def utc
+#
+#      time.utc
+#    end
 
     def add(s)
 
@@ -85,12 +147,10 @@ class Rufus::Scheduler
       @seconds
     end
 
-    #DELTA_TZ_REX = /\A[+-][0-1][0-9]:?[0-5][0-9]\z/
-
-    def self.envtzable?(s)
-
-      TIMEZONES.include?(s)
-    end
+#    def self.envtzable?(s)
+#
+#      TIMEZONES.include?(s)
+#    end
 
     def self.parse(str, opts={})
 
@@ -107,61 +167,102 @@ class Rufus::Scheduler
       zone = nil
 
       s =
-        str.gsub(/\S+/) { |m|
-          if envtzable?(m)
-            zone ||= m
+        str.gsub(/\S+/) do |w|
+          if z = get_tzone(w)
+            zone ||= z
             ''
           else
-            m
+            w
           end
-        }
+        end
 
-      return nil unless zone.nil? || is_timezone?(zone)
+      #return nil unless zone.nil? || is_timezone?(zone)
 
-      zt = ZoTime.new(0, zone || ENV['TZ'])
-      zt.in_zone { zt.seconds = Time.parse(s).to_f }
+      #zt = ZoTime.new(0, zone || ENV['TZ'])
+      #zt.in_zone { zt.seconds = Time.parse(s).to_f }
 
-      zt.seconds == nil ? nil : zt
+      secs = Time.parse(s).to_f
+      return nil unless secs
+
+      ZoTime.new(secs, zone || ENV['TZ'])
     end
 
-    def self.is_timezone?(str)
+    def self.get_tzone(str)
 
-      return false if str == nil
-      return false if str == '*'
+      return str if str.is_a?(::TZInfo::Timezone)
 
-      return false if str.index('#')
-        # "sun#2", etc... On OSX would go all the way to true
+      # discard quickly when it's certainly not a timezone
 
-      return true if Time.zone_offset(str)
+      return nil if str == nil
+      return nil if str == '*'
 
-      return !! (::TZInfo::Timezone.get(str) rescue nil) if defined?(::TZInfo)
+      return nil if str.index('#')
+        # counters "sun#2", etc... On OSX would go all the way to true
 
-      return true if TIMEZONES.include?(str)
-      return true if TIMEZONEs.include?(str)
+      # vanilla time zones
 
-      t = ZoTime.new(0, str).time
+      z = (::TZInfo::Timezone.get(str) rescue nil)
+      return z if z
 
-      return false if t.zone == ''
-      return false if t.zone == 'UTC'
-      return false if t.utc_offset == 0 && str.start_with?(t.zone)
-        # 3 common fallbacks...
+      # time zone abbreviations
 
-      return false if RUBY_PLATFORM.include?('java') && ! envtzable?(str)
+      if str.match(/\A[A-Z0-9-]{3,6}\z/)
 
-      true
+        twin = Time.utc(Time.now.year, 1, 1)
+        tsum = Time.utc(Time.now.year, 7, 1)
+
+        z =
+          ::TZInfo::Timezone.all.find do |tz|
+            tz.period_for_utc(twin).abbreviation.to_s == str ||
+            tz.period_for_utc(tsum).abbreviation.to_s == str
+          end
+        return z if z
+      end
+
+      # some time zone aliases
+
+      return ::TZInfo::Timezone.get('Zulu') if %w[ Z ].include?(str)
+
+      # custom timezones, no DST, just an offset, like "+08:00" or "-01:30"
+
+      tz = (@custom_tz_cache ||= {})[str]
+      return tz if tz
+
+      if m = str.match(/\A([+-][0-1][0-9]):?([0-5][0-9])\z/)
+
+        hr = m[1].to_i
+        mn = m[2].to_i
+
+        hr = nil if hr.abs > 11
+        hr = nil if mn > 59
+        mn = -mn if hr && hr < 0
+
+        return (
+          @custom_tz_cache[str] =
+            begin
+              tzi = TZInfo::TransitionDataTimezoneInfo.new(str)
+              tzi.offset(str, hr * 3600 + mn * 60, 0, str)
+              tzi.create_timezone
+            end
+        ) if hr
+      end
+
+      # so it's not a timezone.
+
+      nil
     end
 
-    def in_zone(&block)
-
-      current_timezone = ENV['TZ']
-      ENV['TZ'] = @zone
-
-      block.call
-
-    ensure
-
-      ENV['TZ'] = current_timezone
-    end
+#    def in_zone(&block)
+#
+#      current_timezone = ENV['TZ']
+#      ENV['TZ'] = @zone
+#
+#      block.call
+#
+#    ensure
+#
+#      ENV['TZ'] = current_timezone
+#    end
   end
 end
 
