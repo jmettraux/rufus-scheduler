@@ -158,11 +158,12 @@ class Rufus::Scheduler
         return ZoTime.new(t, ENV['TZ'])
       end
 
-      begin
-        DateTime.parse(str)
-      rescue
-        fail ArgumentError, "no time information in #{o.inspect}"
-      end if RUBY_VERSION < '1.9.0'
+      #begin
+      #  DateTime.parse(str)
+      #rescue
+      #  fail ArgumentError, "no time information in #{o.inspect}"
+      #end if RUBY_VERSION < '1.9.0'
+        # disable that for now
 
       zone = nil
 
@@ -176,15 +177,13 @@ class Rufus::Scheduler
           end
         end
 
-      #return nil unless zone.nil? || is_timezone?(zone)
+      zone ||= get_tzone(ENV['TZ'])
 
-      #zt = ZoTime.new(0, zone || ENV['TZ'])
-      #zt.in_zone { zt.seconds = Time.parse(s).to_f }
+      local = Time.parse(s) # disregard Ruby tz
+      period = zone.period_for_local(local)
+      secs = period.to_utc(local).to_f # UTC seconds
 
-      secs = Time.parse(s).to_f
-      return nil unless secs
-
-      ZoTime.new(secs, zone || ENV['TZ'])
+      ZoTime.new(secs, zone)
     end
 
     def self.get_tzone(str)

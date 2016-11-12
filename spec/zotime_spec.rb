@@ -322,7 +322,7 @@ describe Rufus::Scheduler::ZoTime do
       expect(u.to_i).to eq(1450017000)
 
       expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{t.isdst}"
-        ).to eq('2015/12/13 15:30:00 CET +0100 false')
+        ).to eq('2015/12/13 12:30:00 -0200 -0200 false')
 
       if ruby18?
         expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{u.isdst}"
@@ -347,7 +347,7 @@ describe Rufus::Scheduler::ZoTime do
       expect(u.to_i).to eq(1450017000)
 
       expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{t.isdst}"
-        ).to eq('2015/12/13 15:30:00 CET +0100 false')
+        ).to eq('2015/12/13 12:30:00 -02:00 -0200 false')
 
       if ruby18?
         expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{u.isdst}"
