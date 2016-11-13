@@ -76,7 +76,7 @@ class Rufus::Scheduler
 
     def strftime(format)
 
-      format = format.gsub(/%(Z|:{0,2}z)/) { |f| strfz(f) }
+      format = format.gsub(/%(\/?Z|:{0,2}z)/) { |f| strfz(f) }
 
       to_time.strftime(format)
     end
@@ -231,10 +231,14 @@ class Rufus::Scheduler
 
     def strfz(code)
 
-      return @zone.period_for_utc(utc).abbreviation.to_s if code == '%Z'
+      return @zone.name if code == '%/Z'
 
-      off = @zone.period_for_utc(utc).utc_total_offset
+      per = @zone.period_for_utc(utc)
 
+      return per.abbreviation.to_s if code == '%Z'
+
+      off = per.utc_total_offset
+        #
       sn = off < 0 ? '-' : '+'; off = off.abs
       hr = off / 3600
       mn = (off % 3600) / 60
