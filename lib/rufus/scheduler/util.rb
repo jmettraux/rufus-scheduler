@@ -48,7 +48,7 @@ module Rufus
 
     def self.parse_at(o, opts={})
 
-      Rufus::Scheduler::ZoTime.parse(o, opts).time
+      Rufus::Scheduler::ZoTime.parse(o, opts)
 
     rescue StandardError => se
 
@@ -64,24 +64,6 @@ module Rufus
 
       return nil if opts[:no_error]
       fail ae
-    end
-
-    def self.parse_to_time(o)
-
-      t = o
-      if t.is_a?(String)
-        t = parse(t)
-      elsif t.is_a?(Date)
-        t = t.respond_to?(:to_time) ? t.to_time : Time.parse(t.to_s)
-          # works for Ruby 1.8 as well
-      end
-      t = Time.now + t if t.is_a?(Numeric)
-
-      fail ArgumentError.new(
-        "cannot turn #{o.inspect} to a Time instance"
-      ) unless t.is_a?(Time)
-
-      t
     end
 
     DURATIONS2M = [

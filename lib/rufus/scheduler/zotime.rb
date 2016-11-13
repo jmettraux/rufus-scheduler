@@ -57,6 +57,12 @@ class Rufus::Scheduler
       u = utc; @zone.period_for_utc(u).to_local(u)
     end
 
+    def ==(o)
+
+      o.is_a?(ZoTime) && o.seconds == @seconds && o.zone == @zone
+    end
+    alias eq? ==
+
     extend Forwardable
     delegate [
       :wday, :hour, :min, :>, :<
@@ -130,9 +136,20 @@ class Rufus::Scheduler
           end
         end
 
-      zone ||= get_tzone(:current)
+      #zone = get_tzone('Zulu') if zone.nil? && s.match(/\dZ\b/)
+      #zone = get_tzone(:current) unless zone
 
-      local = Time.parse(s) # disregard Ruby tz
+      local = Time.parse(s)
+
+      zone ||=
+        if s.match(/\dZ\b/)
+          get_tzone('Zulu')
+        elsif s.match(/[+-]\d\d/) # FIXME
+          get_tzone(local.utc_offset)
+        else
+          get_tzone(:current)
+        end
+
       period = zone.period_for_local(local)
       secs = period.to_utc(local).to_f # UTC seconds
 
@@ -149,6 +166,15 @@ class Rufus::Scheduler
 
       return nil if str == nil
       return nil if str == '*'
+
+      # utc_offset
+
+      if str.is_a?(Numeric)
+        i = str.to_i
+        sn = i < 0 ? '-' : '+'; i = i.abs
+        hr = i / 3600; mn = i % 3600; sc = i % 60
+        str = (sc > 0 ? "%s%02d:%02d:%02d" : "%s%02d:%02d") % [ sn, hr, mn, sc ]
+      end
 
       return nil if str.index('#')
         # counters "sun#2", etc... On OSX would go all the way to true
@@ -205,6 +231,38 @@ class Rufus::Scheduler
 
       nil
     end
+
+    def self.make(o)
+
+      case o
+        when ZoTime
+          o
+        when Time
+          ZoTime.new(o.to_f, o.zone)
+        when Date
+          t = o.to_time
+          ZoTime.new(t.to_f, t.zone)
+        when String
+          ZoTime.parse(o)
+      end
+    end
+#    def self.parse_to_time(o)
+#
+#      t = o
+#      if t.is_a?(String)
+#        t = parse(t)
+#      elsif t.is_a?(Date)
+#        t = t.respond_to?(:to_time) ? t.to_time : Time.parse(t.to_s)
+#          # works for Ruby 1.8 as well
+#      end
+#      t = Time.now + t if t.is_a?(Numeric)
+#
+#      fail ArgumentError.new(
+#        "cannot turn #{o.inspect} to a Time instance"
+#      ) unless t.is_a?(Time)
+#
+#      t
+#    end
 
 #    def in_zone(&block)
 #

@@ -10,6 +10,48 @@ require 'spec_helper'
 
 describe Rufus::Scheduler::ZoTime do
 
+  describe '.get_tzone' do
+
+    def gtz(s); z = Rufus::Scheduler::ZoTime.get_tzone(s); z ? z.name : z; end
+
+    it 'returns a tzone for all the know zone strings' do
+
+      expect(gtz('GB')).to eq('GB')
+      expect(gtz('UTC')).to eq('UTC')
+      expect(gtz('GMT')).to eq('GMT')
+      expect(gtz('Zulu')).to eq('Zulu')
+      expect(gtz('Japan')).to eq('Japan')
+      expect(gtz('Turkey')).to eq('Turkey')
+      expect(gtz('Asia/Tokyo')).to eq('Asia/Tokyo')
+      expect(gtz('Europe/Paris')).to eq('Europe/Paris')
+      expect(gtz('Europe/Zurich')).to eq('Europe/Zurich')
+      expect(gtz('W-SU')).to eq('W-SU')
+
+      expect(gtz('PST')).to eq('America/Dawson')
+      expect(gtz('CEST')).to eq('Africa/Ceuta')
+
+      expect(gtz('Z')).to eq('Zulu')
+
+      expect(gtz('+09:00')).to eq('+09:00')
+      expect(gtz('-01:30')).to eq('-01:30')
+
+      expect(gtz('+08:00')).to eq('+08:00')
+      expect(gtz('+0800')).to eq('+0800') # no normalization to "+08:00"
+
+      expect(gtz(3600)).to eq('+01:00')
+    end
+
+    it 'returns nil for unknown zone names' do
+
+      expect(gtz('Asia/Paris')).to eq(nil)
+      expect(gtz('Nada/Nada')).to eq(nil)
+      expect(gtz('7')).to eq(nil)
+      expect(gtz('06')).to eq(nil)
+      expect(gtz('sun#3')).to eq(nil)
+      expect(gtz('Mazda Zoom Zoom Stadium')).to eq(nil)
+    end
+  end
+
   describe '.new' do
 
     it 'accepts an integer' do
@@ -144,48 +186,94 @@ describe Rufus::Scheduler::ZoTime do
 
         zt = Rufus::Scheduler::ZoTime.parse('2015/03/08 01:59:59 Nada/Nada')
 
-        expect(zt.zone.name).to eq('Europe/Moscow')
+        expect(zt.zone.name).to eq('Europe/Minsk')
       end
     end
   end
 
-  describe '.get_tzone' do
+  describe '.make' do
 
-    def gtz(s); z = Rufus::Scheduler::ZoTime.get_tzone(s); z ? z.name : z; end
+    it 'accepts a Time' do
 
-    it 'returns a tzone for all the know zone strings' do
-
-      expect(gtz('GB')).to eq('GB')
-      expect(gtz('UTC')).to eq('UTC')
-      expect(gtz('GMT')).to eq('GMT')
-      expect(gtz('Zulu')).to eq('Zulu')
-      expect(gtz('Japan')).to eq('Japan')
-      expect(gtz('Turkey')).to eq('Turkey')
-      expect(gtz('Asia/Tokyo')).to eq('Asia/Tokyo')
-      expect(gtz('Europe/Paris')).to eq('Europe/Paris')
-      expect(gtz('Europe/Zurich')).to eq('Europe/Zurich')
-      expect(gtz('W-SU')).to eq('W-SU')
-
-      expect(gtz('PST')).to eq('America/Dawson')
-      expect(gtz('CEST')).to eq('Africa/Ceuta')
-
-      expect(gtz('Z')).to eq('Zulu')
-
-      expect(gtz('+09:00')).to eq('+09:00')
-      expect(gtz('-01:30')).to eq('-01:30')
-
-      expect(gtz('+08:00')).to eq('+08:00')
-      expect(gtz('+0800')).to eq('+0800') # no normalization to "+08:00"
+      expect(
+        Rufus::Scheduler::ZoTime.make(
+          Time.utc(2016, 11, 01, 12, 30, 9))
+      ).to eq(
+        Rufus::Scheduler::ZoTime.new(
+          Time.utc(2016, 11, 01, 12, 30, 9).to_f, 'UTC')
+      )
     end
 
-    it 'returns nil for unknown zone names' do
+    it 'accepts a Date' do
 
-      expect(gtz('Asia/Paris')).to eq(nil)
-      expect(gtz('Nada/Nada')).to eq(nil)
-      expect(gtz('7')).to eq(nil)
-      expect(gtz('06')).to eq(nil)
-      expect(gtz('sun#3')).to eq(nil)
-      expect(gtz('Mazda Zoom Zoom Stadium')).to eq(nil)
+      expect(
+        Rufus::Scheduler::ZoTime.make(
+          Date.new(2016, 11, 01))
+      ).to eq(
+        Rufus::Scheduler::ZoTime.new(
+          Time.local(2016, 11, 01).to_f, nil)
+      )
+    end
+
+    it 'accepts a String' do
+
+      expect(
+        Rufus::Scheduler::ZoTime.make(
+          '2016-11-01 12:30:09')
+      ).to eq(
+        Rufus::Scheduler::ZoTime.new(
+          Time.local(2016, 11, 01, 12, 30, 9).to_f, nil)
+      )
+    end
+
+    it 'accepts a String (Zulu)' do
+
+      expect(
+        Rufus::Scheduler::ZoTime.make(
+          '2016-11-01 12:30:09Z')
+      ).to eq(
+        Rufus::Scheduler::ZoTime.new(
+          Time.utc(2016, 11, 01, 12, 30, 9).to_f, 'Zulu')
+      )
+    end
+
+    it 'accepts a String (+01:00)' do
+
+      expect(
+        Rufus::Scheduler::ZoTime.make(
+          '2016-11-01 12:30:09+01:00')
+      ).to eq(
+        Rufus::Scheduler::ZoTime.new(
+          Time.utc(2016, 11, 01, 12, 30, 9).to_f, '+01:00')
+      )
+    end
+
+    it 'accepts a duration String' do
+
+      expect(
+        Rufus::Scheduler::ZoTime.make('1h')
+      ).to be_between(
+        Time.now + 3600 - 1, Time.now + 3600 + 1
+      )
+    end
+
+    it 'accepts a Numeric' do
+
+      expect(
+        Rufus::Scheduler::ZoTime.make(3600)
+      ).to be_between(
+        Time.now + 3600 - 1, Time.now + 3600 + 1
+      )
+    end
+
+    it 'rejects unparseable input' do
+
+      expect {
+        Rufus::Scheduler::ZoTime.make('xxx')
+      }.to raise_error(ArgumentError, 'couldn\'t parse "xxx"')
+      expect {
+        Rufus::Scheduler::ZoTime.make(Object.new)
+      }.to raise_error(ArgumentError, /\Acannot turn /)
     end
   end
 
