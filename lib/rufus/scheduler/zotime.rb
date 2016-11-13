@@ -51,6 +51,8 @@ class Rufus::Scheduler
       Time.utc(1970, 1, 1) + @seconds
     end
 
+    # Returns a Ruby Time instance. Warning: the timezone will be UTC.
+    #
     def to_time
 
       u = utc; @zone.period_for_utc(u).to_local(u)
@@ -61,96 +63,58 @@ class Rufus::Scheduler
       @seconds.to_i
     end
 
+    def to_f
+
+      @seconds
+    end
+
     def is_dst?
 
       @zone.period_for_utc(utc).std_offset != 0
     end
     alias isdst is_dst?
 
-    def zoneoff(colons=nil)
-
-      off = @zone.period_for_utc(utc).utc_total_offset
-
-      sn = off < 0 ? '-' : '+'; off = off.abs
-      hr = off / 3600
-      mn = (off % 3600) / 60
-      sc = 0
-
-      fmt =
-        if colons == ''
-          "%s%02d%02d"
-        elsif colons == ':'
-          "%s%02d:%02d"
-        else
-          "%s%02d:%02d:%02d"
-        end
-
-      fmt % [ sn, hr, mn, sc ]
-    end
-
     def strftime(format)
 
-      format =
-        format.gsub /%(Z|:{0,2}z)/ do |f|
-          if f == '%Z'
-            @zone.period_for_utc(utc).abbreviation.to_s
-          else
-            zoneoff(f[1..-2])
-          end
-        end
+      format = format.gsub(/%(Z|:{0,2}z)/) { |f| strfz(f) }
 
       to_time.strftime(format)
     end
 
-    def time
+    def add(t); @seconds += t.to_f; end
+    def substract(t); @seconds -= t.to_f; end
 
-      self
-#      in_zone do
+    def -(t)
+
+      if t.is_a?(Numeric)
+        nt = self.dup
+        nt.seconds -= t.to_f
+        nt
+      elsif t.respond_to?(:to_f)
+        @seconds - t.to_f
+      else
+        fail ArgumentError.new(
+          "cannot call ZoTime#- with arg of class #{t.class}")
+      end
+    end
+
+#    def add(t, sign=1)
 #
-#        t = Time.at(@seconds)
-#
-#        #if t.isdst
-#        #  t1 = Time.at(@seconds + 3600)
-#        #  t = t1 if t.zone != t1.zone && t.hour == t1.hour && t.min == t1.min
-#        #    # ambiguous TZ (getting out of DST)
-#        #else
-#        #  t.hour # force t to compute itself
-#        #end
-#          #
-#          # jump out of DST as soon as possible, jumps 1h as seen from UTC
-#
-#        t.hour # force t to compute itself
-#          #
-#          # stay in DST as long as possible, no jump seen from UTC
-#
-#        t
+#      if t.is_a?(Numeric)
+#        @seconds += sign * t
+#        self
+#      elsif t.respond_to?(:to_f)
+#        @seconds += sign * t.to_f
+#      else
+#        fail ArgumentError.new(
+#          "cannot #{sign == 1 ? 'add' : 'substract'} #{t.class} " +
+#          "instance to ZoTime instance")
 #      end
-    end
-
-#    def utc
-#
-#      time.utc
 #    end
-
-    def add(s)
-
-      @seconds += s.to_f
-    end
-
-    def substract(s)
-
-      @seconds -= s.to_f
-    end
-
-    def to_f
-
-      @seconds
-    end
-
-#    def self.envtzable?(s)
+#    alias :+ add
 #
-#      TIMEZONES.include?(s)
-#    end
+#    def substract(t); add(t, -1); end
+#    alias :- substract
 
     def self.parse(str, opts={})
 
@@ -262,6 +226,31 @@ class Rufus::Scheduler
 #
 #      ENV['TZ'] = current_timezone
 #    end
+
+    protected
+
+    def strfz(code)
+
+      return @zone.period_for_utc(utc).abbreviation.to_s if code == '%Z'
+
+      off = @zone.period_for_utc(utc).utc_total_offset
+
+      sn = off < 0 ? '-' : '+'; off = off.abs
+      hr = off / 3600
+      mn = (off % 3600) / 60
+      sc = 0
+
+      fmt =
+        if code == '%z'
+          "%s%02d%02d"
+        elsif code == '%:z'
+          "%s%02d:%02d"
+        else
+          "%s%02d:%02d:%02d"
+        end
+
+      fmt % [ sn, hr, mn, sc ]
+    end
   end
 end
 

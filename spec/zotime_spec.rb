@@ -37,55 +37,33 @@ describe Rufus::Scheduler::ZoTime do
     end
   end
 
-  #it "flips burgers" do
-  #  puts "---"
-  #  t0 = ltz('America/New_York', 2004, 10, 31, 0, 30, 0)
-  #  t1 = ltz('America/New_York', 2004, 10, 31, 1, 30, 0)
-  #  p t0
-  #  p t1
-  #  puts "---"
-  #  zt0 = Rufus::Scheduler::ZoTime.new(t0, 'America/New_York')
-  #  zt1 = Rufus::Scheduler::ZoTime.new(t1, 'America/New_York')
-  #  p zt0.time
-  #  p zt1.time
-  #  puts "---"
-  #  zt0.add(3600)
-  #  p [ zt0.time, zt0.time.zone ]
-  #  p [ zt1.time, zt1.time.zone ]
-  #  #puts "---"
-  #  #zt0.add(3600)
-  #  #zt1.add(3600)
-  #  #p [ zt0.time, zt0.time.zone ]
-  #  #p [ zt1.time, zt1.time.zone ]
-  #end
-
-  describe '#time' do
-
-    it 'returns a Time instance in with the right offset' do
-
-      zt = Rufus::Scheduler::ZoTime.new(1193898300, 'America/Los_Angeles')
-      t = zt.time
-
-      expect(t.strftime('%Y/%m/%d %H:%M:%S %Z')
-        ).to eq('2007/10/31 23:25:00 PDT')
-    end
-
-    # New York      EST: UTC-5
-    # summer (dst)  EDT: UTC-4
-
-    it 'chooses the DST time when there is ambiguity' do
-
-      t = ltz('America/New_York', 2004, 10, 31, 0, 30, 0)
-      zt = Rufus::Scheduler::ZoTime.new(t, 'America/New_York')
-      zt.add(3600)
-      ztt = zt.time
-
-      expect(ztt.to_i).to eq(1099204200 - 3600)
-
-      expect(ztt.strftime('%Y/%m/%d %H:%M:%S %Z %z %:z %::z')
-        ).to eq('2004/10/31 01:30:00 EDT -0400 -04:00 -04:00:00')
-    end
-  end
+#  describe '#time' do
+#
+#    it 'returns a Time instance in with the right offset' do
+#
+#      zt = Rufus::Scheduler::ZoTime.new(1193898300, 'America/Los_Angeles')
+#      t = zt.time
+#
+#      expect(t.strftime('%Y/%m/%d %H:%M:%S %Z')
+#        ).to eq('2007/10/31 23:25:00 PDT')
+#    end
+#
+#    # New York      EST: UTC-5
+#    # summer (dst)  EDT: UTC-4
+#
+#    it 'chooses the DST time when there is ambiguity' do
+#
+#      t = ltz('America/New_York', 2004, 10, 31, 0, 30, 0)
+#      zt = Rufus::Scheduler::ZoTime.new(t, 'America/New_York')
+#      zt.add(3600)
+#      ztt = zt.time
+#
+#      expect(ztt.to_i).to eq(1099204200 - 3600)
+#
+#      expect(ztt.strftime('%Y/%m/%d %H:%M:%S %Z %z %:z %::z')
+#        ).to eq('2004/10/31 01:30:00 EDT -0400 -04:00 -04:00:00')
+#    end
+#  end
 
   describe '#utc' do
 
@@ -123,9 +101,9 @@ describe Rufus::Scheduler::ZoTime do
           Time.gm(2015, 3, 8, 9, 59, 59),
           'America/Los_Angeles')
 
-      t0 = zt.time
+      t0 = zt.dup
       zt.add(1)
-      t1 = zt.time
+      t1 = zt
 
       st0 = t0.strftime('%Y/%m/%d %H:%M:%S %Z') + " #{t0.isdst}"
       st1 = t1.strftime('%Y/%m/%d %H:%M:%S %Z') + " #{t1.isdst}"
@@ -143,13 +121,13 @@ describe Rufus::Scheduler::ZoTime do
           ltz('Europe/Berlin', 2014, 10, 26, 01, 59, 59),
           'Europe/Berlin')
 
-      t0 = zt.time
+      t0 = zt.dup
       zt.add(1)
-      t1 = zt.time
+      t1 = zt.dup
       zt.add(3600)
-      t2 = zt.time
+      t2 = zt.dup
       zt.add(1)
-      t3 = zt.time
+      t3 = zt
 
       st0 = t0.strftime('%Y/%m/%d %H:%M:%S %Z') + " #{t0.isdst}"
       st1 = t1.strftime('%Y/%m/%d %H:%M:%S %Z') + " #{t1.isdst}"
@@ -266,7 +244,7 @@ describe Rufus::Scheduler::ZoTime do
           Rufus::Scheduler::ZoTime.parse('2015/03/08 01:59:59')
         }
 
-      t = zt.time
+      t = zt
       u = zt.utc
 
       expect(t.to_i).to eq(1425769199)
@@ -290,7 +268,7 @@ describe Rufus::Scheduler::ZoTime do
         Rufus::Scheduler::ZoTime.parse(
           '2015/03/08 01:59:59 America/Los_Angeles')
 
-      t = zt.time
+      t = zt
       u = zt.utc
 
       expect(t.to_i).to eq(1425808799)
@@ -315,7 +293,7 @@ describe Rufus::Scheduler::ZoTime do
           Rufus::Scheduler::ZoTime.parse('2015-12-13 12:30 -0200')
         }
 
-      t = zt.time
+      t = zt
       u = zt.utc
 
       expect(t.to_i).to eq(1450017000)
@@ -340,7 +318,7 @@ describe Rufus::Scheduler::ZoTime do
           Rufus::Scheduler::ZoTime.parse('2015-12-13 12:30 -02:00')
         }
 
-      t = zt.time
+      t = zt
       u = zt.utc
 
       expect(t.to_i).to eq(1450017000)
@@ -364,7 +342,7 @@ describe Rufus::Scheduler::ZoTime do
 
         zt = Rufus::Scheduler::ZoTime.parse('2015/03/08 01:59:59 Nada/Nada')
 
-        expect(zt.time.zone.name).to eq('Europe/Moscow')
+        expect(zt.zone.name).to eq('Europe/Moscow')
       end
     end
   end
