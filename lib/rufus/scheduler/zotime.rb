@@ -59,7 +59,7 @@ class Rufus::Scheduler
 
     extend Forwardable
     delegate [
-      :wday, :hour, :min
+      :wday, :hour, :min, :sec
     ] => :to_time
 
     def ==(o)
@@ -72,6 +72,7 @@ class Rufus::Scheduler
     def >=(o); @seconds >= _to_f(o); end
     def <(o); @seconds < _to_f(o); end
     def <=(o); @seconds <= _to_f(o); end
+    def <=>(o); @seconds <=> _to_f(o); end
 
     alias getutc utc
     alias getgm utc
