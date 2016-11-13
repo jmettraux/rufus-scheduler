@@ -124,7 +124,7 @@ class Rufus::Scheduler
     #
     # (Thanks to K Liu for the note and the examples)
     #
-    def next_time(from=Time.now)
+    def next_time(from=ZoTime.now)
 
       time = nil
       zotime = ZoTime.new(from.to_i + 1, @timezone)
@@ -319,7 +319,6 @@ class Rufus::Scheduler
 
     WEEKDAYS = %w[ sun mon tue wed thu fri sat ]
     DAY_S = 24 * 3600
-    WEEK_S = 7 * DAY_S
 
     def parse_weekdays(item)
 
@@ -455,49 +454,55 @@ class Rufus::Scheduler
         return true if value == 0 && values.include?(24)
       end
 
+      if access == :monthdays
+
+        return true if (values & value).any?
+      end
+
       values.include?(value)
     end
 
-    def monthday_match?(date, values)
+#    def monthday_match?(zt, values)
+#
+#      return true if values.nil?
+#
+#      today_values = monthdays(zt)
+#
+#      (today_values & values).any?
+#    end
 
-      return true if values.nil?
+    def date_match?(zt)
 
-      today_values = monthdays(date)
-
-      (today_values & values).any?
-    end
-
-    def date_match?(date)
-
-      return false unless sub_match?(date, :day, @days)
-      return false unless sub_match?(date, :month, @months)
-      return false unless sub_match?(date, :wday, @weekdays)
-      return false unless monthday_match?(date, @monthdays)
+      return false unless sub_match?(zt, :day, @days)
+      return false unless sub_match?(zt, :month, @months)
+      return false unless sub_match?(zt, :wday, @weekdays)
+      #return false unless monthday_match?(zt, @monthdays)
+      return false unless sub_match?(zt, :monthdays, @monthdays)
       true
     end
 
-    def monthdays(date)
-
-      pos = 1
-      d = date.dup
-
-      loop do
-        d = d - WEEK_S
-        break if d.month != date.month
-        pos = pos + 1
-      end
-
-      neg = -1
-      d = date.dup
-
-      loop do
-        d = d + WEEK_S
-        break if d.month != date.month
-        neg = neg - 1
-      end
-
-      [ "#{date.wday}##{pos}", "#{date.wday}##{neg}" ]
-    end
+#    def monthdays(date)
+#
+#      pos = 1
+#      d = date.dup
+#
+#      loop do
+#        d = d - WEEK_S
+#        break if d.month != date.month
+#        pos = pos + 1
+#      end
+#
+#      neg = -1
+#      d = date.dup
+#
+#      loop do
+#        d = d + WEEK_S
+#        break if d.month != date.month
+#        neg = neg - 1
+#      end
+#
+#      [ "#{date.wday}##{pos}", "#{date.wday}##{neg}" ]
+#    end
   end
 end
 

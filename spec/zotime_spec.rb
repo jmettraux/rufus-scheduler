@@ -423,5 +423,19 @@ describe Rufus::Scheduler::ZoTime do
       )
     end
   end
+
+  describe '#monthdays' do
+
+    def mds(t); Rufus::Scheduler::ZoTime.new(t.to_f, nil).monthdays; end
+
+    it 'returns the appropriate "0#2"-like string' do
+
+      expect(mds(local(1970, 1, 1))).to eq(%w[ 4#1 4#-5 ])
+      expect(mds(local(1970, 1, 7))).to eq(%w[ 3#1 3#-4 ])
+      expect(mds(local(1970, 1, 14))).to eq(%w[ 3#2 3#-3 ])
+
+      expect(mds(local(2011, 3, 11))).to eq(%w[ 5#2 5#-3 ])
+    end
+  end
 end
 

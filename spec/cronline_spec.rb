@@ -766,24 +766,6 @@ describe Rufus::Scheduler::CronLine do
     end
   end
 
-  describe '#monthdays' do
-
-    it 'returns the appropriate "0#2"-like string' do
-
-      class Rufus::Scheduler::CronLine
-        public :monthdays
-      end
-
-      cl = Rufus::Scheduler::CronLine.new('* * * * *')
-
-      expect(cl.monthdays(local(1970, 1, 1))).to eq(%w[ 4#1 4#-5 ])
-      expect(cl.monthdays(local(1970, 1, 7))).to eq(%w[ 3#1 3#-4 ])
-      expect(cl.monthdays(local(1970, 1, 14))).to eq(%w[ 3#2 3#-3 ])
-
-      expect(cl.monthdays(local(2011, 3, 11))).to eq(%w[ 5#2 5#-3 ])
-    end
-  end
-
   describe '#frequency' do
 
     it 'returns the shortest delta between two occurrences' do
