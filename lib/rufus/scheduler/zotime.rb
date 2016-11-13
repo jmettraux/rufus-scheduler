@@ -57,16 +57,21 @@ class Rufus::Scheduler
       u = utc; @zone.period_for_utc(u).to_local(u)
     end
 
+    extend Forwardable
+    delegate [
+      :wday, :hour, :min
+    ] => :to_time
+
     def ==(o)
 
       o.is_a?(ZoTime) && o.seconds == @seconds && o.zone == @zone
     end
-    alias eq? ==
+    #alias eq? == # FIXME see Object#== (ri)
 
-    extend Forwardable
-    delegate [
-      :wday, :hour, :min, :>, :<
-    ] => :to_time
+    def >(o); @seconds > _to_f(o); end
+    def >=(o); @seconds >= _to_f(o); end
+    def <(o); @seconds < _to_f(o); end
+    def <=(o); @seconds <= _to_f(o); end
 
     alias getutc utc
     alias getgm utc
@@ -136,16 +141,13 @@ class Rufus::Scheduler
           end
         end
 
-      #zone = get_tzone('Zulu') if zone.nil? && s.match(/\dZ\b/)
-      #zone = get_tzone(:current) unless zone
-
       local = Time.parse(s)
 
       zone ||=
         if s.match(/\dZ\b/)
           get_tzone('Zulu')
-        elsif s.match(/[+-]\d\d/) # FIXME
-          get_tzone(local.utc_offset)
+        elsif local.zone.nil? && s.match(/[-+]\d\d(:?\d\d)?/)
+          get_tzone(local.strftime('%:z'))
         else
           get_tzone(:current)
         end
@@ -234,35 +236,27 @@ class Rufus::Scheduler
 
     def self.make(o)
 
-      case o
-        when ZoTime
-          o
-        when Time
-          ZoTime.new(o.to_f, o.zone)
-        when Date
-          t = o.to_time
-          ZoTime.new(t.to_f, t.zone)
-        when String
-          ZoTime.parse(o)
-      end
+      zt =
+        case o
+          when Time
+            ZoTime.new(o.to_f, o.zone)
+          when Date
+            t = o.to_time
+            ZoTime.new(t.to_f, t.zone)
+          when String
+            Rufus::Scheduler.parse_in(o, :no_error => true) || ZoTime.parse(o)
+          else
+            o
+        end
+
+      zt = ZoTime.new(Time.now.to_f + zt, nil) if zt.is_a?(Numeric)
+
+      fail ArgumentError.new(
+        "cannot turn #{o.inspect} to a ZoTime instance"
+      ) unless zt.is_a?(ZoTime)
+
+      zt
     end
-#    def self.parse_to_time(o)
-#
-#      t = o
-#      if t.is_a?(String)
-#        t = parse(t)
-#      elsif t.is_a?(Date)
-#        t = t.respond_to?(:to_time) ? t.to_time : Time.parse(t.to_s)
-#          # works for Ruby 1.8 as well
-#      end
-#      t = Time.now + t if t.is_a?(Numeric)
-#
-#      fail ArgumentError.new(
-#        "cannot turn #{o.inspect} to a Time instance"
-#      ) unless t.is_a?(Time)
-#
-#      t
-#    end
 
 #    def in_zone(&block)
 #
@@ -277,6 +271,13 @@ class Rufus::Scheduler
 #    end
 
     protected
+
+    def _to_f(o)
+      fail ArgumentError(
+        "comparison of ZoTime with #{o.inspect} failed"
+      ) unless o.is_a?(ZoTime) || o.is_a?(Time)
+      o.to_f
+    end
 
     def strfz(code)
 

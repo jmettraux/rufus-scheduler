@@ -237,14 +237,25 @@ describe Rufus::Scheduler::ZoTime do
       )
     end
 
-    it 'accepts a String (+01:00)' do
+    it 'accepts a String (ss+01:00)' do
 
       expect(
         Rufus::Scheduler::ZoTime.make(
           '2016-11-01 12:30:09+01:00')
       ).to eq(
         Rufus::Scheduler::ZoTime.new(
-          Time.utc(2016, 11, 01, 12, 30, 9).to_f, '+01:00')
+          Time.utc(2016, 11, 01, 11, 30, 9).to_f, '+01:00')
+      )
+    end
+
+    it 'accepts a String (ss-01)' do
+
+      expect(
+        Rufus::Scheduler::ZoTime.make(
+          '2016-11-01 12:30:09-01')
+      ).to eq(
+        Rufus::Scheduler::ZoTime.new(
+          Time.utc(2016, 11, 01, 13, 30, 9).to_f, '-01:00')
       )
     end
 
@@ -270,10 +281,28 @@ describe Rufus::Scheduler::ZoTime do
 
       expect {
         Rufus::Scheduler::ZoTime.make('xxx')
-      }.to raise_error(ArgumentError, 'couldn\'t parse "xxx"')
+      #}.to raise_error(ArgumentError, 'couldn\'t parse "xxx"')
+      }.to raise_error(ArgumentError, 'no time information in "xxx"')
+        # straight out of Time.parse()
+
       expect {
         Rufus::Scheduler::ZoTime.make(Object.new)
       }.to raise_error(ArgumentError, /\Acannot turn /)
+    end
+  end
+
+  describe '#to_time' do
+
+    it 'returns a local Time instance, although with a UTC zone' do
+
+      zt = Rufus::Scheduler::ZoTime.new(1193898300, 'America/Los_Angeles')
+      t = zt.to_time
+
+      expect(t.to_i
+        ).to eq(1193898300 - 7 * 3600) # /!\
+
+      expect(t.strftime('%Y/%m/%d %H:%M:%S ... %Z :-(')
+        ).to eq('2007/10/31 23:25:00 ... UTC :-(')
     end
   end
 
