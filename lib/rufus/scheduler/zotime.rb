@@ -38,7 +38,7 @@ class Rufus::Scheduler
     def initialize(s, zone)
 
       @seconds = s.to_f
-      @zone = self.class.get_tzone(zone || ENV['TZ'])
+      @zone = self.class.get_tzone(zone || :current)
 
       fail ArgumentError.new(
         "cannot determine timezone from #{zone.inspect}"
@@ -56,6 +56,14 @@ class Rufus::Scheduler
 
       u = utc; @zone.period_for_utc(u).to_local(u)
     end
+
+    extend Forwardable
+    delegate [
+      :wday, :hour, :min, :>, :<
+    ] => :to_time
+
+    alias getutc utc
+    alias getgm utc
 
     def to_i
 
@@ -100,7 +108,7 @@ class Rufus::Scheduler
     def self.parse(str, opts={})
 
       if defined?(::Chronic) && t = ::Chronic.parse(str, opts)
-        return ZoTime.new(t, ENV['TZ'])
+        return ZoTime.new(t, nil)
       end
 
       #begin
@@ -122,7 +130,7 @@ class Rufus::Scheduler
           end
         end
 
-      zone ||= get_tzone(ENV['TZ'])
+      zone ||= get_tzone(:current)
 
       local = Time.parse(s) # disregard Ruby tz
       period = zone.period_for_local(local)
@@ -132,6 +140,8 @@ class Rufus::Scheduler
     end
 
     def self.get_tzone(str)
+
+      str = Time.now.zone if str == :current
 
       return str if str.is_a?(::TZInfo::Timezone)
 
