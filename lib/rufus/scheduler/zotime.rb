@@ -22,7 +22,6 @@
 # Made in Japan.
 #++
 
-#require 'rufus/scheduler/zones'
 require 'tzinfo'
 
 
@@ -39,7 +38,7 @@ class Rufus::Scheduler
     def initialize(s, zone)
 
       @seconds = s.to_f
-      @zone = self.class.get_tzone(zone)
+      @zone = self.class.get_tzone(zone || ENV['TZ'])
 
       fail ArgumentError.new(
         "cannot determine timezone from #{zone.inspect}"
@@ -97,24 +96,6 @@ class Rufus::Scheduler
           "cannot call ZoTime#- with arg of class #{t.class}")
       end
     end
-
-#    def add(t, sign=1)
-#
-#      if t.is_a?(Numeric)
-#        @seconds += sign * t
-#        self
-#      elsif t.respond_to?(:to_f)
-#        @seconds += sign * t.to_f
-#      else
-#        fail ArgumentError.new(
-#          "cannot #{sign == 1 ? 'add' : 'substract'} #{t.class} " +
-#          "instance to ZoTime instance")
-#      end
-#    end
-#    alias :+ add
-#
-#    def substract(t); add(t, -1); end
-#    alias :- substract
 
     def self.parse(str, opts={})
 

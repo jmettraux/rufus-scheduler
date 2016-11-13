@@ -58,8 +58,7 @@ class Rufus::Scheduler
 
       items = line.split
 
-      #@timezone = items.pop if ZoTime.is_timezone?(items.last)
-      if tz = ZoTime.get_tzone(item.last)
+      if tz = ZoTime.get_tzone(items.last)
         @timezone = tz.name
         @original_timezone = items.pop
       end
@@ -89,7 +88,7 @@ class Rufus::Scheduler
     #
     def matches?(time)
 
-      time = ZoTime.new(time.to_f, @timezone || ENV['TZ']).time
+      time = ZoTime.new(time.to_f, @timezone).time
 
       return false unless sub_match?(time, :sec, @seconds)
       return false unless sub_match?(time, :min, @minutes)
@@ -128,7 +127,7 @@ class Rufus::Scheduler
     def next_time(from=Time.now)
 
       time = nil
-      zotime = ZoTime.new(from.to_i + 1, @timezone || ENV['TZ'])
+      zotime = ZoTime.new(from.to_i + 1, @timezone)
 
       loop do
 
@@ -163,7 +162,7 @@ class Rufus::Scheduler
     def previous_time(from=Time.now)
 
       time = nil
-      zotime = ZoTime.new(from.to_i - 1, @timezone || ENV['TZ'])
+      zotime = ZoTime.new(from.to_i - 1, @timezone)
 
       loop do
 
