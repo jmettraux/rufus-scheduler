@@ -59,7 +59,7 @@ class Rufus::Scheduler
 
     extend Forwardable
     delegate [
-      :month, :day, :wday, :hour, :min, :sec
+      :month, :day, :wday, :hour, :min, :sec, :usec, :iso8601
     ] => :to_time
 
     def ==(o)
@@ -103,19 +103,8 @@ class Rufus::Scheduler
     def add(t); @seconds += t.to_f; end
     def substract(t); @seconds -= t.to_f; end
 
-    def -(t)
-
-      if t.is_a?(Numeric)
-        nt = self.dup
-        nt.seconds -= t.to_f
-        nt
-      elsif t.respond_to?(:to_f)
-        @seconds - t.to_f
-      else
-        fail ArgumentError.new(
-          "cannot call ZoTime#- with arg of class #{t.class}")
-      end
-    end
+    def +(t); inc(t, 1); end
+    def -(t); inc(t, -1); end
 
     WEEK_S = 7 * 24 * 3600
 
@@ -142,6 +131,11 @@ class Rufus::Scheduler
       end
 
       [ "#{date.wday}##{pos}", "#{date.wday}##{neg}" ]
+    end
+
+    def to_s
+
+      strftime('%Y-%m-%d %H:%M:%S %z')
     end
 
     def self.now(zone=nil)
@@ -304,6 +298,20 @@ class Rufus::Scheduler
 #    end
 
     protected
+
+    def inc(t, dir)
+
+      if t.is_a?(Numeric)
+        nt = self.dup
+        nt.seconds += dir * t.to_f
+        nt
+      elsif t.respond_to?(:to_f)
+        @seconds + dir * t.to_f
+      else
+        fail ArgumentError.new(
+          "cannot call ZoTime #- or #+ with arg of class #{t.class}")
+      end
+    end
 
     def _to_f(o)
       fail ArgumentError(

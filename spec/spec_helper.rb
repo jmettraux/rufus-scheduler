@@ -34,9 +34,20 @@ def local(*args)
 end
 alias lo local
 
+def zlocal(*args)
+
+  Rufus::Scheduler::ZoTime.new(Time.local(*args).to_f, nil)
+end
+alias zlo zlocal
+
 def utc(*args)
 
   Time.utc(*args)
+end
+
+def zutc(*args)
+
+  Rufus::Scheduler::ZoTime.new(Time.utc(*args), 'Zulu')
 end
 
 def ltz(tz, *args)
@@ -47,6 +58,16 @@ end
 def ltu(tz, *args)
 
   in_zone(tz) { Time.local(*args) }.getutc
+end
+
+def ztz(tz, *args)
+
+  Rufus::Scheduler::ZoTime.new(Time.local(*args), tz)
+end
+
+def ztu(tz, *args)
+
+  Rufus::Scheduler::ZoTime.new(Time.utc(*args), tz)
 end
 
 def sleep_until_next_minute

@@ -126,34 +126,34 @@ class Rufus::Scheduler
     #
     def next_time(from=ZoTime.now)
 
-      time = nil
-      zotime = ZoTime.new(from.to_i + 1, @timezone)
+      nt = nil
+      zt = ZoTime.new(from.to_i + 1, @timezone)
 
       loop do
 
-        time = zotime.time
+        nt = zt.dup
 
-        unless date_match?(time)
-          zotime.add((24 - time.hour) * 3600 - time.min * 60 - time.sec)
+        unless date_match?(nt)
+          zt.add((24 - nt.hour) * 3600 - nt.min * 60 - nt.sec)
           next
         end
-        unless sub_match?(time, :hour, @hours)
-          zotime.add((60 - time.min) * 60 - time.sec)
+        unless sub_match?(nt, :hour, @hours)
+          zt.add((60 - nt.min) * 60 - nt.sec)
           next
         end
-        unless sub_match?(time, :min, @minutes)
-          zotime.add(60 - time.sec)
+        unless sub_match?(nt, :min, @minutes)
+          zt.add(60 - nt.sec)
           next
         end
-        unless sub_match?(time, :sec, @seconds)
-          zotime.add(next_second(time))
+        unless sub_match?(nt, :sec, @seconds)
+          zt.add(next_second(nt))
           next
         end
 
         break
       end
 
-      time
+      nt
     end
 
     # Returns the previous time the cronline matched. It's like next_time, but
@@ -454,7 +454,7 @@ class Rufus::Scheduler
         return true if value == 0 && values.include?(24)
       end
 
-      if access == :monthdays
+      if accessor == :monthdays
 
         return true if (values & value).any?
       end
@@ -480,29 +480,6 @@ class Rufus::Scheduler
       return false unless sub_match?(zt, :monthdays, @monthdays)
       true
     end
-
-#    def monthdays(date)
-#
-#      pos = 1
-#      d = date.dup
-#
-#      loop do
-#        d = d - WEEK_S
-#        break if d.month != date.month
-#        pos = pos + 1
-#      end
-#
-#      neg = -1
-#      d = date.dup
-#
-#      loop do
-#        d = d + WEEK_S
-#        break if d.month != date.month
-#        neg = neg - 1
-#      end
-#
-#      [ "#{date.wday}##{pos}", "#{date.wday}##{neg}" ]
-#    end
   end
 end
 

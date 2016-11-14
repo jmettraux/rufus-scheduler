@@ -349,7 +349,7 @@ describe Rufus::Scheduler::CronLine do
 
       in_zone 'Europe/Berlin' do
 
-        now = Time.at(0) - 3600
+        now = Rufus::Scheduler::ZoTime.new(-3600, nil)
 
         expect(nt('* * * * *', now)).to eq(now + 60)
         expect(nt('* * * * sun', now)).to eq(now + 259200)
@@ -369,7 +369,8 @@ describe Rufus::Scheduler::CronLine do
         expect(nt('0 0 * * *', now)).to eq(now + 24 * 3600)
         expect(nt('0 24 * * *', now)).to eq(now + 24 * 3600)
 
-        now = local(2008, 12, 31, 23, 59, 59, 0)
+        now =
+          Rufus::Scheduler::ZoTime.new(local(2008, 12, 31, 23, 59, 59, 0), nil)
 
         expect(nt('* * * * *', now)).to eq(now + 1)
       end
@@ -379,75 +380,75 @@ describe Rufus::Scheduler::CronLine do
 
       now = local(1970, 1, 1)
 
-      expect(nt('* * * * *', now)).to eq(local(1970, 1, 1, 0, 1))
-      expect(nt('* * * * sun', now)).to eq(local(1970, 1, 4))
-      expect(nt('* * * * * *', now)).to eq(local(1970, 1, 1, 0, 0, 1))
-      expect(nt('* * 13 * fri', now)).to eq(local(1970, 2, 13))
+      expect(nt('* * * * *', now)).to eq(zlocal(1970, 1, 1, 0, 1))
+      expect(nt('* * * * sun', now)).to eq(zlocal(1970, 1, 4))
+      expect(nt('* * * * * *', now)).to eq(zlocal(1970, 1, 1, 0, 0, 1))
+      expect(nt('* * 13 * fri', now)).to eq(zlocal(1970, 2, 13))
 
-      expect(nt('10 12 13 12 *', now)).to eq(local(1970, 12, 13, 12, 10))
+      expect(nt('10 12 13 12 *', now)).to eq(zlocal(1970, 12, 13, 12, 10))
         # this one is slow (1 year == 3 seconds)
-      expect(nt('* * 1 6 *', now)).to eq(local(1970, 6, 1))
+      expect(nt('* * 1 6 *', now)).to eq(zlocal(1970, 6, 1))
 
-      expect(nt('0 0 * * thu', now)).to eq(local(1970, 1, 8))
+      expect(nt('0 0 * * thu', now)).to eq(zlocal(1970, 1, 8))
     end
 
     it 'computes the next occurence correctly in UTC (TZ specified)' do
 
-      zone = 'Europe/Stockholm'
-      now = in_zone(zone) { Time.local(1970, 1, 1) }
+      z = 'Europe/Stockholm'
+      now = Rufus::Scheduler::ZoTime.parse("1970-1-1 00:00:00 #{z}")
 
-      expect(nt("* * * * * #{zone}", now)).to eq(utc(1969, 12, 31, 23, 1))
-      expect(nt("* * * * sun #{zone}", now)).to eq(utc(1970, 1, 3, 23))
-      expect(nt("* * * * * * #{zone}", now)).to eq(utc(1969, 12, 31, 23, 0, 1))
-      expect(nt("* * 13 * fri #{zone}", now)).to eq(utc(1970, 2, 12, 23))
+      expect(nt("* * * * * #{z}", now)).to eq(ztu(z, 1969, 12, 31, 23, 1))
+      expect(nt("* * * * sun #{z}", now)).to eq(ztu(z, 1970, 1, 3, 23))
+      expect(nt("* * * * * * #{z}", now)).to eq(ztu(z, 1969, 12, 31, 23, 0, 1))
+      expect(nt("* * 13 * fri #{z}", now)).to eq(ztu(z, 1970, 2, 12, 23))
 
-      expect(nt("10 12 13 12 * #{zone}", now)).to eq(utc(1970, 12, 13, 11, 10))
-      expect(nt("* * 1 6 * #{zone}", now)).to eq(utc(1970, 5, 31, 23))
+      expect(nt("10 12 13 12 * #{z}", now)).to eq(ztu(z, 1970, 12, 13, 11, 10))
+      expect(nt("* * 1 6 * #{z}", now)).to eq(ztu(z, 1970, 5, 31, 23))
 
-      expect(nt("0 0 * * thu #{zone}", now)).to eq(utc(1970, 1, 7, 23))
+      expect(nt("0 0 * * thu #{z}", now)).to eq(ztu(z, 1970, 1, 7, 23))
     end
 
     it 'computes the next time correctly when there is a sun#2 involved' do
 
-      expect(nt('* * * * sun#1', local(1970, 1, 1))).to eq(local(1970, 1, 4))
-      expect(nt('* * * * sun#2', local(1970, 1, 1))).to eq(local(1970, 1, 11))
+      expect(nt('* * * * sun#1', zlocal(1970, 1, 1))).to eq(zlocal(1970, 1, 4))
+      expect(nt('* * * * sun#2', zlocal(1970, 1, 1))).to eq(zlocal(1970, 1, 11))
 
-      expect(nt('* * * * sun#2', local(1970, 1, 12))).to eq(local(1970, 2, 8))
+      expect(nt('* * * * sun#2', zlocal(1970, 1, 12))).to eq(zlocal(1970, 2, 8))
     end
 
     it 'computes next time correctly when there is a sun#2,sun#3 involved' do
 
       expect(
-        nt('* * * * sun#2,sun#3', local(1970, 1, 1))).to eq(local(1970, 1, 11))
+        nt('* * * * sun#2,sun#3', zlo(1970, 1, 1))).to eq(zlo(1970, 1, 11))
       expect(
-        nt('* * * * sun#2,sun#3', local(1970, 1, 12))).to eq(local(1970, 1, 18))
+        nt('* * * * sun#2,sun#3', zlo(1970, 1, 12))).to eq(zlo(1970, 1, 18))
     end
 
     it 'understands sun#L and co' do
 
-      expect(nt('* * * * sunL', local(1970, 1, 1))).to eq(local(1970, 1, 25))
-      expect(nt('* * * * sun#L', local(1970, 1, 1))).to eq(local(1970, 1, 25))
-      expect(nt('* * * * sun#-1', local(1970, 1, 1))).to eq(local(1970, 1, 25))
+      expect(nt('* * * * sunL', zlo(1970, 1, 1))).to eq(zlo(1970, 1, 25))
+      expect(nt('* * * * sun#L', zlo(1970, 1, 1))).to eq(zlo(1970, 1, 25))
+      expect(nt('* * * * sun#-1', zlo(1970, 1, 1))).to eq(zlo(1970, 1, 25))
     end
 
     it 'understands 0#L and co' do
 
-      expect(nt('* * * * 0L', local(1970, 1, 1))).to eq(local(1970, 1, 25))
-      expect(nt('* * * * 0#L', local(1970, 1, 1))).to eq(local(1970, 1, 25))
-      expect(nt('* * * * 0#-1', local(1970, 1, 1))).to eq(local(1970, 1, 25))
+      expect(nt('* * * * 0L', zlo(1970, 1, 1))).to eq(zlo(1970, 1, 25))
+      expect(nt('* * * * 0#L', zlo(1970, 1, 1))).to eq(zlo(1970, 1, 25))
+      expect(nt('* * * * 0#-1', zlo(1970, 1, 1))).to eq(zlo(1970, 1, 25))
     end
 
     it 'understands sun#-2' do
 
-      expect(nt('* * * * sun#-2', local(1970, 1, 1))).to eq(local(1970, 1, 18))
+      expect(nt('* * * * sun#-2', zlo(1970, 1, 1))).to eq(zlo(1970, 1, 18))
     end
 
     it 'computes the next time correctly when "L" (last day of month)' do
 
-      expect(nt('* * L * *', lo(1970, 1, 1))).to eq(lo(1970, 1, 31))
-      expect(nt('* * L * *', lo(1970, 2, 1))).to eq(lo(1970, 2, 28))
-      expect(nt('* * L * *', lo(1972, 2, 1))).to eq(lo(1972, 2, 29))
-      expect(nt('* * L * *', lo(1970, 4, 1))).to eq(lo(1970, 4, 30))
+      expect(nt('* * L * *', zlo(1970, 1, 1))).to eq(zlo(1970, 1, 31))
+      expect(nt('* * L * *', zlo(1970, 2, 1))).to eq(zlo(1970, 2, 28))
+      expect(nt('* * L * *', zlo(1972, 2, 1))).to eq(zlo(1972, 2, 29))
+      expect(nt('* * L * *', zlo(1970, 4, 1))).to eq(zlo(1970, 4, 30))
     end
 
     it 'returns a time with subseconds chopped off' do
@@ -499,29 +500,29 @@ describe Rufus::Scheduler::CronLine do
 
     it 'understands six-field crontabs' do
 
-      expect(nt('* * * * * *',local(1970,1,1,1,1,1))).to(
-        eq(local(1970,1,1,1,1,2))
+      expect(nt('* * * * * *', zlocal(1970, 1, 1, 1, 1, 1))).to(
+        eq(zlocal(1970, 1, 1, 1, 1, 2))
       )
-      expect(nt('* * * * * *',local(1970,1,1,1,1,2))).to(
-        eq(local(1970,1,1,1,1,3))
+      expect(nt('* * * * * *', zlocal(1970, 1, 1, 1, 1, 2))).to(
+        eq(zlocal(1970, 1, 1, 1, 1, 3))
       )
-      expect(nt('*/10 * * * * *',local(1970,1,1,1,1,0))).to(
-        eq(local(1970,1,1,1,1,10))
+      expect(nt('*/10 * * * * *', zlocal(1970, 1, 1, 1, 1, 0))).to(
+        eq(zlocal(1970, 1, 1, 1, 1, 10))
       )
-      expect(nt('*/10 * * * * *',local(1970,1,1,1,1,9))).to(
-        eq(local(1970,1,1,1,1,10))
+      expect(nt('*/10 * * * * *', zlocal(1970, 1, 1, 1, 1, 9))).to(
+        eq(zlocal(1970, 1, 1, 1, 1, 10))
       )
-      expect(nt('*/10 * * * * *',local(1970,1,1,1,1,10))).to(
-        eq(local(1970,1,1,1,1,20))
+      expect(nt('*/10 * * * * *', zlocal(1970, 1, 1, 1, 1, 10))).to(
+        eq(zlocal(1970, 1, 1, 1, 1, 20))
       )
-      expect(nt('*/10 * * * * *',local(1970,1,1,1,1,40))).to(
-        eq(local(1970,1,1,1,1,50))
+      expect(nt('*/10 * * * * *', zlocal(1970, 1, 1, 1, 1, 40))).to(
+        eq(zlocal(1970, 1, 1, 1, 1, 50))
       )
-      expect(nt('*/10 * * * * *',local(1970,1,1,1,1,49))).to(
-        eq(local(1970,1,1,1,1,50))
+      expect(nt('*/10 * * * * *', zlocal(1970, 1, 1, 1, 1, 49))).to(
+        eq(zlocal(1970, 1, 1, 1, 1, 50))
       )
-      expect(nt('*/10 * * * * *',local(1970,1,1,1,1,50))).to(
-        eq(local(1970,1,1,1,2,00))
+      expect(nt('*/10 * * * * *', zlocal(1970, 1, 1, 1, 1, 50))).to(
+        eq(zlocal(1970, 1, 1, 1, 2, 00))
       )
     end
   end
