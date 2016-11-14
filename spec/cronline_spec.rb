@@ -769,12 +769,10 @@ describe Rufus::Scheduler::CronLine do
 
   describe '#frequency' do
 
-    it 'returns the shortest delta between two occurrences' do
+    it 'returns the shortest delta between two occurrences (5 fields)' do
 
       expect(Rufus::Scheduler::CronLine.new(
         '* * * * *').frequency).to eq(60)
-      expect(Rufus::Scheduler::CronLine.new(
-        '* * * * * *').frequency).to eq(1)
 
       expect(Rufus::Scheduler::CronLine.new(
         '5 23 * * *').frequency).to eq(24 * 3600)
@@ -782,12 +780,18 @@ describe Rufus::Scheduler::CronLine do
         '5 * * * *').frequency).to eq(3600)
       expect(Rufus::Scheduler::CronLine.new(
         '10,20,30 * * * *').frequency).to eq(600)
+    end
+
+    it 'returns the shortest delta between two occurrences (6 fields)' do
+
+      expect(Rufus::Scheduler::CronLine.new(
+        '* * * * * *').frequency).to eq(1)
 
       expect(Rufus::Scheduler::CronLine.new(
         '10,20,30 * * * * *').frequency).to eq(10)
     end
 
-    it 'spots B-A vs C-B asymmetry in five-field forms' do
+    it 'spots B-A vs C-B asymmetry (5 fields)' do
 
       expect(Rufus::Scheduler::CronLine.new(
         '10,17,30 * * * *').frequency).to eq(7 * 60)
@@ -797,7 +801,7 @@ describe Rufus::Scheduler::CronLine do
         '23,10,30 * * * *').frequency).to eq(7 * 60)
     end
 
-    it 'spots B-A vs C-B asymmetry in six-field forms' do
+    it 'spots B-A vs C-B asymmetry (6 fields)' do
 
       expect(Rufus::Scheduler::CronLine.new(
         '10,17,30 * * * * *').frequency).to eq(7)
@@ -807,7 +811,7 @@ describe Rufus::Scheduler::CronLine do
         '23,10,30 * * * * *').frequency).to eq(7)
     end
 
-    it 'handles crontab steps syntax in five-field forms' do
+    it 'handles crontab steps syntax (5 fields)' do
 
       expect(Rufus::Scheduler::CronLine.new(
         '*/10 * * * *').frequency).to eq(10 * 60)
@@ -817,7 +821,7 @@ describe Rufus::Scheduler::CronLine do
         '0 */10 * * *').frequency).to eq(4 * 60 * 60) # 2000 to 0000
     end
 
-    it 'handles crontab steps syntax in six-field forms' do
+    it 'handles crontab steps syntax (6 fields)' do
 
       expect(Rufus::Scheduler::CronLine.new(
         '*/10 * * * * *').frequency).to eq(10)
@@ -830,12 +834,10 @@ describe Rufus::Scheduler::CronLine do
 
   describe '#brute_frequency' do
 
-    it 'returns the shortest delta between two occurrences' do
+    it 'returns the shortest delta between two occurrences (5 fields)' do
 
       expect(Rufus::Scheduler::CronLine.new(
         '* * * * *').brute_frequency).to eq(60)
-      expect(Rufus::Scheduler::CronLine.new(
-        '* * * * * *').brute_frequency).to eq(1)
 
       expect(Rufus::Scheduler::CronLine.new(
         '5 23 * * *').brute_frequency).to eq(24 * 3600)
@@ -843,6 +845,12 @@ describe Rufus::Scheduler::CronLine do
         '5 * * * *').brute_frequency).to eq(3600)
       expect(Rufus::Scheduler::CronLine.new(
         '10,20,30 * * * *').brute_frequency).to eq(600)
+    end
+
+    it 'returns the shortest delta between two occurrences (6 fields)' do
+
+      expect(Rufus::Scheduler::CronLine.new(
+        '* * * * * *').brute_frequency).to eq(1)
 
       #Rufus::Scheduler::CronLine.new(
       #    '10,20,30 * * * * *').brute_frequency.should == 10
@@ -858,7 +866,7 @@ describe Rufus::Scheduler::CronLine do
         '1 2 3 4 5').brute_frequency).to eq(31622400)
     end
 
-    it 'spots B-A vs C-B asymmetry in five-field forms' do
+    it 'spots B-A vs C-B asymmetry (5 fields)' do
 
       expect(Rufus::Scheduler::CronLine.new(
         '10,17,30 * * * *').brute_frequency).to eq(7 * 60)
@@ -866,7 +874,7 @@ describe Rufus::Scheduler::CronLine do
         '10,23,30 * * * *').brute_frequency).to eq(7 * 60)
     end
 
-    it 'spots B-A vs C-B asymmetry in six-field forms' do
+    it 'spots B-A vs C-B asymmetry (6 fields)' do
 
       expect(Rufus::Scheduler::CronLine.new(
         '10,17,30 * * * * *').brute_frequency).to eq(7)
@@ -874,7 +882,7 @@ describe Rufus::Scheduler::CronLine do
         '10,23,30 * * * * *').brute_frequency).to eq(7)
     end
 
-    it 'handles crontab modulo syntax in five-field forms' do
+    it 'handles crontab modulo syntax (5 fields)' do
 
       expect(Rufus::Scheduler::CronLine.new(
         '*/10 * * * *').brute_frequency).to eq(10 * 60)
@@ -884,7 +892,7 @@ describe Rufus::Scheduler::CronLine do
         '0 */10 * * *').brute_frequency).to eq(4 * 60 * 60) # 2000 to 0000
     end
 
-    it 'handles crontab modulo syntax in six-field forms' do
+    it 'handles crontab modulo syntax (6 fields)' do
 
       expect(Rufus::Scheduler::CronLine.new(
         '*/10 * * * * *').brute_frequency).to eq(10)
