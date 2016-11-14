@@ -572,38 +572,38 @@ describe Rufus::Scheduler::CronLine do
 
     it 'returns the previous time the cron should have triggered' do
 
-      expect(
-        pt('* * * * sun', lo(1970, 1, 1))).to eq(lo(1969, 12, 28, 23, 59, 00))
-      expect(
-        pt('* * 13 * *', lo(1970, 1, 1))).to eq(lo(1969, 12, 13, 23, 59, 00))
-      expect(
-        pt('0 12 13 * *', lo(1970, 1, 1))).to eq(lo(1969, 12, 13, 12, 00))
-      expect(
-        pt('0 0 2 1 *', lo(1970, 1, 1))).to eq(lo(1969, 1, 2, 0, 00))
+      expect(pt('* * * * sun', zlo(1970, 1, 1))
+        ).to eq(zlo(1969, 12, 28, 23, 59, 00))
+      expect(pt('* * 13 * *', zlo(1970, 1, 1))
+        ).to eq(zlo(1969, 12, 13, 23, 59, 00))
+      expect(pt('0 12 13 * *', zlo(1970, 1, 1))
+        ).to eq(zlo(1969, 12, 13, 12, 00))
+      expect(pt('0 0 2 1 *', zlo(1970, 1, 1))
+        ).to eq(zlo(1969, 1, 2, 0, 00))
 
-      expect(
-        pt('* * * * * sun', lo(1970, 1, 1))).to eq(lo(1969, 12, 28, 23, 59, 59))
+      expect(pt('* * * * * sun', zlo(1970, 1, 1))
+        ).to eq(zlo(1969, 12, 28, 23, 59, 59))
     end
 
     it 'jumps to the previous minute if necessary (gh-177)' do
 
       t = local(1970, 12, 31, 1, 1, 0) # vanilla
-      expect(pt('43,44 * * * * *', t)).to eq(lo(1970, 12, 31, 1, 0, 44))
+      expect(pt('43,44 * * * * *', t)).to eq(zlo(1970, 12, 31, 1, 0, 44))
 
       t = local(1970, 12, 31, 1, 1, 30) # 30 < 43 <---- here!
-      expect(pt('43,44 * * * * *', t)).to eq(lo(1970, 12, 31, 1, 0, 44))
+      expect(pt('43,44 * * * * *', t)).to eq(zlo(1970, 12, 31, 1, 0, 44))
 
       t = local(1970, 12, 31, 1, 1, 43) # 43 <= 43 < 44
-      expect(pt('43,44 * * * * *', t)).to eq(lo(1970, 12, 31, 1, 0, 44))
+      expect(pt('43,44 * * * * *', t)).to eq(zlo(1970, 12, 31, 1, 0, 44))
 
       t = local(1970, 12, 31, 1, 1, 44) # 44 <= 44
-      expect(pt('43,44 * * * * *', t)).to eq(lo(1970, 12, 31, 1, 1, 43))
+      expect(pt('43,44 * * * * *', t)).to eq(zlo(1970, 12, 31, 1, 1, 43))
 
       t = local(1970, 12, 31, 1, 1, 59) # 44 < 59
-      expect(pt('43,44 * * * * *', t)).to eq(lo(1970, 12, 31, 1, 1, 44))
+      expect(pt('43,44 * * * * *', t)).to eq(zlo(1970, 12, 31, 1, 1, 44))
 
       t = local(1970, 12, 31, 1, 1, 30) # a bigger jump
-      expect(pt('43,44 10 * * * *', t)).to eq(lo(1970, 12, 31, 0, 10, 44))
+      expect(pt('43,44 10 * * * *', t)).to eq(zlo(1970, 12, 31, 0, 10, 44))
     end
 
     # New York      EST: UTC-5
@@ -649,14 +649,14 @@ describe Rufus::Scheduler::CronLine do
 
       expect(
         pt('* 0,10,20 * * *', lo(2000, 1, 1))).to eq(
-          lo(1999, 12, 31, 20, 59, 00))
+          zlo(1999, 12, 31, 20, 59, 00))
     end
 
     it 'computes correctly when * */10' do
 
       expect(
         pt('* */10 * * *', lo(2000, 1, 1))).to eq(
-          lo(1999, 12, 31, 20, 59, 00))
+          zlo(1999, 12, 31, 20, 59, 00))
     end
   end
 

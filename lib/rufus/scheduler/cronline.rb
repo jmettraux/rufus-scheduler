@@ -161,34 +161,34 @@ class Rufus::Scheduler
     #
     def previous_time(from=Time.now)
 
-      time = nil
-      zotime = ZoTime.new(from.to_i - 1, @timezone)
+      pt = nil
+      zt = ZoTime.new(from.to_i - 1, @timezone)
 
       loop do
 
-        time = zotime.time
+        pt = zt.dup
 
-        unless date_match?(time)
-          zotime.substract(time.hour * 3600 + time.min * 60 + time.sec + 1)
+        unless date_match?(pt)
+          zt.substract(pt.hour * 3600 + pt.min * 60 + pt.sec + 1)
           next
         end
-        unless sub_match?(time, :hour, @hours)
-          zotime.substract(time.min * 60 + time.sec + 1)
+        unless sub_match?(pt, :hour, @hours)
+          zt.substract(pt.min * 60 + pt.sec + 1)
           next
         end
-        unless sub_match?(time, :min, @minutes)
-          zotime.substract(time.sec + 1)
+        unless sub_match?(pt, :min, @minutes)
+          zt.substract(pt.sec + 1)
           next
         end
-        unless sub_match?(time, :sec, @seconds)
-          zotime.substract(prev_second(time))
+        unless sub_match?(pt, :sec, @seconds)
+          zt.substract(prev_second(pt))
           next
         end
 
         break
       end
 
-      time
+      pt
     end
 
     # Returns an array of 6 arrays (seconds, minutes, hours, days,
