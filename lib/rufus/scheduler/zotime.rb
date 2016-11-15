@@ -32,8 +32,8 @@ class Rufus::Scheduler
   #
   class ZoTime
 
-    attr_accessor :seconds
-    attr_accessor :zone
+    attr_reader :seconds
+    attr_reader :zone
 
     def initialize(s, zone)
 
@@ -43,6 +43,20 @@ class Rufus::Scheduler
       fail ArgumentError.new(
         "cannot determine timezone from #{zone.inspect}"
       ) unless @zone
+
+      @time = nil # cache for #to_time result
+    end
+
+    def seconds=(f)
+
+      @time = nil
+      @seconds = f
+    end
+
+    def zone=(z)
+
+      @time = nil
+      @zone = self.class.get_tzone(zone || :current)
     end
 
     def utc
@@ -50,16 +64,18 @@ class Rufus::Scheduler
       Time.utc(1970, 1, 1) + @seconds
     end
 
-    # Returns a Ruby Time instance. Warning: the timezone will be UTC.
+    # Returns a Ruby Time instance.
+    #
+    # Warning: the timezone of that Time instance will be UTC.
     #
     def to_time
 
-      u = utc; @zone.period_for_utc(u).to_local(u)
+      @time ||= begin; u = utc; @zone.period_for_utc(u).to_local(u); end
     end
 
     extend Forwardable
     delegate [
-      :month, :day, :wday, :hour, :min, :sec, :usec, :iso8601
+      :year, :month, :day, :wday, :hour, :min, :sec, :usec, :iso8601
     ] => :to_time
 
     def ==(o)
@@ -100,8 +116,8 @@ class Rufus::Scheduler
       to_time.strftime(format)
     end
 
-    def add(t); @seconds += t.to_f; end
-    def substract(t); @seconds -= t.to_f; end
+    def add(t); @time = nil; @seconds += t.to_f; end
+    def substract(t); @time = nil; @seconds -= t.to_f; end
 
     def +(t); inc(t, 1); end
     def -(t); inc(t, -1); end
@@ -314,9 +330,11 @@ class Rufus::Scheduler
     end
 
     def _to_f(o)
+
       fail ArgumentError(
         "comparison of ZoTime with #{o.inspect} failed"
       ) unless o.is_a?(ZoTime) || o.is_a?(Time)
+
       o.to_f
     end
 
