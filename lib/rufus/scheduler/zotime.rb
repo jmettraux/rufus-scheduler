@@ -203,14 +203,16 @@ class Rufus::Scheduler
 
     def self.get_tzone(str)
 
-      str = Time.now.zone if str == :current
-
       return str if str.is_a?(::TZInfo::Timezone)
 
       # discard quickly when it's certainly not a timezone
 
       return nil if str == nil
       return nil if str == '*'
+
+      # ok, it's a timezone then
+
+      str = Time.now.zone if str == :current
 
       # utc_offset
 

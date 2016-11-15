@@ -58,9 +58,10 @@ class Rufus::Scheduler
 
       items = line.split
 
-      if tz = ZoTime.get_tzone(items.last)
-        @timezone = tz.name
+      if @timezone = ZoTime.get_tzone(items.last)
         @original_timezone = items.pop
+      else
+        @timezone = ZoTime.get_tzone(:current)
       end
 
       fail ArgumentError.new(
@@ -88,12 +89,15 @@ class Rufus::Scheduler
     #
     def matches?(time)
 
-      time = ZoTime.new(time.to_f, @timezone).time
+        # FIXME Don't create a new ZoTime if time is already a ZoTime in same
+        #       zone ...
+        #       Wait, this seems only used in specs...
+      t = ZoTime.new(time.to_f, @timezone)
 
-      return false unless sub_match?(time, :sec, @seconds)
-      return false unless sub_match?(time, :min, @minutes)
-      return false unless sub_match?(time, :hour, @hours)
-      return false unless date_match?(time)
+      return false unless sub_match?(t, :sec, @seconds)
+      return false unless sub_match?(t, :min, @minutes)
+      return false unless sub_match?(t, :hour, @hours)
+      return false unless date_match?(t)
       true
     end
 
@@ -205,7 +209,7 @@ class Rufus::Scheduler
         toa(@months),
         toa(@weekdays),
         toa(@monthdays),
-        @timezone
+        @timezone.name
       ]
     end
     alias to_array to_a
@@ -265,7 +269,9 @@ class Rufus::Scheduler
         break if delta <= 1
         break if delta <= 60 && @seconds && @seconds.size == 1
 
+#st = Time.now
         t1 = next_time(t0)
+#p Time.now - st
         d = t1 - t0
         delta = d if d < delta
 
@@ -435,11 +441,13 @@ class Rufus::Scheduler
       r.uniq
     end
 
+    # FIXME: Eventually split into day_match?, hour_match? and monthdays_match?o
+    #
     def sub_match?(time, accessor, values)
 
-      value = time.send(accessor)
-
       return true if values.nil?
+
+      value = time.send(accessor)
 
       if accessor == :day
 
