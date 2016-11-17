@@ -7,17 +7,6 @@
 
 require 'spec_helper'
 
-class Time
-
-  def to_compact_s
-
-    off = self.utc_offset / 3600
-    off = off >= 0 ? "+#{off}" : off.to_s
-
-    self.strftime('%H%M') + off + self.dup.utc.strftime('(%H%M)')
-  end
-end
-
 
 describe Rufus::Scheduler::CronLine do
 
@@ -1009,7 +998,7 @@ describe Rufus::Scheduler::CronLine do
         points =
           4.times.collect do
             t = line.next_time(t)
-            t.to_compact_s
+            t.to_utc_comparison_s
           end
 
         expect(points).to eq([
@@ -1039,7 +1028,7 @@ describe Rufus::Scheduler::CronLine do
         points =
           4.times.collect do
             t = line.previous_time(t)
-            t.to_compact_s
+            t.to_utc_comparison_s
           end
 
         expect(points).to eq([
@@ -1063,7 +1052,7 @@ describe Rufus::Scheduler::CronLine do
         points = []
         while t1 - t < 1 * 3600
           t1 = line.next_time(t1)
-          points << t1.to_compact_s
+          points << t1.to_utc_comparison_s
         end
 
         expect(points).to eq(%w[
@@ -1104,7 +1093,7 @@ describe Rufus::Scheduler::CronLine do
         points =
           4.times.collect do
             t = line.next_time(t)
-            t.to_compact_s
+            t.to_utc_comparison_s
           end
 
         expect(points).to eq([
@@ -1139,7 +1128,7 @@ describe Rufus::Scheduler::CronLine do
         points =
           (0..3).collect do
             t = line.previous_time(t)
-            t.to_compact_s
+            t.to_utc_comparison_s
           end
 
         if t.zone == 'PST'
@@ -1172,7 +1161,7 @@ describe Rufus::Scheduler::CronLine do
         points = []
         while t1 - t < 2 * 3600
           t1 = line.next_time(t1)
-          points << t1.to_compact_s
+          points << t1.to_utc_comparison_s
         end
 
         expect(points).to eq([

@@ -154,6 +154,20 @@ class Rufus::Scheduler
       strftime('%Y-%m-%d %H:%M:%S %z')
     end
 
+    # Debug current time by showing local time / delta / utc time
+    # for example: "0120-7(0820)"
+    #
+    def to_utc_comparison_s
+
+      per = @zone.period_for_utc(utc)
+      off = per.utc_total_offset
+
+      off = off / 3600
+      off = off >= 0 ? "+#{off}" : off.to_s
+
+      strftime('%H%M') + off + utc.strftime('(%H%M)')
+    end
+
     def self.now(zone=nil)
 
       ZoTime.new(Time.now.to_f, zone)
