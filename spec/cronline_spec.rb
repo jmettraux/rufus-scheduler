@@ -966,7 +966,10 @@ describe Rufus::Scheduler::CronLine do
 
       expect(
         nt('* * * * * America/Los_Angeles', Time.utc(2015, 3, 8, 9, 59))
-      ).to eq(Time.utc(2015, 3, 8, 10, 00))
+          .strftime('%Y-%m-%d %H:%M:%S %Z %z')
+      ).to eq(
+        '2015-03-08 03:00:00 PDT -0700'
+      )
     end
 
     it 'correctly increments every minute through a DST transition' do
@@ -996,7 +999,10 @@ describe Rufus::Scheduler::CronLine do
 
       expect(
         pt('* * * * * America/Los_Angeles', Time.utc(2015, 3, 8, 10, 00))
-      ).to eq(Time.utc(2015, 3, 8, 9, 59))
+          .strftime('%Y-%m-%d %H:%M:%S %Z %z')
+      ).to eq(
+        '2015-03-08 01:59:00 PST -0800'
+      )
     end
 
     it 'correctly decrements every minute through a DST transition' do
@@ -1055,7 +1061,10 @@ describe Rufus::Scheduler::CronLine do
 
       expect(
         nt('* * * * * America/Los_Angeles', Time.utc(2015, 11, 1, 9, 59))
-      ).to eq(Time.utc(2015, 11, 1, 10, 00))
+          .strftime('%Y-%m-%d %H:%M:%S %Z %z')
+      ).to eq(
+        '2015-11-01 02:00:00 PST -0800'
+      )
     end
 
     it 'correctly increments every minute through a DST transition' do
@@ -1091,7 +1100,10 @@ describe Rufus::Scheduler::CronLine do
 
       expect(
         pt('* * * * * America/Los_Angeles', Time.utc(2015, 11, 1, 10, 00))
-      ).to eq(Time.utc(2015, 11, 1, 9, 59))
+          .strftime('%Y-%m-%d %H:%M:%S %Z %z')
+      ).to eq(
+        '2015-11-01 01:59:00 PST -0800'
+      )
     end
 
     it 'correctly decrements every minute through a DST transition' do
