@@ -434,12 +434,11 @@ module Rufus
 
         return (@first_at = nil) if first == nil
 
-        n0 = Time.now
+        n0 = Rufus::Scheduler::ZoTime.now
         n1 = n0 + 0.003
 
         first = n0 if first == :now || first == :immediately || first == 0
 
-        #@first_at = Rufus::Scheduler.parse_to_time(first)
         @first_at = ZoTime.make(first)
         @first_at = n1 if @first_at >= n0 && @first_at < n1
 
@@ -531,9 +530,7 @@ module Rufus
 
       def first_at=(first)
 
-        super
-
-        @next_time = @first_at
+        @next_time = super
       end
     end
 
@@ -561,10 +558,10 @@ module Rufus
 
         return if is_post
 
-        n = Time.now
+        n = Rufus::Scheduler::ZoTime.now
 
         @next_time =
-          if @first_at == nil || @first_at < n
+          if @first_at == nil || @first_at < (n - @scheduler.frequency)
             nt = (@next_time || trigger_time || n) + @frequency
             nt > n ? nt : (trigger_time || n) + @frequency
           else

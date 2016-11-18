@@ -134,17 +134,20 @@ describe Rufus::Scheduler::RepeatJob do
 
       job = @scheduler.schedule_every '0.5s', :first => t do; end
 
-      expect(job.first_at).to eq(t)
+      expect(job.first_at.to_f).to eq(t.to_f)
+      expect(job.first_at.zone).to eq(Rufus::Scheduler::ZoTime.local_tzone)
     end
 
     it 'accepts a time string' do
 
       t = Time.now + 10
+      ts = t.to_s
+      tz = ts.match(/([+\-][\d:]+)\z/)[1]
 
-      job = @scheduler.schedule_every '0.5s', :first => t.to_s do; end
+      job = @scheduler.schedule_every '0.5s', :first => ts do; end
 
-      expect(job.first_at.to_s).to eq(t.to_s)
-      expect(job.first_at.zone).to eq(t.zone)
+      expect(job.first_at.to_s).to eq(ts)
+      expect(job.first_at.zone.name).to eq(tz) # keeping it anyway
     end
 
     it 'only lets the job trigger after the :first' do
@@ -279,7 +282,8 @@ describe Rufus::Scheduler::RepeatJob do
 
       job = @scheduler.schedule_every '0.5s', :last => t do; end
 
-      expect(job.last_at).to eq(t)
+      expect(job.last_at.to_f).to eq(t.to_f)
+      expect(job.last_at.zone).to eq(Rufus::Scheduler::ZoTime.local_tzone)
     end
 
     it 'unschedules the job after the last_at time' do
@@ -306,11 +310,13 @@ describe Rufus::Scheduler::RepeatJob do
     it 'accepts a time string' do
 
       t = Time.now + 10
+      ts = t.to_s
+      tz = ts.match(/([+\-][\d:]+)\z/)[1]
 
-      job = @scheduler.schedule_every '0.5s', :last => t.to_s do; end
+      job = @scheduler.schedule_every '0.5s', :last => ts do; end
 
-      expect(job.last_at.to_s).to eq(t.to_s)
-      expect(job.last_at.zone).to eq(t.zone)
+      expect(job.last_at.to_s).to eq(ts)
+      expect(job.last_at.zone.name).to eq(tz)
     end
 
     it 'raises on a point in the past' do
