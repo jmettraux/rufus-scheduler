@@ -135,7 +135,7 @@ RSpec::Matchers.define :be_within_1s_of do |expected|
     if actual.respond_to?(:asctime)
       "expected #{actual.inspect} to be within 1 second of #{expected}"
     else
-      "expected Time instance, got a #{actual.inspect}"
+      "expected a ZoTime instance, got a #{actual.inspect}"
     end
   end
 end

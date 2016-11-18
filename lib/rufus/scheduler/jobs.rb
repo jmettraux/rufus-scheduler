@@ -86,7 +86,7 @@ module Rufus
             nil
           end
 
-        @scheduled_at = Time.now
+        @scheduled_at = Rufus::Scheduler::ZoTime.now
         @unscheduled_at = nil
         @last_time = nil
 

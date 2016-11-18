@@ -53,10 +53,15 @@ module Rufus
 
       def each(now, &block)
 
-        to_a.sort_by { |j| j.next_time || (now + 1) }.each do |job|
+        to_a.sort_by do |j|
 
-          break unless job.next_time
-          break if job.next_time > now
+#p [ j.next_time, now, now + 1, j.next_time || (now + 1) ]
+          j.next_time || (now + 1)
+
+        end.each do |job|
+
+          nt = job.next_time
+          break if ( ! nt) || (nt > now)
 
           block.call(job)
         end

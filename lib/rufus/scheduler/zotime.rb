@@ -75,7 +75,8 @@ class Rufus::Scheduler
 
     extend Forwardable
     delegate [
-      :year, :month, :day, :wday, :hour, :min, :sec, :usec, :iso8601
+      :year, :month, :day, :wday, :hour, :min, :sec, :usec,
+      :iso8601, :asctime
     ] => :to_time
 
     def ==(o)

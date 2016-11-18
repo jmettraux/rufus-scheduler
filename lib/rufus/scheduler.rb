@@ -584,7 +584,7 @@ module Rufus
 
     def trigger_jobs
 
-      now = Time.now
+      now = Rufus::Scheduler::ZoTime.now
 
       @jobs.each(now) do |job|
 
@@ -626,7 +626,7 @@ module Rufus
         case job_type
           when :once
             opts[:_t] ||= Rufus::Scheduler.parse(t, opts)
-            opts[:_t].is_a?(Time) ? AtJob : InJob
+            opts[:_t].is_a?(Numeric) ? InJob : AtJob
           when :every
             EveryJob
           when :interval
