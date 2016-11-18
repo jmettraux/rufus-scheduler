@@ -92,15 +92,21 @@ describe Rufus::Scheduler do
     it 'accepts a time string' do
 
       job = @scheduler.at('2100-12-12 20:30', :job => true) {}
+      jt = job.time
 
-      expect(job.time).to eq(Time.parse('2100-12-12 20:30'))
+      expect(jt.zone).to eq(Rufus::Scheduler::ZoTime.local_tzone)
+      expect(jt.strftime('%Y-%m-%d %H:%M:%S')).to eq('2100-12-12 20:30:00')
     end
 
     it 'accepts a time string with a delta timezone' do
 
       job = @scheduler.at('2100-12-12 20:30 -0200', :job => true) {}
 
-      expect(job.time).to eq(Time.parse('2100-12-12 20:30 -0200'))
+      expect(
+        job.time.strftime('%Y-%m-%d %H:%M:%S %:z')
+      ).to eq(
+        '2100-12-12 20:30:00 -02:00'
+      )
     end
 
     it 'accepts a time string with a named timezone' do
