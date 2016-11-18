@@ -227,7 +227,7 @@ class Rufus::Scheduler
 
       # ok, it's a timezone then
 
-      str = Time.now.zone if str == :current
+      str = Time.now.zone if str == :current || str == :local
 
       # utc_offset
 
@@ -292,6 +292,11 @@ class Rufus::Scheduler
       # so it's not a timezone.
 
       nil
+    end
+
+    def self.local_tzone
+
+      get_tzone(:local)
     end
 
     def self.make(o)

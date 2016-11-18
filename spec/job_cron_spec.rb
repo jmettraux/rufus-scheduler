@@ -109,9 +109,11 @@ describe Rufus::Scheduler::CronJob do
 
       tomorrow = Time.now + 24 * 3600 # tomorrow
 
-      expect(
+      nt =
         @scheduler.schedule_cron("0 0 #{tomorrow.day} * *", lambda {}).next_time
-      ).to eq(Time.parse(tomorrow.strftime('%Y-%m-%d')))
+
+      expect(nt.to_f).to eq(Time.parse(tomorrow.strftime('%Y-%m-%d')).to_f)
+      expect(nt.zone).to eq(Rufus::Scheduler::ZoTime.local_tzone)
     end
 
     it 'returns the next trigger time (first_at => Time)' do
@@ -120,7 +122,10 @@ describe Rufus::Scheduler::CronJob do
 
       job = @scheduler.schedule_cron('* * 1 * *', :first_at => ft) {}
 
-      expect(job.next_time).to eq(ft)
+      nt = job.next_time
+
+      expect(nt.to_f).to eq(ft.to_f)
+      expect(nt.zone).to eq(Rufus::Scheduler::ZoTime.local_tzone)
     end
   end
 end
