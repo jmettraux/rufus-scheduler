@@ -154,7 +154,7 @@ module Rufus
 
     def uptime
 
-      @started_at ? Time.now - @started_at : nil
+      @started_at ? Rufus::Scheduler::ZoTime.now - @started_at : nil
     end
 
     def uptime_s
@@ -478,6 +478,7 @@ module Rufus
       stderr.puts("  #{pre}   tz:")
       stderr.puts("  #{pre}     ENV['TZ']: #{ENV['TZ']}")
       stderr.puts("  #{pre}     Time.now: #{Time.now}")
+      stderr.puts("  #{pre}     local_tzone: #{Rufus::Scheduler::ZoTime.local_tzone.inspect}")
       stderr.puts("  #{pre}   scheduler:")
       stderr.puts("  #{pre}     object_id: #{object_id}")
       stderr.puts("  #{pre}     opts:")
@@ -557,7 +558,7 @@ module Rufus
 
     def start
 
-      @started_at = Time.now
+      @started_at = Rufus::Scheduler::ZoTime.now
 
       @thread =
         Thread.new do
@@ -603,9 +604,9 @@ module Rufus
         next unless job && to && ts
           # thread might just have become inactive (job -> nil)
 
-        to = to.is_a?(Time) ? to : ts + to
+        to = ts + to unless to.is_a?(Rufus::Scheduler::ZoTime)
 
-        next if to > Time.now
+        next if to > Rufus::Scheduler::ZoTime.now
 
         t.raise(Rufus::Scheduler::TimeoutError)
       end

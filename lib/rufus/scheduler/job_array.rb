@@ -55,7 +55,6 @@ module Rufus
 
         to_a.sort_by do |j|
 
-#p [ j.next_time, now, now + 1, j.next_time || (now + 1) ]
           j.next_time || (now + 1)
 
         end.each do |job|

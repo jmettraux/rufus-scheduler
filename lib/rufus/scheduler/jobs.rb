@@ -144,7 +144,7 @@ module Rufus
 
       def unschedule
 
-        @unscheduled_at = Time.now
+        @unscheduled_at = Rufus::Scheduler::ZoTime.now
       end
 
       def threads
@@ -204,7 +204,7 @@ module Rufus
       #
       def call(do_rescue=false)
 
-        do_call(Time.now, do_rescue)
+        do_call(Rufus::Scheduler::ZoTime.now, do_rescue)
       end
 
       # Runs the job right now. Similar to #call but respects the job options
@@ -213,7 +213,7 @@ module Rufus
       #
       def run
 
-        trigger(Time.now)
+        trigger(Rufus::Scheduler::ZoTime.now)
       end
 
       protected
@@ -260,7 +260,7 @@ module Rufus
 
       def do_trigger(time)
 
-        t = Time.now
+        t = Rufus::Scheduler::ZoTime.now
           # if there are mutexes, t might be really bigger than time
 
         Thread.current[:rufus_scheduler_job] = self
@@ -274,7 +274,7 @@ module Rufus
       ensure
 
         @last_work_time =
-          Time.now - Thread.current[:rufus_scheduler_time]
+          Rufus::Scheduler::ZoTime.now - Thread.current[:rufus_scheduler_time]
         @mean_work_time =
           ((@count - 1) * @mean_work_time + @last_work_time) / @count
 
@@ -458,7 +458,7 @@ module Rufus
         fail ArgumentError.new(
           "cannot set last[_at|_in] in the past: " +
           "#{last.inspect} -> #{@last_at.inspect}"
-        ) if last && @last_at < Time.now
+        ) if last && @last_at < Rufus::Scheduler::ZoTime.now
 
         @last_at
       end
@@ -479,7 +479,7 @@ module Rufus
 
       def pause
 
-        @paused_at = Time.now
+        @paused_at = Rufus::Scheduler::ZoTime.now
       end
 
       def resume
@@ -599,10 +599,10 @@ module Rufus
 
         @next_time =
           if is_post
-            Time.now + @interval
+            Rufus::Scheduler::ZoTime.now + @interval
           elsif trigger_time.nil?
             if @first_at == nil || @first_at < Time.now
-              Time.now + @interval
+              Rufus::Scheduler::ZoTime.now + @interval
             else
               @first_at
             end

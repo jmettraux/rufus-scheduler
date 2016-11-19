@@ -84,7 +84,9 @@ describe Rufus::Scheduler do
 
       expect {
         pa('nada')
-      }.to raise_error(ArgumentError, 'couldn\'t parse "nada"')
+      }.to raise_error(
+        ArgumentError, 'couldn\'t parse "nada" (String)'
+      )
     end
 
     it 'does not use Chronic if not present' do

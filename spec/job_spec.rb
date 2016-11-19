@@ -651,7 +651,7 @@ describe Rufus::Scheduler::Job do
         expect(job.last_work_time).to be >= 0.08
         expect(job.last_work_time).to be < 0.099
         expect(job.mean_work_time).to be > 0.05
-        expect(job.mean_work_time).to be < 0.06
+        expect(job.mean_work_time).to be < 0.07
       end
     end
   end

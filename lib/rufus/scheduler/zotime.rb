@@ -74,10 +74,11 @@ class Rufus::Scheduler
     end
 
     %w[
-      year month day wday hour min sec usec iso8601 asctime
+      year month day wday hour min sec usec asctime
     ].each do |m|
       define_method(m) { to_time.send(m) }
     end
+    def iso8601(fraction_digits=0); to_time.iso8601(fraction_digits); end
 
     def ==(o)
 

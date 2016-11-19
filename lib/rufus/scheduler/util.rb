@@ -38,7 +38,7 @@ module Rufus
       parse_cron(o, opts) ||
       parse_in(o, opts) || # covers 'every' schedule strings
       parse_at(o, opts) ||
-      fail(ArgumentError.new("couldn't parse #{o.inspect}"))
+      fail(ArgumentError.new("couldn't parse #{o.inspect} (#{o.class})"))
     end
 
     def self.parse_cron(o, opts)
@@ -68,6 +68,8 @@ module Rufus
 
     def self.parse_at(o, opts={})
 
+      return o if o.is_a?(Rufus::Scheduler::ZoTime)
+      return Rufus::Scheduler::ZoTime.make(o) if o.is_a?(Time)
       Rufus::Scheduler::ZoTime.parse(o, opts)
 
     rescue StandardError => se

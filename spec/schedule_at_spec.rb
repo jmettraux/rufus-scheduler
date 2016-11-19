@@ -54,7 +54,7 @@ describe Rufus::Scheduler do
 
       expect(@scheduler.jobs.size).to eq(1)
       expect(@scheduler.jobs.first.class).to eq(Rufus::Scheduler::AtJob)
-      expect(@scheduler.jobs.first.time).to eq(t)
+      expect(@scheduler.jobs.first.time.to_f).to eq(t.to_f)
     end
 
     it 'triggers a job' do
@@ -86,7 +86,7 @@ describe Rufus::Scheduler do
 
       job = @scheduler.at(t, :job => true) {}
 
-      expect(job.time).to eq(t)
+      expect(job.time.to_f).to eq(t.to_f)
     end
 
     it 'accepts a time string' do

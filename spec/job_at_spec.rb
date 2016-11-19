@@ -51,7 +51,7 @@ describe Rufus::Scheduler::AtJob do
 
       job = @scheduler.schedule_at t do; end
 
-      expect(job.time).to eq(t)
+      expect(job.time.to_f).to eq(t.to_f)
     end
   end
 
@@ -71,7 +71,7 @@ describe Rufus::Scheduler::AtJob do
 
       sleep 1.4
 
-      expect(t0).to eq(t)
+      expect(t0.to_f).to eq(t.to_f)
       expect(t1).to be > t
     end
   end
