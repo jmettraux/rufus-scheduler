@@ -38,22 +38,7 @@ module Rufus
       parse_cron(o, opts) ||
       parse_in(o, opts) || # covers 'every' schedule strings
       parse_at(o, opts) ||
-      fail(ArgumentError.new("couldn't parse \"#{o}\""))
-    end
-
-    def self.parse_in(o, opts={})
-
-      o.is_a?(String) ? parse_duration(o, opts) : o
-    end
-
-    def self.parse_at(o, opts={})
-
-      Rufus::Scheduler::ZoTime.parse(o, opts)
-
-    rescue StandardError => se
-
-      return nil if opts[:no_error]
-      fail se
+      fail(ArgumentError.new("couldn't parse #{o.inspect}"))
     end
 
     def self.parse_cron(o, opts)
@@ -64,6 +49,31 @@ module Rufus
 
       return nil if opts[:no_error]
       fail ae
+    end
+
+    def self.parse_in(o, opts={})
+
+      #o.is_a?(String) ? parse_duration(o, opts) : o
+
+      return parse_duration(o, opts) if o.is_a?(String)
+      return o if o.is_a?(Numeric)
+
+      fail ArgumentError.new("couldn't parse time point in #{o.inspect}")
+
+    rescue ArgumentError => ae
+
+      return nil if opts[:no_error]
+      fail ae
+    end
+
+    def self.parse_at(o, opts={})
+
+      Rufus::Scheduler::ZoTime.parse(o, opts)
+
+    rescue StandardError => se
+
+      return nil if opts[:no_error]
+      fail se
     end
 
     DURATIONS2M = [
