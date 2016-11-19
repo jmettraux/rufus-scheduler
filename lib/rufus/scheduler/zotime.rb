@@ -73,11 +73,17 @@ class Rufus::Scheduler
       @time ||= begin; u = utc; @zone.period_for_utc(u).to_local(u); end
     end
 
-    extend Forwardable
-    delegate [
+    #extend Forwardable
+    #delegate [
+    #  :year, :month, :day, :wday, :hour, :min, :sec, :usec,
+    #  :iso8601, :asctime
+    #] => :to_time
+    [
       :year, :month, :day, :wday, :hour, :min, :sec, :usec,
       :iso8601, :asctime
-    ] => :to_time
+    ].each do |m|
+      define_method(m) { to_time.send(m) }
+    end
 
     def ==(o)
 

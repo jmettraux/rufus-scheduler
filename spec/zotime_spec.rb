@@ -406,7 +406,7 @@ describe Rufus::Scheduler::ZoTime do
     it 'accepts %Z, %z, %:z and %::z' do
 
       expect(
-        Rufus::Scheduler::ZoTime.new(0, 'Europe/Bratislava')
+        Rufus::Scheduler::ZoTime.new(0, 'Europe/Bratislava') \
           .strftime('%Y-%m-%d %H:%M:%S %Z %z %:z %::z')
       ).to eq(
         '1970-01-01 01:00:00 CET +0100 +01:00 +01:00:00'
@@ -416,7 +416,7 @@ describe Rufus::Scheduler::ZoTime do
     it 'accepts %/Z' do
 
       expect(
-        Rufus::Scheduler::ZoTime.new(0, 'Europe/Bratislava')
+        Rufus::Scheduler::ZoTime.new(0, 'Europe/Bratislava') \
           .strftime('%Y-%m-%d %H:%M:%S %/Z')
       ).to eq(
         "1970-01-01 01:00:00 Europe/Bratislava"
