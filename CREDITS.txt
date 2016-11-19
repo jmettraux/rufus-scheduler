@@ -50,6 +50,7 @@
 
 == Feedback
 
+- Akinori Musha - https://github.com/knu - ENV['TZ'] setting is harmful
 - https://github.com/piavka - for the Job#run concept
 - Nicolás Satragno - https://twitter.com/nsatragno - parse_to_time vs Date
 - d-m-u duhlmann - https://github.com/d-m-u - job opt hash preservation
