@@ -111,6 +111,14 @@ class Rufus::Scheduler
     end
     alias isdst is_dst?
 
+    def utc_offset
+
+      #@zone.period_for_utc(utc).utc_offset
+      #@zone.period_for_utc(utc).utc_total_offset
+      #@zone.period_for_utc(utc).std_offset
+      @zone.period_for_utc(utc).utc_offset
+    end
+
     def strftime(format)
 
       format = format.gsub(/%(\/?Z|:{0,2}z)/) { |f| strfz(f) }

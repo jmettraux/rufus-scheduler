@@ -142,12 +142,11 @@ describe Rufus::Scheduler::RepeatJob do
 
       t = Time.now + 10
       ts = t.to_s
-      tz = ts.match(/([+\-][\d:]+)\z/)[1]
 
       job = @scheduler.schedule_every '0.5s', :first => ts do; end
 
-      expect(job.first_at.to_s).to eq(ts)
-      expect(job.first_at.zone.name).to eq(tz) # keeping it anyway
+      expect(job.first_at.to_i).to eq(t.to_i)
+      expect(job.first_at.utc_offset).to eq(t.utc_offset)
     end
 
     it 'only lets the job trigger after the :first' do
@@ -187,11 +186,12 @@ describe Rufus::Scheduler::RepeatJob do
 
         job =
           @scheduler.schedule_every '7s', :first => :now do
-            ft ||= Time.now
+            ft ||= Rufus::Scheduler::ZoTime.now
           end
 
         sleep 0.7
 
+        expect(job.first_at.class).to eq(Rufus::Scheduler::ZoTime)
         expect(job.first_at).to be < n + 0.7
         expect(ft).not_to eq(nil)
         expect(ft).to be < job.first_at + @scheduler.frequency + 0.1
@@ -204,7 +204,7 @@ describe Rufus::Scheduler::RepeatJob do
 
         job =
           @scheduler.schedule_every '7s', :first_in => 0 do
-            ft ||= Time.now
+            ft ||= Rufus::Scheduler::ZoTime.now
           end
 
         sleep 0.7
@@ -221,7 +221,7 @@ describe Rufus::Scheduler::RepeatJob do
 
         job =
           @scheduler.schedule_every '7s', :first_in => '0s' do
-            ft ||= Time.now
+            ft ||= Rufus::Scheduler::ZoTime.now
           end
 
         sleep 0.7
@@ -311,12 +311,11 @@ describe Rufus::Scheduler::RepeatJob do
 
       t = Time.now + 10
       ts = t.to_s
-      tz = ts.match(/([+\-][\d:]+)\z/)[1]
 
       job = @scheduler.schedule_every '0.5s', :last => ts do; end
 
-      expect(job.last_at.to_s).to eq(ts)
-      expect(job.last_at.zone.name).to eq(tz)
+      expect(job.last_at.to_i).to eq(t.to_i)
+      expect(job.last_at.utc_offset).to eq(t.utc_offset)
     end
 
     it 'raises on a point in the past' do
