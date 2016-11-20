@@ -13,6 +13,7 @@ describe Rufus::Scheduler do
   describe '.parse' do
 
     def pa(s, opts={}); Rufus::Scheduler.parse(s, opts); end
+    def paus(s); Rufus::Scheduler.parse(s).getutc.strftime('%c'); end
 
     it 'parses duration strings' do
 
@@ -31,24 +32,24 @@ describe Rufus::Scheduler do
     it 'parses datetimes with timezones' do
 
       expect(
-        pa('Sun Nov 18 16:01:00 2012 Asia/Singapore').getutc.strftime('%c %z')
-      ).to eq('Sun Nov 18 08:01:00 2012 +0000')
-
-      expect(pa('Sun Nov 18 16:01:00 2012 Zulu').getutc.strftime('%c')).to eq(
-        'Sun Nov 18 16:01:00 2012'
-      )
+        paus('Sun Nov 18 16:01:00 2012 Asia/Singapore')
+      ).to eq('Sun Nov 18 08:01:00 2012')
 
       expect(
-        pa('Sun Nov 18 16:01:00 Asia/Singapore 2012').getutc.strftime('%c %z')
-      ).to eq('Sun Nov 18 08:01:00 2012 +0000')
+        paus('Sun Nov 18 16:01:00 2012 Zulu')
+      ).to eq('Sun Nov 18 16:01:00 2012')
 
       expect(
-        pa('Asia/Singapore Sun Nov 18 16:01:00 2012').getutc.strftime('%c %z')
-      ).to eq('Sun Nov 18 08:01:00 2012 +0000')
+        paus('Sun Nov 18 16:01:00 Asia/Singapore 2012')
+      ).to eq('Sun Nov 18 08:01:00 2012')
 
       expect(
-        pa('Sun Nov 18 16:01:00 2012 America/New_York').getutc.strftime('%c %z')
-      ).to eq('Sun Nov 18 21:01:00 2012 +0000')
+        paus('Asia/Singapore Sun Nov 18 16:01:00 2012')
+      ).to eq('Sun Nov 18 08:01:00 2012')
+
+      expect(
+        paus('Sun Nov 18 16:01:00 2012 America/New_York')
+      ).to eq('Sun Nov 18 21:01:00 2012')
     end
 
     it 'parses datetimes with named timezones' do

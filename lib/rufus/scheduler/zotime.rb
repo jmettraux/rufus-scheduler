@@ -175,17 +175,39 @@ class Rufus::Scheduler
       ZoTime.new(Time.now.to_f, zone)
     end
 
+    # https://en.wikipedia.org/wiki/ISO_8601
+    # Postel's law applies
+    #
+    def self.extract_iso8601_zone(s)
+
+      m = s.match(
+        /[0-2]\d(?::?[0-6]\d(?::?[0-6]\d))?\s*([+-]\d\d(?::?\d\d)?)\s*\z/)
+      return nil unless m
+
+      zs = m[1].split(':')
+      zs << '00' if zs.length < 2
+
+      zh = zs[0].to_i.abs
+
+      return nil if zh > 24
+      return nil if zh == 24 && zs[1].to_i != 0
+
+      zs.join(':')
+    end
+
     def self.parse(str, opts={})
 
       if defined?(::Chronic) && t = ::Chronic.parse(str, opts)
         return ZoTime.new(t, nil)
       end
 
+      rold = RUBY_VERSION < '1.9.0'
+
       begin
         DateTime.parse(str)
       rescue
         fail ArgumentError, "no time information in #{str.inspect}"
-      end if RUBY_VERSION < '1.9.0'
+      end if rold
         #
         # is necessary since Time.parse('xxx') in Ruby < 1.9 yields `now`
 
@@ -202,18 +224,25 @@ class Rufus::Scheduler
         end
 
       local = Time.parse(s)
+      izone = extract_iso8601_zone(s)
 
       zone ||=
         if s.match(/\dZ\b/)
           get_tzone('Zulu')
-        elsif local.zone.nil? && s.match(/[-+]\d\d(:?\d\d)?/)
+        elsif rold && izone
+          get_tzone(izone)
+        elsif local.zone.nil? && izone
           get_tzone(local.strftime('%:z'))
         else
-          get_tzone(:current)
+          get_tzone(:local)
         end
 
-      period = zone.period_for_local(local)
-      secs = period.to_utc(local).to_f # UTC seconds
+      secs =
+        if rold && izone
+          local.to_f
+        else
+          zone.period_for_local(local).to_utc(local).to_f
+        end
 
       ZoTime.new(secs, zone)
     end

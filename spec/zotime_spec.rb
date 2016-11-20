@@ -451,5 +451,28 @@ describe Rufus::Scheduler::ZoTime do
       expect(mds(local(2011, 3, 11))).to eq(%w[ 5#2 5#-3 ])
     end
   end
+
+  describe '.extract_iso8601_zone' do
+
+    def eiz(s); Rufus::Scheduler::ZoTime.extract_iso8601_zone(s); end
+
+    it 'returns the zone string' do
+
+      expect(eiz '2016-11-01 12:30:09-01').to eq('-01:00')
+      expect(eiz '2016-11-01 12:30:09-01:00').to eq('-01:00')
+      expect(eiz '2016-11-01 12:30:09 -01').to eq('-01:00')
+      expect(eiz '2016-11-01 12:30:09 -01:00').to eq('-01:00')
+
+      expect(eiz '2016-11-01 12:30:09-01:30').to eq('-01:30')
+      expect(eiz '2016-11-01 12:30:09 -01:30').to eq('-01:30')
+    end
+
+    it 'returns nil when it cannot find a zone' do
+
+      expect(eiz '2016-11-01 12:30:09').to eq(nil)
+      expect(eiz '2016-11-01 12:30:09-25').to eq(nil)
+      expect(eiz '2016-11-01 12:30:09-25:00').to eq(nil)
+    end
+  end
 end
 
