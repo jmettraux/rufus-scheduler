@@ -98,8 +98,9 @@ describe Rufus::Scheduler::ZoTime do
         ).to eq('2015/03/08 01:59:59 MSK +0300 false')
 
       if ruby18?
-        expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{u.isdst}"
-          ).to eq('2015/03/07 22:59:59 GMT +0000 false')
+        expect(
+          u.strftime('%Y/%m/%d %H:%M:%S %Z') + " #{u.isdst} #{u.utc_offset}"
+        ).to eq('2015/03/07 22:59:59 UTC false 0')
       else
         expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{u.isdst}"
           ).to eq('2015/03/07 22:59:59 UTC +0000 false')
@@ -122,8 +123,9 @@ describe Rufus::Scheduler::ZoTime do
         ).to eq('2015/03/08 01:59:59 PST -0800 false')
 
       if ruby18?
-        expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{u.isdst}"
-          ).to eq('2015/03/08 09:59:59 GMT +0000 false')
+        expect(
+          u.strftime('%Y/%m/%d %H:%M:%S %Z') + " #{u.isdst} #{u.utc_offset}"
+        ).to eq('2015/03/08 09:59:59 UTC false 0')
       else
         expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{u.isdst}"
           ).to eq('2015/03/08 09:59:59 UTC +0000 false')
@@ -147,8 +149,9 @@ describe Rufus::Scheduler::ZoTime do
         ).to eq('2015/12/13 12:30:00 -0200 -0200 false')
 
       if ruby18?
-        expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{u.isdst}"
-          ).to eq('2015/12/13 14:30:00 GMT +0000 false')
+        expect(
+          u.strftime('%Y/%m/%d %H:%M:%S %Z') + " #{u.isdst} #{u.utc_offset}"
+        ).to eq('2015/12/13 14:30:00 UTC false 0')
       else
         expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{u.isdst}"
           ).to eq('2015/12/13 14:30:00 UTC +0000 false')
@@ -172,8 +175,9 @@ describe Rufus::Scheduler::ZoTime do
         ).to eq('2015/12/13 12:30:00 -02:00 -0200 false')
 
       if ruby18?
-        expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{u.isdst}"
-          ).to eq('2015/12/13 14:30:00 GMT +0000 false')
+        expect(
+          u.strftime('%Y/%m/%d %H:%M:%S %Z') + " #{u.isdst} #{u.utc_offset}"
+        ).to eq('2015/12/13 14:30:00 UTC false 0')
       else
         expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{u.isdst}"
           ).to eq('2015/12/13 14:30:00 UTC +0000 false')
@@ -188,6 +192,15 @@ describe Rufus::Scheduler::ZoTime do
 
         expect(zt.zone.name).to eq('Europe/Minsk')
       end
+    end
+
+    it 'fails on invalid strings' do
+
+      expect {
+        Rufus::Scheduler::ZoTime.parse('xxx')
+      }.to raise_error(
+        ArgumentError, 'no time information in "xxx"'
+      )
     end
   end
 
@@ -316,8 +329,9 @@ describe Rufus::Scheduler::ZoTime do
       expect(t.to_i).to eq(1193898300)
 
       if ruby18?
-        expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %z')
-          ).to eq('2007/11/01 06:25:00 GMT +0000')
+        expect(
+          t.strftime('%Y/%m/%d %H:%M:%S %Z') + " #{t.isdst} #{t.utc_offset}"
+        ).to eq('2007/11/01 06:25:00 UTC false 0')
       else
         expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %z')
           ).to eq('2007/11/01 06:25:00 UTC +0000')

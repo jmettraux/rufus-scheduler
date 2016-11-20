@@ -181,12 +181,13 @@ class Rufus::Scheduler
         return ZoTime.new(t, nil)
       end
 
-      #begin
-      #  DateTime.parse(str)
-      #rescue
-      #  fail ArgumentError, "no time information in #{o.inspect}"
-      #end if RUBY_VERSION < '1.9.0'
-        # disable that for now
+      begin
+        DateTime.parse(str)
+      rescue
+        fail ArgumentError, "no time information in #{str.inspect}"
+      end if RUBY_VERSION < '1.9.0'
+        #
+        # is necessary since Time.parse('xxx') in Ruby < 1.9 yields `now`
 
       zone = nil
 
@@ -307,10 +308,13 @@ class Rufus::Scheduler
           when Time
             ZoTime.new(o.to_f, o.zone)
           when Date
-            t = o.to_time
+            t =
+              o.respond_to?(:to_time) ?
+              o.to_time :
+              Time.parse(o.strftime('%Y-%m-%d %H:%M:%S'))
             ZoTime.new(t.to_f, t.zone)
           when String
-            Rufus::Scheduler.parse_in(o, :no_error => true) || ZoTime.parse(o)
+            Rufus::Scheduler.parse_in(o, :no_error => true) || self.parse(o)
           else
             o
         end
