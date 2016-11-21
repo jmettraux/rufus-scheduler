@@ -416,7 +416,7 @@ describe Rufus::Scheduler do
           sleep 1
         end
 
-      sleep 0.4
+      sleep 0.49
 
       expect(@scheduler.work_threads(:active).size).to eq(1)
 

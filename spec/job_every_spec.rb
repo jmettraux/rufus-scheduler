@@ -52,7 +52,7 @@ describe Rufus::Scheduler::EveryJob do
 
     @scheduler.every '1s' do |job|
       times << Time.now
-      job.next_time = Time.now + 3 if times.count == 2
+      job.next_time = Rufus::Scheduler::ZoTime.now + 3 if times.count == 2
     end
 
     sleep 0.3 while times.count < 3
@@ -125,7 +125,7 @@ describe Rufus::Scheduler::EveryJob do
 
         job =
           @scheduler.schedule_every '1s' do |j|
-            t1 = Time.now
+            t1 = Rufus::Scheduler::ZoTime.now
             t0 = j.previous_time
           end
         t = job.next_time

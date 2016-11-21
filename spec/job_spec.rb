@@ -662,11 +662,15 @@ describe Rufus::Scheduler::Job do
 
       it 'returns unique ids' do
 
-        ids = []
+        ids = {}
 
-        10_000.times { ids << @scheduler.in('1y') {} }
+        10_000.times do
+          id = @scheduler.in('1y') {}
+          break if ids[id]
+          ids[id] = true
+        end
 
-        expect(ids.uniq.length).to eq(ids.length)
+        expect(ids.length).to eq(10_000)
       end
     end
   end
@@ -677,11 +681,15 @@ describe Rufus::Scheduler::Job do
 
       it 'returns unique ids' do
 
-        ids = []
+        ids = {}
 
-        10_000.times { ids << @scheduler.every('1y') {} }
+        10_000.times do
+          id = @scheduler.every('1y') {}
+          break if ids[id]
+          ids[id] = true
+        end
 
-        expect(ids.uniq.length).to eq(ids.length)
+        expect(ids.length).to eq(10_000)
       end
     end
   end

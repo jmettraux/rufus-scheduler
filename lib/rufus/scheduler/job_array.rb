@@ -53,9 +53,9 @@ module Rufus
 
       def each(now, &block)
 
-        to_a.sort_by do |j|
+        to_a.sort_by do |job|
 
-          j.next_time || (now + 1)
+          job.next_time || (now + 1)
 
         end.each do |job|
 

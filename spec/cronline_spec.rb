@@ -908,16 +908,16 @@ describe Rufus::Scheduler::CronLine do
         n0 = cl0.next_time(friday)
         n1 = cl1.next_time(friday)
 
-        expect(n0.strftime('%H:%M:%S %^a')).to eq('00:02:00 TUE')
-        expect(n1.strftime('%H:%M:%S %^a')).to eq('08:45:00 MON')
+        expect(n0.strftime('%H:%M:%S %a')).to eq('00:02:00 Tue')
+        expect(n1.strftime('%H:%M:%S %a')).to eq('08:45:00 Mon')
 
         expect(n0.isdst).to eq(true)
         expect(n1.isdst).to eq(true)
 
         expect(
-          (n0 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('23:02:00 FRI')
+          (n0 - 24 * 3600 * 3).strftime('%H:%M:%S %a')).to eq('23:02:00 Fri')
         expect(
-          (n1 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('07:45:00 FRI')
+          (n1 - 24 * 3600 * 3).strftime('%H:%M:%S %a')).to eq('07:45:00 Fri')
       end
     end
 
@@ -949,16 +949,16 @@ describe Rufus::Scheduler::CronLine do
         n0 = cl0.next_time(friday)
         n1 = cl1.next_time(friday)
 
-        expect(n0.strftime('%H:%M:%S %^a')).to eq('00:02:00 MON')
-        expect(n1.strftime('%H:%M:%S %^a')).to eq('08:45:00 MON')
+        expect(n0.strftime('%H:%M:%S %a')).to eq('00:02:00 Mon')
+        expect(n1.strftime('%H:%M:%S %a')).to eq('08:45:00 Mon')
 
         expect(n0.isdst).to eq(false)
         expect(n1.isdst).to eq(false)
 
         expect(
-          (n0 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('01:02:00 FRI')
+          (n0 - 24 * 3600 * 3).strftime('%H:%M:%S %a')).to eq('01:02:00 Fri')
         expect(
-          (n1 - 24 * 3600 * 3).strftime('%H:%M:%S %^a')).to eq('09:45:00 FRI')
+          (n1 - 24 * 3600 * 3).strftime('%H:%M:%S %a')).to eq('09:45:00 Fri')
       end
     end
 
