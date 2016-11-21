@@ -113,6 +113,24 @@ def without_chronic(&block) # for quick counter-tests ;-)
   block.call
 end
 
+class Time
+
+  def to_debug_s
+
+    uo = self.utc_offset
+    uos = uo < 0 ? '-' : '+'
+    uo = uo.abs
+    uoh, uom = [ uo / 3600, uo % 3600 ]
+
+    [
+      't',
+      self.strftime('%Y-%m-%d %H:%M:%S'),
+      "%s%02d:%02d" % [ uos, uoh, uom ],
+      "dst:#{self.isdst}"
+    ].join(' ')
+  end
+end
+
 
 #
 # matchers

@@ -97,14 +97,7 @@ describe Rufus::Scheduler::ZoTime do
       expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{t.isdst}"
         ).to eq('2015/03/08 01:59:59 MSK +0300 false')
 
-      if ruby18?
-        expect(
-          u.strftime('%Y/%m/%d %H:%M:%S %Z') + " #{u.isdst} #{u.utc_offset}"
-        ).to eq('2015/03/07 22:59:59 UTC false 0')
-      else
-        expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{u.isdst}"
-          ).to eq('2015/03/07 22:59:59 UTC +0000 false')
-      end
+      expect(u.to_debug_s).to eq('t 2015-03-07 22:59:59 +00:00 dst:false')
     end
 
     it 'parses a time string with a full name timezone' do
@@ -119,17 +112,8 @@ describe Rufus::Scheduler::ZoTime do
       expect(t.to_i).to eq(1425808799)
       expect(u.to_i).to eq(1425808799)
 
-      expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{t.isdst}"
-        ).to eq('2015/03/08 01:59:59 PST -0800 false')
-
-      if ruby18?
-        expect(
-          u.strftime('%Y/%m/%d %H:%M:%S %Z') + " #{u.isdst} #{u.utc_offset}"
-        ).to eq('2015/03/08 09:59:59 UTC false 0')
-      else
-        expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{u.isdst}"
-          ).to eq('2015/03/08 09:59:59 UTC +0000 false')
-      end
+      expect(t.to_debug_s).to eq('zt 2015-03-08 01:59:59 -08:00 dst:false')
+      expect(u.to_debug_s).to eq('t 2015-03-08 09:59:59 +00:00 dst:false')
     end
 
     it 'parses a time string with a delta timezone' do
@@ -145,17 +129,8 @@ describe Rufus::Scheduler::ZoTime do
       expect(t.to_i).to eq(1450017000)
       expect(u.to_i).to eq(1450017000)
 
-      expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{t.isdst}"
-        ).to eq('2015/12/13 12:30:00 -0200 -0200 false')
-
-      if ruby18?
-        expect(
-          u.strftime('%Y/%m/%d %H:%M:%S %Z') + " #{u.isdst} #{u.utc_offset}"
-        ).to eq('2015/12/13 14:30:00 UTC false 0')
-      else
-        expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{u.isdst}"
-          ).to eq('2015/12/13 14:30:00 UTC +0000 false')
-      end
+      expect(t.to_debug_s).to eq('zt 2015-12-13 12:30:00 -02:00 dst:false')
+      expect(u.to_debug_s).to eq('t 2015-12-13 14:30:00 +00:00 dst:false')
     end
 
     it 'parses a time string with a delta (:) timezone' do
@@ -171,17 +146,8 @@ describe Rufus::Scheduler::ZoTime do
       expect(t.to_i).to eq(1450017000)
       expect(u.to_i).to eq(1450017000)
 
-      expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{t.isdst}"
-        ).to eq('2015/12/13 12:30:00 -02:00 -0200 false')
-
-      if ruby18?
-        expect(
-          u.strftime('%Y/%m/%d %H:%M:%S %Z') + " #{u.isdst} #{u.utc_offset}"
-        ).to eq('2015/12/13 14:30:00 UTC false 0')
-      else
-        expect(u.strftime('%Y/%m/%d %H:%M:%S %Z %z') + " #{u.isdst}"
-          ).to eq('2015/12/13 14:30:00 UTC +0000 false')
-      end
+      expect(t.to_debug_s).to eq('zt 2015-12-13 12:30:00 -02:00 dst:false')
+      expect(u.to_debug_s).to eq('t 2015-12-13 14:30:00 +00:00 dst:false')
     end
 
     it 'takes the local TZ when it does not know the timezone' do
@@ -210,10 +176,9 @@ describe Rufus::Scheduler::ZoTime do
 
       expect(
         Rufus::Scheduler::ZoTime.make(
-          Time.utc(2016, 11, 01, 12, 30, 9))
+          Time.utc(2016, 11, 01, 12, 30, 9)).to_debug_s
       ).to eq(
-        Rufus::Scheduler::ZoTime.new(
-          Time.utc(2016, 11, 01, 12, 30, 9).to_f, 'UTC')
+        'zt 2016-11-01 12:30:09 +00:00 dst:false'
       )
     end
 
@@ -253,22 +218,18 @@ describe Rufus::Scheduler::ZoTime do
     it 'accepts a String (ss+01:00)' do
 
       expect(
-        Rufus::Scheduler::ZoTime.make(
-          '2016-11-01 12:30:09+01:00')
+        Rufus::Scheduler::ZoTime.make('2016-11-01 12:30:09+01:00').to_debug_s
       ).to eq(
-        Rufus::Scheduler::ZoTime.new(
-          Time.utc(2016, 11, 01, 11, 30, 9).to_f, '+01:00')
+        'zt 2016-11-01 12:30:09 +01:00 dst:false'
       )
     end
 
     it 'accepts a String (ss-01)' do
 
       expect(
-        Rufus::Scheduler::ZoTime.make(
-          '2016-11-01 12:30:09-01')
+        Rufus::Scheduler::ZoTime.make('2016-11-01 12:30:09-01').to_debug_s
       ).to eq(
-        Rufus::Scheduler::ZoTime.new(
-          Time.utc(2016, 11, 01, 13, 30, 9).to_f, '-01:00')
+        'zt 2016-11-01 12:30:09 -01:00 dst:false'
       )
     end
 
@@ -311,11 +272,12 @@ describe Rufus::Scheduler::ZoTime do
       zt = Rufus::Scheduler::ZoTime.new(1193898300, 'America/Los_Angeles')
       t = zt.to_time
 
-      expect(t.to_i
-        ).to eq(1193898300 - 7 * 3600) # /!\
+      expect(zt.to_debug_s).to eq('zt 2007-10-31 23:25:00 -08:00 dst:true')
 
-      expect(t.strftime('%Y/%m/%d %H:%M:%S ... %Z :-(')
-        ).to eq('2007/10/31 23:25:00 ... UTC :-(')
+      expect(t.to_i).to eq(1193898300 - 7 * 3600) # /!\
+
+      expect(t.to_debug_s).to eq('t 2007-10-31 23:25:00 +00:00 dst:false')
+        # Time instance stuck to UTC...
     end
   end
 
@@ -324,18 +286,12 @@ describe Rufus::Scheduler::ZoTime do
     it 'returns an UTC Time instance' do
 
       zt = Rufus::Scheduler::ZoTime.new(1193898300, 'America/Los_Angeles')
-      t = zt.utc
+      ut = zt.utc
 
-      expect(t.to_i).to eq(1193898300)
+      expect(ut.to_i).to eq(1193898300)
 
-      if ruby18?
-        expect(
-          t.strftime('%Y/%m/%d %H:%M:%S %Z') + " #{t.isdst} #{t.utc_offset}"
-        ).to eq('2007/11/01 06:25:00 UTC false 0')
-      else
-        expect(t.strftime('%Y/%m/%d %H:%M:%S %Z %z')
-          ).to eq('2007/11/01 06:25:00 UTC +0000')
-      end
+      expect(zt.to_debug_s).to eq('zt 2007-10-31 23:25:00 -08:00 dst:true')
+      expect(ut.to_debug_s).to eq('t 2007-11-01 06:25:00 +00:00 dst:false')
     end
   end
 

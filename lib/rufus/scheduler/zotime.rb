@@ -164,6 +164,21 @@ class Rufus::Scheduler
       strftime('%Y-%m-%d %H:%M:%S %z')
     end
 
+    def to_debug_s
+
+      uo = self.utc_offset
+      uos = uo < 0 ? '-' : '+'
+      uo = uo.abs
+      uoh, uom = [ uo / 3600, uo % 3600 ]
+
+      [
+        'zt',
+        self.strftime('%Y-%m-%d %H:%M:%S'),
+        "%s%02d:%02d" % [ uos, uoh, uom ],
+        "dst:#{self.isdst}"
+      ].join(' ')
+    end
+
     # Debug current time by showing local time / delta / utc time
     # for example: "0120-7(0820)"
     #
