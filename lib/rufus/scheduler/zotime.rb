@@ -225,13 +225,13 @@ class Rufus::Scheduler
       end
 
       #rold = RUBY_VERSION < '1.9.0'
-      rold = RUBY_VERSION < '2.0.0'
+      #rold = RUBY_VERSION < '2.0.0'
 
       begin
         DateTime.parse(str)
       rescue
         fail ArgumentError, "no time information in #{str.inspect}"
-      end if rold
+      end #if rold
         #
         # is necessary since Time.parse('xxx') in Ruby < 1.9 yields `now`
 
@@ -253,7 +253,8 @@ class Rufus::Scheduler
       zone ||=
         if s.match(/\dZ\b/)
           get_tzone('Zulu')
-        elsif rold && izone
+        #elsif rold && izone
+        elsif izone
           get_tzone(izone)
         elsif local.zone.nil? && izone
           get_tzone(local.strftime('%:z'))
@@ -262,7 +263,8 @@ class Rufus::Scheduler
         end
 
       secs =
-        if rold && izone
+        #if rold && izone
+        if izone
           local.to_f
         else
           zone.period_for_local(local).to_utc(local).to_f
