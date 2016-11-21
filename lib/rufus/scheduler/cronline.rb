@@ -83,6 +83,11 @@ class Rufus::Scheduler
           "invalid cronline: '#{line}'"
         ) if es && es.find { |e| ! e.is_a?(Fixnum) }
       end
+
+      if @days && @days.include?(0) # gh-221
+
+        fail ArgumentError.new('invalid day 0 in cronline')
+      end
     end
 
     # Returns true if the given time matches this cron line.

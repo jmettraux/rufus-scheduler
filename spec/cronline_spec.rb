@@ -288,6 +288,19 @@ describe Rufus::Scheduler::CronLine do
           # https://github.com/jmettraux/rufus-scheduler/pull/58
     end
 
+    it 'rejects day 0' do
+
+      expect { cl '0 0 0 * *' }.to raise_error(
+        ArgumentError, 'invalid day 0 in cronline')
+      expect { cl '* * 0 * *' }.to raise_error(
+        ArgumentError, 'invalid day 0 in cronline')
+      expect { cl '* * * 0 * *' }.to raise_error(
+        ArgumentError, 'invalid day 0 in cronline')
+          #
+          # as reported by Ramon Tayag in
+          # https://github.com/jmettraux/rufus-scheduler/issues/221
+    end
+
     it 'sorts seconds' do
 
       a_eq('23,30,10 * * * * *', [ [10,23,30], nil, nil, nil, nil, nil, nil ])
