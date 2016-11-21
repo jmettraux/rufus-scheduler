@@ -224,7 +224,8 @@ class Rufus::Scheduler
         return ZoTime.new(t, nil)
       end
 
-      rold = RUBY_VERSION < '1.9.0'
+      #rold = RUBY_VERSION < '1.9.0'
+      rold = RUBY_VERSION < '2.0.0'
 
       begin
         DateTime.parse(str)
