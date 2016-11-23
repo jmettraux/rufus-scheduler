@@ -207,15 +207,6 @@ module Rufus
         do_call(Rufus::Scheduler::ZoTime.now, do_rescue)
       end
 
-      # Runs the job right now. Similar to #call but respects the job options
-      # and uses the rufus-scheduler "infrastructure" (work threads) to run
-      # the job. (`job.running?` will yield `true`).
-      #
-      def run
-
-        trigger(Rufus::Scheduler::ZoTime.now)
-      end
-
       protected
 
       def callback(meth, time)

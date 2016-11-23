@@ -7,7 +7,6 @@
 - Reject "day 0" in cronlines, thanks to Ramon Tayag, https://github.com/ramontayag
 - Move away from ENV['TZ'], thanks to Akinori Musha, https://github.com/knu
 - Fix .parse_to_time vs Date issue, as reported by @nsatragno
-- Implement Job#run for gh-214
 
 
 == rufus-scheduler - 3.2.2    released 2016-08-14
