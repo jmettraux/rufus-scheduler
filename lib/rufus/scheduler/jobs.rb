@@ -124,22 +124,7 @@ module Rufus
         @previous_time = @next_time
         set_next_time(time)
 
-        return if (
-          opts[:overlap] == false &&
-          running?
-        )
-        return if (
-          callback(:confirm_lock, time) &&
-          callback(:on_pre_trigger, time)
-        ) == false
-
-        @count += 1
-
-        if opts[:blocking]
-          do_trigger(time)
-        else
-          do_trigger_in_thread(time)
-        end
+        do_trigger(time)
       end
 
       def unschedule
@@ -251,6 +236,26 @@ module Rufus
 
       def do_trigger(time)
 
+        return if (
+          opts[:overlap] == false &&
+          running?
+        )
+        return if (
+          callback(:confirm_lock, time) &&
+          callback(:on_pre_trigger, time)
+        ) == false
+
+        @count += 1
+
+        if opts[:blocking]
+          trigger_now(time)
+        else
+          trigger_queue(time)
+        end
+      end
+
+      def trigger_now(time)
+
         t = Rufus::Scheduler::ZoTime.now
           # if there are mutexes, t might be really bigger than time
 
@@ -302,7 +307,7 @@ module Rufus
               begin
 
                 (job.opts[:mutex] || []).reduce(
-                  lambda { job.do_trigger(time) }
+                  lambda { job.trigger_now(time) }
                 ) do |b, m|
                   lambda { mutex(m).synchronize { b.call } }
                 end.call
@@ -325,7 +330,7 @@ module Rufus
         thread
       end
 
-      def do_trigger_in_thread(time)
+      def trigger_queue(time)
 
         threads = @scheduler.work_threads
 
@@ -461,7 +466,7 @@ module Rufus
         return (@next_time = nil) if @times && @times < 1
         return (@next_time = nil) if @last_at && time >= @last_at
           #
-          # TODO: rework that, it keeps jobs one step too much in @jobs
+          # It keeps jobs one step too much in @jobs, but it's OK
 
         super
 
