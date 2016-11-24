@@ -127,6 +127,16 @@ module Rufus
         do_trigger(time)
       end
 
+      # Trigger the job right now, off of its schedule.
+      #
+      # Done in collaboration with Piavka in
+      # https://github.com/jmettraux/rufus-scheduler/issues/214
+      #
+      def trigger_off_schedule(time=Rufus::Scheduler::ZoTime.now)
+
+        do_trigger(time)
+      end
+
       def unschedule
 
         @unscheduled_at = Rufus::Scheduler::ZoTime.now

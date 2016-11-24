@@ -388,5 +388,37 @@ describe Rufus::Scheduler::RepeatJob do
       expect(job.count).to be <= 4
     end
   end
+
+  describe '#trigger_off_schedule' do
+
+    it 'calls the job' do
+
+      a = []
+      job = @scheduler.schedule_every('1s') { |j, t| a << t.to_f }
+
+      job.trigger_off_schedule
+
+      sleep 1.3
+
+      expect(a.length).to eq(2)
+      expect(job.count).to eq(2)
+    end
+
+    it 'flags the job as running' do
+
+      job = @scheduler.schedule_every('1y') { sleep 0.2 }
+
+      expect(job.running?).to eq(false)
+
+      job.trigger_off_schedule
+
+      sleep 0.05
+      expect(job.running?).to eq(true)
+
+      sleep 0.3
+
+      expect(job.running?).to eq(false)
+    end
+  end
 end
 

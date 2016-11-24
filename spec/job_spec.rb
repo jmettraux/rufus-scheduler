@@ -252,24 +252,6 @@ describe Rufus::Scheduler::Job do
     end
   end
 
-#  describe '#run' do
-#
-#    it 'calls the job in a dedicated thread' do
-#
-#      a = []
-#      job = @scheduler.schedule_in('3d') { a << 0; sleep 10; a << 1 }
-#
-#      expect(job.running?).to eq(false)
-#
-#      job.run
-#
-#      sleep 0.5
-#
-#      expect(a).to eq([ 0 ])
-#      expect(job.running?).to eq(true)
-#    end
-#  end
-
   context 'job-local variables' do
 
     describe '#[]=' do

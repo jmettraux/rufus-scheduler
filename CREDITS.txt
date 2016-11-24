@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Piavka (https://github.com/piavka) - Job#trigger_off_schedule, gh-214
 - Paulo Delgado (https://github.com/paulodelgado) counter ActiveRecord, gh-210
 - Anjali Sharma (https://github.com/anjali-sharma) enhance job#last_time example
 - Kyle Simukka (https://github.com/simook) raise on "*/0 * * * *"
@@ -52,7 +53,6 @@
 
 - Ramon Tayag - https://github.com/ramontayag - prevent day 0 in cronlines
 - Akinori Musha - https://github.com/knu - ENV['TZ'] setting is harmful
-- https://github.com/piavka - for the Job#run concept
 - Nicolás Satragno - https://twitter.com/nsatragno - parse_to_time vs Date
 - d-m-u duhlmann - https://github.com/d-m-u - job opt hash preservation
 - Anjali Sharma - https://github.com/anjali-sharma - fix typographical error
