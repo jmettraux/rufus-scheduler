@@ -22,8 +22,6 @@
 # Made in Japan.
 #++
 
-require 'tzinfo'
-
 
 class Rufus::Scheduler
 
