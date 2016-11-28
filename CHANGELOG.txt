@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.3.0    not yet released
+== rufus-scheduler - 3.3.0    released 2016-11-28
 
 - Bring in Piavka's Job#trigger_off_schedule, gh-214
 - Reject "day 0" in cronlines, thanks to Ramon Tayag, https://github.com/ramontayag
