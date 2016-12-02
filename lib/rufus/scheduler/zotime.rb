@@ -282,6 +282,7 @@ class Rufus::Scheduler
 
       # ok, it's a timezone then
 
+      ostr = str
       str = Time.now.zone if str == :current || str == :local
 
       # utc_offset
@@ -343,6 +344,13 @@ class Rufus::Scheduler
             end
         ) if hr
       end
+
+      # last try with ENV['TZ']
+
+      z =
+        (ostr == :local || ostr == :current) &&
+        (::TZInfo::Timezone.get(ENV['TZ']) rescue nil)
+      return z if z
 
       # so it's not a timezone.
 
