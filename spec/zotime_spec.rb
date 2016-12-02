@@ -1,3 +1,4 @@
+# encoding: UTF-8
 
 #
 # Specifying rufus-scheduler
@@ -49,6 +50,46 @@ describe Rufus::Scheduler::ZoTime do
       expect(gtz('06')).to eq(nil)
       expect(gtz('sun#3')).to eq(nil)
       expect(gtz('Mazda Zoom Zoom Stadium')).to eq(nil)
+    end
+
+    # gh-222
+    it "falls back to ENV['TZ'] if it doesn't know Time.now.zone" do
+
+      current = Rufus::Scheduler::ZoTime.get_tzone(:current)
+
+      class ::Time
+        alias _original_zone zone
+        def zone; "中国标准时间"; end
+      end
+
+      expect(
+        Rufus::Scheduler::ZoTime.get_tzone(:current)
+      ).to eq(nil)
+
+      expect(
+        Rufus::Scheduler::ZoTime.get_tzone(:current)
+      ).to eq(
+        Rufus::Scheduler::ZoTime.get_tzone(Time.now.zone)
+      )
+
+      in_zone 'Asia/Shanghai' do
+
+        expect(
+          Rufus::Scheduler::ZoTime.get_tzone(:current)
+        ).to eq(
+          Rufus::Scheduler::ZoTime.get_tzone('Asia/Shanghai')
+        )
+      end
+
+      class ::Time
+        def zone; _original_zone; end
+      end
+
+      expect(
+        Rufus::Scheduler::ZoTime.get_tzone(:current)
+      ).to eq(
+        current
+      )
     end
   end
 
