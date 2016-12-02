@@ -51,6 +51,7 @@
 
 == Feedback
 
+- lovingyu - https://github.com/lovingyu - fallback to ENV['TZ'] - gh-222
 - Ramon Tayag - https://github.com/ramontayag - prevent day 0 in cronlines
 - Akinori Musha - https://github.com/knu - ENV['TZ'] setting is harmful
 - Nicolás Satragno - https://twitter.com/nsatragno - parse_to_time vs Date
