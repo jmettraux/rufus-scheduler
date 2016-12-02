@@ -39,7 +39,9 @@ class Rufus::Scheduler
       @zone = self.class.get_tzone(zone || :current)
 
       fail ArgumentError.new(
-        "cannot determine timezone from #{zone.inspect}"
+        "cannot determine timezone from #{zone.inspect}" +
+        " (etz:#{ENV['TZ'].inspect},tnz:#{Time.now.zone.inspect}," +
+        "tzid:#{defined?(TZInfo::Data).inspect})"
       ) unless @zone
 
       @time = nil # cache for #to_time result
