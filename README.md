@@ -129,6 +129,7 @@ Yes, issues can be reported in [rufus-scheduler issues](https://github.com/jmett
 * [Passenger in-depth spawn methods (smart spawning)](https://www.phusionpassenger.com/library/indepth/ruby/spawn_methods/#smart-spawning-hooks)
 * [The scheduler comes up when running the Rails console or a Rake task](https://github.com/jmettraux/rufus-scheduler#avoid-scheduling-when-running-the-ruby-on-rails-console)
 * [I don't get any of this, I just want it to work in my Rails application](#so-rails)
+* [I get "zotime.rb:41:in `initialize': cannot determine timezone from nil"](#so-rails)
 
 
 ## scheduling
@@ -1417,7 +1418,39 @@ end
 # or even
 
 Rufus::Scheduler.parse("2013-12-12 14:00 Pacific/Saipan")
-  # => 2013-12-12 04:00:00 UTC
+  # => #<Rufus::Scheduler::ZoTime:0x007fb424abf4e8 @seconds=1386820800.0, @zone=#<TZInfo::DataTimezone: Pacific/Saipan>, @time=nil>
+```
+
+### I get "zotime.rb:41:in `initialize': cannot determine timezone from nil"
+
+For when you see an error like:
+```
+rufus-scheduler/lib/rufus/scheduler/zotime.rb:41:
+  in `initialize':
+    cannot determine timezone from nil (etz:nil,tnz:"中国标准时间",tzid:nil)
+      (ArgumentError)
+	from rufus-scheduler/lib/rufus/scheduler/zotime.rb:198:in `new'
+	from rufus-scheduler/lib/rufus/scheduler/zotime.rb:198:in `now'
+	from rufus-scheduler/lib/rufus/scheduler.rb:561:in `start'
+	...
+```
+
+It may happen on Windows or on systems that poor hints to Ruby on which timezone to use. It should be solved by setting explicitely the `ENV['TZ']` before the scheduler instantiation:
+```ruby
+ENV['TZ'] = 'Asia/Shanghai'
+scheduler = Rufus::Scheduler.new
+scheduler.every '2s' do
+  puts "#{Time.now} Hello #{ENV['TZ']}!"
+end
+```
+
+The value can be determined thanks to [https://en.wikipedia.org/wiki/List_of_tz_database_time_zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+
+Use a "continent/city" identifier (for example "Asia/Shanghai"). Do not use an abbreviation (not "CST") and do not use a local time zone name (not "中国标准时间").
+
+If the error persists, try to add the `tzinfo-data` to your Gemfile, as in:
+```ruby
+gem 'tzinfo-data'
 ```
 
 
