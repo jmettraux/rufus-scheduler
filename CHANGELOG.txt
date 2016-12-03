@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.3.1    not yet released
+== rufus-scheduler - 3.3.1    released 2016-12-03
 
 - gh-222 fall back on ENV['TZ'] when Time.now.zone is something
   like "中国标准时间" (ask for "Asia/Shanghai"), thanks to
