@@ -91,7 +91,7 @@ I'll drive you right to the [tracks](#so-rails).
 * As said, no more EventMachine-based scheduler
 * ```scheduler.every('100') {``` will schedule every 100 seconds (previously, it would have been 0.1s). This aligns rufus-scheduler on Ruby's ```sleep(100)```
 * The scheduler isn't catching the whole of Exception anymore, only StandardError
-* The error_handler is #on_error (instead of #on_exception), by default it now prints the details of the error to $stderr (used to be $stdout)
+* The error_handler is [#on_error](#rufusscheduleron_errorjob-error) (instead of #on_exception), by default it now prints the details of the error to $stderr (used to be $stdout)
 * Rufus::Scheduler::TimeOutError renamed to Rufus::Scheduler::TimeoutError
 * Introduction of "interval" jobs. Whereas "every" jobs are like "every 10 minutes, do this", interval jobs are like "do that, then wait for 10 minutes, then do that again, and so on"
 * Introduction of a :lockfile => true/filename mechanism to prevent multiple schedulers from executing
@@ -782,7 +782,7 @@ job =
 job.call
 ```
 
-Warning: the Scheduler#on_error handler is not involved. Error handling is the responsibility of the caller.
+Warning: the Scheduler[#on_error](#rufusscheduleron_errorjob-error) handler is not involved. Error handling is the responsibility of the caller.
 
 If the call has to be rescued by the error handler of the scheduler, ```call(true)``` might help:
 
@@ -1061,6 +1061,20 @@ We've just seen that, by default, rufus-scheduler dumps error information to $st
 def scheduler.on_error(job, error)
 
   Logger.warn("intercepted error in #{job.id}: #{error.message}")
+end
+```
+
+On Rails, the `on_error` method redefinition might look like:
+```ruby
+def scheduler.on_error(job, error)
+
+  Rails.logger.error(
+    "err#{error.object_id} rufus-scheduler intercepted #{error.inspect}" +
+    " in job #{job.inspect}")
+  error.backtrace.each_with_index do |line, i|
+    Rails.logger.error(
+      "err#{error.object_id} #{i}: #{line}")
+  end
 end
 ```
 
