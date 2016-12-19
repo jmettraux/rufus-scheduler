@@ -128,7 +128,7 @@ module Rufus
     #
     def self.start_new
 
-      fail "this is rufus-scheduler 3.0, use .new instead of .start_new"
+      fail "this is rufus-scheduler 3.x, use .new instead of .start_new"
     end
 
     def shutdown(opt=nil)
