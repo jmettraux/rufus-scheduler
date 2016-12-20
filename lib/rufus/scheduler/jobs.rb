@@ -373,7 +373,7 @@ module Rufus
           self.class.name.split(':').last.downcase[0..-4],
           @scheduled_at.to_f,
           @next_time.to_f,
-          self.hash.abs
+          (self.object_id < 0 ? 'm' : '') + self.object_id.to_s
         ].map(&:to_s).join('_')
       end
 
@@ -503,7 +503,7 @@ module Rufus
         [
           self.class.name.split(':').last.downcase[0..-4],
           @scheduled_at.to_f,
-          self.hash.abs
+          (self.object_id < 0 ? 'm' : '') + self.object_id.to_s
         ].map(&:to_s).join('_')
       end
 

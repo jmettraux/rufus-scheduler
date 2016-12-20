@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 3.3.2    not yet released
 
+- Use object_id instead of hash to make Job id
+
 
 == rufus-scheduler - 3.3.1    released 2016-12-03
 
