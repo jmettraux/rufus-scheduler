@@ -2,6 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 3.3.2    not yet released
+
+
 == rufus-scheduler - 3.3.1    released 2016-12-03
 
 - gh-222 fall back on ENV['TZ'] when Time.now.zone is something
