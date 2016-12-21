@@ -305,7 +305,7 @@ module Rufus
         jobs = jobs.reject { |j| j.next_time.nil? || j.unscheduled_at }
       end
 
-      tags = Array(opts[:tag] || opts[:tags]).collect { |t| t.to_s }
+      tags = Array(opts[:tag] || opts[:tags]).collect(&:to_s)
       jobs = jobs.reject { |j| tags.find { |t| ! j.tags.include?(t) } }
 
       jobs
