@@ -8,7 +8,7 @@ Job scheduler for Ruby (at, cron, in and every jobs).
 
 It uses threads.
 
-**Note**: maybe are you looking for the [README of rufus-scheduler 2.x](https://github.com/jmettraux/rufus-scheduler/blob/two/README.rdoc)?
+**Note**: maybe are you looking for the [README of rufus-scheduler 2.x](https://github.com/jmettraux/rufus-scheduler/blob/two/README.rdoc)? (especially if you're using [Dashing](https://github.com/Shopify/dashing) which is [stuck](https://github.com/Shopify/dashing/blob/master/dashing.gemspec) on rufus-scheduler 2.0.24)
 
 Quickstart:
 ```ruby
