@@ -279,8 +279,10 @@ class Rufus::Scheduler
 #p Time.now - st
         d = t1 - t0
         delta = d if d < delta
-
-        break if @months == nil && t1.month == 2
+        break if @months.nil? && t1.month == 2
+        break if @months.nil? && @days.nil? && t1.day == 2
+        break if @months.nil? && @days.nil? && @hours.nil? && t1.hour == 1
+        break if @months.nil? && @days.nil? && @hours.nil? && @minutes.nil? && t1.min == 1
         break if t1.year >= 2001
 
         t0 = t1

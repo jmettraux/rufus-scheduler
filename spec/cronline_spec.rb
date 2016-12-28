@@ -829,6 +829,14 @@ describe Rufus::Scheduler::CronLine do
         '5 * * * *').brute_frequency).to eq(3600)
       expect(Rufus::Scheduler::CronLine.new(
         '10,20,30 * * * *').brute_frequency).to eq(600)
+      expect(Rufus::Scheduler::CronLine.new(
+        '* 1 * * sun#2,sun#3').brute_frequency).to eq(60)
+      expect(Rufus::Scheduler::CronLine.new(
+        '0 0,12 1 */2 *').brute_frequency).to eq(43200)
+      expect(Rufus::Scheduler::CronLine.new(
+        '0 4 15-21 * *').brute_frequency).to eq(86400)
+      expect(Rufus::Scheduler::CronLine.new(
+        '1,2 * * * * 1-5').brute_frequency).to eq(1)
     end
 
     it 'returns the shortest delta between two occurrences (6 fields)' do
@@ -836,10 +844,8 @@ describe Rufus::Scheduler::CronLine do
       expect(Rufus::Scheduler::CronLine.new(
         '* * * * * *').brute_frequency).to eq(1)
 
-      #Rufus::Scheduler::CronLine.new(
-      #    '10,20,30 * * * * *').brute_frequency.should == 10
-        #
-        # takes > 20s ...
+      expect(Rufus::Scheduler::CronLine.new(
+        '10,20,30 * * * * *').brute_frequency).to eq(10)
     end
 
     # some combos only appear every other year...
