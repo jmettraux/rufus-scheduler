@@ -509,6 +509,12 @@ describe Rufus::Scheduler::CronLine do
         eq(zlocal(1970, 1, 1, 1, 2, 00))
       )
     end
+
+    it 'is not stuck in an infite loop when the calculation fails' do
+      cronline = cl('0 0 * * mon#2,tue')
+      allow(cronline).to receive(:date_match?).and_return(false)
+      expect { cronline.next_time }.to raise_error(ArgumentError)
+    end
   end
 
   describe '#next_second' do
@@ -641,6 +647,12 @@ describe Rufus::Scheduler::CronLine do
       expect(
         pt('* */10 * * *', lo(2000, 1, 1))).to eq(
           zlo(1999, 12, 31, 20, 59, 00))
+    end
+
+    it 'is not stuck in an infite loop when the calculation fails' do
+      cronline = cl('0 0 * * mon#2,tue')
+      allow(cronline).to receive(:date_match?).and_return(false)
+      expect { cronline.previous_time }.to raise_error(ArgumentError)
     end
   end
 

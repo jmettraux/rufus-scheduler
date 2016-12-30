@@ -32,6 +32,7 @@ class Rufus::Scheduler
   # (man 5 crontab) file line.
   #
   class CronLine
+    NEXT_TIME_YEAR_LIMIT = Date.today.year + 10
 
     # The string used for creating this cronline instance.
     #
@@ -142,6 +143,10 @@ class Rufus::Scheduler
 
         nt = zt.dup
 
+        fail ArgumentError.new(
+          "failed to calculate next time for '#{original}'"
+        ) if nt.year > NEXT_TIME_YEAR_LIMIT
+
         unless date_match?(nt)
           zt.add((24 - nt.hour) * 3600 - nt.min * 60 - nt.sec)
           next
@@ -176,6 +181,10 @@ class Rufus::Scheduler
       loop do
 
         pt = zt.dup
+
+        fail ArgumentError.new(
+          "failed to calculate previous time for '#{original}'"
+        ) if pt.year < 1965
 
         unless date_match?(pt)
           zt.substract(pt.hour * 3600 + pt.min * 60 + pt.sec + 1)
