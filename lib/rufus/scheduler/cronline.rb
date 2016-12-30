@@ -32,7 +32,11 @@ class Rufus::Scheduler
   # (man 5 crontab) file line.
   #
   class CronLine
-    NEXT_TIME_YEAR_LIMIT = Date.today.year + 10
+
+    # The max number of years in the future or the past before giving up
+    # searching for #next_time or #previous_time respectively
+    #
+    NEXT_TIME_MAX_YEARS = 14
 
     # The string used for creating this cronline instance.
     #
@@ -138,14 +142,16 @@ class Rufus::Scheduler
 
       nt = nil
       zt = ZoTime.new(from.to_i + 1, @timezone)
+      maxy = from.year + NEXT_TIME_MAX_YEARS
 
       loop do
 
         nt = zt.dup
 
-        fail ArgumentError.new(
-          "failed to calculate next time for '#{original}'"
-        ) if nt.year > NEXT_TIME_YEAR_LIMIT
+        fail RangeError.new(
+          "failed to reach occurrence within " +
+          "#{NEXT_TIME_MAX_YEARS} years for '#{original}'"
+        ) if nt.year > maxy
 
         unless date_match?(nt)
           zt.add((24 - nt.hour) * 3600 - nt.min * 60 - nt.sec)
@@ -177,6 +183,7 @@ class Rufus::Scheduler
 
       pt = nil
       zt = ZoTime.new(from.to_i - 1, @timezone)
+      miny = from.year - NEXT_TIME_MAX_YEARS
 
       loop do
 
@@ -185,6 +192,10 @@ class Rufus::Scheduler
         fail ArgumentError.new(
           "failed to calculate previous time for '#{original}'"
         ) if pt.year < 1965
+        fail RangeError.new(
+          "failed to reach occurrence within " +
+          "#{NEXT_TIME_MAX_YEARS} years for '#{original}'"
+        ) if pt.year < miny
 
         unless date_match?(pt)
           zt.substract(pt.hour * 3600 + pt.min * 60 + pt.sec + 1)
@@ -499,11 +510,15 @@ class Rufus::Scheduler
 
       return false unless sub_match?(zt, :day, @days)
       return false unless sub_match?(zt, :month, @months)
-      if @weekdays && @monthdays
-        return true if sub_match?(zt, :wday, @weekdays) || sub_match?(zt, :monthdays, @monthdays)
-      end
+
+      return true if (
+        (@weekdays && @monthdays) &&
+        (sub_match?(zt, :wday, @weekdays) ||
+         sub_match?(zt, :monthdays, @monthdays)))
+
       return false unless sub_match?(zt, :wday, @weekdays)
       return false unless sub_match?(zt, :monthdays, @monthdays)
+
       true
     end
   end

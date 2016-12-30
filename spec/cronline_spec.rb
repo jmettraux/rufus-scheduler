@@ -519,11 +519,12 @@ describe Rufus::Scheduler::CronLine do
       )
     end
 
-    it 'is not stuck in an infinite loop when the calculation fails' do
+    it "raises a RangeError if it doesn't reach the next time within x years" do
 
       cronline = cl('0 0 * * mon#2,tue')
-      allow(cronline).to receive(:date_match?).and_return(false)
-      expect { cronline.next_time }.to raise_error(ArgumentError)
+      class << cronline; def date_match?(x=nil); false; end; end
+
+      expect { cronline.next_time }.to raise_error(RangeError)
     end
   end
 
@@ -659,11 +660,12 @@ describe Rufus::Scheduler::CronLine do
           zlo(1999, 12, 31, 20, 59, 00))
     end
 
-    it 'is not stuck in an infinite loop when the calculation fails' do
+    it "raises a RangeError if it doesn't reach the previous time within x years" do
 
       cronline = cl('0 0 * * mon#2,tue')
-      allow(cronline).to receive(:date_match?).and_return(false)
-      expect { cronline.previous_time }.to raise_error(ArgumentError)
+      class << cronline; def date_match?(x=nil); false; end; end
+
+      expect { cronline.previous_time }.to raise_error(RangeError)
     end
   end
 
