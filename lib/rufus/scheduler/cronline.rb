@@ -499,8 +499,10 @@ class Rufus::Scheduler
 
       return false unless sub_match?(zt, :day, @days)
       return false unless sub_match?(zt, :month, @months)
+      if @weekdays && @monthdays
+        return true if sub_match?(zt, :wday, @weekdays) || sub_match?(zt, :monthdays, @monthdays)
+      end
       return false unless sub_match?(zt, :wday, @weekdays)
-      #return false unless monthday_match?(zt, @monthdays)
       return false unless sub_match?(zt, :monthdays, @monthdays)
       true
     end

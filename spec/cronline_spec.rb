@@ -73,6 +73,7 @@ describe Rufus::Scheduler::CronLine do
       a_eq '* * * * sun,2-4', [ [0], nil, nil, nil, nil, [0, 2, 3, 4], nil ]
 
       a_eq '* * * * sun,mon-tue', [ [0], nil, nil, nil, nil, [0, 1, 2], nil ]
+      a_eq '0 0 * * mon#1,tue', [[0], [0], [0], nil, nil, [2], ["1#1"]]
 
       a_eq '* * * * * *', [ nil, nil, nil, nil, nil, nil, nil ]
       a_eq '1 * * * * *', [ [1], nil, nil, nil, nil, nil, nil ]
@@ -406,6 +407,13 @@ describe Rufus::Scheduler::CronLine do
         nt('* * * * sun#2,sun#3', zlo(1970, 1, 1))).to eq(zlo(1970, 1, 11))
       expect(
         nt('* * * * sun#2,sun#3', zlo(1970, 1, 12))).to eq(zlo(1970, 1, 18))
+    end
+
+    it 'computs next time correctly when weekdays is combined with monthdays' do
+      expect(
+        nt('* * * * mon#2,tue', zlo(2016, 12, 1))).to eq(zlo(2016, 12, 6))
+      expect(
+        nt('* * * * mon#2,tue', zlo(2016, 12, 7))).to eq(zlo(2016, 12, 12))
     end
 
     it 'understands sun#L and co' do
@@ -845,6 +853,8 @@ describe Rufus::Scheduler::CronLine do
         '* 1 * * sun#2,sun#3').brute_frequency).to eq(60)
       expect(Rufus::Scheduler::CronLine.new(
         '0 0,12 1 */2 *').brute_frequency).to eq(43200)
+      expect(Rufus::Scheduler::CronLine.new(
+        '* * * * mon#2,tue').brute_frequency).to eq(60)
       expect(Rufus::Scheduler::CronLine.new(
         '0 4 15-21 * *').brute_frequency).to eq(86400)
       expect(Rufus::Scheduler::CronLine.new(
