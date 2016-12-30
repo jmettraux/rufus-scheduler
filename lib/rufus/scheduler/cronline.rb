@@ -179,7 +179,7 @@ class Rufus::Scheduler
     # Returns the previous time the cronline matched. It's like next_time, but
     # for the past.
     #
-    def previous_time(from=Time.now)
+    def previous_time(from=ZoTime.now)
 
       pt = nil
       zt = ZoTime.new(from.to_i - 1, @timezone)
