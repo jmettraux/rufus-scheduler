@@ -4,7 +4,7 @@
 
 == Contributors
 
-- Dominik Sander (https://github.com/dsander) - #brute_frequency speedup, gh-225
+- Dominik Sander (https://github.com/dsander) - gh-225, gh-226
 - Piavka (https://github.com/piavka) - Job#trigger_off_schedule, gh-214
 - Paulo Delgado (https://github.com/paulodelgado) counter ActiveRecord, gh-210
 - Anjali Sharma (https://github.com/anjali-sharma) enhance job#last_time example
