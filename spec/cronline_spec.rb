@@ -409,7 +409,8 @@ describe Rufus::Scheduler::CronLine do
         nt('* * * * sun#2,sun#3', zlo(1970, 1, 12))).to eq(zlo(1970, 1, 18))
     end
 
-    it 'computs next time correctly when weekdays is combined with monthdays' do
+    it 'computes next time correctly when weekdays is combined with monthdays' do
+
       expect(
         nt('* * * * mon#2,tue', zlo(2016, 12, 1))).to eq(zlo(2016, 12, 6))
       expect(
@@ -518,7 +519,8 @@ describe Rufus::Scheduler::CronLine do
       )
     end
 
-    it 'is not stuck in an infite loop when the calculation fails' do
+    it 'is not stuck in an infinite loop when the calculation fails' do
+
       cronline = cl('0 0 * * mon#2,tue')
       allow(cronline).to receive(:date_match?).and_return(false)
       expect { cronline.next_time }.to raise_error(ArgumentError)
@@ -657,7 +659,8 @@ describe Rufus::Scheduler::CronLine do
           zlo(1999, 12, 31, 20, 59, 00))
     end
 
-    it 'is not stuck in an infite loop when the calculation fails' do
+    it 'is not stuck in an infinite loop when the calculation fails' do
+
       cronline = cl('0 0 * * mon#2,tue')
       allow(cronline).to receive(:date_match?).and_return(false)
       expect { cronline.previous_time }.to raise_error(ArgumentError)
