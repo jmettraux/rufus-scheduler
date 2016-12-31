@@ -189,9 +189,6 @@ class Rufus::Scheduler
 
         pt = zt.dup
 
-        fail ArgumentError.new(
-          "failed to calculate previous time for '#{original}'"
-        ) if pt.year < 1965
         fail RangeError.new(
           "failed to reach occurrence within " +
           "#{NEXT_TIME_MAX_YEARS} years for '#{original}'"
