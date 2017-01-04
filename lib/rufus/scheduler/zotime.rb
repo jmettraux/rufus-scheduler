@@ -285,7 +285,7 @@ class Rufus::Scheduler
       # ok, it's a timezone then
 
       ostr = str
-      str = Time.now.zone if str == :current || str == :local
+      str = ENV['TZ'] || Time.now.zone if str == :current || str == :local
 
       # utc_offset
 

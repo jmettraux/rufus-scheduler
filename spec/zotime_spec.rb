@@ -96,6 +96,46 @@ describe Rufus::Scheduler::ZoTime do
         current
       )
     end
+
+    [ # for gh-228
+
+      [ 'Asia/Tokyo', 'Asia/Tokyo' ],
+      [ 'Asia/Shanghai', 'Asia/Shanghai' ],
+      [ 'Europe/Zurich', 'Europe/Zurich' ],
+      [ 'Europe/London', 'Europe/London' ]
+
+    ].each do |zone, target|
+
+      it "returns the current timezone for :current in #{zone}" do
+
+        in_zone(zone) do
+
+          expect(
+            Rufus::Scheduler::ZoTime.get_tzone(:current)
+          ).to eq(
+            Rufus::Scheduler::ZoTime.get_tzone(target)
+          )
+        end
+      end
+    end
+
+
+#    it 'flips burgers' do
+#      p Rufus::Scheduler::CronLine.new('* * * * *').to_a
+#      p Rufus::Scheduler::ZoTime.get_tzone(:current)
+#      in_zone 'Asia/Shanghai' do
+#        p ENV['TZ']
+#        p Rufus::Scheduler::CronLine.new('* * * * *').to_a
+#        p Rufus::Scheduler::ZoTime.get_tzone(:current)
+#      end
+#      ENV['TZ'] = 'Asia/Shanghai'
+#      p Rufus::Scheduler::CronLine.new('* * * * *').to_a
+#      #p Rufus::Scheduler::ZoTime.get_tzone('Asia/Shanghai')
+#      #p Rufus::Scheduler::ZoTime.get_tzone('America/Bahia_Banderas')
+#      #p Rufus::Scheduler::ZoTime.get_tzone('Asia/Shanghai').now
+#      #p Rufus::Scheduler::ZoTime.get_tzone('America/Bahia_Banderas').now
+#      p Rufus::Scheduler::ZoTime.get_tzone(:current)
+#    end
   end
 
   describe '.new' do
@@ -202,7 +242,7 @@ describe Rufus::Scheduler::ZoTime do
 
         zt = Rufus::Scheduler::ZoTime.parse('2015/03/08 01:59:59 Nada/Nada')
 
-        expect(zt.zone.name).to eq('Europe/Minsk')
+        expect(zt.zone.name).to eq('Europe/Moscow')
       end
     end
 
