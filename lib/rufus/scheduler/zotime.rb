@@ -308,13 +308,27 @@ class Rufus::Scheduler
 
       if str.match(/\A[A-Z0-9-]{3,6}\z/)
 
-        twin = Time.utc(Time.now.year, 1, 1)
-        tsum = Time.utc(Time.now.year, 7, 1)
+        toff = Time.now.utc_offset
+        toff = nil if str != Time.now.zone
+
+        twin = Time.utc(Time.now.year, 1, 1) # winter
+        tsum = Time.utc(Time.now.year, 7, 1) # summer
 
         z =
           ::TZInfo::Timezone.all.find do |tz|
-            tz.period_for_utc(twin).abbreviation.to_s == str ||
-            tz.period_for_utc(tsum).abbreviation.to_s == str
+
+            pwin = tz.period_for_utc(twin)
+            psum = tz.period_for_utc(tsum)
+
+            if toff
+              (pwin.abbreviation.to_s == str && pwin.utc_offset == toff) ||
+              (psum.abbreviation.to_s == str && psum.utc_offset == toff)
+            else
+              # returns the first tz with the given abbreviation, almost useless
+              # favour fully named zones...
+              pwin.abbreviation.to_s == str ||
+              psum.abbreviation.to_s == str
+            end
           end
         return z if z
       end
