@@ -84,6 +84,9 @@ describe Rufus::Scheduler::CronLine do
 
       a_eq '52 0 * * *', [ [0], [52], [0], nil, nil, nil, nil ]
 
+      a_eq '0 16 * * *', [ [0], [0], [16], nil, nil, nil, nil ]
+        # as seen on https://github.com/ondrejbartas/sidekiq-cron/issues/128
+
       #if ruby18?
       #  a_eq '0 23-24 * * *', [ [0], [0], [0, 23], nil, nil, nil, nil ]
       #else
