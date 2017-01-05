@@ -2,10 +2,11 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.3.2    not yet released
+== rufus-scheduler - 3.3.2    released 2017-01-05
 
-- Fix cron weekdays + monthdays,  by Dominik Sander
-- Speedup CronLine#brute_frequency, by Dominik Sander https://github.com/dsander
+- Fix ZoTime issue with Time.zone.now #=> 'CST', thanks zzjin
+- Fix cron weekdays + monthdays, by Dominik Sander, https://github.com/dsander
+- Speedup CronLine#brute_frequency, by Dominik Sander
 - Use object_id instead of hash to make Job id
 
 
