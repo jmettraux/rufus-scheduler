@@ -113,6 +113,25 @@ def without_chronic(&block) # for quick counter-tests ;-)
   block.call
 end
 
+def wait_until(timeout=14, frequency=0.1, &block)
+
+  start = Time.now
+
+  loop do
+
+    sleep(frequency)
+
+    #return if block.call == true
+    r = block.call
+    return r if r
+
+    break if Time.now - start > timeout
+  end
+
+  fail "timeout after #{timeout}s"
+end
+alias :wait_for :wait_until
+
 class Time
 
   def to_debug_s
