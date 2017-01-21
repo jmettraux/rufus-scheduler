@@ -85,16 +85,38 @@ describe Rufus::Scheduler::EveryJob do
 
       t = Time.now
 
+      job = @scheduler.schedule_every '3s', :first_at => t + 1 do; end
+
+      sleep 2
+
+      #p [ t, t.to_f ]
+      #p [ job.last_time.to_s, job.last_time.to_f, job.last_time - t ]
+      #p [ job.first_at.to_s, job.first_at.to_f, job.first_at - t ]
+      #puts '.'
+      #p [ job.next_time.to_s, job.next_time - t ]
+
+      expect(job.first_at).to be_within_1s_of(t + 1.5)
+      expect(job.last_time).to be_within_1s_of(job.first_at)
+      expect(job.next_time).to be_within_1s_of(t + 4.5)
+    end
+
+    it 'triggers for the first time at first_in' do
+
+      t = Time.now
+
       job = @scheduler.schedule_every '3s', :first_in => '1s' do; end
 
       sleep 2
 
       #p [ t, t.to_f ]
-      #p [ job.last_time, job.last_time.to_f ]
-      #p [ job.first_at, job.first_at.to_f ]
+      #p [ job.last_time.to_s, job.last_time.to_f, job.last_time - t ]
+      #p [ job.first_at.to_s, job.first_at.to_f, job.first_at - t ]
+      #puts '.'
+      #p [ job.next_time.to_s, job.next_time - t ]
 
-      expect(job.first_at).to be_within_1s_of(t + 2)
+      expect(job.first_at).to be_within_1s_of(t + 1.5)
       expect(job.last_time).to be_within_1s_of(job.first_at)
+      expect(job.next_time).to be_within_1s_of(t + 4.5)
     end
 
     describe '#first_at=' do
