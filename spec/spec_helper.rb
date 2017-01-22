@@ -156,7 +156,7 @@ end
 
 #require 'rspec/expectations'
 
-RSpec::Matchers.define :be_within_1s_of do |expected|
+RSpec::Matchers.define :be_within_1s_of do |expected, suffix|
 
   match do |actual|
 
@@ -170,7 +170,8 @@ RSpec::Matchers.define :be_within_1s_of do |expected|
   failure_message do |actual|
 
     if actual.respond_to?(:asctime)
-      "expected #{actual.inspect} to be within 1 second of #{expected}"
+      "expected #{actual.inspect} to be within 1 second of #{expected}" +
+      (suffix ? ' ' + suffix : '')
     else
       "expected a ZoTime instance, got a #{actual.inspect}"
     end

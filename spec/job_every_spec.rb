@@ -119,6 +119,29 @@ describe Rufus::Scheduler::EveryJob do
       expect(job.next_time).to be_within_1s_of(t + 4.5)
     end
 
+    it 'triggers once at first then repeatedly after the assigned time' do
+
+      t = Time.now
+      pt = nil
+
+      job =
+        @scheduler.schedule_every '4s', :first_in => '2s' do |j|
+          n = Time.now
+          if j.count == 1
+            expect(n).to be_within_1s_of(t + 2.3, '(count 1)')
+          else
+            expect(n).to be_within_1s_of(pt + 4.3, "(count #{job.count})")
+          end
+          pt = n
+        end
+
+      expect(job.first_at).to be_within_1s_of(t + 1.5)
+
+      wait_until { job.count == 3 }
+
+      expect(Time.now).to be_within_1s_of(t + 1 + 2 * 4)
+    end
+
     describe '#first_at=' do
 
       it 'alters @next_time' do
