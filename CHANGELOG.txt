@@ -2,6 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 3.3.3    not yet released
+
+
 == rufus-scheduler - 3.3.2    released 2017-01-05
 
 - Fix ZoTime issue with Time.zone.now #=> 'CST', thanks zzjin
