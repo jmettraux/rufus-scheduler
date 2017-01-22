@@ -193,6 +193,11 @@ class Rufus::Scheduler
       strftime('%H%M') + off + utc.strftime('(%H%M)')
     end
 
+    def to_time_s
+
+      strftime("%H:%M:%S.#{'%06d' % usec}")
+    end
+
     def self.now(zone=nil)
 
       ZoTime.new(Time.now.to_f, zone)

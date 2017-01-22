@@ -567,11 +567,10 @@ module Rufus
         n = Rufus::Scheduler::ZoTime.now
 
         @next_time =
-          if @first_at == nil || @first_at < (n - @scheduler.frequency)
-            nt = (@next_time || trigger_time || n) + @frequency
-            nt > n ? nt : (trigger_time || n) + @frequency
-          else
+          if @first_at && (trigger_time == nil || @first_at > n)
             @first_at
+          else
+            (@next_time || n) + @frequency
           end
       end
 

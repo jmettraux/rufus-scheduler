@@ -139,7 +139,7 @@ describe Rufus::Scheduler::EveryJob do
 
       wait_until { job.count == 3 }
 
-      expect(Time.now).to be_within_1s_of(t + 1 + 2 * 4)
+      expect(Time.now).to be_within_1s_of(t + 2 + 2 * 4)
     end
 
     describe '#first_at=' do

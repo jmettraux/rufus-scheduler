@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 3.3.3    not yet released
 
+- Fix for every double trigger, gh-231, thanks Sofia Bravo
+
 
 == rufus-scheduler - 3.3.2    released 2017-01-05
 

@@ -52,6 +52,7 @@
 
 == Feedback
 
+- Sofia Bravo - http://stackoverflow.com/users/1123850/sofia-bravo - gh-231
 - zzjin - https://githu.com/zzjin - 3.3.x vs CST abbreviated timezone - gh-228
 - lovingyu - https://github.com/lovingyu - fallback to ENV['TZ'] - gh-222
 - Ramon Tayag - https://github.com/ramontayag - prevent day 0 in cronlines
