@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 3.3.3    not yet released
 
+- is_a?(Fixnum) replaced by is_a?(Integer), gh-232, thanks Cody Cutrer
 - Fix for every double trigger, gh-231, thanks Sofia Bravo
 
 
