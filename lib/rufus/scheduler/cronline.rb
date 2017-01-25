@@ -86,7 +86,7 @@ class Rufus::Scheduler
 
         fail ArgumentError.new(
           "invalid cronline: '#{line}'"
-        ) if es && es.find { |e| ! e.is_a?(Fixnum) }
+        ) if es && es.find { |e| ! e.is_a?(Integer) }
       end
 
       if @days && @days.include?(0) # gh-221

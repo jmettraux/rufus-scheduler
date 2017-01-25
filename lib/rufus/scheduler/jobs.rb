@@ -426,7 +426,7 @@ module Rufus
 
         fail ArgumentError.new(
           "cannot accept :times => #{@times.inspect}, not nil or an int"
-        ) unless @times == nil || @times.is_a?(Fixnum)
+        ) unless @times == nil || @times.is_a?(Integer)
 
         self.first_at =
           opts[:first] || opts[:first_time] ||
