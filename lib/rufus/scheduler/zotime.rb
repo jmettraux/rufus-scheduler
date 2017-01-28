@@ -287,10 +287,19 @@ class Rufus::Scheduler
       return nil if str == nil
       return nil if str == '*'
 
+      ostr = str
+      str = :current if str == :local
+
+      # use Rails' zone by default if Rails is present
+
+      return Time.zone.tzinfo if (
+        ENV['TZ'].nil? && str == :current &&
+        Time.respond_to?(:zone) && Time.zone.respond_to?(:tzinfo)
+      )
+
       # ok, it's a timezone then
 
-      ostr = str
-      str = ENV['TZ'] || Time.now.zone if str == :current || str == :local
+      str = ENV['TZ'] || Time.now.zone if str == :current
 
       # utc_offset
 
@@ -368,9 +377,7 @@ class Rufus::Scheduler
 
       # last try with ENV['TZ']
 
-      z =
-        (ostr == :local || ostr == :current) &&
-        (::TZInfo::Timezone.get(ENV['TZ']) rescue nil)
+      z = ostr == :current && (::TZInfo::Timezone.get(ENV['TZ']) rescue nil)
       return z if z
 
       # so it's not a timezone.
