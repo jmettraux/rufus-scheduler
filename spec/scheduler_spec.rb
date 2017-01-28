@@ -540,7 +540,7 @@ describe Rufus::Scheduler do
         sleep 3
       end
 
-      sleep 0.49
+      sleep 1
 
       expect(@scheduler.running_jobs(:tag => 't0').map(&:original)).to eq(
         %w[ 0.1s ]
