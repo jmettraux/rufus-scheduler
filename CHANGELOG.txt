@@ -2,9 +2,10 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.3.3    not yet released
+== rufus-scheduler - 3.3.3    released 2017-01-29
 
-- use Rails' timezone by default if Rails is present, gh-230, gh-233
+- use Rails' timezone by default if Rails is present, gh-230, gh-233,
+  thanks Alexander Deeb
 - is_a?(Fixnum) replaced by is_a?(Integer), gh-232, thanks Cody Cutrer
 - Fix for every double trigger, gh-231, thanks Sofia Bravo
 
