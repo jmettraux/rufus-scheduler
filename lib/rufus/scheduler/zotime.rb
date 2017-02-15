@@ -43,8 +43,8 @@ class Rufus::Scheduler
         " (etz:#{ENV['TZ'].inspect},tnz:#{Time.now.zone.inspect}," +
         "tzid:#{defined?(TZInfo::Data).inspect})\n" +
         "Try setting `ENV['TZ'] = 'Continent/City'` in your script " +
-        "(see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)\n" +
-        (defined?(TZInfo::Data) ? '' : "And add 'tzinfo-data' to your gems")
+        "(see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)" +
+        (defined?(TZInfo::Data) ? '' : " and adding 'tzinfo-data' to your gems")
       ) unless @zone
 
       @time = nil # cache for #to_time result
