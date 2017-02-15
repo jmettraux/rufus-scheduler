@@ -2,6 +2,9 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 3.3.4    not yet released
+
+
 == rufus-scheduler - 3.3.3    released 2017-01-29
 
 - use Rails' timezone by default if Rails is present, gh-230, gh-233,

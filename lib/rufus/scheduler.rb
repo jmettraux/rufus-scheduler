@@ -39,7 +39,7 @@ module Rufus
     require 'rufus/scheduler/job_array'
     require 'rufus/scheduler/locks'
 
-    VERSION = '3.3.3'
+    VERSION = '3.3.4'
 
     #
     # A common error class for rufus-scheduler
