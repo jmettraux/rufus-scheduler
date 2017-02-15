@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.3.4    not yet released
+== rufus-scheduler - 3.3.4    released 2017-02-16
 
 - More detailed "cannot determine timezone from nil" message, gh-237
 
