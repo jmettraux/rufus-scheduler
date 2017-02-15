@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 3.3.4    not yet released
 
+- More detailed "cannot determine timezone from nil" message, gh-237
+
 
 == rufus-scheduler - 3.3.3    released 2017-01-29
 
