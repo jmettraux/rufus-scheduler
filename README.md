@@ -1449,7 +1449,7 @@ rufus-scheduler/lib/rufus/scheduler/zotime.rb:41:
 	...
 ```
 
-It may happen on Windows or on systems that poor hints to Ruby on which timezone to use. It should be solved by setting explicitely the `ENV['TZ']` before the scheduler instantiation:
+It may happen on Windows or on systems that poorly hints to Ruby on which timezone to use. It should be solved by setting explicitely the `ENV['TZ']` before the scheduler instantiation:
 ```ruby
 ENV['TZ'] = 'Asia/Shanghai'
 scheduler = Rufus::Scheduler.new
@@ -1468,17 +1468,22 @@ end
 ```
 (Hat tip to Alexander in [gh-230](https://github.com/jmettraux/rufus-scheduler/issues/230))
 
-Rails set its timezone under `config/application.rb`.
+Rails sets its timezone under `config/application.rb`.
 
 Rufus-Scheduler 3.3.3 detects the presence of Rails and uses its timezone setting (tested with Rails 4), so setting `ENV['TZ']` should not be necessary.
 
 The value can be determined thanks to [https://en.wikipedia.org/wiki/List_of_tz_database_time_zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 
-Use a "continent/city" identifier (for example "Asia/Shanghai"). Do not use an abbreviation (not "CST") and do not use a local time zone name (not "中国标准时间").
+Use a "continent/city" identifier (for example "Asia/Shanghai"). Do not use an abbreviation (not "CST") and do not use a local time zone name (not "中国标准时间" nor "Eastern Standard Time" which, for instance, points to a time zone in America and to another one in Australia...).
 
-If the error persists, try to add the `tzinfo-data` to your Gemfile, as in:
+If the error persists (and especially on Windows), try to add the `tzinfo-data` to your Gemfile, as in:
 ```ruby
 gem 'tzinfo-data'
+```
+or by manually requiring it before requiring rufus-scheduler (if you don't use Bundler):
+```ruby
+require 'tzinfo/data'
+require 'rufus-scheduler'
 ```
 
 
