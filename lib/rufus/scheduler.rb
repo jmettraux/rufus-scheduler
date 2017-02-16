@@ -104,7 +104,7 @@ module Rufus
       @trigger_lock = opts[:trigger_lock] || Rufus::Scheduler::NullLock.new
 
       # If we can't grab the @scheduler_lock, don't run.
-      @scheduler_lock.lock || return
+      lock || return
 
       start
     end
