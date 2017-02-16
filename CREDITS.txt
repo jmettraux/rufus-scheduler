@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Daniel Rodgers-Pryor (https://github.com/djrodgerspryor) - gh-238 fix ZooKeeper example
 - Cody Cutrer (https://github.com/ccutrer) - gh-232 is_a?(Fixnum) replacement
 - Dominik Sander (https://github.com/dsander) - gh-225, gh-226
 - Piavka (https://github.com/piavka) - Job#trigger_off_schedule, gh-214
