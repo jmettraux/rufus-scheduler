@@ -64,15 +64,18 @@ describe Rufus::Scheduler::ZoTime do
           def zone; "中国标准时间"; end
         end
 
-        expect(
-          Rufus::Scheduler::ZoTime.get_tzone(:current)
-        ).to eq(nil)
-
-        expect(
-          Rufus::Scheduler::ZoTime.get_tzone(:current)
-        ).to eq(
-          Rufus::Scheduler::ZoTime.get_tzone(Time.now.zone)
-        )
+#        expect(
+#          Rufus::Scheduler::ZoTime.get_tzone(:current)
+#        ).to eq(nil)
+#
+#        expect(
+#          Rufus::Scheduler::ZoTime.get_tzone(:current)
+#        ).to eq(
+#          Rufus::Scheduler::ZoTime.get_tzone(Time.now.zone)
+#        )
+  #
+  # gh-240 introduces a way of finding the timezone by asking directly
+  # to the system, so those do return a timezone...
 
         in_zone 'Asia/Shanghai' do
 

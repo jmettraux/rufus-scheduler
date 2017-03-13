@@ -378,14 +378,52 @@ class Rufus::Scheduler
         ) if hr
       end
 
-      # last try with ENV['TZ']
+      # try with ENV['TZ']
 
       z = ostr == :current && (::TZInfo::Timezone.get(ENV['TZ']) rescue nil)
+      return z if z
+
+      # ask the system
+
+      z = ostr == :current && (debian_tz || centos_tz || osx_tz)
       return z if z
 
       # so it's not a timezone.
 
       nil
+    end
+
+    def self.debian_tz
+
+      path = '/etc/timezone'
+
+      File.exist?(path) &&
+      (::TZInfo::Timezone.get(File.read(path).strip) rescue nil)
+    end
+
+    def self.centos_tz
+
+      path = '/etc/sysconfig/clock'
+
+      File.open(path, 'rb') do |f|
+        until f.eof?
+          m = f.readline.match(/ZONE="([^"]+)"/)
+          return (::TZInfo::Timezone.get(m[1]) rescue nil) if m
+        end
+      end if File.exist?(path)
+
+      nil
+    end
+
+    def self.osx_tz
+
+      path = '/etc/localtime'
+
+      return nil unless File.exist?(path)
+
+      ::TZInfo::Timezone.get(
+        File.readlink(path).split('/')[4..-1].join('/')
+      ) rescue nil
     end
 
     def self.local_tzone
