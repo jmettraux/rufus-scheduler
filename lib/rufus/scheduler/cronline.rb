@@ -195,19 +195,19 @@ class Rufus::Scheduler
         ) if pt.year < miny
 
         unless date_match?(pt)
-          zt.substract(pt.hour * 3600 + pt.min * 60 + pt.sec + 1)
+          zt.subtract(pt.hour * 3600 + pt.min * 60 + pt.sec + 1)
           next
         end
         unless sub_match?(pt, :hour, @hours)
-          zt.substract(pt.min * 60 + pt.sec + 1)
+          zt.subtract(pt.min * 60 + pt.sec + 1)
           next
         end
         unless sub_match?(pt, :min, @minutes)
-          zt.substract(pt.sec + 1)
+          zt.subtract(pt.sec + 1)
           next
         end
         unless sub_match?(pt, :sec, @seconds)
-          zt.substract(prev_second(pt))
+          zt.subtract(prev_second(pt))
           next
         end
 

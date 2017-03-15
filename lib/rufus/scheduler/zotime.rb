@@ -130,7 +130,7 @@ class Rufus::Scheduler
     end
 
     def add(t); @time = nil; @seconds += t.to_f; end
-    def substract(t); @time = nil; @seconds -= t.to_f; end
+    def subtract(t); @time = nil; @seconds -= t.to_f; end
 
     def +(t); inc(t, 1); end
     def -(t); inc(t, -1); end
