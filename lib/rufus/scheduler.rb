@@ -409,7 +409,7 @@ module Rufus
     # Accepts a query option, which can be set to:
     # * :all (default), returns all the threads that are work threads
     #   or are currently running a job
-    # * :active, returns all threads that are currenly running a job
+    # * :active, returns all threads that are currently running a job
     # * :vacant, returns the threads that are not running a job
     #
     # If, thanks to :blocking => true, a job is scheduled to monopolize the

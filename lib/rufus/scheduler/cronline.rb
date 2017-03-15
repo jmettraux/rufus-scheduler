@@ -259,7 +259,7 @@ class Rufus::Scheduler
     #
     @cache = {}; class << self; attr_reader :cache; end
 
-    # Returns the shortest delta between two potential occurences of the
+    # Returns the shortest delta between two potential occurrences of the
     # schedule described by this cronline.
     #
     # .
