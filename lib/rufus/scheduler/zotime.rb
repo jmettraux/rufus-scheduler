@@ -431,7 +431,7 @@ class Rufus::Scheduler
 
     def self.gather_tzs
 
-      { debian: debian_tz, centos: centos_tz, osx: osx_tz }
+      { :debian => debian_tz, :centos => centos_tz, :osx => osx_tz }
     end
 
     def self.local_tzone
