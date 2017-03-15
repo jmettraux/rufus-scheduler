@@ -43,8 +43,7 @@ class Rufus::Scheduler
         " (etz:#{ENV['TZ'].inspect},tnz:#{Time.now.zone.inspect}," +
         "tzid:#{defined?(TZInfo::Data).inspect}," +
         "rv:#{RUBY_VERSION.inspect},rp:#{RUBY_PLATFORM.inspect}," +
-        "stz:(#{self.class.gather_tzs
-          .map { |k, v| "#{k}:#{v.inspect}"}.join(',')})) \n" +
+        "stz:(#{self.class.gather_tzs.map { |k, v| "#{k}:#{v.inspect}"}.join(',')})) \n" +
         "Try setting `ENV['TZ'] = 'Continent/City'` in your script " +
         "(see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)" +
         (defined?(TZInfo::Data) ? '' : " and adding 'tzinfo-data' to your gems")
@@ -388,8 +387,7 @@ class Rufus::Scheduler
 
       # ask the system
 
-      stz = gather_tzs.values.find { |tz| tz != nil }
-      z = ostr == :current && (::TZInfo::Timezone.get(stz) rescue nil)
+      z = ostr == :current && (::TZInfo::Timezone.get(find_tz) rescue nil)
       return z if z
 
       # so it's not a timezone.
@@ -402,7 +400,7 @@ class Rufus::Scheduler
       path = '/etc/timezone'
 
       File.exist?(path) ? File.read(path).strip : nil
-    end
+    rescue; nil; end
 
     def self.centos_tz
 
@@ -415,13 +413,20 @@ class Rufus::Scheduler
       end if File.exist?(path)
 
       nil
-    end
+    rescue; nil; end
 
     def self.osx_tz
 
       path = '/etc/localtime'
 
-      File.exist?(path) ? File.readlink(path).split('/')[4..-1].join('/') : nil
+      File.symlink?(path) ?
+        File.readlink(path).split('/')[4..-1].join('/') :
+        nil
+    rescue; nil; end
+
+    def self.find_tz
+
+      debian_tz || centos_tz || osx_tz
     end
 
     def self.gather_tzs
