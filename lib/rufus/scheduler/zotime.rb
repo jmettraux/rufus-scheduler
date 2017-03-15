@@ -41,7 +41,10 @@ class Rufus::Scheduler
       fail ArgumentError.new(
         "cannot determine timezone from #{zone.inspect}" +
         " (etz:#{ENV['TZ'].inspect},tnz:#{Time.now.zone.inspect}," +
-        "tzid:#{defined?(TZInfo::Data).inspect})\n" +
+        "tzid:#{defined?(TZInfo::Data).inspect}," +
+        "rv:#{RUBY_VERSION.inspect},rp:#{RUBY_PLATFORM.inspect}," +
+        "stz:(#{self.class.gather_tzs
+          .map { |k, v| "#{k}:#{v.inspect}"}.join(',')})) \n" +
         "Try setting `ENV['TZ'] = 'Continent/City'` in your script " +
         "(see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)" +
         (defined?(TZInfo::Data) ? '' : " and adding 'tzinfo-data' to your gems")
@@ -385,7 +388,8 @@ class Rufus::Scheduler
 
       # ask the system
 
-      z = ostr == :current && (debian_tz || centos_tz || osx_tz)
+      stz = gather_tzs.values.find { |tz| tz != nil }
+      z = ostr == :current && (::TZInfo::Timezone.get(stz) rescue nil)
       return z if z
 
       # so it's not a timezone.
@@ -397,8 +401,7 @@ class Rufus::Scheduler
 
       path = '/etc/timezone'
 
-      File.exist?(path) &&
-      (::TZInfo::Timezone.get(File.read(path).strip) rescue nil)
+      File.exist?(path) ? File.read(path).strip : nil
     end
 
     def self.centos_tz
@@ -407,8 +410,7 @@ class Rufus::Scheduler
 
       File.open(path, 'rb') do |f|
         until f.eof?
-          m = f.readline.match(/ZONE="([^"]+)"/)
-          return (::TZInfo::Timezone.get(m[1]) rescue nil) if m
+          if m = f.readline.match(/ZONE="([^"]+)"/); return m[1]; end
         end
       end if File.exist?(path)
 
@@ -419,11 +421,12 @@ class Rufus::Scheduler
 
       path = '/etc/localtime'
 
-      return nil unless File.exist?(path)
+      File.exist?(path) ? File.readlink(path).split('/')[4..-1].join('/') : nil
+    end
 
-      ::TZInfo::Timezone.get(
-        File.readlink(path).split('/')[4..-1].join('/')
-      ) rescue nil
+    def self.gather_tzs
+
+      { debian: debian_tz, centos: centos_tz, osx: osx_tz }
     end
 
     def self.local_tzone
