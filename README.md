@@ -439,7 +439,7 @@ job.first_at = Time.now + 10
 job.first_at = Rufus::Scheduler.parse('2029-12-12')
 ```
 
-The first argument (in all its flavours) accepts a :now or :immediately value. That schedules the first occurence for immediate triggering. Consider:
+The first argument (in all its flavours) accepts a :now or :immediately value. That schedules the first occurrence for immediate triggering. Consider:
 
 ```ruby
 require 'rufus-scheduler'
@@ -847,7 +847,7 @@ Every jobs use a time duration between each start of their execution, while inte
 
 ### frequency
 
-It returns the shortest interval of time between two potential occurences of the job.
+It returns the shortest interval of time between two potential occurrences of the job.
 
 For instance:
 ```ruby
@@ -1282,7 +1282,7 @@ end
 
 This uses a [zookeeper](http://zookeeper.apache.org/) to make sure only one scheduler in a group of distributed schedulers runs.
 
-The methods #lock and #unlock are overriden and #confirm_lock is provided,
+The methods #lock and #unlock are overridden and #confirm_lock is provided,
 to make sure that the lock is still valid.
 
 The #confirm_lock method is called right before a job triggers (if it is provided). The more generic callback #on_pre_trigger is called right after #confirm_lock.
@@ -1449,7 +1449,7 @@ rufus-scheduler/lib/rufus/scheduler/zotime.rb:41:
 	...
 ```
 
-It may happen on Windows or on systems that poorly hints to Ruby on which timezone to use. It should be solved by setting explicitely the `ENV['TZ']` before the scheduler instantiation:
+It may happen on Windows or on systems that poorly hints to Ruby on which timezone to use. It should be solved by setting explicitly the `ENV['TZ']` before the scheduler instantiation:
 ```ruby
 ENV['TZ'] = 'Asia/Shanghai'
 scheduler = Rufus::Scheduler.new

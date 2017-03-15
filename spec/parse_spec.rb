@@ -61,7 +61,7 @@ describe Rufus::Scheduler do
       )
     end
 
-    it 'parses datetimes (with the local timezone implicitely)' do
+    it 'parses datetimes (with the local timezone implicitly)' do
 
       localzone = Time.now.strftime('%z')
 

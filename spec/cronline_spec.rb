@@ -333,7 +333,7 @@ describe Rufus::Scheduler::CronLine do
 
   describe '#next_time' do
 
-    it 'computes the next occurence correctly' do
+    it 'computes the next occurrence correctly' do
 
       in_zone 'Europe/Berlin' do
 
@@ -364,7 +364,7 @@ describe Rufus::Scheduler::CronLine do
       end
     end
 
-    it 'computes the next occurence correctly in local TZ (TZ not specified)' do
+    it 'computes the next occurrence correctly in local TZ (TZ not specified)' do
 
       now = local(1970, 1, 1)
 
@@ -380,7 +380,7 @@ describe Rufus::Scheduler::CronLine do
       expect(nt('0 0 * * thu', now)).to eq(zlocal(1970, 1, 8))
     end
 
-    it 'computes the next occurence correctly in UTC (TZ specified)' do
+    it 'computes the next occurrence correctly in UTC (TZ specified)' do
 
       z = 'Europe/Stockholm'
       now = Rufus::Scheduler::ZoTime.parse("1970-1-1 00:00:00 #{z}")
