@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Benjamin Fleischer (https://github.com/bf4) - ZoTime#subtract
 - Sam Rowe (https://github.com/riddley) - gh-240 timezone for Debian
 - Daniel Rodgers-Pryor (https://github.com/djrodgerspryor) - gh-238 fix ZooKeeper example
 - Cody Cutrer (https://github.com/ccutrer) - gh-232 is_a?(Fixnum) replacement
