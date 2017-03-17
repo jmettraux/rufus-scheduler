@@ -519,5 +519,109 @@ describe Rufus::Scheduler::ZoTime do
       expect(eiz '2016-11-01 12:30:09-25:00').to eq(nil)
     end
   end
+
+  describe '.list_tzones(time)' do
+
+    it 'works in Shanghai' do
+
+      in_zone 'Asia/Shanghai' do
+
+        t = Time.parse('2017-03-18 05:48:11')
+
+        expect(
+          Rufus::Scheduler::ZoTime.list_tzones(t).collect(&:name)
+        ).to eq(%w[
+          Asia/Chongqing Asia/Chungking Asia/Harbin Asia/Macao Asia/Macau
+          Asia/Shanghai Asia/Taipei PRC ROC
+        ])
+      end
+    end
+
+    it 'works in New York (winter 2017)' do
+
+      in_zone 'America/New_York' do
+
+        t = Time.parse('2017-01-01 05:48:11')
+
+        expect(
+          Rufus::Scheduler::ZoTime.list_tzones(t).collect(&:name)
+        ).to eq(%w[
+          America/Atikokan America/Cancun America/Cayman America/Coral_Harbour
+          America/Detroit America/Fort_Wayne America/Indiana/Indianapolis
+          America/Indiana/Marengo America/Indiana/Petersburg
+          America/Indiana/Vevay America/Indiana/Vincennes
+          America/Indiana/Winamac America/Indianapolis America/Iqaluit
+          America/Jamaica America/Kentucky/Louisville
+          America/Kentucky/Monticello America/Louisville America/Montreal
+          America/Nassau America/New_York America/Nipigon America/Panama
+          America/Pangnirtung America/Port-au-Prince America/Thunder_Bay
+          America/Toronto Canada/Eastern EST EST5EDT Jamaica US/East-Indiana
+          US/Eastern US/Michigan
+        ])
+      end
+    end
+
+    it 'works in New York (summer 2017)' do
+
+      in_zone 'America/New_York' do
+
+        t = Time.parse('2017-08-01 05:48:11')
+
+        expect(
+          Rufus::Scheduler::ZoTime.list_tzones(t).collect(&:name)
+        ).to eq(%w[
+          America/Detroit America/Fort_Wayne America/Indiana/Indianapolis
+          America/Indiana/Marengo America/Indiana/Petersburg
+          America/Indiana/Vevay America/Indiana/Vincennes
+          America/Indiana/Winamac America/Indianapolis America/Iqaluit
+          America/Kentucky/Louisville
+          America/Kentucky/Monticello America/Louisville America/Montreal
+          America/Nassau America/New_York America/Nipigon
+          America/Pangnirtung America/Port-au-Prince America/Thunder_Bay
+          America/Toronto Canada/Eastern EST5EDT US/East-Indiana
+          US/Eastern US/Michigan
+        ])
+      end
+    end
+  end
+
+  describe '.determine_tzone(time)' do
+
+    it 'prefers Asia/Shanghai when in Asia/Shanghai' do
+
+      in_zone 'Asia/Shanghai' do
+
+        t = Time.parse('2017-03-18 05:48:11')
+
+        expect(
+          Rufus::Scheduler::ZoTime.determine_tzone(t).name
+        ).to eq('Asia/Shanghai')
+      end
+    end
+
+    it 'prefers America/New_York when in America/New_York (winter 2017)' do
+
+      in_zone 'America/New_York' do
+
+        t = Time.parse('2017-01-01 05:48:11')
+
+        expect(
+          Rufus::Scheduler::ZoTime.determine_tzone(t).name
+        ).to eq('America/New_York')
+      end
+    end
+
+    it 'prefers America/New_York when in America/New_York (summer 2017)' do
+
+      in_zone 'America/New_York' do
+
+        t = Time.parse('2017-08-01 05:48:11')
+
+        expect(
+          Rufus::Scheduler::ZoTime.determine_tzone(t).name
+        ).to eq('America/New_York')
+      end
+    end
+  end
 end
 

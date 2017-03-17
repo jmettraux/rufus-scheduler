@@ -480,6 +480,40 @@ class Rufus::Scheduler
       #
       # kept around as a (thread-unsafe) relic
 
+    def self.list_tzones(time)
+
+      tu = time.dup.utc # ! dup because #utc changes the tz of the Time instance
+      tzo = time.zone
+
+      twin = Time.utc(time.year, 1, 1) # winter
+      tsum = Time.utc(time.year, 7, 1) # summer
+
+      ::TZInfo::Timezone.all.select do |tz|
+
+        pwin = tz.period_for_utc(twin)
+        psum = tz.period_for_utc(tsum)
+        awin = pwin.abbreviation.to_s
+        asum = psum.abbreviation.to_s
+
+        next false \
+          unless awin == tzo || asum == tzo
+
+        time1 = tz.period_for_utc(tu).to_local(tu)
+
+        time.strftime('%M%H%d%m%Y') == time1.strftime('%M%H%d%m%Y')
+      end
+    end
+
+    def self.determine_tzone(time)
+
+      tzs = list_tzones(time)
+
+      tzname = ENV['TZ']
+      if tz = tzname && tzs.find { |z| z.name == tzname }; return tz; end
+
+      tzs.first
+    end
+
     protected
 
     def inc(t, dir)
