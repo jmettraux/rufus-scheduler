@@ -466,17 +466,19 @@ class Rufus::Scheduler
       zt
     end
 
-#    def in_zone(&block)
-#
-#      current_timezone = ENV['TZ']
-#      ENV['TZ'] = @zone
-#
-#      block.call
-#
-#    ensure
-#
-#      ENV['TZ'] = current_timezone
-#    end
+    #def in_zone(&block)
+    #
+    #  current_timezone = ENV['TZ']
+    #  ENV['TZ'] = @zone
+    #
+    #  block.call
+    #
+    #ensure
+    #
+    #  ENV['TZ'] = current_timezone
+    #end
+      #
+      # kept around as a (thread-unsafe) relic
 
     protected
 
