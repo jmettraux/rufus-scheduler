@@ -150,6 +150,15 @@ class Time
   end
 end
 
+class TZInfo::Timezone
+  def _name
+    case name
+    when /UTC\z/ then 'UTC'
+    else name
+    end
+  end
+end
+
 
 #
 # matchers
