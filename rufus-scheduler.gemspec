@@ -26,7 +26,7 @@ job scheduler for Ruby (at, cron, in and every jobs).
     '*.gemspec', '*.txt', '*.rdoc', '*.md'
   ]
 
-  s.add_runtime_dependency 'tzinfo'
+  s.add_runtime_dependency 'et-orbi', '~> 1.0'
 
   s.add_development_dependency 'rspec', '>= 2.13.0'
   s.add_development_dependency 'chronic'

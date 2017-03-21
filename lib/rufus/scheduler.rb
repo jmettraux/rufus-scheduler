@@ -25,21 +25,23 @@
 require 'date' if RUBY_VERSION < '1.9.0'
 require 'time'
 require 'thread'
-require 'tzinfo'
+
+require 'et-orbi'
 
 
 module Rufus
 
   class Scheduler
 
+    VERSION = '3.4.0'
+
+    ZoTime = ::EtOrbi::EoTime
+
     require 'rufus/scheduler/util'
-    require 'rufus/scheduler/zotime'
     require 'rufus/scheduler/jobs'
     require 'rufus/scheduler/cronline'
     require 'rufus/scheduler/job_array'
     require 'rufus/scheduler/locks'
-
-    VERSION = '3.4.0'
 
     #
     # A common error class for rufus-scheduler

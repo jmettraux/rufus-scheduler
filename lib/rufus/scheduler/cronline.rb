@@ -66,7 +66,7 @@ class Rufus::Scheduler
       if @timezone = ZoTime.get_tzone(items.last)
         @original_timezone = items.pop
       else
-        @timezone = ZoTime.get_tzone(:current)
+        @timezone = ZoTime.local_tzone
       end
 
       fail ArgumentError.new(

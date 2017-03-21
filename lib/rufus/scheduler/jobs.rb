@@ -444,8 +444,9 @@ module Rufus
         n1 = n0 + 0.003
 
         first = n0 if first == :now || first == :immediately || first == 0
+        fdur = Rufus::Scheduler.parse_duration(first, no_error: true)
 
-        @first_at = ZoTime.make(first)
+        @first_at = (fdur && (ZoTime.now + fdur)) || ZoTime.make(first)
         @first_at = n1 if @first_at >= n0 && @first_at < n1
 
         fail ArgumentError.new(
@@ -458,8 +459,13 @@ module Rufus
 
       def last_at=(last)
 
-        #@last_at = last ? Rufus::Scheduler.parse_to_time(last) : nil
-        @last_at = last ? ZoTime.make(last) : nil
+        @last_at =
+          if last
+            ldur = Rufus::Scheduler.parse_duration(last, no_error: true)
+            (ldur && (ZoTime.now + ldur)) || ZoTime.make(last)
+          else
+            nil
+          end
 
         fail ArgumentError.new(
           "cannot set last[_at|_in] in the past: " +
