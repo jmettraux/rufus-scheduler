@@ -134,8 +134,12 @@ describe Rufus::Scheduler::RepeatJob do
 
       job = @scheduler.schedule_every '0.5s', :first => t do; end
 
-      expect(job.first_at.to_f).to eq(t.to_f)
-      expect(job.first_at.zone).to eq(Rufus::Scheduler::ZoTime.local_tzone)
+      expect(
+        job.first_at.to_f
+      ).to eq(t.to_f)
+      expect(
+        job.first_at.zone.name
+      ).to eq(Rufus::Scheduler::ZoTime.local_tzone.name)
     end
 
     it 'accepts a time string' do
@@ -282,8 +286,12 @@ describe Rufus::Scheduler::RepeatJob do
 
       job = @scheduler.schedule_every '0.5s', :last => t do; end
 
-      expect(job.last_at.to_f).to eq(t.to_f)
-      expect(job.last_at.zone).to eq(Rufus::Scheduler::ZoTime.local_tzone)
+      expect(
+        job.last_at.to_f
+      ).to eq(t.to_f)
+      expect(
+        job.last_at.zone.name
+      ).to eq(Rufus::Scheduler::ZoTime.local_tzone.name)
     end
 
     it 'unschedules the job after the last_at time' do
