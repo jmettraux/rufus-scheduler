@@ -4,6 +4,7 @@
 
 == rufus-scheduler - 3.4.0    not yet released
 
+- Stop supporting Ruby < 1.9
 - Drop ZoTime for et-orbi's Etorbi::EoTime, gh-240
 - Fix for ZooKeeper example, thanks to @djrodgerspryor, gh-238
 
