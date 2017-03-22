@@ -1,6 +1,4 @@
 
-require 'set'
-
 
 class Rufus::Scheduler
 
