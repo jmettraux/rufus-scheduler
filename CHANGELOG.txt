@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.4.0    not yet released
+== rufus-scheduler - 3.4.0    released 2017-03-23
 
 - Stop supporting Ruby < 1.9
 - Drop ZoTime for et-orbi's Etorbi::EoTime, gh-240
