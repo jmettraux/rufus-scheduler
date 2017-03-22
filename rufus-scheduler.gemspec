@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.summary = 'job scheduler for Ruby (at, cron, in and every jobs)'
 
   s.description = %{
-job scheduler for Ruby (at, cron, in and every jobs).
+Job scheduler for Ruby (at, cron, in and every jobs). Not a replacement for crond.
   }.strip
 
   #s.files = `git ls-files`.split("\n")
@@ -30,7 +30,7 @@ job scheduler for Ruby (at, cron, in and every jobs).
 
   s.add_runtime_dependency 'et-orbi', '~> 1.0'
 
-  s.add_development_dependency 'rspec', '>= 2.13.0'
+  s.add_development_dependency 'rspec', '~> 3.4.0'
   s.add_development_dependency 'chronic'
 
   s.require_path = 'lib'
