@@ -459,6 +459,8 @@ module Rufus
       stderr.puts("  #{pre}     ENV['TZ']: #{ENV['TZ']}")
       stderr.puts("  #{pre}     Time.now: #{Time.now}")
       stderr.puts("  #{pre}     local_tzone: #{EoTime.local_tzone.inspect}")
+      stderr.puts("  #{pre}   et-orbi:")
+      stderr.puts("  #{pre}     #{EoTime.platform_info}")
       stderr.puts("  #{pre}   scheduler:")
       stderr.puts("  #{pre}     object_id: #{object_id}")
       stderr.puts("  #{pre}     opts:")
