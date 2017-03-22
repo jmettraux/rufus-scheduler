@@ -30,7 +30,7 @@ Job scheduler for Ruby (at, cron, in and every jobs). Not a replacement for cron
 
   s.add_runtime_dependency 'et-orbi', '~> 1.0'
 
-  s.add_development_dependency 'rspec', '~> 3.4.0'
+  s.add_development_dependency 'rspec', '~> 3.4'
   s.add_development_dependency 'chronic'
 
   s.require_path = 'lib'
