@@ -86,7 +86,7 @@ module Rufus
             nil
           end
 
-        @scheduled_at = Rufus::Scheduler::ZoTime.now
+        @scheduled_at = EoTime.now
         @unscheduled_at = nil
         @last_time = nil
 
@@ -132,14 +132,14 @@ module Rufus
       # Done in collaboration with Piavka in
       # https://github.com/jmettraux/rufus-scheduler/issues/214
       #
-      def trigger_off_schedule(time=Rufus::Scheduler::ZoTime.now)
+      def trigger_off_schedule(time=EoTime.now)
 
         do_trigger(time)
       end
 
       def unschedule
 
-        @unscheduled_at = Rufus::Scheduler::ZoTime.now
+        @unscheduled_at = EoTime.now
       end
 
       def threads
@@ -199,7 +199,7 @@ module Rufus
       #
       def call(do_rescue=false)
 
-        do_call(Rufus::Scheduler::ZoTime.now, do_rescue)
+        do_call(EoTime.now, do_rescue)
       end
 
       protected
@@ -266,7 +266,7 @@ module Rufus
 
       def trigger_now(time)
 
-        t = Rufus::Scheduler::ZoTime.now
+        t = EoTime.now
           # if there are mutexes, t might be really bigger than time
 
         Thread.current[:rufus_scheduler_job] = self
@@ -280,7 +280,7 @@ module Rufus
       ensure
 
         @last_work_time =
-          Rufus::Scheduler::ZoTime.now - Thread.current[:rufus_scheduler_time]
+          EoTime.now - Thread.current[:rufus_scheduler_time]
         @mean_work_time =
           ((@count - 1) * @mean_work_time + @last_work_time) / @count
 
@@ -440,13 +440,13 @@ module Rufus
 
         return (@first_at = nil) if first == nil
 
-        n0 = Rufus::Scheduler::ZoTime.now
+        n0 = EoTime.now
         n1 = n0 + 0.003
 
         first = n0 if first == :now || first == :immediately || first == 0
         fdur = Rufus::Scheduler.parse_duration(first, no_error: true)
 
-        @first_at = (fdur && (ZoTime.now + fdur)) || ZoTime.make(first)
+        @first_at = (fdur && (EoTime.now + fdur)) || EoTime.make(first)
         @first_at = n1 if @first_at >= n0 && @first_at < n1
 
         fail ArgumentError.new(
@@ -462,7 +462,7 @@ module Rufus
         @last_at =
           if last
             ldur = Rufus::Scheduler.parse_duration(last, no_error: true)
-            (ldur && (ZoTime.now + ldur)) || ZoTime.make(last)
+            (ldur && (EoTime.now + ldur)) || EoTime.make(last)
           else
             nil
           end
@@ -470,7 +470,7 @@ module Rufus
         fail ArgumentError.new(
           "cannot set last[_at|_in] in the past: " +
           "#{last.inspect} -> #{@last_at.inspect}"
-        ) if last && @last_at < Rufus::Scheduler::ZoTime.now
+        ) if last && @last_at < EoTime.now
 
         @last_at
       end
@@ -491,7 +491,7 @@ module Rufus
 
       def pause
 
-        @paused_at = Rufus::Scheduler::ZoTime.now
+        @paused_at = EoTime.now
       end
 
       def resume
@@ -570,7 +570,7 @@ module Rufus
 
         return if is_post
 
-        n = Rufus::Scheduler::ZoTime.now
+        n = EoTime.now
 
         @next_time =
           if @first_at && (trigger_time == nil || @first_at > n)
@@ -610,10 +610,10 @@ module Rufus
 
         @next_time =
           if is_post
-            Rufus::Scheduler::ZoTime.now + @interval
+            EoTime.now + @interval
           elsif trigger_time.nil?
             if @first_at == nil || @first_at < Time.now
-              Rufus::Scheduler::ZoTime.now + @interval
+              EoTime.now + @interval
             else
               @first_at
             end

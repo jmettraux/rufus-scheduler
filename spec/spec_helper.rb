@@ -36,7 +36,7 @@ alias lo local
 
 def zlocal(*args)
 
-  Rufus::Scheduler::ZoTime.new(Time.local(*args).to_f, nil)
+  EtOrbi::EoTime.new(Time.local(*args).to_f, nil)
 end
 alias zlo zlocal
 
@@ -47,7 +47,7 @@ end
 
 def zutc(*args)
 
-  Rufus::Scheduler::ZoTime.new(Time.utc(*args), 'Zulu')
+  EtOrbi::EoTime.new(Time.utc(*args), 'Zulu')
 end
 
 def ltz(tz, *args)
@@ -62,12 +62,12 @@ end
 
 def ztz(tz, *args)
 
-  Rufus::Scheduler::ZoTime.new(Time.local(*args), tz)
+  EtOrbi::EoTime.new(Time.local(*args), tz)
 end
 
 def ztu(tz, *args)
 
-  Rufus::Scheduler::ZoTime.new(Time.utc(*args), tz)
+  EtOrbi::EoTime.new(Time.utc(*args), tz)
 end
 
 def sleep_until_next_minute
@@ -182,7 +182,7 @@ RSpec::Matchers.define :be_within_1s_of do |expected, suffix|
       "expected #{actual.inspect} to be within 1 second of #{expected}" +
       (suffix ? ' ' + suffix : '')
     else
-      "expected a ZoTime instance, got a #{actual.inspect}"
+      "expected a EoTime instance, got a #{actual.inspect}"
     end
   end
 end

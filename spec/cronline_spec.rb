@@ -337,7 +337,7 @@ describe Rufus::Scheduler::CronLine do
 
       in_zone 'Europe/Berlin' do
 
-        now = Rufus::Scheduler::ZoTime.new(-3600, nil)
+        now = EtOrbi::EoTime.new(-3600, nil)
 
         expect(nt('* * * * *', now)).to eq(now + 60)
         expect(nt('* * * * sun', now)).to eq(now + 259200)
@@ -357,8 +357,7 @@ describe Rufus::Scheduler::CronLine do
         expect(nt('0 0 * * *', now)).to eq(now + 24 * 3600)
         expect(nt('0 24 * * *', now)).to eq(now + 24 * 3600)
 
-        now =
-          Rufus::Scheduler::ZoTime.new(local(2008, 12, 31, 23, 59, 59, 0), nil)
+        now = EtOrbi::EoTime.new(local(2008, 12, 31, 23, 59, 59, 0), nil)
 
         expect(nt('* * * * *', now)).to eq(now + 1)
       end
@@ -383,7 +382,7 @@ describe Rufus::Scheduler::CronLine do
     it 'computes the next occurrence correctly in UTC (TZ specified)' do
 
       z = 'Europe/Stockholm'
-      now = Rufus::Scheduler::ZoTime.parse("1970-1-1 00:00:00 #{z}")
+      now = EtOrbi::EoTime.parse("1970-1-1 00:00:00 #{z}")
 
       expect(nt("* * * * * #{z}", now)).to eq(ztu(z, 1969, 12, 31, 23, 1))
       expect(nt("* * * * sun #{z}", now)).to eq(ztu(z, 1970, 1, 3, 23))

@@ -35,7 +35,7 @@ module Rufus
 
     VERSION = '3.4.0'
 
-    ZoTime = ::EtOrbi::EoTime
+    EoTime = ::EtOrbi::EoTime
 
     require 'rufus/scheduler/util'
     require 'rufus/scheduler/jobs'
@@ -156,7 +156,7 @@ module Rufus
 
     def uptime
 
-      @started_at ? Rufus::Scheduler::ZoTime.now - @started_at : nil
+      @started_at ? EoTime.now - @started_at : nil
     end
 
     def uptime_s
@@ -480,7 +480,7 @@ module Rufus
       stderr.puts("  #{pre}   tz:")
       stderr.puts("  #{pre}     ENV['TZ']: #{ENV['TZ']}")
       stderr.puts("  #{pre}     Time.now: #{Time.now}")
-      stderr.puts("  #{pre}     local_tzone: #{Rufus::Scheduler::ZoTime.local_tzone.inspect}")
+      stderr.puts("  #{pre}     local_tzone: #{EoTime.local_tzone.inspect}")
       stderr.puts("  #{pre}   scheduler:")
       stderr.puts("  #{pre}     object_id: #{object_id}")
       stderr.puts("  #{pre}     opts:")
@@ -560,7 +560,7 @@ module Rufus
 
     def start
 
-      @started_at = Rufus::Scheduler::ZoTime.now
+      @started_at = EoTime.now
 
       @thread =
         Thread.new do
@@ -587,7 +587,7 @@ module Rufus
 
     def trigger_jobs
 
-      now = Rufus::Scheduler::ZoTime.now
+      now = EoTime.now
 
       @jobs.each(now) do |job|
 
@@ -606,9 +606,9 @@ module Rufus
         next unless job && to && ts
           # thread might just have become inactive (job -> nil)
 
-        to = ts + to unless to.is_a?(Rufus::Scheduler::ZoTime)
+        to = ts + to unless to.is_a?(EoTime)
 
-        next if to > Rufus::Scheduler::ZoTime.now
+        next if to > EoTime.now
 
         t.raise(Rufus::Scheduler::TimeoutError)
       end

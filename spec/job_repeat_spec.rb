@@ -139,7 +139,7 @@ describe Rufus::Scheduler::RepeatJob do
       ).to eq(t.to_f)
       expect(
         job.first_at.zone._name
-      ).to eq(Rufus::Scheduler::ZoTime.local_tzone._name)
+      ).to eq(EtOrbi::EoTime.local_tzone._name)
     end
 
     it 'accepts a time string' do
@@ -190,12 +190,12 @@ describe Rufus::Scheduler::RepeatJob do
 
         job =
           @scheduler.schedule_every '7s', :first => :now do
-            ft ||= Rufus::Scheduler::ZoTime.now
+            ft ||= EtOrbi::EoTime.now
           end
 
         sleep 0.7
 
-        expect(job.first_at.class).to eq(Rufus::Scheduler::ZoTime)
+        expect(job.first_at.class).to eq(EtOrbi::EoTime)
         expect(job.first_at).to be < n + 0.7
         expect(ft).not_to eq(nil)
         expect(ft).to be < job.first_at + @scheduler.frequency + 0.1
@@ -208,7 +208,7 @@ describe Rufus::Scheduler::RepeatJob do
 
         job =
           @scheduler.schedule_every '7s', :first_in => 0 do
-            ft ||= Rufus::Scheduler::ZoTime.now
+            ft ||= EtOrbi::EoTime.now
           end
 
         sleep 0.7
@@ -225,7 +225,7 @@ describe Rufus::Scheduler::RepeatJob do
 
         job =
           @scheduler.schedule_every '7s', :first_in => '0s' do
-            ft ||= Rufus::Scheduler::ZoTime.now
+            ft ||= EtOrbi::EoTime.now
           end
 
         sleep 0.7
@@ -291,7 +291,7 @@ describe Rufus::Scheduler::RepeatJob do
       ).to eq(t.to_f)
       expect(
         job.last_at.zone._name
-      ).to eq(Rufus::Scheduler::ZoTime.local_tzone._name)
+      ).to eq(EtOrbi::EoTime.local_tzone._name)
     end
 
     it 'unschedules the job after the last_at time' do

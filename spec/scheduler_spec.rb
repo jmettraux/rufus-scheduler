@@ -97,7 +97,7 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      expect(t.class).to eq(Rufus::Scheduler::ZoTime)
+      expect(t.class).to eq(EtOrbi::EoTime)
     end
 
     class MyHandler
@@ -986,7 +986,7 @@ describe Rufus::Scheduler do
 
       sleep 0.7
 
-      expect($tt.class).to eq(Rufus::Scheduler::ZoTime)
+      expect($tt.class).to eq(EtOrbi::EoTime)
       expect($tt).to be > start
       expect($tt).to be < Time.now
     end

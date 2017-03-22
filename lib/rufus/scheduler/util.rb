@@ -68,9 +68,9 @@ module Rufus
 
     def self.parse_at(o, opts={})
 
-      return o if o.is_a?(Rufus::Scheduler::ZoTime)
-      return Rufus::Scheduler::ZoTime.make(o) if o.is_a?(Time)
-      Rufus::Scheduler::ZoTime.parse(o, opts)
+      return o if o.is_a?(EoTime)
+      return EoTime.make(o) if o.is_a?(Time)
+      EoTime.parse(o, opts)
 
     rescue StandardError => se
 

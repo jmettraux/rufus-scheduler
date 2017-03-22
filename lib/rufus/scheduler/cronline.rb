@@ -63,10 +63,10 @@ class Rufus::Scheduler
 
       items = line.split
 
-      if @timezone = ZoTime.get_tzone(items.last)
+      if @timezone = EoTime.get_tzone(items.last)
         @original_timezone = items.pop
       else
-        @timezone = ZoTime.local_tzone
+        @timezone = EoTime.local_tzone
       end
 
       fail ArgumentError.new(
@@ -99,10 +99,10 @@ class Rufus::Scheduler
     #
     def matches?(time)
 
-        # FIXME Don't create a new ZoTime if time is already a ZoTime in same
+        # FIXME Don't create a new EoTime if time is already a EoTime in same
         #       zone ...
         #       Wait, this seems only used in specs...
-      t = ZoTime.new(time.to_f, @timezone)
+      t = EoTime.new(time.to_f, @timezone)
 
       return false unless sub_match?(t, :sec, @seconds)
       return false unless sub_match?(t, :min, @minutes)
@@ -138,10 +138,10 @@ class Rufus::Scheduler
     #
     # (Thanks to K Liu for the note and the examples)
     #
-    def next_time(from=ZoTime.now)
+    def next_time(from=EoTime.now)
 
       nt = nil
-      zt = ZoTime.new(from.to_i + 1, @timezone)
+      zt = EoTime.new(from.to_i + 1, @timezone)
       maxy = from.year + NEXT_TIME_MAX_YEARS
 
       loop do
@@ -179,10 +179,10 @@ class Rufus::Scheduler
     # Returns the previous time the cronline matched. It's like next_time, but
     # for the past.
     #
-    def previous_time(from=ZoTime.now)
+    def previous_time(from=EoTime.now)
 
       pt = nil
-      zt = ZoTime.new(from.to_i - 1, @timezone)
+      zt = EoTime.new(from.to_i - 1, @timezone)
       miny = from.year - NEXT_TIME_MAX_YEARS
 
       loop do

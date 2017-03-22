@@ -94,7 +94,7 @@ describe Rufus::Scheduler do
       job = @scheduler.at('2100-12-12 20:30', :job => true) {}
       jt = job.time
 
-      expect(jt.zone).to eq(Rufus::Scheduler::ZoTime.local_tzone)
+      expect(jt.zone).to eq(EtOrbi::EoTime.local_tzone)
       expect(jt.strftime('%Y-%m-%d %H:%M:%S')).to eq('2100-12-12 20:30:00')
     end
 
