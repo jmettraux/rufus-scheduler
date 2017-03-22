@@ -139,7 +139,7 @@ module Rufus
 
     def uptime_s
 
-      self.class.to_duration(uptime)
+      uptime ? self.class.to_duration(uptime) : ''
     end
 
     def join
