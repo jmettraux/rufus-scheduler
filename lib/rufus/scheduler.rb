@@ -544,14 +544,18 @@ module Rufus
 
       @thread =
         Thread.new do
+          begin
+            while @started_at do
 
-          while @started_at do
+              unschedule_jobs
+              trigger_jobs unless @paused
+              timeout_jobs
 
-            unschedule_jobs
-            trigger_jobs unless @paused
-            timeout_jobs
-
-            sleep(@frequency)
+              sleep(@frequency)
+            end
+          rescue => e
+            File.open('/tmp/rufus-scheduler.log', 'w') { |file| file.write("#{Time.now} scheduler error\n#{e.message}\n#{e.backtrace.join("\n")}\n") }
+            raise e
           end
         end
 
