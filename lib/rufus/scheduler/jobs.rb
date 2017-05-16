@@ -612,7 +612,10 @@ module Rufus
 
         super(scheduler, cronline, opts, block)
 
-        @cron_line = cronline.is_a?(CronLine) ? cronline : opts[:_t] || CronLine.new(cronline)
+        @cron_line =
+          opts[:_t] ||
+          (cronline.is_a?(CronLine) ? cronline : CronLine.new(cronline))
+
         set_next_time(nil)
       end
 
