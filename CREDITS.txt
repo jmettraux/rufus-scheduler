@@ -4,6 +4,7 @@
 
 == Contributors
 
+- Wes McNamee (https://github.com/ghostsquad) - let #schedule accept a CronLine
 - Joe Rafaniello (https://github.com/jrafanie) - Travis Ruby 2.4.1
 - Benjamin Fleischer (https://github.com/bf4) - ZoTime#subtract
 - Sam Rowe (https://github.com/riddley) - gh-240 timezone for Debian
