@@ -49,6 +49,15 @@ describe Rufus::Scheduler do
         @scheduler.cron '* * * * * *' do; end
       }.to raise_error(ArgumentError)
     end
+
+    it 'accepts a CronLine instance' do
+
+      cl = Rufus::Scheduler::CronLine.new('* * * * *')
+      job_id = @scheduler.cron(cl) {}
+      job = @scheduler.job(job_id)
+
+      expect(job.cron_line.object_id).to eq(cl.object_id)
+    end
   end
 
   describe '#schedule_cron' do
@@ -60,6 +69,14 @@ describe Rufus::Scheduler do
       expect(job.class).to eq(Rufus::Scheduler::CronJob)
       expect(job.original).to eq('* * * * *')
       expect(job.job_id).to match(/^cron_/)
+    end
+
+    it 'accepts a CronLine instance' do
+
+      cl = Rufus::Scheduler::CronLine.new('* * * * *')
+      job = @scheduler.schedule_cron(cl) {}
+
+      expect(job.cron_line.object_id).to eq(cl.object_id)
     end
   end
 end

@@ -19,7 +19,7 @@ module Rufus
 
     def self.parse_cron(o, opts)
 
-      CronLine.new(o)
+      o.is_a?(CronLine) ? o : CronLine.new(o)
 
     rescue ArgumentError => ae
 

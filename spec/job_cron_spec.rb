@@ -27,17 +27,6 @@ describe Rufus::Scheduler::CronJob do
 
       expect(job.last_time.to_i % 10).to eq(0)
     end
-
-    context 'when passed a cronline object' do
-      it 'triggers near the zero second' do
-        cl = Rufus::Scheduler::CronLine.new('* * * * *')
-        job = @scheduler.schedule_cron cl do; end
-
-        sleep_until_next_minute
-
-        expect(job.last_time.to_i % 10).to eq(0)
-      end
-    end
   end
 
   #context 'sub-minute' do

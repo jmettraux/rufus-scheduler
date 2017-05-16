@@ -37,6 +37,14 @@ describe Rufus::Scheduler do
 
       expect(opts.size).to eq(1)
     end
+
+    it 'accepts a CronLine instance' do
+
+      cl = Rufus::Scheduler::CronLine.new('* * * * *')
+      job = @scheduler.schedule(cl) {}
+
+      expect(job.cron_line.object_id).to eq(cl.object_id)
+    end
   end
 
   describe '#at' do

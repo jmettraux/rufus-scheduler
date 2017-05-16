@@ -606,6 +606,8 @@ module Rufus
 
     class CronJob < RepeatJob
 
+      attr_reader :cron_line
+
       def initialize(scheduler, cronline, opts, block)
 
         super(scheduler, cronline, opts, block)
