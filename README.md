@@ -103,7 +103,7 @@ I'll drive you right to the [tracks](#so-rails).
 
 So you need help. People can help you, but first help them help you, and don't waste their time. Provide a complete description of the issue. If it works on A but not on B and others have to ask you: "so what is different between A and B" you are wasting everyone's time.
 
-"hello" and "thanks" are not swear words.
+"hello", "please" and "thanks" are not swear words.
 
 Go read [how to report bugs effectively](http://www.chiark.greenend.org.uk/~sgtatham/bugs.html), twice.
 
