@@ -2,6 +2,11 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 3.4.1    not yet released
+
+- Let #schedule accept a CronLine instance, gh-247
+
+
 == rufus-scheduler - 3.4.0    released 2017-03-23
 
 - Stop supporting Ruby < 1.9
