@@ -2,6 +2,11 @@
 = rufus-scheduler CHANGELOG.txt
 
 
+== rufus-scheduler - 3.4.2    released 2017-05-24
+
+(had yanked 3.4.1, going 3.4.2)
+
+
 == rufus-scheduler - 3.4.1    released 2017-05-24
 
 - Let #schedule accept a CronLine instance, gh-247
