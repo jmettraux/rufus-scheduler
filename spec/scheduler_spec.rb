@@ -118,7 +118,7 @@ describe Rufus::Scheduler do
 
       sleep 0.4
 
-      expect(mh.counter).to eq(1)
+      expect_any_instance_of(MyHandler).to_not receive(:call)
     end
 
     class MyOtherHandler
