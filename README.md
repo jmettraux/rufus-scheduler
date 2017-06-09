@@ -376,7 +376,7 @@ Since, by default, jobs are triggered in their own new thread, job instances mig
 
 To prevent overlap, one can set :overlap => false. Such a job will not trigger if one of its instance is already running.
 
-The `:overlap` option is considered before the `:mutex` option when the scheduler is reviewing jobs for triggering.
+The `:overlap` option is considered after the `:mutex` option when the scheduler is reviewing jobs for triggering.
 
 ### :mutex => mutex_instance / mutex_name / array of mutexes
 
