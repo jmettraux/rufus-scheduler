@@ -3,10 +3,17 @@
 .vimrc
 .viminfo
 
-.bxsinfo
+pkg/
+
+.ruby-version
+#.rspec
+
 .errors
 .rspec.out
+.bxsinfo.yaml
+.bxsenvs.yaml
 
-.rspec
+.todo.md
+
 Gemfile.lock
 
