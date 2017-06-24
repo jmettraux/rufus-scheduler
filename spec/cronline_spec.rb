@@ -531,22 +531,28 @@ describe Rufus::Scheduler::CronLine do
   end
 
   describe '#next_second' do
+
     [
-      [ '*/10 * * * * *', local(1970,1,1,1,1, 0),  0 ], # 0 sec to  0s mark
-      [ '*/10 * * * * *', local(1970,1,1,1,1, 1),  9 ], # 9 sec to 10s mark
-      [ '*/10 * * * * *', local(1970,1,1,1,1, 9),  1 ], # 1 sec to 10s mark
-      [ '*/10 * * * * *', local(1970,1,1,1,1,10),  0 ], # 0 sec to 10s mark
-      [ '*/10 * * * * *', local(1970,1,1,1,1,11),  9 ], # 9 sec to 20s mark
-      [ '*/10 * * * * *', local(1970,1,1,1,1,19),  1 ], # 1 sec to 20s mark
-      [ '*/10 * * * * *', local(1970,1,1,1,1,20),  0 ], # 0 sec to 20s mark
-      [ '*/10 * * * * *', local(1970,1,1,1,1,21),  9 ], # 1 sec to 30s mark
+      [ '*/10 * * * * *', [ 1970, 1, 1, 1, 1,  0 ],  0 ], # 0 sec to  0s mark
+      [ '*/10 * * * * *', [ 1970, 1, 1, 1, 1,  1 ],  9 ], # 9 sec to 10s mark
+      [ '*/10 * * * * *', [ 1970, 1, 1, 1, 1,  9 ],  1 ], # 1 sec to 10s mark
+      [ '*/10 * * * * *', [ 1970, 1, 1, 1, 1, 10 ],  0 ], # 0 sec to 10s mark
+      [ '*/10 * * * * *', [ 1970, 1, 1, 1, 1, 11 ],  9 ], # 9 sec to 20s mark
+      [ '*/10 * * * * *', [ 1970, 1, 1, 1, 1, 19 ],  1 ], # 1 sec to 20s mark
+      [ '*/10 * * * * *', [ 1970, 1, 1, 1, 1, 20 ],  0 ], # 0 sec to 20s mark
+      [ '*/10 * * * * *', [ 1970, 1, 1, 1, 1, 21 ],  9 ], # 1 sec to 30s mark
       # ...
-      [ '*/10 * * * * *', local(1970,1,1,1,1,49),  1 ], # 9 sec to 50s mark
-      [ '*/10 * * * * *', local(1970,1,1,1,1,50),  0 ], # 0 sec to 50s mark
-      [ '*/10 * * * * *', local(1970,1,1,1,1,51),  9 ],
+      [ '*/10 * * * * *', [ 1970, 1, 1, 1, 1, 49 ],  1 ], # 9 sec to 50s mark
+      [ '*/10 * * * * *', [ 1970, 1, 1, 1, 1, 50 ],  0 ], # 0 sec to 50s mark
+      [ '*/10 * * * * *', [ 1970, 1, 1, 1, 1, 51 ],  9 ],
+
     ].each do |cronline, now, sec|
+
+      now = Time.local(*now)
+
       it "ensures that next_second('#{cronline}', #{now}) is #{sec}" do
-        expect(ns(cronline,now)).to eq(sec)
+
+        expect(ns(cronline, now)).to eq(sec)
       end
     end
   end
