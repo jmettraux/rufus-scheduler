@@ -85,7 +85,7 @@ describe Rufus::Scheduler do
       j = nil
       job = @scheduler.schedule_in('0s') { |jj| j = jj }
 
-      sleep 0.4
+      wait_until { j }
 
       expect(j).to eq(job)
     end
@@ -95,7 +95,7 @@ describe Rufus::Scheduler do
       t = nil
       @scheduler.schedule_in('0s') { |jj, tt| t = tt }
 
-      sleep 0.4
+      wait_until { t }
 
       expect(t.class).to eq(EtOrbi::EoTime)
     end
@@ -116,7 +116,7 @@ describe Rufus::Scheduler do
 
       @scheduler.schedule_in('0s', mh)
 
-      sleep 0.4
+      wait_until { mh.counter > 0 }
 
       expect(mh.counter).to eq(1)
     end
@@ -135,7 +135,7 @@ describe Rufus::Scheduler do
 
       job = @scheduler.schedule_in('0s', MyOtherHandler.new)
 
-      sleep 0.4
+      wait_until { job.handler.counter > 0 }
 
       expect(job.handler.counter).to eq(1)
     end
@@ -150,7 +150,7 @@ describe Rufus::Scheduler do
           end
         end)
 
-      sleep 0.4
+      wait_until { job.handler.value }
 
       expect(job.handler.value).to eq(7)
     end
@@ -290,7 +290,7 @@ describe Rufus::Scheduler do
 
     it 'returns the uptime as a human readable string' do
 
-      sleep 1
+      sleep(1)
 
       expect(@scheduler.uptime_s).to match(/^[12]s\d+$/)
     end
@@ -364,7 +364,7 @@ describe Rufus::Scheduler do
         sleep(2)
       end
 
-      sleep 0.4
+      wait_until { @scheduler.threads.size == 2 }
 
       expect(@scheduler.threads.size).to eq(2)
     end
@@ -416,7 +416,7 @@ describe Rufus::Scheduler do
           sleep 1
         end
 
-      sleep 0.49
+      wait_until { @scheduler.work_threads(:active).size >= 1 }
 
       expect(@scheduler.work_threads(:active).size).to eq(1)
 
@@ -437,7 +437,7 @@ describe Rufus::Scheduler do
           sleep(1)
         end
 
-      sleep 0.4
+      wait_until { @scheduler.work_threads(:active).empty? }
 
       expect(scheduler.work_threads(:active)).to eq([])
 
@@ -509,7 +509,7 @@ describe Rufus::Scheduler do
           sleep(1)
         end
 
-      sleep 0.4
+      wait_until { @scheduler.running_jobs.size >= 1 }
 
       expect(job.running?).to eq(true)
       expect(@scheduler.running_jobs).to eq([ job ])
@@ -522,7 +522,7 @@ describe Rufus::Scheduler do
           sleep(5)
         end
 
-      sleep 1.5
+      wait_until { @scheduler.running_jobs.size >= 1 }
 
       expect(job.running?).to eq(true)
       expect(@scheduler.running_jobs).to eq([ job ])
@@ -540,17 +540,17 @@ describe Rufus::Scheduler do
         sleep 3
       end
 
-      sleep 1
+      wait_until { @scheduler.running_jobs.size >= 2 }
 
-      expect(@scheduler.running_jobs(:tag => 't0').map(&:original)).to eq(
-        %w[ 0.1s ]
-      )
-      expect(@scheduler.running_jobs(:tag => 't1').map(&:original)).to eq(
-        %w[ 0.2s ]
-      )
-      expect(@scheduler.running_jobs(:tags => %w[ t0 t1 ]).map(&:original)).to eq(
-        []
-      )
+      expect(
+        @scheduler.running_jobs(:tag => 't0').map(&:original)
+      ).to eq(%w[ 0.1s ])
+      expect(
+        @scheduler.running_jobs(:tag => 't1').map(&:original)
+      ).to eq(%w[ 0.2s ])
+      expect(
+        @scheduler.running_jobs(:tags => %w[ t0 t1 ]).map(&:original)
+      ).to eq([])
     end
   end
 
