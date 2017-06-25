@@ -4,7 +4,7 @@ require 'date' if RUBY_VERSION < '1.9.0'
 require 'time'
 require 'thread'
 
-require 'et-orbi'
+require 'fugit'
 
 
 module Rufus
@@ -17,7 +17,6 @@ module Rufus
 
     require 'rufus/scheduler/util'
     require 'rufus/scheduler/jobs'
-    require 'rufus/scheduler/cronline'
     require 'rufus/scheduler/job_array'
     require 'rufus/scheduler/locks'
 
@@ -238,9 +237,9 @@ module Rufus
       opts[:_t] = Scheduler.parse(arg, opts)
 
       case opts[:_t]
-        when CronLine then schedule_cron(arg, callable, opts, &block)
-        when Time then schedule_at(arg, callable, opts, &block)
-        else schedule_in(arg, callable, opts, &block)
+      when ::Fugit::Cron then schedule_cron(arg, callable, opts, &block)
+      when ::EtOrbi::EoTime, Time then schedule_at(arg, callable, opts, &block)
+      else schedule_in(arg, callable, opts, &block)
       end
     end
 
@@ -252,8 +251,8 @@ module Rufus
       opts[:_t] = Scheduler.parse(arg, opts)
 
       case opts[:_t]
-        when CronLine then schedule_cron(arg, callable, opts, &block)
-        else schedule_every(arg, callable, opts, &block)
+      when ::Fugit::Cron then schedule_cron(arg, callable, opts, &block)
+      else schedule_every(arg, callable, opts, &block)
       end
     end
 
@@ -620,10 +619,24 @@ module Rufus
 
       job = job_class.new(self, t, opts, block || callable)
 
-      fail ArgumentError.new(
-        "job frequency (#{job.frequency}) is higher than " +
-        "scheduler frequency (#{@frequency})"
-      ) if job.respond_to?(:frequency) && job.frequency < @frequency
+#      fail ArgumentError.new(
+#        "job frequency (#{job.frequency}) is higher than " +
+#        "scheduler frequency (#{@frequency})"
+#      ) if job.respond_to?(:frequency) && job.frequency < @frequency
+
+#      if job.methods.include?(:next_time_from)
+#
+#        nts = (1..365)
+#          .inject([ job.send(:next_time_from, EtOrbi.now) ]) { |a, i|
+#            a << job.send(:next_time_from, a.last); a }
+#        deltas = []; prev = nts.shift
+#        while (nt = nts.shift); deltas << (nt - prev).to_i; prev = nt; end
+#
+#        fail ArgumentError.new(
+#          "job frequency (~max #{deltas.min}s) is higher than " +
+#          "scheduler frequency (#{@frequency})"
+#        ) if deltas.min < @frequency
+#      end
 
       @jobs.push(job)
 

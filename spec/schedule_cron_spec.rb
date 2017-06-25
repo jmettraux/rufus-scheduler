@@ -47,12 +47,15 @@ describe Rufus::Scheduler do
 
       expect {
         @scheduler.cron '* * * * * *' do; end
-      }.to raise_error(ArgumentError)
+      }.to raise_error(
+        ArgumentError,
+        'job frequency (~max 1s) is higher than scheduler frequency (10)'
+      )
     end
 
     it 'accepts a CronLine instance' do
 
-      cl = Rufus::Scheduler::CronLine.new('* * * * *')
+      cl = Fugit.parse('* * * * *')
       job_id = @scheduler.cron(cl) {}
       job = @scheduler.job(job_id)
 
@@ -73,7 +76,7 @@ describe Rufus::Scheduler do
 
     it 'accepts a CronLine instance' do
 
-      cl = Rufus::Scheduler::CronLine.new('* * * * *')
+      cl = Fugit.parse('* * * * *')
       job = @scheduler.schedule_cron(cl) {}
 
       expect(job.cron_line.object_id).to eq(cl.object_id)

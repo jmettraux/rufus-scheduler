@@ -74,11 +74,11 @@ describe Rufus::Scheduler do
 
       out = pa('* * * * *')
 
-      expect(out.class).to eq(Rufus::Scheduler::CronLine)
+      expect(out.class).to eq(Fugit::Cron)
       expect(out.original).to eq('* * * * *')
 
-      expect(pa('10 23 * * *').class).to eq(Rufus::Scheduler::CronLine)
-      expect(pa('* 23 * * *').class).to eq(Rufus::Scheduler::CronLine)
+      expect(pa('10 23 * * *').class).to eq(Fugit::Cron)
+      expect(pa('* 23 * * *').class).to eq(Fugit::Cron)
     end
 
     it 'raises on unparseable input' do

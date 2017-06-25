@@ -28,7 +28,7 @@ Job scheduler for Ruby (at, cron, in and every jobs). Not a replacement for cron
 
   s.required_ruby_version = '>= 1.9'
 
-  s.add_runtime_dependency 'et-orbi', '~> 1.0'
+  s.add_runtime_dependency 'fugit', '~> 1.1'
 
   s.add_development_dependency 'rspec', '~> 3.4'
   s.add_development_dependency 'chronic'

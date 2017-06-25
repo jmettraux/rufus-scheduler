@@ -40,7 +40,7 @@ describe Rufus::Scheduler do
 
     it 'accepts a CronLine instance' do
 
-      cl = Rufus::Scheduler::CronLine.new('* * * * *')
+      cl = Fugit.parse('* * * * *')
       job = @scheduler.schedule(cl) {}
 
       expect(job.cron_line.object_id).to eq(cl.object_id)
