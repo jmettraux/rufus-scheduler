@@ -21,9 +21,11 @@ Job scheduler for Ruby (at, cron, in and every jobs). Not a replacement for cron
 
   #s.files = `git ls-files`.split("\n")
   s.files = Dir[
+    'README.{md,txt}',
     'Makefile',
     'lib/**/*.rb', #'spec/**/*.rb', 'test/**/*.rb',
-    '*.gemspec', '*.txt', '*.rdoc', '*.md'
+    '*.gemspec',
+    'CHANGELOG.{md,txt}', 'CREDITS.{md,txt}', 'LICENSE.{md,txt}'
   ]
 
   s.required_ruby_version = '>= 1.9'
