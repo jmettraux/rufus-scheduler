@@ -49,7 +49,7 @@ describe Rufus::Scheduler do
         @scheduler.cron '* * * * * *' do; end
       }.to raise_error(
         ArgumentError,
-        'job frequency (~max 1s) is higher than scheduler frequency (10)'
+        'job frequency (~max 1.0s) is higher than scheduler frequency (10)'
       )
     end
 

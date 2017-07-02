@@ -619,24 +619,29 @@ module Rufus
 
       job = job_class.new(self, t, opts, block || callable)
 
-#      fail ArgumentError.new(
-#        "job frequency (#{job.frequency}) is higher than " +
-#        "scheduler frequency (#{@frequency})"
-#      ) if job.respond_to?(:frequency) && job.frequency < @frequency
+      #fail ArgumentError.new(
+      #  "job frequency (#{job.frequency}) is higher than " +
+      #  "scheduler frequency (#{@frequency})"
+      #) if job.respond_to?(:frequency) && job.frequency < @frequency
+        #
+        # This was expensive
 
-#      if job.methods.include?(:next_time_from)
-#
-#        nts = (1..365)
-#          .inject([ job.send(:next_time_from, EtOrbi.now) ]) { |a, i|
-#            a << job.send(:next_time_from, a.last); a }
-#        deltas = []; prev = nts.shift
-#        while (nt = nts.shift); deltas << (nt - prev).to_i; prev = nt; end
-#
-#        fail ArgumentError.new(
-#          "job frequency (~max #{deltas.min}s) is higher than " +
-#          "scheduler frequency (#{@frequency})"
-#        ) if deltas.min < @frequency
-#      end
+      if (
+        ! job.is_a?(Rufus::Scheduler::IntervalJob) &&
+        job.methods.include?(:next_time_from)
+      ) then
+
+        nts = (1..365)
+          .inject([ job.send(:next_time_from, EtOrbi.now) ]) { |a, i|
+            a << job.send(:next_time_from, a.last); a }
+        deltas = []; prev = nts.shift
+        while (nt = nts.shift); deltas << (nt - prev).to_f; prev = nt; end
+
+        fail ArgumentError.new(
+          "job frequency (~max #{deltas.min}s) is higher than " +
+          "scheduler frequency (#{@frequency})"
+        ) if deltas.min < @frequency * 0.9
+      end
 
       @jobs.push(job)
 

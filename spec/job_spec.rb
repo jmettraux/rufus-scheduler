@@ -178,6 +178,7 @@ describe Rufus::Scheduler::Job do
     end
 
     it 'returns false if job is unscheduled' do
+
       job = @scheduler.schedule_interval('0.1s') { sleep 0.1 }
       job.unschedule
 
