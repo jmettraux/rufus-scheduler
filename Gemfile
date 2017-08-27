@@ -3,8 +3,10 @@ source 'https://rubygems.org'
 
 #gem 'tzinfo-data'
 
-#gem 'et-orbi', path: '../et-orbi/'
-gem 'fugit', path: '../fugit/'
+#gem 'et-orbi', path: '../et-orbi/' # temporarily
+  #
+#gem 'fugit', path: '../fugit/' # temporarily
+gem 'fugit', git: 'https://github.com/floraison/fugit.git' # temporarily
   #
   # temporary, development redirections
 
