@@ -51,23 +51,6 @@ module Rufus
         fail se
       end
 
-      DURATIONS2M = [
-        [ 'y', 365 * 24 * 3600 ],
-        [ 'M', 30 * 24 * 3600 ],
-        [ 'w', 7 * 24 * 3600 ],
-        [ 'd', 24 * 3600 ],
-        [ 'h', 3600 ],
-        [ 'm', 60 ],
-        [ 's', 1 ]
-      ]
-      DURATIONS2 = DURATIONS2M.dup
-      DURATIONS2.delete_at(1)
-
-      DURATIONS = DURATIONS2M.inject({}) { |r, (k, v)| r[k] = v; r }
-      DURATION_LETTERS = DURATIONS.keys.join
-
-      DU_KEYS = DURATIONS2M.collect { |k, v| k.to_sym }
-
       # Turns a string like '1m10s' into a float like '70.0', more formally,
       # turns a time duration expressed as a string into a Float instance
       # (millisecond count).
@@ -95,34 +78,16 @@ module Rufus
       #   Rufus::Scheduler.parse_duration "-0.5"   # => -0.5
       #   Rufus::Scheduler.parse_duration "-1h"    # => -3600.0
       #
-      def parse_duration(string, opts={})
+      def parse_duration(str, opts={})
 
-        s = string.to_s.strip
-        mod = s[0, 1] == '-' ? -1 : 1
-        s = s[1..-1] if mod == -1
-
-        ss = mod < 0 ? '-' : ''
-        r = 0.0
-
-        s.scan(/(\d*\.\d+|\d+\.?)([#{DURATION_LETTERS}]?)/) do |f, d|
-          ss += "#{f}#{d}"
-          r += f.to_f * (DURATIONS[d] || 1.0)
-        end
-
-        if ss == '-' || ss != string.to_s.strip
-          return nil if opts[:no_error]
-          fail ArgumentError.new("invalid time duration #{string.inspect}")
-        end
-
-        mod * r
+        d =
+          opts[:no_error] ?
+          Fugit::Duration.parse(str, opts) :
+          Fugit::Duration.do_parse(str, opts)
+        d ?
+          d.to_sec :
+          nil
       end
-
-      #-
-      # for compatibility with rufus-scheduler 2.x
-      #+
-      alias parse_duration_string parse_duration
-      alias parse_time_string parse_duration
-
 
       # Turns a number of seconds into a a time string
       #
@@ -158,38 +123,22 @@ module Rufus
       #
       def to_duration(seconds, options={})
 
-        h = to_duration_hash(seconds, options)
+        #d = Fugit::Duration.parse(seconds, options).deflate
+        #d = d.drop_seconds if options[:drop_seconds]
+        #d = d.deflate(:month => options[:months]) if options[:months]
+        #d.to_rufus_s
 
-        return (options[:drop_seconds] ? '0m' : '0s') if h.empty?
-
-        s =
-          DU_KEYS.inject('') { |r, key|
-            count = h[key]
-            count = nil if count == 0
-            r << "#{count}#{key}" if count
-            r
-          }
-
-        ms = h[:ms]
-        s << ms.to_s if ms
-
-        s
+        to_fugit_duration(seconds, options).to_rufus_s
       end
-
-      #-
-      # for compatibility with rufus-scheduler 2.x
-      #+
-      alias to_duration_string to_duration
-      alias to_time_string to_duration
 
       # Turns a number of seconds (integer or Float) into a hash like in :
       #
       #   Rufus.to_duration_hash 0.051
-      #     # => { :ms => "51" }
+      #     # => { :s => 0.051 }
       #   Rufus.to_duration_hash 7.051
-      #     # => { :s => 7, :ms => "51" }
+      #     # => { :s => 7.051 }
       #   Rufus.to_duration_hash 0.120 + 30 * 24 * 3600 + 1
-      #     # => { :w => 4, :d => 2, :s => 1, :ms => "120" }
+      #     # => { :w => 4, :d => 2, :s => 1.120 }
       #
       # This method is used by to_duration behind the scenes.
       #
@@ -202,29 +151,21 @@ module Rufus
       #
       def to_duration_hash(seconds, options={})
 
-        h = {}
+        to_fugit_duration(seconds, options).to_rufus_h
+      end
 
-        if seconds.is_a?(Float)
-          h[:ms] = (seconds % 1 * 1000).to_i
-          seconds = seconds.to_i
-        end
+      # Used by both .to_duration and .to_duration_hash
+      #
+      def to_fugit_duration(seconds, options={})
 
-        if options[:drop_seconds]
-          h.delete(:ms)
-          seconds = (seconds - seconds % 60)
-        end
+        d = Fugit::Duration
+          .parse(seconds, options)
+          .deflate
 
-        durations = options[:months] ? DURATIONS2M : DURATIONS2
+        d = d.drop_seconds if options[:drop_seconds]
+        d = d.deflate(:month => options[:months]) if options[:months]
 
-        durations.each do |key, duration|
-
-          count = seconds / duration
-          seconds = seconds % duration
-
-          h[key.to_sym] = count if count > 0
-        end
-
-        h
+        d
       end
 
       #--

@@ -4,6 +4,10 @@
 
 == rufus-scheduler - 3.5.0    not yet released
 
+- Use fugit to parse durations
+- Drop .parse_time_string and .parse_duration_string
+- Use fugit to parse cronlines
+
 
 == rufus-scheduler - 3.4.2    released 2017-05-24
 

@@ -139,18 +139,17 @@ describe Rufus::Scheduler do
       expect(pd('-1w2d')).to eq(-777600.0)
       expect(pd('-1h10s')).to eq(-3610.0)
       expect(pd('-1h')).to eq(-3600.0)
-      expect(pd('-5.')).to eq(-5.0)
+      expect(pd('-5.s')).to eq(-5.0)
       expect(pd('-2.5s')).to eq(-2.5)
       expect(pd('-1s')).to eq(-1.0)
-      expect(pd('-500')).to eq(-500)
+      expect(pd('-500s')).to eq(-500)
       expect(pd('')).to eq(0.0)
-      expect(pd('5.0')).to eq(5.0)
-      expect(pd('0.5')).to eq(0.5)
-      expect(pd('.5')).to eq(0.5)
-      expect(pd('5.')).to eq(5.0)
-      expect(pd('500')).to eq(500)
-      expect(pd('1000')).to eq(1000)
-      expect(pd('1')).to eq(1.0)
+      expect(pd('5.0s')).to eq(5.0)
+      expect(pd('0.5s')).to eq(0.5)
+      expect(pd('.5s')).to eq(0.5)
+      expect(pd('5.s')).to eq(5.0)
+      expect(pd('500s')).to eq(500)
+      expect(pd('1000s')).to eq(1000)
       expect(pd('1s')).to eq(1.0)
       expect(pd('2.5s')).to eq(2.5)
       expect(pd('1h')).to eq(3600.0)
@@ -163,10 +162,6 @@ describe Rufus::Scheduler do
       expect(pd('5.m')).to eq(300.0)
       expect(pd('1m.5s')).to eq(60.5)
       expect(pd('-.5m')).to eq(-30.0)
-
-      expect(pd('1')).to eq(1)
-      expect(pd('0.1')).to eq(0.1)
-      expect(pd('1s')).to eq(1)
     end
 
     it 'calls #to_s on its input' do
@@ -176,29 +171,23 @@ describe Rufus::Scheduler do
 
     it 'raises on wrong duration strings' do
 
-      expect { pd('-') }.to raise_error(ArgumentError)
-      expect { pd('h') }.to raise_error(ArgumentError)
-      expect { pd('whatever') }.to raise_error(ArgumentError)
-      expect { pd('hms') }.to raise_error(ArgumentError)
+      [
+        '-', 'h', 'whatever', 'hms', Time.now
+      ].each do |x|
+        expect { Rufus::Scheduler.parse_duration(x) }.to raise_error(ArgumentError)
+      end
 
       # not since .parse_duration rewrite
       #expect { pd(' 1h ') }.to raise_error(ArgumentError)
     end
-  end
 
-  describe '.parse_time_string -> .parse_duration' do
+    it 'returns nil on unreadable duration when no_error: true' do
 
-    it 'is still around for libs using it out there' do
-
-      expect(Rufus::Scheduler.parse_time_string('1d1w1d')).to eq(777600.0)
-    end
-  end
-
-  describe '.parse_duration_string -> .parse_duration' do
-
-    it 'is still around for libs using it out there' do
-
-      expect(Rufus::Scheduler.parse_duration_string('1d1w1d')).to eq(777600.0)
+      [
+        '-', 'h', 'whatever', 'hms', Time.now
+      ].each do |x|
+        expect(Rufus::Scheduler.parse_duration(x, :no_error => true)).to eq(nil)
+      end
     end
   end
 
@@ -234,33 +223,28 @@ describe Rufus::Scheduler do
 
     it 'turns floats into duration strings' do
 
-      expect(td(0.1)).to eq('100')
-      expect(td(1.1)).to eq('1s100')
+      expect(td(0.1)).to eq('0.1s')
+      expect(td(1.1)).to eq('1.1s')
     end
   end
 
   describe '.to_duration_hash' do
 
-    def tdh(o, opts={})
-      Rufus::Scheduler.to_duration_hash(o, opts)
-    end
+    [
 
-    it 'turns integers duration hashes' do
+      [ 0, nil, { :s => 0 } ],
+      [ 60, nil, { :m => 1 } ],
+      [ 0.128, nil, { :s => 0.128 } ],
+      [ 60.127, nil, { :m => 1, :s => 0.127 } ],
+      [ 61.127, nil, { :m => 1, :s => 1.127 } ],
+      [ 61.127, { :drop_seconds => true }, { :m => 1 } ],
 
-      expect(tdh(0)).to eq({})
-      expect(tdh(60)).to eq({ :m => 1 })
-    end
+    ].each do |f, o, h| # float, options, hash
 
-    it 'turns floats duration hashes' do
+      it "turns #{f.inspect} into #{h.inspect} #{o ? "(#{o.inspect})" : ''}" do
 
-      expect(tdh(0.128)).to eq({ :ms => 128 })
-      expect(tdh(60.127)).to eq({ :m => 1, :ms => 127 })
-    end
-
-    it 'drops seconds and milliseconds if :drop_seconds => true' do
-
-      expect(tdh(61.127)).to eq({ :m => 1, :s => 1, :ms => 127 })
-      expect(tdh(61.127, :drop_seconds => true)).to eq({ :m => 1 })
+        expect(Rufus::Scheduler.to_duration_hash(f, o || {})).to eq(h)
+      end
     end
   end
 end

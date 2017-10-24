@@ -292,7 +292,7 @@ describe Rufus::Scheduler do
 
       sleep(1)
 
-      expect(@scheduler.uptime_s).to match(/^[12]s\d+$/)
+      expect(@scheduler.uptime_s).to match(/\A[12]\.\d+s\z/)
     end
   end
 
