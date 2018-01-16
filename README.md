@@ -416,7 +416,7 @@ This option is for repeat jobs (cron / every) only.
 It's used to specify the first time after which the repeat job should trigger for the first time.
 
 In the case of an "every" job, this will be the first time (modulo the scheduler frequency) the job triggers.
-For a "cron" job, it's the time *after* which the first schedule will trigger.
+For a "cron" job as well, the :first will point to the first time the job has to trigger, the following trigger time are then determined by the cron string.
 
 ```ruby
 scheduler.every '2d', :first_at => Time.now + 10 * 3600 do
