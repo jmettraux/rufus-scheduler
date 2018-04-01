@@ -128,6 +128,7 @@ Yes, issues can be reported in [rufus-scheduler issues](https://github.com/jmett
 * [Passenger in-depth spawn methods](https://www.phusionpassenger.com/library/indepth/ruby/spawn_methods/)
 * [Passenger in-depth spawn methods (smart spawning)](https://www.phusionpassenger.com/library/indepth/ruby/spawn_methods/#smart-spawning-hooks)
 * [The scheduler comes up when running the Rails console or a Rake task](https://github.com/jmettraux/rufus-scheduler#avoid-scheduling-when-running-the-ruby-on-rails-console)
+* [The job triggers twice](https://github.com/jmettraux/rufus-scheduler#lockfile--mylockfiletxt)
 * [I don't get any of this, I just want it to work in my Rails application](#so-rails)
 * [I get "zotime.rb:41:in `initialize': cannot determine timezone from nil"](#i-get-zotimerb41in-initialize-cannot-determine-timezone-from-nil)
 
@@ -415,7 +416,7 @@ This option is for repeat jobs (cron / every) only.
 It's used to specify the first time after which the repeat job should trigger for the first time.
 
 In the case of an "every" job, this will be the first time (modulo the scheduler frequency) the job triggers.
-For a "cron" job, it's the time *after* which the first schedule will trigger.
+For a "cron" job as well, the :first will point to the first time the job has to trigger, the following trigger time are then determined by the cron string.
 
 ```ruby
 scheduler.every '2d', :first_at => Time.now + 10 * 3600 do

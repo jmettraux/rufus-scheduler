@@ -1,4 +1,6 @@
+
 language: ruby
+
 rvm:
   #- 1.8.7 # over from rufus-scheduler 3.4.0
   #- 1.9.2
@@ -8,12 +10,14 @@ rvm:
   - 2.2.3
   - 2.3.3
   - 2.4.1
-  #- jruby-18mode
-  - jruby-19mode
-  #- jruby-20mode
-  #- rbx-18mode
-  #- rbx-19mode
-  #- rbx-20mode
+  - jruby-9.1.13.0
+
+#matrix:
+#  include:
+#    - rvm: jruby-9.1.13.0
+#    #- env: JRUBY_OPTS="--profile.api"
+
+#before_install: gem install bundler
 script: bundle exec rspec
 branches:
   only:
@@ -23,4 +27,7 @@ branches:
 
 sudo: false
 cache: bundler
+
+#env:
+#  - WHATEVER_DEFAULT_TIMEOUT=7
 

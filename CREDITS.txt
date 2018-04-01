@@ -58,6 +58,7 @@
 
 == Feedback
 
+- Gian - https://github.com/snmgian - cron vs :first clarification - gh-266
 - Vito Laurenza - https://github.com/veetow - help debugging tz issues - gh-240
 - Yoshimi Keiji - https://githuc.com/walf443 - v.3.3.3 mislabelling
 - Alexander Deeb - https://github.com/adeeb1 - gh-230
