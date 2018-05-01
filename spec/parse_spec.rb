@@ -64,6 +64,7 @@ describe Rufus::Scheduler do
     it 'parses datetimes (with the local timezone implicitly)' do
 
       localzone = Time.now.strftime('%z')
+      localzone = 'Z' if localzone == '+0000'
 
       expect(
         pa('Nov 18 16:01:00 2012').strftime('%c %z')
