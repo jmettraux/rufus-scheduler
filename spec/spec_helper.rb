@@ -22,8 +22,8 @@ puts
 puts "ENV['TZ']                          => #{ENV['TZ'].inspect}"
 puts "Time.now.zone                      => #{Time.now.zone.inspect}"
 puts "Time.now.strftime('%z')            => #{Time.now.strftime('%z').inspect}"
-puts "EtOrbi::EoTime.now.zone            => #{EtOrbi::EoTime.now.zone.inspect}"
-puts "EtOrbi::EoTime.now.strftime('%z')  => #{EtOrbi::EoTime.now.strftime('%z').inspect}"
+#puts "EtOrbi::EoTime.now.zone            => #{EtOrbi::EoTime.now.zone.inspect}"
+#puts "EtOrbi::EoTime.now.strftime('%z')  => #{EtOrbi::EoTime.now.strftime('%z').inspect}"
 puts
 
 
