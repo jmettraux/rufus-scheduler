@@ -19,11 +19,13 @@ puts
 puts "RUBY_VERSION   => #{RUBY_VERSION.inspect}"
 puts "RUBY_PLATFORM  => #{RUBY_PLATFORM.inspect}"
 puts
-puts "ENV['TZ']                          => #{ENV['TZ'].inspect}"
-puts "Time.now.zone                      => #{Time.now.zone.inspect}"
-puts "Time.now.strftime('%z')            => #{Time.now.strftime('%z').inspect}"
-puts "EtOrbi::EoTime.now.zone            => #{EtOrbi::EoTime.now.zone.inspect}"
-puts "EtOrbi::EoTime.now.strftime('%z')  => #{EtOrbi::EoTime.now.strftime('%z').inspect}"
+puts "ENV['TZ']                  => #{ENV['TZ'].inspect}"
+puts "Time.now.zone              => #{Time.now.zone.inspect}"
+puts "Time.now.strftime('%z')    => #{Time.now.strftime('%z').inspect}"
+puts "EoTime.now.zone            => #{EtOrbi::EoTime.now.zone.inspect}"
+puts "EoTime.now.strftime('%z')  => #{EtOrbi::EoTime.now.strftime('%z').inspect}"
+puts "EoTime.local_tzone         => #{EtOrbi::EoTime.local_tzone.inspect}"
+puts "EoTime.local_tzone.name    => #{EtOrbi::EoTime.local_tzone.name.inspect}"
 puts
 
 
