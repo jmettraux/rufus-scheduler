@@ -637,6 +637,12 @@ module Rufus
         deltas = []; prev = nts.shift
         while (nt = nts.shift); deltas << (nt - prev).to_f; prev = nt; end
 
+        deltas = deltas[1..-1] \
+          if opts.keys.find { |k| k.to_s.match(/\Afirst/) }
+            #
+            # do not consider the first delta if there is a first, first_at,
+            # or first_in involved
+
         fail ArgumentError.new(
           "job frequency (~max #{deltas.min}s) is higher than " +
           "scheduler frequency (#{@frequency})"
