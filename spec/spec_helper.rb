@@ -7,13 +7,24 @@
 
 require 'pp'
 
-puts "RUBY_VERSION: #{RUBY_VERSION}"
-puts "RUBY_PLATFORM: #{RUBY_PLATFORM}"
-
 Thread.abort_on_exception = true
 
 require 'stringio'
 require 'rufus-scheduler'
+
+
+puts
+puts __FILE__
+puts
+puts "RUBY_VERSION   => #{RUBY_VERSION.inspect}"
+puts "RUBY_PLATFORM  => #{RUBY_PLATFORM.inspect}"
+puts
+puts "ENV['TZ']                          => #{ENV['TZ'].inspect}"
+puts "Time.now.zone                      => #{Time.now.zone.inspect}"
+puts "Time.now.strftime('%z')            => #{Time.now.strftime('%z').inspect}"
+puts "EtOrbi::EoTime.now.zone            => #{EtOrbi::EoTime.now.zone.inspect}"
+puts "EtOrbi::EoTime.now.strftime('%z')  => #{EtOrbi::EoTime.now.strftime('%z').inspect}"
+puts
 
 
 #
