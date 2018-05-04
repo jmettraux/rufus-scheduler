@@ -25,7 +25,6 @@ def dump_zones
   puts "ENV['TZ']                          => #{ENV['TZ'].inspect}"
   puts "Time.now.zone                      => #{Time.now.zone.inspect}"
   puts "Time.now.strftime('%z')            => #{Time.now.strftime('%z').inspect}"
-  puts "EtOrbi: #{EtOrbi.instance_eval { { ltt: @local_tzone_tz, ltla: @local_tzone_loaded_at, ltlad: Time.now - (@local_tzone_loaded_at || Time.at(0)) } }.inspect}"
   puts "EtOrbi::VERSION                    => #{EtOrbi::VERSION.inspect}"
   puts "EtOrbi::EoTime.now.zone            => #{EtOrbi::EoTime.now.zone.inspect}"
   puts "EtOrbi::EoTime.now.strftime('%z')  => #{EtOrbi::EoTime.now.strftime('%z').inspect}"
