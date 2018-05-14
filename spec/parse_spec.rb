@@ -63,7 +63,7 @@ describe Rufus::Scheduler do
 
     it 'parses datetimes (with the local timezone implicitly)' do
 
-dump_zones
+#dump_zones
       localzone = Time.now.strftime('%z')
       localzone = 'Z' if localzone == '+0000'
 
