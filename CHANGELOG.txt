@@ -2,7 +2,7 @@
 = rufus-scheduler CHANGELOG.txt
 
 
-== rufus-scheduler - 3.5.0    not yet released
+== rufus-scheduler - 3.5.0    released 2018-05-15
 
 - Use fugit to parse durations
 - Drop .parse_time_string and .parse_duration_string
