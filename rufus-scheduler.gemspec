@@ -32,8 +32,8 @@ Job scheduler for Ruby (at, cron, in and every jobs). Not a replacement for cron
 
   s.add_runtime_dependency 'fugit', '~> 1.1', '>= 1.1.1'
 
-  s.add_development_dependency 'rspec', '~> 3.4'
-  s.add_development_dependency 'chronic'
+  s.add_development_dependency 'rspec', '~> 3.7'
+  s.add_development_dependency 'chronic', '~> 0.10'
 
   s.require_path = 'lib'
 end
