@@ -130,7 +130,7 @@ describe Rufus::Scheduler::RepeatJob do
 
     it 'accepts a Time instance' do
 
-dump_zones
+#dump_zones
       t = Time.now + 10
 
       job = @scheduler.schedule_every '0.5s', :first => t do; end
