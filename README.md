@@ -1325,13 +1325,13 @@ Rufus::Scheduler.parse(0.1)
   # => 0.1
 
 Rufus::Scheduler.parse('* * * * *')
-  # => #<Rufus::Scheduler::CronLine:0x00000002be5198
-  #        @original="* * * * *", @timezone=nil,
-  #        @seconds=[0], @minutes=nil, @hours=nil, @days=nil, @months=nil,
-  #        @weekdays=nil, @monthdays=nil>
+  # => #<Fugit::Cron:0x00007fb7a3045508
+  #      @original="* * * * *", @cron_s=nil,
+  #      @seconds=[0], @minutes=nil, @hours=nil, @monthdays=nil, @months=nil,
+  #      @weekdays=nil, @zone=nil, @timezone=nil>
 ```
 
-It returns a number when the output is a duration and a CronLine instance when the input is a cron string.
+It returns a number when the output is a duration and a Fugit::Cron instance when the input is a cron string.
 
 It will raise an ArgumentError if it can't parse the input.
 
