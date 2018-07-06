@@ -61,7 +61,7 @@ Rufus-scheduler (out of the box) is an in-process, in-memory scheduler. It uses 
 
 It does not persist your schedules. When the process is gone and the scheduler instance with it, the schedules are gone.
 
-A rufus-scheduler instance will go on scheduling while it is present among the object in a Ruby process. To make it stop scheduling you have to call its [`#shutdown` method](#schedulershutdown).
+A rufus-scheduler instance will go on scheduling while it is present among the objects in a Ruby process. To make it stop scheduling you have to call its [`#shutdown` method](#schedulershutdown).
 
 
 ## related and similar gems
@@ -89,7 +89,7 @@ I'll drive you right to the [tracks](#so-rails).
 ## Notable changes:
 
 * As said, no more EventMachine-based scheduler
-* ```scheduler.every('100') {``` will schedule every 100 seconds (previously, it would have been 0.1s). This aligns rufus-scheduler on Ruby's ```sleep(100)```
+* ```scheduler.every('100') {``` will schedule every 100 seconds (previously, it would have been 0.1s). This aligns rufus-scheduler with Ruby's ```sleep(100)```
 * The scheduler isn't catching the whole of Exception anymore, only StandardError
 * The error_handler is [#on_error](#rufusscheduleron_errorjob-error) (instead of #on_exception), by default it now prints the details of the error to $stderr (used to be $stdout)
 * Rufus::Scheduler::TimeOutError renamed to Rufus::Scheduler::TimeoutError
@@ -183,7 +183,7 @@ end
 
 Every jobs try hard to trigger following the frequency they were scheduled with.
 
-Interval jobs, trigger, execute and then trigger again after the interval elapsed. (every jobs time between trigger times, interval jobs time between trigger termination and the next trigger start).
+Interval jobs trigger, execute and then trigger again after the interval elapsed. (every jobs time between trigger times, interval jobs time between trigger termination and the next trigger start).
 
 Cron jobs are based on the venerable cron utility (```man 5 crontab```). They trigger following a pattern given in (almost) the same language cron uses.
 
@@ -221,7 +221,7 @@ job =
 
 Sometimes it pays to be less verbose.
 
-The ```#schedule``` methods schedules an at, in or cron job. It just decide based on its input. It returns the Job instance.
+The ```#schedule``` methods schedules an at, in or cron job. It just decides based on its input. It returns the Job instance.
 
 ```ruby
 scheduler.schedule '10d' do; end.class
@@ -244,13 +244,13 @@ scheduler.repeat '* * * * *' do; end.class
   # => Rufus::Scheduler::CronJob
 ```
 
-(Yes, no combination heres gives back an IntervalJob).
+(Yes, no combination here gives back an IntervalJob).
 
 ### schedule blocks arguments (job, time)
 
 A schedule block may be given 0, 1 or 2 arguments.
 
-The first argument is "job", it's simple the Job instance involved. It might be useful if the job is to be unscheduled for some reason.
+The first argument is "job", it's simply the Job instance involved. It might be useful if the job is to be unscheduled for some reason.
 
 ```ruby
 scheduler.every '10m' do |job|
@@ -290,7 +290,7 @@ It should work as well with cron jobs, not so with interval jobs whose next_time
 
 ### scheduling handler instances
 
-It's OK to pass any object, as long as it respond to #call(), when scheduling:
+It's OK to pass any object, as long as it responds to #call(), when scheduling:
 
 ```ruby
 class Handler
@@ -369,19 +369,19 @@ While paused, the scheduler still accepts schedules, but no schedule will get tr
 
 ### :blocking => true
 
-By default, jobs are triggered in their own, new thread. When :blocking => true, the job is triggered in the scheduler thread (a new thread is not created). Yes, while the job triggers, the scheduler is not scheduling.
+By default, jobs are triggered in their own, new threads. When :blocking => true, the job is triggered in the scheduler thread (a new thread is not created). Yes, while the job triggers, the scheduler is not scheduling.
 
 ### :overlap => false
 
-Since, by default, jobs are triggered in their own new thread, job instances might overlap. For example, a job that takes 10 minutes and is scheduled every 7 minutes will have overlaps.
+Since, by default, jobs are triggered in their own new threads, job instances might overlap. For example, a job that takes 10 minutes and is scheduled every 7 minutes will have overlaps.
 
-To prevent overlap, one can set :overlap => false. Such a job will not trigger if one of its instance is already running.
+To prevent overlap, one can set :overlap => false. Such a job will not trigger if one of its instances is already running.
 
 The `:overlap` option is considered after the `:mutex` option when the scheduler is reviewing jobs for triggering.
 
 ### :mutex => mutex_instance / mutex_name / array of mutexes
 
-When a job with a mutex triggers, the job's block is executed with the mutex around it, preventing other jobs with the same mutex to enter (it makes the other jobs wait until it exits the mutex).
+When a job with a mutex triggers, the job's block is executed with the mutex around it, preventing other jobs with the same mutex from entering (it makes the other jobs wait until it exits the mutex).
 
 This is different from :overlap => false, which is, first, limited to instances of the same job, and, second, doesn't make the incoming job instance block/wait but give up.
 
@@ -416,7 +416,7 @@ This option is for repeat jobs (cron / every) only.
 It's used to specify the first time after which the repeat job should trigger for the first time.
 
 In the case of an "every" job, this will be the first time (modulo the scheduler frequency) the job triggers.
-For a "cron" job as well, the :first will point to the first time the job has to trigger, the following trigger time are then determined by the cron string.
+For a "cron" job as well, the :first will point to the first time the job has to trigger, the following trigger times are then determined by the cron string.
 
 ```ruby
 scheduler.every '2d', :first_at => Time.now + 10 * 3600 do
@@ -432,7 +432,7 @@ scheduler.cron '00 14 * * *', :first_in => '3d' do
 end
 ```
 
-:first, :first_at and :first_in all accept a point in time or a duration (number or time string). Use the symbol you think make your schedule more readable.
+:first, :first_at and :first_in all accept a point in time or a duration (number or time string). Use the symbol you think makes your schedule more readable.
 
 Note: it's OK to change the first_at (a Time instance) directly:
 ```ruby
@@ -487,7 +487,7 @@ scheduler.every '10m', :last_in => 10 * 3600 do
   # ... do something every 10 minutes for 10 hours
 end
 ```
-:last, :last_at and :last_in all accept a point in time or a duration (number or time string). Use the symbol you think make your schedule more readable.
+:last, :last_at and :last_in all accept a point in time or a duration (number or time string). Use the symbol you think makes your schedule more readable.
 
 Note: it's OK to change the last_at (nil or a Time instance) directly:
 ```ruby
@@ -537,7 +537,7 @@ job.times = 10
 
 ## Job methods
 
-When calling a schedule method, the id (String) of the job is returned. Longer schedule methods return Job instances directly. Calling the shorter schedule methods with the :job => true also return Job instances instead of Job ids (Strings).
+When calling a schedule method, the id (String) of the job is returned. Longer schedule methods return Job instances directly. Calling the shorter schedule methods with the :job => true also returns Job instances instead of Job ids (Strings).
 
 ```ruby
   require 'rufus-scheduler'
@@ -600,7 +600,7 @@ job.original
 
 callable() returns the scheduled block (or the call method of the callable object passed in lieu of a block)
 
-handler() returns nil if a block was scheduled and the instance scheduled else.
+handler() returns nil if a block was scheduled and the instance scheduled otherwise.
 
 ```ruby
 # when passing a block
@@ -710,7 +710,7 @@ Returns true if the job is scheduled (is due to trigger). For repeat jobs it sho
 
 ### pause, resume, paused?, paused_at
 
-These four methods are only available to CronJob, EveryJob and IntervalJob instances. One can pause or resume such a job thanks to them.
+These four methods are only available to CronJob, EveryJob and IntervalJob instances. One can pause or resume such jobs thanks to these methods.
 
 ```ruby
 job =
@@ -816,7 +816,7 @@ Returns when the job will trigger (hopefully).
 
 ### next_time
 
-An alias to time.
+An alias for time.
 
 ## EveryJob, IntervalJob and CronJob methods
 
@@ -866,14 +866,14 @@ It's used to determine if the job frequency is higher than the scheduler frequen
 
 ### brute_frequency
 
-Cron jobs also have a ```#brute_frequency``` method that looks a one year of intervals to determine the shortest delta for the cron. This method can take between 20 to 50 seconds for cron lines that go the second level. ```#frequency``` above, when encountering second level cron lines will take a shortcut to answer as quickly as possible with a usable value.
+Cron jobs also have a ```#brute_frequency``` method that looks at one year of intervals to determine the shortest delta for the cron. This method can take between 20 to 50 seconds for cron lines that go the second level. ```#frequency``` above, when encountering second level cron lines will take a shortcut to answer as quickly as possible with a usable value.
 
 
 ## looking up jobs
 
 ### Scheduler#job(job_id)
 
-The scheduler ```#job(job_id)``` method can be used to lookup Job instances.
+The scheduler ```#job(job_id)``` method can be used to look up Job instances.
 
 ```ruby
   require 'rufus-scheduler'
@@ -905,7 +905,7 @@ Here is an example:
 
 ### Scheduler#jobs(:tag / :tags => x)
 
-When scheduling a job, one can specify one or more tags attached to the job. These can be used to lookup the job later on.
+When scheduling a job, one can specify one or more tags attached to the job. These can be used to look up the job later on.
 
 ```ruby
   scheduler.in '10d', :tag => 'main_process' do
@@ -965,7 +965,7 @@ Returns since the count of seconds for which the scheduler has been running.
 
 ### Scheduler#join
 
-Let's the current thread join the scheduling thread in rufus-scheduler. The thread comes back when the scheduler gets shut down.
+Lets the current thread join the scheduling thread in rufus-scheduler. The thread comes back when the scheduler gets shut down.
 
 ### Scheduler#threads
 
@@ -1040,9 +1040,9 @@ TODO: talk about callable#on_error (if implemented)
 
 ### Rufus::Scheduler#stderr=
 
-By default, rufus-scheduler intercepts all errors (that inherit from StandardError) and dumps abundent details to $stderr.
+By default, rufus-scheduler intercepts all errors (that inherit from StandardError) and dumps abundant details to $stderr.
 
-If, for example, you'd like to divert that flow to another file (descriptor). You can reassign $stderr for the current Ruby process
+If, for example, you'd like to divert that flow to another file (descriptor), you can reassign $stderr for the current Ruby process
 
 ```ruby
 $stderr = File.open('/var/log/myapplication.log', 'ab')
@@ -1101,13 +1101,13 @@ end
 
 The ```trigger_time``` is the time at which the job triggers. It might be a bit before ```Time.now```.
 
-Warning: these two callbacks are executed in the scheduler thread, not in the work threads (the threads were the job execution really happens).
+Warning: these two callbacks are executed in the scheduler thread, not in the work threads (the threads where the job execution really happens).
 
 ### Rufus::Scheduler#on_pre_trigger as a guard
 
 Returning ```false``` in on_pre_trigger will prevent the job from triggering. Returning anything else (nil, -1, true, ...) will let the job trigger.
 
-Note: your business logic should go in the scheduled block itself (or the scheduled instance). Don't put business logic in on_pre_trigger. Return false for admin reasons (backend down, etc) not for business reasons that are tied to the job itself.
+Note: your business logic should go in the scheduled block itself (or the scheduled instance). Don't put business logic in on_pre_trigger. Return false for admin reasons (backend down, etc), not for business reasons that are tied to the job itself.
 
 ```ruby
 def s.on_pre_trigger(job, trigger_time)
@@ -1145,7 +1145,7 @@ This feature only works on OSes that support the flock (man 2 flock) call.
 
 Starting the scheduler with ```:lockfile => ".rufus-scheduler.lock"``` will make the scheduler attempt to create and lock the file ```.rufus-scheduler.lock``` in the current working directory. If that fails, the scheduler will not start.
 
-The idea is to guarantee only one scheduler (in a group of scheduler sharing the same lockfile) is running.
+The idea is to guarantee only one scheduler (in a group of schedulers sharing the same lockfile) is running.
 
 This is useful in environments where the Ruby process holding the scheduler gets started multiple times.
 
@@ -1244,11 +1244,11 @@ Rufus::Scheduler.s.every '10s' { puts "hello, world!" }
 
 ## advanced lock schemes
 
-As seen above, rufus-scheduler proposes the [:lockfile](#lockfile--mylockfiletxt) system out of the box. If in a group of schedulers only one is supposed to run, the lockfile mecha prevents schedulers that have not set/created the lockfile from running.
+As seen above, rufus-scheduler proposes the [:lockfile](#lockfile--mylockfiletxt) system out of the box. If in a group of schedulers only one is supposed to run, the lockfile mechanism prevents schedulers that have not set/created the lockfile from running.
 
-There are situation where this is not sufficient.
+There are situations where this is not sufficient.
 
-By overriding #lock and #unlock, one can customize how his schedulers lock.
+By overriding #lock and #unlock, one can customize how schedulers lock.
 
 This example was provided by [Eric Lindvall](https://github.com/eric):
 
@@ -1305,7 +1305,7 @@ Warning: you may think you're heading towards "high availability" by using a tri
 
 ## parsing cronlines and time strings
 
-Rufus::Scheduler provides a class method ```.parse``` to parse time durations and cron strings. It's what it's using when receiving schedules. One can use it diectly (no need to instantiate a Scheduler).
+Rufus::Scheduler provides a class method ```.parse``` to parse time durations and cron strings. It's what it's using when receiving schedules. One can use it directly (no need to instantiate a Scheduler).
 
 ```ruby
 require 'rufus-scheduler'
@@ -1384,7 +1384,7 @@ require 'rufus-scheduler'
 
 Time.now
   # => 2013-10-26 07:07:08 +0900
-Rufus::Scheduler.parse('* * * * mon#1').next_time
+Rufus::Scheduler.parse('* * * * mon#1').next_time.to_s
   # => 2013-11-04 00:00:00 +0900
 ```
 
@@ -1397,7 +1397,7 @@ In this example, the cronline is supposed to trigger every last day of the month
 require 'rufus-scheduler'
 Time.now
   # => 2013-10-26 07:22:09 +0900
-Rufus::Scheduler.parse('00 12 L * *').next_time
+Rufus::Scheduler.parse('00 12 L * *').next_time.to_s
   # => 2013-10-31 12:00:00 +0900
 ```
 
@@ -1450,7 +1450,7 @@ rufus-scheduler/lib/rufus/scheduler/zotime.rb:41:
 	...
 ```
 
-It may happen on Windows or on systems that poorly hints to Ruby on which timezone to use. It should be solved by setting explicitly the `ENV['TZ']` before the scheduler instantiation:
+It may happen on Windows or on systems that poorly hint to Ruby which timezone to use. It should be solved by setting explicitly the `ENV['TZ']` before the scheduler instantiation:
 ```ruby
 ENV['TZ'] = 'Asia/Shanghai'
 scheduler = Rufus::Scheduler.new
