@@ -1331,7 +1331,7 @@ Rufus::Scheduler.parse('* * * * *')
   #      @weekdays=nil, @zone=nil, @timezone=nil>
 ```
 
-It returns a number when the output is a duration and a Fugit::Cron instance when the input is a cron string.
+It returns a number when the input is a duration and a Fugit::Cron instance when the input is a cron string.
 
 It will raise an ArgumentError if it can't parse the input.
 
