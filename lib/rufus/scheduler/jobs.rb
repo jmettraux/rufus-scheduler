@@ -617,11 +617,6 @@ module Rufus
         set_next_time(nil)
       end
 
-      def frequency
-
-        @cron_line.frequency
-      end
-
       def brute_frequency
 
         @cron_line.brute_frequency

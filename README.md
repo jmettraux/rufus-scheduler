@@ -846,27 +846,33 @@ Every jobs use a time duration between each start of their execution, while inte
 
 ## CronJob methods
 
-### frequency
-
-It returns the shortest interval of time between two potential occurrences of the job.
-
-For instance:
-```ruby
-Rufus::Scheduler.parse('* * * * *').frequency         # ==> 60
-Rufus::Scheduler.parse('* * * * * *').frequency       # ==> 1
-
-Rufus::Scheduler.parse('5 23 * * *').frequency        # ==> 24 * 3600
-Rufus::Scheduler.parse('5 * * * *').frequency         # ==> 3600
-Rufus::Scheduler.parse('10,20,30 * * * *').frequency  # ==> 600
-
-Rufus::Scheduler.parse('10,20,30 * * * * *').frequency  # ==> 10
-```
-
-It's used to determine if the job frequency is higher than the scheduler frequency (it raises an ArgumentError if that is the case).
-
 ### brute_frequency
 
-Cron jobs also have a ```#brute_frequency``` method that looks at one year of intervals to determine the shortest delta for the cron. This method can take between 20 to 50 seconds for cron lines that go the second level. ```#frequency``` above, when encountering second level cron lines will take a shortcut to answer as quickly as possible with a usable value.
+An expensive method to run, it's brute. It caches its results. By default it runs for 2017 (a non leap-year).
+
+```
+  require 'rufus-scheduler'
+
+  Rufus::Scheduler.parse('* * * * *').brute_frequency
+    #
+    # => #<Fugit::Cron::Frequency:0x00007fdf4520c5e8
+    #      @span=31536000.0, @delta_min=60, @delta_max=60,
+    #      @occurrences=525600, @span_years=1.0, @yearly_occurrences=525600.0>
+      #
+      # Occurs 525600 times in a span of 1 year (2017) and 1 day.
+      # There are least 60 seconds between "triggers" and at most 60 seconds.
+
+  Rufus::Scheduler.parse('0 12 * * *').brute_frequency
+    # => #<Fugit::Cron::Frequency:0x00007fdf451ec6d0
+    #      @span=31536000.0, @delta_min=86400, @delta_max=86400,
+    #      @occurrences=365, @span_years=1.0, @yearly_occurrences=365.0>
+  Rufus::Scheduler.parse('0 12 * * *').brute_frequency.to_debug_s
+    # => "dmin: 1D, dmax: 1D, ocs: 365, spn: 52W1D, spnys: 1, yocs: 365"
+      #
+      # 365 occurrences, at most 1 day between each, at least 1 day.
+```
+
+The `CronJob#frequency` method found in rufus-scheduler < 3.5 has been retired.
 
 
 ## looking up jobs
