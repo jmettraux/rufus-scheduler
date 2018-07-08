@@ -397,10 +397,7 @@ module Rufus
     #
     def work_threads(query=:all)
 
-      ts =
-        threads.select { |t|
-          t[:rufus_scheduler_job] || t[:rufus_scheduler_work_thread]
-        }
+      ts = threads.select { |t| t[:rufus_scheduler_work_thread] }
 
       case query
         when :active then ts.select { |t| t[:rufus_scheduler_job] }

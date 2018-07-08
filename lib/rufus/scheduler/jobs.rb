@@ -279,6 +279,9 @@ module Rufus
         thread =
           Thread.new do
 
+            Thread.current[:rufus_scheduler_job] = true
+              # indicates that the thread is going to be assigned immediately
+
             Thread.current[@scheduler.thread_key] = true
             Thread.current[:rufus_scheduler_work_thread] = true
 
@@ -320,11 +323,11 @@ module Rufus
 
         threads = @scheduler.work_threads
 
-        cur = threads.size
         vac = threads.select { |t| t[:rufus_scheduler_job] == nil }.size
-        #min = @scheduler.min_work_threads
-        max = @scheduler.max_work_threads
         que = @scheduler.work_queue.size
+
+        cur = threads.size
+        max = @scheduler.max_work_threads
 
         start_work_thread if vac - que < 1 && cur < max
 

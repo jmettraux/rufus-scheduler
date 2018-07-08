@@ -4,6 +4,8 @@
 
 == rufus-scheduler - 3.5.1    not yet released
 
+- Ensure JRuby doesn't count fresh, new, work threads as vacant
+
 
 == rufus-scheduler - 3.5.0    released 2018-05-15
 
