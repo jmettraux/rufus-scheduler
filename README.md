@@ -369,27 +369,27 @@ While paused, the scheduler still accepts schedules, but no schedule will get tr
 
 ### :blocking => true
 
-By default, jobs are triggered in their own, new threads. When :blocking => true, the job is triggered in the scheduler thread (a new thread is not created). Yes, while the job triggers, the scheduler is not scheduling.
+By default, jobs are triggered in their own, new threads. When `:blocking => true`, the job is triggered in the scheduler thread (a new thread is not created). Yes, while a blocking job is running, the scheduler is not scheduling.
 
 ### :overlap => false
 
 Since, by default, jobs are triggered in their own new threads, job instances might overlap. For example, a job that takes 10 minutes and is scheduled every 7 minutes will have overlaps.
 
-To prevent overlap, one can set :overlap => false. Such a job will not trigger if one of its instances is already running.
+To prevent overlap, one can set `:overlap => false`. Such a job will not trigger if one of its instances is already running.
 
-The `:overlap` option is considered after the `:mutex` option when the scheduler is reviewing jobs for triggering.
+The `:overlap` option is considered before the `:mutex` option when the scheduler is reviewing jobs for triggering.
 
 ### :mutex => mutex_instance / mutex_name / array of mutexes
 
 When a job with a mutex triggers, the job's block is executed with the mutex around it, preventing other jobs with the same mutex from entering (it makes the other jobs wait until it exits the mutex).
 
-This is different from :overlap => false, which is, first, limited to instances of the same job, and, second, doesn't make the incoming job instance block/wait but give up.
+This is different from `:overlap => false`, which is, first, limited to instances of the same job, and, second, doesn't make the incoming job instance block/wait but give up.
 
-:mutex accepts a mutex instance or a mutex name (String). It also accept an array of mutex names / mutex instances. It allows for complex relations between jobs.
+`:mutex` accepts a mutex instance or a mutex name (String). It also accept an array of mutex names / mutex instances. It allows for complex relations between jobs.
 
 Array of mutexes: original idea and implementation by [Rainux Luo](https://github.com/rainux)
 
-Warning: creating lots of different mutexes is OK. Rufus-scheduler will place them in its Scheduler#mutexes hash... And they won't get garbage collected.
+Note: creating lots of different mutexes is OK. Rufus-scheduler will place them in its Scheduler#mutexes hash... And they won't get garbage collected.
 
 The `:overlap` option is considered before the `:mutex` option when the scheduler is reviewing jobs for triggering.
 
