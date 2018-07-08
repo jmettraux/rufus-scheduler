@@ -400,9 +400,9 @@ module Rufus
       ts = threads.select { |t| t[:rufus_scheduler_work_thread] }
 
       case query
-        when :active then ts.select { |t| t[:rufus_scheduler_job] }
-        when :vacant then ts.reject { |t| t[:rufus_scheduler_job] }
-        else ts
+      when :active then ts.select { |t| t[:rufus_scheduler_job] }
+      when :vacant then ts.reject { |t| t[:rufus_scheduler_job] }
+      else ts
       end
     end
 
@@ -603,15 +603,15 @@ module Rufus
 
       job_class =
         case job_type
-          when :once
-            opts[:_t] ||= Rufus::Scheduler.parse(t, opts)
-            opts[:_t].is_a?(Numeric) ? InJob : AtJob
-          when :every
-            EveryJob
-          when :interval
-            IntervalJob
-          when :cron
-            CronJob
+        when :once
+          opts[:_t] ||= Rufus::Scheduler.parse(t, opts)
+          opts[:_t].is_a?(Numeric) ? InJob : AtJob
+        when :every
+          EveryJob
+        when :interval
+          IntervalJob
+        when :cron
+          CronJob
         end
 
       job = job_class.new(self, t, opts, block || callable)
