@@ -52,57 +52,57 @@
 * concept47 (https://github.com/concept47) every and :discard_past
 * Chris Kampemeier (http://github.com/chrisk) rspec 2.0 refinements
 * Tanzeeb Khalili (http://github.com/tanzeeb) cron and timezones
-* Adam Davies (http://github.com/adz), :allow_overlapping => false
+* Adam Davies (http://github.com/adz) `:allow_overlapping => false`
 * Klaas Jan Wierenga, at/every/in stress tests (1.0 and 2.0)
-* TobyH (http://github.com/tobyh), faster and cleaner CronLine#next_time
+* TobyH (http://github.com/tobyh), faster and cleaner `CronLine#next_time`
 
 
 ## Feedback
 
-* Sasha Hoellger - https://github.com/mitnal - parse_cron and readme - gh-270
-* Gian - https://github.com/snmgian - cron vs :first clarification - gh-266
-* Vito Laurenza - https://github.com/veetow - help debugging tz issues - gh-240
-* Yoshimi Keiji - https://githuc.com/walf443 - v.3.3.3 mislabelling
-* Alexander Deeb - https://github.com/adeeb1 - gh-230
-* Sofia Bravo - http://stackoverflow.com/users/1123850/sofia-bravo - gh-231
-* zzjin - https://githu.com/zzjin - 3.3.x vs CST abbreviated timezone - gh-228
-* lovingyu - https://github.com/lovingyu - fallback to `ENV['TZ']` - gh-222
-* Ramon Tayag - https://github.com/ramontayag - prevent day 0 in cronlines
-* Akinori Musha - https://github.com/knu - `ENV['TZ']` setting is harmful
-* Nicolás Satragno - https://twitter.com/nsatragno - parse_to_time vs Date
-* d-m-u duhlmann - https://github.com/d-m-u - job opt hash preservation
-* Anjali Sharma - https://github.com/anjali-sharma - fix typographical error
-* Jonathan Campos - https://github.com/jonbcampos - negative cron day idea
-* Andrey Morskov - https://github.com/accessd - fix typographical error
-* Eduardo Maia - https://github.com/emaiax - rufus and the Rails console
-* Suisea - https://github.com/suisea - readme rewording
-* Radek - http://stackoverflow.com/users/250422 - gh-166
-* Patrik Ragnarsson - https://github.com/dentarg - timeout vs nil, gh-156
+* Sasha Hoellger (https://github.com/mitnal) parse_cron and readme - gh-270
+* Gian (https://github.com/snmgian) cron vs :first clarification - gh-266
+* Vito Laurenza (https://github.com/veetow) help debugging tz issues - gh-240
+* Yoshimi Keiji (https://github.com/walf443) v.3.3.3 mislabelling
+* Alexander Deeb (https://github.com/adeeb1) gh-230
+* Sofia Bravo (http://stackoverflow.com/users/1123850/sofia-bravo) gh-231
+* zzjin (https://githu.com/zzjin) 3.3.x vs CST abbreviated timezone - gh-228
+* lovingyu (https://github.com/lovingyu) fallback to `ENV['TZ']` - gh-222
+* Ramon Tayag (https://github.com/ramontayag) prevent day 0 in cronlines
+* Akinori Musha (https://github.com/knu) `ENV['TZ']` setting is harmful
+* Nicolás Satragno (https://twitter.com/nsatragno) parse_to_time vs Date
+* d-m-u duhlmann (https://github.com/d-m-u) job opt hash preservation
+* Anjali Sharma (https://github.com/anjali-sharma) fix typographical error
+* Jonathan Campos (https://github.com/jonbcampos) negative cron day idea
+* Andrey Morskov (https://github.com/accessd) fix typographical error
+* Eduardo Maia (https://github.com/emaiax) rufus and the Rails console
+* Suisea (https://github.com/suisea) readme rewording
+* Radek (http://stackoverflow.com/users/250422) gh-166
+* Patrik Ragnarsson (https://github.com/dentarg) timeout vs nil, gh-156
 * twitter @adefilaedward1 - typo in readme
-* Michael Guymon - https://github.com/mguymon - #next_time vs :first_at
-* junhanamaki - https://github.com/junhanamaki - #next_time and dst ambiguities
+* Michael Guymon (https://github.com/mguymon) #next_time vs :first_at
+* junhanamaki (https://github.com/junhanamaki) #next_time and dst ambiguities
 * kreynolds (tossrock) - inspiration for #occurrences
-* Matteo - https://github.com/m4ce - dst and cron issue
-* Tobias Bielohlawek - https://github.com/rngtng - missing assertion
+* Matteo (https://github.com/m4ce) dst and cron issue
+* Tobias Bielohlawek (https://github.com/rngtng) missing assertion
 * Joe Taylor and Agis Anastasopoulos -
   http://stackoverflow.com/questions/21280870 - `:first => :now` and `Job#call`
-* Gatis Tomsons - https://github.io/gacha - heavy work threads and lock errors
+* Gatis Tomsons (https://github.io/gacha) heavy work threads and lock errors
 * https://github.com/joast - missing .to_time_string alias (code and doc)
-* Tamir Duberstein - https://github.com/tamird - rdoc inaccuracies
-* Kevin Bouwkamp - https://github.com/bmxpert1 - first_at issues
-* Daniel Beauchamp - https://github.com/pushmatrix - pre/post trigger callbacks
-* Arthur Maltson - https://github.com/amaltson - readme fixes
-* skrd - https://github.com/skrd - `"/10 * * * *"` cron issue
+* Tamir Duberstein (https://github.com/tamird) rdoc inaccuracies
+* Kevin Bouwkamp (https://github.com/bmxpert1) first_at issues
+* Daniel Beauchamp (https://github.com/pushmatrix) pre/post trigger callbacks
+* Arthur Maltson (https://github.com/amaltson) readme fixes
+* skrd (https://github.com/skrd) `"/10 * * * *"` cron issue
 * Hongli Lai - `Scheduler#stop(:terminate => true)` request
 * Tero Tilus - raises on unsupported/unknown options
 * Louis Coilliot - Scheduler#running_jobs
 * Henrique G. Testa - pause/resume concept
-* Sam Gibson - https://github.com/samfoo - exception handling hardening
-* sha1dy - https://github.com/sha1dy - every and overlapping exception issue
+* Sam Gibson (https://github.com/samfoo) exception handling hardening
+* sha1dy (https://github.com/sha1dy) every and overlapping exception issue
 * Defusal - unschedule_by_tag
 * pickerel - https://github.com/pickerel
 * Gonzalo Suarez - parse_time_string(s) issue
-* Tony Day - http://github.com/tonyday - every and overlapping timeout issue
+* Tony Day (http://github.com/tonyday) every and overlapping timeout issue
 * Nate Wiger (Schedulable call/trigger issue)
 * Aldric (readme errors)
 * Kenneth Kalmer (daemon-kit)
