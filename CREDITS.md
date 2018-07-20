@@ -15,7 +15,7 @@
 * Piavka (https://github.com/piavka) - Job#trigger_off_schedule, gh-214
 * Paulo Delgado (https://github.com/paulodelgado) counter ActiveRecord, gh-210
 * Anjali Sharma (https://github.com/anjali-sharma) enhance job#last_time example
-* Kyle Simukka (https://github.com/simook) raise on "*/0 * * * *"
+* Kyle Simukka (https://github.com/simook) raise on `"*/0 * * * *"`
 * Ryan McGeary (https://github.com/rmm5t) svg badges for the readme
 * Balasankar C (https://github.com/balasankarc) fix CronJob spec vs December
 * Matthieu Rosinski (https://github.com/Korrigan) prevent "every" shifts
@@ -25,7 +25,7 @@
 * Alyssa Pohahau (https://github.com/alyssa) out of DST transition specs
 * Claude Vessaz (https://github.com/claudeatsafe) ack #unscheduled_at in #scheduled?
 * 김성식 (https://github.com/kssminus) job id uniqueness effort
-* Jesse Willet (https://github.com/jhw-at-prosperworks-com) cron vs "*/10"
+* Jesse Willet (https://github.com/jhw-at-prosperworks-com) cron vs `"*/10"`
 * Pascal Ouellet (https://github.com/pouellet) Scheduler#timeline loop fix
 * Ryan Biesemeyer (https://github.com/yaauie) ZoTime.is_timezone? on OSX
 * Ketan Padegaonkar (https://github.com/ketan) .brute_frequency improvement
@@ -41,7 +41,7 @@
 * Thomas Sevestre (https://github.com/thomassevestre) :exception option
 * Matteo Cerutti - last_time / previous_time idea (and initial implementation)
 * Aimee Rose (https://github.com/AimeeRose) cronline and > 24
-* Lucy Fu (https://github.com/lfu) arg error on <= 0 "every" freq
+* Lucy Fu (https://github.com/lfu) arg error on `<= 0 "every" freq`
 * Rainux Luo (https://github.com/rainux) multiple mutexes
 * Andrew Davey (https://github.com/asdavey) "L" in cron lines
 * Stig Kleppe-Jørgensen (https://github.com/stigkj)
@@ -66,9 +66,9 @@
 * Alexander Deeb - https://github.com/adeeb1 - gh-230
 * Sofia Bravo - http://stackoverflow.com/users/1123850/sofia-bravo - gh-231
 * zzjin - https://githu.com/zzjin - 3.3.x vs CST abbreviated timezone - gh-228
-* lovingyu - https://github.com/lovingyu - fallback to ENV['TZ'] - gh-222
+* lovingyu - https://github.com/lovingyu - fallback to `ENV['TZ']` - gh-222
 * Ramon Tayag - https://github.com/ramontayag - prevent day 0 in cronlines
-* Akinori Musha - https://github.com/knu - ENV['TZ'] setting is harmful
+* Akinori Musha - https://github.com/knu - `ENV['TZ']` setting is harmful
 * Nicolás Satragno - https://twitter.com/nsatragno - parse_to_time vs Date
 * d-m-u duhlmann - https://github.com/d-m-u - job opt hash preservation
 * Anjali Sharma - https://github.com/anjali-sharma - fix typographical error
@@ -85,15 +85,15 @@
 * Matteo - https://github.com/m4ce - dst and cron issue
 * Tobias Bielohlawek - https://github.com/rngtng - missing assertion
 * Joe Taylor and Agis Anastasopoulos -
-  http://stackoverflow.com/questions/21280870 - :first => :now and Job#call
+  http://stackoverflow.com/questions/21280870 - `:first => :now` and `Job#call`
 * Gatis Tomsons - https://github.io/gacha - heavy work threads and lock errors
 * https://github.com/joast - missing .to_time_string alias (code and doc)
 * Tamir Duberstein - https://github.com/tamird - rdoc inaccuracies
 * Kevin Bouwkamp - https://github.com/bmxpert1 - first_at issues
 * Daniel Beauchamp - https://github.com/pushmatrix - pre/post trigger callbacks
 * Arthur Maltson - https://github.com/amaltson - readme fixes
-* skrd - https://github.com/skrd - "/10 * * * *" cron issue
-* Hongli Lai - Scheduler#stop(:terminate => true) request
+* skrd - https://github.com/skrd - `"/10 * * * *"` cron issue
+* Hongli Lai - `Scheduler#stop(:terminate => true)` request
 * Tero Tilus - raises on unsupported/unknown options
 * Louis Coilliot - Scheduler#running_jobs
 * Henrique G. Testa - pause/resume concept
