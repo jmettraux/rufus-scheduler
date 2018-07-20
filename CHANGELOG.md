@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-### rufus-scheduler 3.5.1 - not yet released
+### rufus-scheduler 3.5.1 - released 2018-07-20
 
 * Upgrade fugit to 1.1.4 (with out of DST issue fix)
 * Ensure JRuby doesn't count fresh, new, work threads as vacant
@@ -22,7 +22,7 @@
 
 ### rufus-scheduler 3.4.1 - released 2017-05-24
 
-* Let #schedule accept a CronLine instance, gh-247 #247
+* Let #schedule accept a CronLine instance, gh-247
 
 
 ### rufus-scheduler 3.4.0 - released 2017-03-23
@@ -362,5 +362,5 @@
 
 ## initial release
 
-(was openwferu-scheduler before that)
+(was [openwferu-scheduler](https://rubygems.org/gems/openwferu-scheduler/versions) before that)
 
