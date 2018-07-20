@@ -22,7 +22,7 @@
 
 ### rufus-scheduler 3.4.1 - released 2017-05-24
 
-* Let #schedule accept a CronLine instance, gh-247
+* Let #schedule accept a CronLine instance, gh-247 #247
 
 
 ### rufus-scheduler 3.4.0 - released 2017-03-23
