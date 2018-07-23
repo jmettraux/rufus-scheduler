@@ -46,6 +46,9 @@ end
 scheduler.every '3h' do
   # do something every 3 hours
 end
+scheduler.every '3h10m' do
+  # do something every 3 hours and 10 minutes
+end
 
 scheduler.cron '5 0 * * *' do
   # do something every day, five minutes after midnight
