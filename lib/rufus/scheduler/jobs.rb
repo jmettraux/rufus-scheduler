@@ -95,6 +95,14 @@ module Rufus
 
       alias job_id id
 
+      # Will fail with an ArgumentError if the job frequency is higher than
+      # the scheduler frequency.
+      #
+      def check_frequency
+
+        # this parent implementation never fails
+      end
+
       def trigger(time)
 
         @previous_time = @next_time
@@ -543,6 +551,14 @@ module Rufus
         set_next_time(nil)
       end
 
+      def check_frequency
+
+        fail ArgumentError.new(
+         "job frequency (#{@frequency}s) is higher than " +
+         "scheduler frequency (#{@scheduler.frequency}s)"
+        ) if @frequency < @scheduler.frequency
+      end
+
       protected
 
       def set_next_time(trigger_time, is_post=false)
@@ -618,6 +634,46 @@ module Rufus
         @cron_line = opts[:_t] || ::Fugit::Cron.parse(cronline)
 
         set_next_time(nil)
+      end
+
+      def check_frequency
+
+        # The minimum time delta in a cron job is 1 second, so if the
+        # scheduler frequency is less than that, no worries.
+
+        return if @scheduler.frequency <= 1
+
+        now = EtOrbi.now
+
+        # NB: For jobs that occur frequently brute_frequency is extremely
+        # expensive and using a loop over next_time_from is extremely expensive
+        # for jobs that occur less often. As a result, this is a basic
+        # heuristic to choose whether we need a more in-depth check.
+
+        delta = 4.times
+          .inject([ next_time_from(now) ]) { |a|
+            a << next_time_from(a.last); a }[1..-1]
+          .each_cons(2)
+          .collect { |a, b| b - a }
+          .min
+
+        frequency =
+          if delta >= 604_800 # one week inflection point
+            brute_frequency
+              .delta_min
+          else
+            365.times
+              .inject([ next_time_from(now) ]) { |a|
+                a << next_time_from(a.last); a }[1..-1]
+              .each_cons(2)
+              .collect { |a, b| b - a }
+              .min
+          end
+
+        fail ArgumentError.new(
+         "job frequency (min ~#{frequency}s) is higher than " +
+         "scheduler frequency (#{@scheduler.frequency}s)"
+        ) if frequency < @scheduler.frequency
       end
 
       def brute_frequency
