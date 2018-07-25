@@ -49,7 +49,7 @@ describe Rufus::Scheduler do
         @scheduler.cron '* * * * * *' do; end
       }.to raise_error(
         ArgumentError,
-        'job frequency (~max 1.0s) is higher than scheduler frequency (10)'
+        'job frequency (min ~1.0s) is higher than scheduler frequency (10s)'
       )
     end
 
@@ -60,6 +60,26 @@ describe Rufus::Scheduler do
       job = @scheduler.job(job_id)
 
       expect(job.cron_line.object_id).to eq(cl.object_id)
+    end
+
+    it 'is not slow handling frequent cron durations' do
+      @scheduler.frequency = 10
+
+      s = Time.now
+
+      @scheduler.cron '*/15 * * * * *' do; end
+
+      expect(Time.now - s).to be < 1
+    end
+
+    it 'is not slow handling non-frequent cron durations' do
+      @scheduler.frequency = 10
+
+      s = Time.now
+
+      @scheduler.cron '31 18 18 10 *' do; end
+
+      expect(Time.now - s).to be < 1
     end
   end
 
@@ -83,4 +103,3 @@ describe Rufus::Scheduler do
     end
   end
 end
-

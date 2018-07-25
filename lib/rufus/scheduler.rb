@@ -616,34 +616,43 @@ module Rufus
 
       job = job_class.new(self, t, opts, block || callable)
 
-      #fail ArgumentError.new(
-      #  "job frequency (#{job.frequency}) is higher than " +
-      #  "scheduler frequency (#{@frequency})"
-      #) if job.respond_to?(:frequency) && job.frequency < @frequency
-        #
-        # This was expensive
+      if job.is_a?(AtJob) || job.is_a?(InJob) || job.is_a?(IntervalJob)
+        # These are all fine
+      elsif job.is_a?(CronJob)
+        # The minimum time delta in a cron job is 1 second, so if our frequency
+        # is less than that we don't need to worry about it.
+        if @frequency >= 1
+          now = EtOrbi.now
 
-      if (
-        ! job.is_a?(Rufus::Scheduler::IntervalJob) &&
-        job.methods.include?(:next_time_from)
-      ) then
+          # NB: For jobs that occur frequently brute_frequency is extremely expensive
+          # and using a loop over next_time_from is extremely expensive for jobs
+          # that occur less often. As a result, this is a basic heuristic to choose
+          # whether we need a more in-depth check.
+          delta = 4.times.inject([ job.send(:next_time_from, now) ]) do |a|
+            a << job.send(:next_time_from, a.last); a
+          end[1..-1].each_cons(2).collect { |a, b| b - a }.min
 
-        nts = (1..365)
-          .inject([ job.send(:next_time_from, EtOrbi.now) ]) { |a, i|
-            a << job.send(:next_time_from, a.last); a }
-        deltas = []; prev = nts.shift
-        while (nt = nts.shift); deltas << (nt - prev).to_f; prev = nt; end
+          # NB: One week is the inflection point.
+          if delta >= 604_800
+            frequency = job.brute_frequency.delta_min
+          else
+            frequency = 365.times.inject([ job.send(:next_time_from, now) ]) do |a|
+              a << job.send(:next_time_from, a.last); a
+            end[1..-1].each_cons(2).collect { |a, b| b - a }.min
+          end
 
-        deltas = deltas[1..-1] \
-          if opts.keys.find { |k| k.to_s.match(/\Afirst/) }
-            #
-            # do not consider the first delta if there is a first, first_at,
-            # or first_in involved
-
+          fail ArgumentError.new(
+           "job frequency (min ~#{frequency}s) is higher than " +
+           "scheduler frequency (#{@frequency}s)"
+          ) if frequency < @frequency
+        end
+      elsif job.is_a?(EveryJob)
         fail ArgumentError.new(
-          "job frequency (~max #{deltas.min}s) is higher than " +
-          "scheduler frequency (#{@frequency})"
-        ) if deltas.min < @frequency * 0.9
+         "job frequency (#{job.frequency}s) is higher than " +
+         "scheduler frequency (#{@frequency}s)"
+        ) if job.frequency < @frequency
+      else
+        fail "Unknown job class of #{job.class}"
       end
 
       @jobs.push(job)
@@ -652,4 +661,3 @@ module Rufus
     end
   end
 end
-
