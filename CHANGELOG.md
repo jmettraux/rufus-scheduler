@@ -2,6 +2,11 @@
 # CHANGELOG.md
 
 
+### rufus-scheduler 3.5.2 - not yet released
+
+* Improve Job#check_frequency performance, gh-276, @drcapulet
+
+
 ### rufus-scheduler 3.5.1 - released 2018-07-20
 
 * Upgrade fugit to 1.1.4 (with out of DST issue fix)
