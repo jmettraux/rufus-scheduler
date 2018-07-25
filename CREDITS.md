@@ -4,10 +4,11 @@
 
 ## Contributors
 
-* Vais Salikhov (https://github.com/vais) - many document clarifications
-* Wes McNamee (https://github.com/ghostsquad) - let #schedule accept a CronLine
-* Joe Rafaniello (https://github.com/jrafanie) - Travis Ruby 2.4.1
-* Benjamin Fleischer (https://github.com/bf4) - ZoTime#subtract
+* Alex Coomans (https://github.com/drcapulet) gh-276 freq check pref improvement
+* Vais Salikhov (https://github.com/vais) many document clarifications
+* Wes McNamee (https://github.com/ghostsquad) let #schedule accept a CronLine
+* Joe Rafaniello (https://github.com/jrafanie) Travis Ruby 2.4.1
+* Benjamin Fleischer (https://github.com/bf4) ZoTime#subtract
 * Sam Rowe (https://github.com/riddley) gh-240 timezone for Debian
 * Daniel Rodgers-Pryor (https://github.com/djrodgerspryor), gh-238 fix ZooKeeper example
 * Cody Cutrer (https://github.com/ccutrer) gh-232 is_a?(Fixnum) replacement
