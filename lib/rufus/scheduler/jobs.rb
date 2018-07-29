@@ -638,47 +638,27 @@ module Rufus
 
       def check_frequency
 
-        # The minimum time delta in a cron job is 1 second, so if the
-        # scheduler frequency is less than that, no worries.
-
         return if @scheduler.frequency <= 1
+          #
+          # The minimum time delta in a cron job is 1 second, so if the
+          # scheduler frequency is less than that, no worries.
 
-        now = EtOrbi.now
-
-        # NB: For jobs that occur frequently brute_frequency is extremely
-        # expensive and using a loop over next_time_from is extremely expensive
-        # for jobs that occur less often. As a result, this is a basic
-        # heuristic to choose whether we need a more in-depth check.
-
-        delta = 4.times
-          .inject([ next_time_from(now) ]) { |a|
-            a << next_time_from(a.last); a }[1..-1]
-          .each_cons(2)
-          .collect { |a, b| b - a }
-          .min
-
-        frequency =
-          if delta >= 604_800 # one week inflection point
-            brute_frequency
-              .delta_min
-          else
-            365.times
-              .inject([ next_time_from(now) ]) { |a|
-                a << next_time_from(a.last); a }[1..-1]
-              .each_cons(2)
-              .collect { |a, b| b - a }
-              .min
-          end
+        f = @cron_line.rough_frequency
 
         fail ArgumentError.new(
-         "job frequency (min ~#{frequency}s) is higher than " +
+         "job frequency (min ~#{f}s) is higher than " +
          "scheduler frequency (#{@scheduler.frequency}s)"
-        ) if frequency < @scheduler.frequency
+        ) if f < @scheduler.frequency
       end
 
       def brute_frequency
 
         @cron_line.brute_frequency
+      end
+
+      def rough_frequency
+
+        @cron_line.rough_frequency
       end
 
       protected
