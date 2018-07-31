@@ -19,6 +19,16 @@ Gem::Specification.new do |s|
 Job scheduler for Ruby (at, cron, in and every jobs). Not a replacement for crond.
   }.strip
 
+  s.metadata = {
+    'changelog_uri' => s.homepage + '/blob/master/CHANGELOG.md',
+    'bug_tracker_uri' => s.homepage + '/issues',
+    'homepage_uri' =>  s.homepage,
+    'source_code_uri' => s.homepage,
+    #'wiki_uri' => s.homepage + '/flor/wiki',
+    #'documentation_uri' => s.homepage + '/tree/master/doc',
+    #'mailing_list_uri' => 'https://groups.google.com/forum/#!forum/floraison',
+  }
+
   #s.files = `git ls-files`.split("\n")
   s.files = Dir[
     'README.{md,txt}',
