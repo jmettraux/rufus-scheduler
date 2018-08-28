@@ -58,6 +58,8 @@ end
 # ...
 ```
 
+Rufus-scheduler uses [fugit](https://github.com/floraison/fugit) for parsing time strings, [et-orbi](https://github.com/floraison/et-orbi) for pairing time and [tzinfo](https://github.com/tzinfo/tzinfo) timezones.
+
 ## non-features
 
 Rufus-scheduler (out of the box) is an in-process, in-memory scheduler. It uses threads.
@@ -89,7 +91,7 @@ There is no EventMachine-based scheduler anymore.
 I'll drive you right to the [tracks](#so-rails).
 
 
-## Notable changes:
+## notable changes:
 
 * As said, no more EventMachine-based scheduler
 * ```scheduler.every('100') {``` will schedule every 100 seconds (previously, it would have been 0.1s). This aligns rufus-scheduler with Ruby's ```sleep(100)```
