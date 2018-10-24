@@ -1,8 +1,8 @@
 
 # rufus-scheduler
 
-[![Build Status](https://secure.travis-ci.org/jmettraux/rufus-scheduler.svg)](http://travis-ci.org/jmettraux/rufus-scheduler)
-[![Gem Version](https://badge.fury.io/rb/rufus-scheduler.svg)](http://badge.fury.io/rb/rufus-scheduler)
+[![Build Status](https://secure.travis-ci.org/jmettraux/rufus-scheduler.svg)](https://travis-ci.org/jmettraux/rufus-scheduler)
+[![Gem Version](https://badge.fury.io/rb/rufus-scheduler.svg)](https://badge.fury.io/rb/rufus-scheduler)
 
 Job scheduler for Ruby (at, cron, in and every jobs).
 
@@ -74,7 +74,7 @@ A rufus-scheduler instance will go on scheduling while it is present among the o
 * [Whenever](https://github.com/javan/whenever) - let cron call back your Ruby code, trusted and reliable cron drives your schedule
 * [Clockwork](https://github.com/Rykian/clockwork) - rufus-scheduler inspired gem
 * [Crono](https://github.com/plashchynski/crono) - an in-Rails cron scheduler
-* [PerfectSched](https://github.com/treasure-data/perfectsched) - highly available distributed cron built on [Sequel](http://sequel.jeremyevans.net) and more
+* [PerfectSched](https://github.com/treasure-data/perfectsched) - highly available distributed cron built on [Sequel](https://sequel.jeremyevans.net) and more
 
 (please note: rufus-scheduler is not a cron replacement)
 
@@ -110,7 +110,7 @@ So you need help. People can help you, but first help them help you, and don't w
 
 "hello", "please" and "thanks" are not swear words.
 
-Go read [how to report bugs effectively](http://www.chiark.greenend.org.uk/~sgtatham/bugs.html), twice.
+Go read [how to report bugs effectively](https://www.chiark.greenend.org.uk/~sgtatham/bugs.html), twice.
 
 Update: [help_help.md](https://gist.github.com/jmettraux/310fed75f568fd731814) might help help you.
 
@@ -122,14 +122,14 @@ Please note that I prefer helping over Stack Overflow because it's more searchab
 
 ### issues
 
-Yes, issues can be reported in [rufus-scheduler issues](https://github.com/jmettraux/rufus-scheduler/issues), I'd actually prefer bugs in there. If there is nothing wrong with rufus-scheduler, a [Stack Overflow question](http://stackoverflow.com/questions/ask?tags=rufus-scheduler+ruby) is better.
+Yes, issues can be reported in [rufus-scheduler issues](https://github.com/jmettraux/rufus-scheduler/issues), I'd actually prefer bugs in there. If there is nothing wrong with rufus-scheduler, a [Stack Overflow question](https://stackoverflow.com/questions/ask?tags=rufus-scheduler+ruby) is better.
 
 ### faq
 
-* [It doesn't work...](http://www.chiark.greenend.org.uk/~sgtatham/bugs.html)
+* [It doesn't work...](https://www.chiark.greenend.org.uk/~sgtatham/bugs.html)
 * [I want a refund](https://blog.nodejitsu.com/getting-refunds-on-open-source-projects)
-* [Passenger and rufus-scheduler](http://stackoverflow.com/questions/18108719/debugging-rufus-scheduler/18156180#18156180)
-* [Passenger and rufus-scheduler (2)](http://stackoverflow.com/questions/21861387/rufus-cron-job-not-working-in-apache-passenger#answer-21868555)
+* [Passenger and rufus-scheduler](https://stackoverflow.com/questions/18108719/debugging-rufus-scheduler/18156180#18156180)
+* [Passenger and rufus-scheduler (2)](https://stackoverflow.com/questions/21861387/rufus-cron-job-not-working-in-apache-passenger#answer-21868555)
 * [Passenger in-depth spawn methods](https://www.phusionpassenger.com/library/indepth/ruby/spawn_methods/)
 * [Passenger in-depth spawn methods (smart spawning)](https://www.phusionpassenger.com/library/indepth/ruby/spawn_methods/#smart-spawning-hooks)
 * [The scheduler comes up when running the Rails console or a Rake task](https://github.com/jmettraux/rufus-scheduler#avoid-scheduling-when-running-the-ruby-on-rails-console)
@@ -1292,7 +1292,7 @@ class ZookeptScheduler < Rufus::Scheduler
 end
 ```
 
-This uses a [zookeeper](http://zookeeper.apache.org/) to make sure only one scheduler in a group of distributed schedulers runs.
+This uses a [zookeeper](https://zookeeper.apache.org/) to make sure only one scheduler in a group of distributed schedulers runs.
 
 The methods #lock and #unlock are overridden and #confirm_lock is provided,
 to make sure that the lock is still valid.
@@ -1590,8 +1590,8 @@ I avoid running `-d` in development mode and bother about daemonizing only for p
 
 These are two well crafted articles on process daemonization, please read them:
 
-* http://www.mikeperham.com/2014/09/22/dont-daemonize-your-daemons/
-* http://www.mikeperham.com/2014/07/07/use-runit/
+* https://www.mikeperham.com/2014/09/22/dont-daemonize-your-daemons/
+* https://www.mikeperham.com/2014/07/07/use-runit/
 
 If, anyway, you need something like `rails server -d`, why not try `bundle exec unicorn -D` instead? In my (limited) experience, it worked out of the box (well, had to add `gem 'unicorn'` to `Gemfile` first).
 

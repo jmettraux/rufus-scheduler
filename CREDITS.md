@@ -4,6 +4,7 @@
 
 ## Contributors
 
+* Yechiel Kalmenson (https://github.com/achasveachas) README link fix
 * Alex Coomans (https://github.com/drcapulet) gh-276 freq check pref improvement
 * Vais Salikhov (https://github.com/vais) many document clarifications
 * Wes McNamee (https://github.com/ghostsquad) let #schedule accept a CronLine
