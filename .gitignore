@@ -2,6 +2,7 @@
 *.swp
 .vimrc
 .viminfo
+.vimgrep
 
 pkg/
 
