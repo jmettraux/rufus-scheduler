@@ -16,5 +16,24 @@ describe Rufus::Scheduler::InJob do
   after :each do
     @scheduler.shutdown
   end
+
+  describe '#next_times' do
+
+    it 'returns the next n times' do
+
+      job = @scheduler.schedule_in '5m' do; end
+
+      expect(job.next_times(3)).to eq([ job.next_time ])
+    end
+
+    it 'returns an empty array if it already triggered' do
+
+      job = @scheduler.schedule_in 0.001 do; end
+
+      sleep 0.350
+
+      expect(job.next_times(3)).to eq([])
+    end
+  end
 end
 

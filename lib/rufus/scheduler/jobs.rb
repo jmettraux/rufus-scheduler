@@ -177,6 +177,11 @@ module Rufus
         #
         # might be necessary at some point
 
+      def next_times(count)
+
+        next_time ? [ next_time ] : []
+      end
+
       # Calls the callable (usually a block) wrapped in this Job instance.
       #
       # Warning: error rescueing is the responsibity of the caller.

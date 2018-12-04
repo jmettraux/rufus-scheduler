@@ -4,6 +4,8 @@
 
 ### rufus-scheduler 3.5.3 - not yet released
 
+* Implement Job#next_times(count) for at and in jobs
+
 
 ### rufus-scheduler 3.5.2 - released 2018-08-01
 
