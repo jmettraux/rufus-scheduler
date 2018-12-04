@@ -689,6 +689,12 @@ The job keeps track of how long its work was in the `last_work_time` attribute. 
 
 The attribute `mean_work_time` contains a computed mean work time. It's recomputed after every run (if it's a repeat job).
 
+### next_times(n)
+
+Returns an array of `EtOrbi::EoTime` instances (Time instances with a designated time zone), listing the `n` next occurrences for this job.
+
+Please note that for "interval" jobs, a mean work time is computed each time and it's used by this `#next_times(n)` method to approximate the next times beyond the immediate next time.
+
 ### unschedule
 
 Unschedule the job, preventing it from firing again and removing it from the schedule. This doesn't prevent a running thread for this job to run until its end.
