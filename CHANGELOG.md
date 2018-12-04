@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+### rufus-scheduler 3.5.3 - not yet released
+
+
 ### rufus-scheduler 3.5.2 - released 2018-08-01
 
 * Use Fugit::Cron#rough_frequency

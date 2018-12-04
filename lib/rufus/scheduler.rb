@@ -11,7 +11,7 @@ module Rufus
 
   class Scheduler
 
-    VERSION = '3.5.2'
+    VERSION = '3.5.3'
 
     EoTime = ::EtOrbi::EoTime
 
