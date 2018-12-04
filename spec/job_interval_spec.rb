@@ -64,5 +64,34 @@ describe Rufus::Scheduler::IntervalJob do
       end
     end
   end
+
+  describe '#next_times' do
+
+    it 'returns the next n times' do
+
+      job = @scheduler.schedule_interval '5m' do; end
+
+      times =
+        2.times.inject([ job.next_time ]) { |a|
+          a << job.next_time_from(a.last)
+          a }
+
+      expect(job.next_times(3)).to eq(times)
+    end
+
+    it 'takes first_at/in into account' do
+
+      job = @scheduler.schedule_interval '5m', first_in: '3s' do; end
+
+      times =
+        2.times.inject([ job.next_time ]) { |a|
+          a << job.next_time_from(a.last)
+          a }
+
+      expect(job.next_times(3)).to eq(times)
+
+      expect(times.first).to be_between(Time.now + 2.5, Time.now + 3.5)
+    end
+  end
 end
 

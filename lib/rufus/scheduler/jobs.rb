@@ -525,6 +525,20 @@ module Rufus
 
         a
       end
+
+      # Starting from now, returns the {count} next occurences
+      # (EtOrbi::EoTime instances) for this job.
+      #
+      # Warning, for IntervalJob, the @mean_work_time is used since
+      # "interval" works from the end of a job to its next trigger
+      # (not from one trigger to the next, as for "cron" and "every").
+      #
+      def next_times(count)
+
+        (count - 1).times.inject([ next_time ]) { |a|
+          a << next_time_from(a.last)
+          a }
+      end
     end
 
     #
@@ -564,6 +578,11 @@ module Rufus
         ) if @frequency < @scheduler.frequency
       end
 
+      def next_time_from(time)
+
+        time + @frequency
+      end
+
       protected
 
       def set_next_time(trigger_time, is_post=false)
@@ -578,11 +597,6 @@ module Rufus
           else
             (@next_time || n) + @frequency
           end
-      end
-
-      def next_time_from(time)
-
-        time + @frequency
       end
     end
 
@@ -604,6 +618,11 @@ module Rufus
         set_next_time(nil)
       end
 
+      def next_time_from(time)
+
+        time + @mean_work_time + @interval
+      end
+
       protected
 
       def set_next_time(trigger_time, is_post=false)
@@ -620,11 +639,6 @@ module Rufus
           else
             false
           end
-      end
-
-      def next_time_from(time)
-
-        time + @mean_work_time + @interval
       end
     end
 
@@ -666,13 +680,6 @@ module Rufus
         @cron_line.rough_frequency
       end
 
-      protected
-
-      def set_next_time(trigger_time, is_post=false)
-
-        @next_time = next_time_from(trigger_time || Time.now)
-      end
-
       def next_time_from(time)
 
         if @first_at == nil || @first_at <= time
@@ -680,6 +687,13 @@ module Rufus
         else
           @first_at
         end
+      end
+
+      protected
+
+      def set_next_time(trigger_time, is_post=false)
+
+        @next_time = next_time_from(trigger_time || Time.now)
       end
     end
   end
