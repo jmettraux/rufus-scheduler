@@ -4,6 +4,7 @@
 
 ## Contributors
 
+* Jack-Nie https://github.com/jack-nie gh-285 fix broken comment link
 * Yechiel Kalmenson (https://github.com/achasveachas) README link fix
 * Alex Coomans (https://github.com/drcapulet) gh-276 freq check pref improvement
 * Vais Salikhov (https://github.com/vais) many document clarifications

@@ -114,8 +114,11 @@ module Rufus
 
       @started_at = nil
 
-      # jobs.each { |j| j.unschedule }
-      # provokes https://github.com/jmettraux/rufus-scheduler/issues/98
+      #jobs.each { |j| j.unschedule }
+        #
+        # which provokes https://github.com/jmettraux/rufus-scheduler/issues/98
+        # using the following instead:
+        #
       @jobs.array.each { |j| j.unschedule }
 
       @work_queue.clear
