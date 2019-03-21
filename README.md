@@ -3,6 +3,7 @@
 
 [![Build Status](https://secure.travis-ci.org/jmettraux/rufus-scheduler.svg)](https://travis-ci.org/jmettraux/rufus-scheduler)
 [![Gem Version](https://badge.fury.io/rb/rufus-scheduler.svg)](https://badge.fury.io/rb/rufus-scheduler)
+[![Join the chat at https://gitter.im/floraison/fugit](https://badges.gitter.im/floraison/fugit.svg)](https://gitter.im/floraison/fugit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Job scheduler for Ruby (at, cron, in and every jobs).
 
@@ -114,11 +115,11 @@ Go read [how to report bugs effectively](https://www.chiark.greenend.org.uk/~sgt
 
 Update: [help_help.md](https://gist.github.com/jmettraux/310fed75f568fd731814) might help help you.
 
-### on IRC
+### on Gitter
 
-I sometimes haunt #ruote on freenode.net. The channel is not dedicated to rufus-scheduler, so if you ask a question, first mention it's about rufus-scheduler.
+You can find help via chat over at [https://gitter.im/floraison/fugit](https://gitter.im/floraison/fugit). It's [fugit](https://github.com/floraison/fugit), [et-orbi](https://github.com/floraison/et-orbi), and rufus-scheduler combined chat room.
 
-Please note that I prefer helping over Stack Overflow because it's more searchable than the ruote IRC archive.
+Please be courteous.
 
 ### issues
 
