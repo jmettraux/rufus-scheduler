@@ -4,6 +4,7 @@
 
 ## Contributors
 
+* Mike Karolow https://github.com/mike-yesware update Travis target Rubies
 * Jack-Nie https://github.com/jack-nie gh-285 fix broken comment link
 * Yechiel Kalmenson (https://github.com/achasveachas) README link fix
 * Alex Coomans (https://github.com/drcapulet) gh-276 freq check pref improvement
