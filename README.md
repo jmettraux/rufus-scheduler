@@ -1561,9 +1561,9 @@ The rufus-scheduler singleton is instantiated in the ```config/initializers/sche
 
 ### avoid scheduling when running the Ruby on Rails console
 
-(Written in reply to https://github.com/jmettraux/rufus-scheduler/issues/186 )
+(Written in reply to [gh-186](https://github.com/jmettraux/rufus-scheduler/issues/186))
 
-If you don't want rufus-scheduler to kick in when running the Ruby on Rails console or invoking a rake task, you can wrap your initializer in a conditional:
+If you don't want rufus-scheduler to trigger anything while running the Ruby on Rails console, running for tests/specs, or running from a Rake task, you can insert a conditional return statement before jobs are added to the scheduler instance:
 
 ```ruby
 #
@@ -1575,8 +1575,8 @@ s = Rufus::Scheduler.singleton
 
 return if defined?(Rails::Console) || Rails.env.test? || File.split($0).last == 'rake'
 
-# only schedule when not running from the Ruby on Rails console, test env,
-# or from a rake task
+# do not schedule when Rails is run from its console, for a test/spec, or
+# from a Rake task
 
 s.every '1m' do
   Rails.logger.info "hello, it's #{Time.now}"
@@ -1584,7 +1584,6 @@ s.every '1m' do
 end
 ```
 
-It should work for Ruby on Rails 3 and 4.
 
 ### rails server -d
 
