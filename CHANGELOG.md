@@ -2,11 +2,12 @@
 # CHANGELOG.md
 
 
-### rufus-scheduler 3.5.3 - not yet released
+### rufus-scheduler 3.6.0 - not yet released
 
 * Let Scheduler#cron fail if the cron string is invalid, gh-289
 * Implement Job#next_times(count) for cron, every, and interval jobs
 * Implement Job#next_times(count) for at and in jobs
+* Stop fooling around and stick to https://semver.org
 
 
 ### rufus-scheduler 3.5.2 - released 2018-08-01
