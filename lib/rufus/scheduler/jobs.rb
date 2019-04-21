@@ -650,7 +650,7 @@ module Rufus
 
         super(scheduler, cronline, opts, block)
 
-        @cron_line = opts[:_t] || ::Fugit::Cron.parse(cronline)
+        @cron_line = opts[:_t] || ::Fugit::Cron.do_parse(cronline)
 
         set_next_time(nil)
       end

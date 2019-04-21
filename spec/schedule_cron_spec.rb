@@ -41,7 +41,38 @@ describe Rufus::Scheduler do
       expect(counter).to eq(2)
     end
 
-    it 'raises if the job frequency is higher than the scheduler frequency' do
+    it 'accepts a CronLine instance' do
+
+      cl = Fugit.parse('* * * * *')
+      job_id = @scheduler.cron(cl) {}
+      job = @scheduler.job(job_id)
+
+      expect(job.cron_line.object_id).to eq(cl.object_id)
+    end
+
+    it 'is not slow handling frequent cron durations' do
+
+      @scheduler.frequency = 10
+
+      s = Time.now
+
+      @scheduler.cron '*/15 * * * * *' do; end
+
+      expect(Time.now - s).to be < 1
+    end
+
+    it 'is not slow handling non-frequent cron durations' do
+
+      @scheduler.frequency = 10
+
+      s = Time.now
+
+      @scheduler.cron '31 18 18 10 *' do; end
+
+      expect(Time.now - s).to be < 1
+    end
+
+    it 'fails if the job frequency is higher than the scheduler frequency' do
 
       @scheduler.frequency = 10
 
@@ -53,33 +84,14 @@ describe Rufus::Scheduler do
       )
     end
 
-    it 'accepts a CronLine instance' do
+    it 'fails if the cron line is invalid' do # gh-289
 
-      cl = Fugit.parse('* * * * *')
-      job_id = @scheduler.cron(cl) {}
-      job = @scheduler.job(job_id)
-
-      expect(job.cron_line.object_id).to eq(cl.object_id)
-    end
-
-    it 'is not slow handling frequent cron durations' do
-      @scheduler.frequency = 10
-
-      s = Time.now
-
-      @scheduler.cron '*/15 * * * * *' do; end
-
-      expect(Time.now - s).to be < 1
-    end
-
-    it 'is not slow handling non-frequent cron durations' do
-      @scheduler.frequency = 10
-
-      s = Time.now
-
-      @scheduler.cron '31 18 18 10 *' do; end
-
-      expect(Time.now - s).to be < 1
+      expect {
+        @scheduler.cron '/hell * * * *' do; end
+      }.to raise_error(
+        ArgumentError,
+        'invalid cron string "/hell * * * *"'
+      )
     end
   end
 
