@@ -3,6 +3,7 @@
 .vimrc
 .viminfo
 .vimgrep
+.vimspec
 
 pkg/
 
