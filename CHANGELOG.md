@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+### rufus-scheduler 3.7.0 - not yet released
+
+
 ### rufus-scheduler 3.6.0 - released 2019-04-22
 
 * Let Scheduler#cron fail if the cron string is invalid, gh-289
