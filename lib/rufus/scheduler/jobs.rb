@@ -470,6 +470,7 @@ module Rufus
       def trigger(time)
 
         return if @paused_at
+        #return set_next_time(time) if @paused_at
 
         return (@next_time = nil) if @times && @times < 1
         return (@next_time = nil) if @last_at && time >= @last_at

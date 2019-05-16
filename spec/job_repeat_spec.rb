@@ -32,7 +32,11 @@ describe Rufus::Scheduler::RepeatJob do
 
       while counter < 1; sleep(0.1); end
 
+      expect(job.paused_at).to eq(nil)
+
       job.pause
+
+      expect(job.paused_at).not_to eq(nil)
 
       sleep(1)
 
@@ -73,6 +77,8 @@ describe Rufus::Scheduler::RepeatJob do
       job.pause
       job.resume
 
+      expect(job.paused_at).to eq(nil)
+
       sleep(1.5)
 
       expect(counter).to be > 1
@@ -82,9 +88,12 @@ describe Rufus::Scheduler::RepeatJob do
 
       job = @scheduler.schedule_every('10s') do; end
 
+      expect(job.paused_at).to eq(nil)
+
       job.resume
 
       expect(job.paused?).to eq(false)
+      expect(job.paused_at).to eq(nil)
     end
   end
 
