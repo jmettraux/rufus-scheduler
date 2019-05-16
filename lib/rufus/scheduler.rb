@@ -66,8 +66,12 @@ module Rufus
 
       @work_queue = Queue.new
 
-      #@min_work_threads = opts[:min_work_threads] || MIN_WORK_THREADS
-      @max_work_threads = opts[:max_work_threads] || MAX_WORK_THREADS
+      #@min_work_threads =
+      #  opts[:min_work_threads] || opts[:min_worker_threads] ||
+      #  MIN_WORK_THREADS
+      @max_work_threads =
+        opts[:max_work_threads] || opts[:max_worker_threads] ||
+        MAX_WORK_THREADS
 
       @stderr = $stderr
 
