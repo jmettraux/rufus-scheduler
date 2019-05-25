@@ -586,6 +586,11 @@ describe Rufus::Scheduler::Job do
     end
   end
 
+  context 'discard_past: true/false' do
+
+    # specified in spec/job_repeat_spec.rb
+  end
+
   context 'work time' do
 
     describe '#last_work_time' do
@@ -600,7 +605,7 @@ describe Rufus::Scheduler::Job do
       it 'keeps track of how long the work was upon last trigger' do
 
         job =
-          @scheduler.schedule_in '0.5s'  do
+          @scheduler.schedule_in '0.5s' do
             sleep 0.7
           end
 

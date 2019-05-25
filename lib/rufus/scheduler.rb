@@ -40,6 +40,8 @@ module Rufus
     MAX_WORK_THREADS = 28
 
     attr_accessor :frequency
+    attr_accessor :discard_past
+
     attr_reader :started_at
     attr_reader :thread
     attr_reader :thread_key
@@ -62,6 +64,8 @@ module Rufus
       @jobs = JobArray.new
 
       @frequency = Rufus::Scheduler.parse(opts[:frequency] || 0.300)
+      @discard_past = opts.has_key?(:discard_past) ? opts[:discard_past] : true
+
       @mutexes = {}
 
       @work_queue = Queue.new
@@ -177,7 +181,12 @@ module Rufus
       @paused = true
     end
 
-    def resume
+    def resume(opts={})
+
+      dp = opts[:discard_past]
+      jobs.each do |job|
+        job.resume_discard_past = dp if job.respond_to?(:resume_discard_past=)
+      end if dp != nil
 
       @paused = false
     end

@@ -435,7 +435,7 @@ module Rufus
         n0 = EoTime.now
         n1 = n0 + 0.003
 
-        first = n0 if first == :now || first == :immediately || first == 0
+        first = n0 if [ :now, :immediately, 0 ].include?(first)
         fdur = Rufus::Scheduler.parse_duration(first, no_error: true)
 
         @first_at = (fdur && (EoTime.now + fdur)) || EoTime.make(first)
@@ -487,8 +487,9 @@ module Rufus
         @paused_at = EoTime.now
       end
 
-      def resume
+      def resume(opts={})
 
+        @resume_discard_past = opts[:discard_past]
         @paused_at = nil
       end
 
@@ -557,11 +558,14 @@ module Rufus
 
       attr_reader :frequency
 
+      attr_accessor :resume_discard_past
+
       def initialize(scheduler, duration, opts, block)
 
         super(scheduler, duration, opts, block)
 
         @frequency = Rufus::Scheduler.parse_in(@original)
+        @discard_past = opts[:discard_past]
 
         fail ArgumentError.new(
           "cannot schedule #{self.class} with a frequency " +
@@ -592,12 +596,19 @@ module Rufus
 
         n = EoTime.now
 
-        @next_time =
+        return @next_time = @first_at \
           if @first_at && (trigger_time == nil || @first_at > n)
-            @first_at
-          else
-            (@next_time || n) + @frequency
-          end
+
+        dp = @scheduler.discard_past
+        dp = @discard_past if @discard_past != nil
+        dp = @resume_discard_past if @resume_discard_past != nil
+        @resume_discard_past = nil # reset that
+
+        loop do
+          @next_time = (@next_time || n) + @frequency
+          break if dp == false
+          break if @next_time > n
+        end
       end
     end
 

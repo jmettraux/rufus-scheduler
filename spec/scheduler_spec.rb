@@ -35,21 +35,21 @@ describe Rufus::Scheduler do
       )
     end
 
-    it 'accepts a :frequency => integer option' do
+    it 'accepts a frequency: 2 (int) option' do
 
       scheduler = Rufus::Scheduler.new(:frequency => 2)
 
       expect(scheduler.frequency).to eq(2)
     end
 
-    it 'accepts a :frequency => "2h1m" option' do
+    it 'accepts a frequency: "2h1m" option' do
 
       scheduler = Rufus::Scheduler.new(:frequency => '2h1m')
 
       expect(scheduler.frequency).to eq(3600 * 2 + 60)
     end
 
-    it 'accepts a :thread_name option' do
+    it 'accepts a thread_name: option' do
 
       scheduler = Rufus::Scheduler.new(:thread_name => 'oliphant')
 
@@ -63,11 +63,22 @@ describe Rufus::Scheduler do
     #  scheduler.min_work_threads.should == 9
     #end
 
-    it 'accepts a :max_work_threads option' do
+    it 'accepts a max_work_threads: option' do
 
       scheduler = Rufus::Scheduler.new(:max_work_threads => 9)
 
       expect(scheduler.max_work_threads).to eq(9)
+    end
+
+    it 'accepts a discard_past: option' do
+
+      scheduler = Rufus::Scheduler.new
+
+      expect(scheduler.discard_past).to eq(true)
+
+      scheduler = Rufus::Scheduler.new(discard_past: false)
+
+      expect(scheduler.discard_past).to eq(false)
     end
   end
 
@@ -755,6 +766,53 @@ describe Rufus::Scheduler do
       sleep(2)
 
       expect(job.last_time).not_to eq(nil)
+    end
+
+    context 'discard_past:' do
+
+      context 'by default' do
+
+        it 'discards the past' do
+
+          #@scheduler.discard_past = true
+            # this is the default
+
+          job = @scheduler.schedule_every('1s') do; end
+          @scheduler.pause
+
+          expect(job.count).to eq(0)
+
+          sleep 2
+
+          @scheduler.resume
+
+          sleep 1
+
+          expect(job.count).to eq(1)
+        end
+      end
+
+      context 'false' do
+
+        it 'prevents discarding the past' do
+
+          #@scheduler.discard_past = true
+            # this is the default
+
+          job = @scheduler.schedule_every('1s') do; end
+          @scheduler.pause
+
+          expect(job.count).to eq(0)
+
+          sleep 2
+
+          @scheduler.resume(discard_past: false)
+
+          sleep 1
+
+          expect(job.count).to be > 1
+        end
+      end
     end
   end
 
