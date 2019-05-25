@@ -211,5 +211,119 @@ describe Rufus::Scheduler::EveryJob do
       expect(times.first).to be_between(Time.now + 2.5, Time.now + 3.5)
     end
   end
+
+  describe '#resume' do
+
+    context 'discard_past: true' do
+
+      it 'skips the skipped times' do
+
+        #@scheduler.discard_past = true
+          # this is the default
+
+        job = @scheduler.schedule_every('1s') do; end
+        job.pause
+
+        expect(job.count).to eq(0)
+
+        sleep 2
+
+        job.resume
+
+        sleep 1
+
+        expect(job.count).to eq(1)
+      end
+
+      it 'skips the skipped times' do
+
+        @scheduler.discard_past = false
+
+        job = @scheduler.schedule_every('1s', discard_past: true) do; end
+        job.pause
+
+        expect(job.count).to eq(0)
+
+        sleep 2
+
+        job.resume
+
+        sleep 1
+
+        expect(job.count).to eq(1)
+      end
+
+      it 'skips the skipped times' do
+
+        @scheduler.discard_past = false
+
+        job = @scheduler.schedule_every('1s', discard_past: false) do; end
+        job.pause
+
+        expect(job.count).to eq(0)
+
+        sleep 2
+
+        job.resume(discard_past: true)
+
+        sleep 1
+
+        expect(job.count).to eq(1)
+      end
+    end
+
+    context 'discard_past: false' do
+
+      it 'triggers the skipped times' do
+
+        @scheduler.discard_past = false
+
+        job = @scheduler.schedule_every('1s') do; end
+        job.pause
+
+        expect(job.count).to eq(0)
+
+        sleep 2
+
+        job.resume
+
+        sleep 1
+
+        expect(job.count).to be > 1
+      end
+
+      it 'triggers the skipped times' do
+
+        job = @scheduler.schedule_every('1s', discard_past: false) do; end
+        job.pause
+
+        expect(job.count).to eq(0)
+
+        sleep 2
+
+        job.resume
+
+        sleep 1
+
+        expect(job.count).to be > 1
+      end
+
+      it 'triggers the skipped times' do
+
+        job = @scheduler.schedule_every('1s') do; end
+        job.pause
+
+        expect(job.count).to eq(0)
+
+        sleep 2
+
+        job.resume(discard_past: false)
+
+        sleep 1
+
+        expect(job.count).to be > 1
+      end
+    end
+  end
 end
 
