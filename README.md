@@ -24,7 +24,11 @@ scheduler.in '3s' do
 end
 
 scheduler.join
+  #
   # let the current thread join the scheduler thread
+  #
+  # (please note that this join should be removed when scheduling
+  # in a web application (Rails and friends) initializer)
 ```
 (run with `ruby quickstart.rb`)
 
@@ -460,7 +464,6 @@ s.every '3s', :first => :now do
 end
 
 s.join
-
 ```
 
 that'll output something like:
@@ -984,6 +987,8 @@ Returns since the count of seconds for which the scheduler has been running.
 ### Scheduler#join
 
 Lets the current thread join the scheduling thread in rufus-scheduler. The thread comes back when the scheduler gets shut down.
+
+`#join` is mostly used in standalone scheduling script (or tiny one file examples). Calling `#join` from a web application initializer will probably hijack the main thread and prevent the web application from being served. Do not put a `#join` in such a web application initializer file.
 
 ### Scheduler#threads
 
