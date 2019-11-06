@@ -193,6 +193,33 @@ describe Rufus::Scheduler do
     end
   end
 
+  describe '.parse_cron' do
+
+    it 'parses a cron string' do
+
+      c = Rufus::Scheduler.parse_cron('23 0-23/2 * * *')
+
+      expect(c).to be_a(Fugit::Cron)
+      expect(c.hours).to eq((0..22).step(2).to_a)
+    end
+
+    it 'fails on non cron string' do
+
+      expect {
+        Rufus::Scheduler.parse_cron('nada 23 0-23/2 * * *')
+      }.to raise_error(
+        ArgumentError, 'invalid cron string "nada 23 0-23/2 * * *"'
+      )
+    end
+
+    it 'returns nil on cron string when no_error: true' do
+
+      expect(
+        Rufus::Scheduler.parse_cron('nada 23 0-23/2 * * *', no_error: true)
+      ).to eq(nil)
+    end
+  end
+
   describe '.to_duration' do
 
     def td(o, opts={})

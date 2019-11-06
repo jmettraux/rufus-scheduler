@@ -4,6 +4,7 @@
 
 ## Contributors
 
+* Ceyhun Onur https://github.com/ceyonur parse_cron no_error: true
 * Darwin Wu https://github.com/dwaxe Rails initializer vs tests change
 * Mike Karolow https://github.com/mike-yesware update Travis target Rubies
 * Jack-Nie https://github.com/jack-nie gh-285 fix broken comment link
