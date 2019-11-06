@@ -19,9 +19,11 @@ module Rufus
         fail(ArgumentError.new("couldn't parse #{o.inspect} (#{o.class})"))
       end
 
-      def parse_cron(o, opts)
+      def parse_cron(o, opts ={})
 
-        Fugit.parse_cron(o)
+        opts[:no_error] ? 
+          Fugit.parse_cron(o) :
+          Fugit.do_parse_cron(o)
       end
 
       def parse_in(o, opts={})
