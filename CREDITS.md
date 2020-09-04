@@ -66,6 +66,7 @@
 
 ## Feedback
 
+* aesyondu (https://github.com/aesyondu) Rails console 4.2.x, gh-186
 * Sasha Hoellger (https://github.com/mitnal) parse_cron and readme, gh-270
 * Gian (https://github.com/snmgian) cron vs :first clarification, gh-266
 * Vito Laurenza (https://github.com/veetow) help debugging tz issues, gh-240

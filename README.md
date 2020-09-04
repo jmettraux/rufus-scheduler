@@ -1579,6 +1579,8 @@ require 'rufus-scheduler'
 s = Rufus::Scheduler.singleton
 
 return if defined?(Rails::Console) || Rails.env.test? || File.split($0).last == 'rake'
+# return if $PROGRAM_NAME.include?('spring')
+  # see https://github.com/jmettraux/rufus-scheduler/issues/186
 
 # do not schedule when Rails is run from its console, for a test/spec, or
 # from a Rake task
