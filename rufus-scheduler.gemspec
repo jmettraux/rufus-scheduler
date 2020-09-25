@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.authors = [ 'John Mettraux' ]
   s.email = [ 'jmettraux@gmail.com' ]
-  s.homepage = 'http://github.com/jmettraux/rufus-scheduler'
+  s.homepage = 'https://github.com/jmettraux/rufus-scheduler'
   s.license = 'MIT'
   s.summary = 'job scheduler for Ruby (at, cron, in and every jobs)'
 
