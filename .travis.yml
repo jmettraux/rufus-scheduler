@@ -6,13 +6,15 @@ rvm:
   #- 1.9.2
   - 1.9.3
   #- 2.0.0
-  - 2.1.1
-  - 2.2.3
+  #- 2.1.1
+  #- 2.2.3
   - 2.3.3
   - 2.4.6
   - 2.5.5
-  - 2.6.2
-  - jruby-9.1.13.0
+  - 2.6.6
+  - 2.7.1
+  #- jruby-9.1.13.0
+  - jruby-9.2.5.0
 
 #matrix:
 #  include:
@@ -21,13 +23,13 @@ rvm:
 
 #before_install: gem install bundler
 script: bundle exec rspec
+
 branches:
   only:
     - master
   #except:
   #  - master
 
-sudo: false
 cache: bundler
 
 #env:
