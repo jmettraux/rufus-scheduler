@@ -710,6 +710,13 @@ describe Rufus::Scheduler do
       expect(@scheduler.running_jobs).to eq([])
       expect(@scheduler.threads).to eq([])
     end
+
+    it 'does not mind being called from a scheduler job' do
+
+      @scheduler.in '0s' do
+        @scheduler.shutdown(:wait)
+      end
+    end
   end
 
   describe '#shutdown(:kill)' do

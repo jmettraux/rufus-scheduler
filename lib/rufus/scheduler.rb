@@ -114,7 +114,7 @@ module Rufus
     #
     def self.start_new
 
-      fail "this is rufus-scheduler 3.x, use .new instead of .start_new"
+      fail 'this is rufus-scheduler 3.x, use .new instead of .start_new'
     end
 
     def shutdown(opt=nil)
@@ -157,7 +157,7 @@ module Rufus
         'cannot join scheduler that is not running'
       ) unless @thread
 
-      @thread.join
+      @thread.join unless @thread == Thread.current
     end
 
     def down?
@@ -534,7 +534,7 @@ module Rufus
 
       work_threads.size.times { @work_queue << :sayonara }
 
-      work_threads.each { |t| t.join }
+      work_threads.each { |t| t.join unless t == Thread.current }
 
       @work_queue.clear
     end
