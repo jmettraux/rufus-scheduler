@@ -490,6 +490,7 @@ module Rufus
       def resume(opts={})
 
         @resume_discard_past = opts[:discard_past]
+p [ :@resume_discard_past, @resume_discard_past ]
         @paused_at = nil
       end
 
@@ -603,6 +604,7 @@ module Rufus
         dp = @discard_past if @discard_past != nil
         dp = @resume_discard_past if @resume_discard_past != nil
         @resume_discard_past = nil # reset that
+p [ :dp, dp ]
 
         loop do
           @next_time = (@next_time || n) + @frequency

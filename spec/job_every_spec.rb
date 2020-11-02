@@ -230,7 +230,7 @@ describe Rufus::Scheduler::EveryJob do
 
         job.resume
 
-        sleep 1
+        wait_until { job.count > 0 }
 
         expect(job.count).to eq(1)
       end
@@ -248,7 +248,7 @@ describe Rufus::Scheduler::EveryJob do
 
         job.resume
 
-        sleep 1
+        wait_until { job.count > 0 }
 
         expect(job.count).to eq(1)
       end
@@ -266,7 +266,7 @@ describe Rufus::Scheduler::EveryJob do
 
         job.resume(discard_past: true)
 
-        sleep 1
+        wait_until { job.count > 0 }
 
         expect(job.count).to eq(1)
       end
