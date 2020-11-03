@@ -181,6 +181,9 @@ module Rufus
       def utc_to_s(t=Time.now)
 
         "#{t.utc.strftime('%Y-%m-%d %H:%M:%S')}.#{sprintf('%06d', t.usec)} UTC"
+          # 1.9.x
+
+        #"#{t.dup.strftime('%F %T.%6N')} UTC"
       end
 
       # Produces a hour/min/sec/milli string representation of Time instance
@@ -188,6 +191,9 @@ module Rufus
       def h_to_s(t=Time.now)
 
         "#{t.strftime('%H:%M:%S')}.#{sprintf('%06d', t.usec)}"
+          # 1.9.x
+
+        #t.dup.strftime('%T.%6N')
       end
     end
 
