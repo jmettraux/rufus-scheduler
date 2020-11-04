@@ -45,9 +45,7 @@ module Rufus
       def delete_unscheduled
 
         @mutex.synchronize {
-
-          @array.delete_if { |j| j.next_time.nil? || j.unscheduled_at }
-        }
+          @array.delete_if { |j| j.next_time.nil? || j.unscheduled_at } }
       end
 
       def to_a
@@ -60,11 +58,9 @@ module Rufus
         @mutex.synchronize { @array.find { |j| j.job_id == job_id } }
       end
 
-      # Only used when shutting down, directly yields the underlying array.
-      #
-      def array
+      def unschedule_all
 
-        @array
+        @array.each(&:unschedule)
       end
     end
   end

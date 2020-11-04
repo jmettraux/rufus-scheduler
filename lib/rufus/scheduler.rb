@@ -121,12 +121,7 @@ module Rufus
 
       @started_at = nil
 
-      #jobs.each { |j| j.unschedule }
-        #
-        # which provokes https://github.com/jmettraux/rufus-scheduler/issues/98
-        # using the following instead:
-        #
-      @jobs.array.each { |j| j.unschedule }
+      @jobs.unschedule_all
 
       @work_queue.clear
 
