@@ -42,6 +42,7 @@ module Rufus
     attr_accessor :discard_past
 
     attr_reader :started_at
+    attr_reader :paused_at
     attr_reader :thread
     attr_reader :thread_key
     attr_reader :mutexes
@@ -58,7 +59,7 @@ module Rufus
       @opts = opts
 
       @started_at = nil
-      @paused = false
+      @paused_at = nil
 
       @jobs = JobArray.new
 
@@ -167,12 +168,12 @@ module Rufus
 
     def paused?
 
-      @paused
+      !! @paused_at
     end
 
     def pause
 
-      @paused = true
+      @paused_at = EoTime.now
     end
 
     def resume(opts={})
@@ -182,7 +183,7 @@ module Rufus
         job.resume_discard_past = dp if job.respond_to?(:resume_discard_past=)
       end if dp != nil
 
-      @paused = false
+      @paused_at = nil
     end
 
     #--
@@ -554,7 +555,7 @@ module Rufus
           while @started_at do
 
             unschedule_jobs
-            trigger_jobs unless @paused
+            trigger_jobs unless @paused_at
             timeout_jobs
 
             sleep(@frequency)

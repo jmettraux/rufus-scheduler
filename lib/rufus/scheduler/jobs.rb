@@ -496,7 +496,7 @@ module Rufus
 
       def paused?
 
-        @paused_at != nil
+        !! @paused_at
       end
 
       def determine_id
