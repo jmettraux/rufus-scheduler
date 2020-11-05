@@ -69,6 +69,7 @@ module Rufus
       @mutexes = {}
 
       @work_queue = Queue.new
+      @join_queue = Queue.new
 
       #@min_work_threads =
       #  opts[:min_work_threads] || opts[:min_worker_threads] ||
@@ -118,25 +119,6 @@ module Rufus
       fail 'this is rufus-scheduler 3.x, use .new instead of .start_new'
     end
 
-    def shutdown(opt=nil)
-
-      @started_at = nil
-
-      @jobs.unschedule_all
-
-      @work_queue.clear
-
-      if opt == :wait
-        join_all_work_threads
-      elsif opt == :kill
-        kill_all_work_threads
-      end
-
-      unlock
-    end
-
-    alias stop shutdown
-
     def uptime
 
       @started_at ? EoTime.now - @started_at : nil
@@ -147,13 +129,45 @@ module Rufus
       uptime ? self.class.to_duration(uptime) : ''
     end
 
-    def join
+    def join(limit=nil)
 
-      fail NotRunningError.new(
-        'cannot join scheduler that is not running'
-      ) unless @thread
+      fail NotRunningError.new('cannot join scheduler that is not running') \
+        unless @thread
+      fail ThreadError.new('scheduler thread cannot join itself') \
+        if @thread == Thread.current
 
-      @thread.join unless @thread == Thread.current
+      if limit
+        limit_join(limit)
+      else
+        no_limit_join
+      end
+    end
+
+    def limit_join(limit)
+
+      fail ArgumentError.new("limit #{limit.inspect} should be > 0") \
+        unless limit.is_a?(Numeric) && limit > 0
+
+      t0 = monow
+      f = [ limit / 20, 0.100 ].min
+
+      while monow - t0 < limit
+        r =
+          begin
+            @join_queue.pop(true)
+          rescue ThreadError => e
+            false
+          end
+        return r if r
+        sleep(f)
+      end
+
+      nil
+    end
+
+    def no_limit_join
+
+      @join_queue.pop
     end
 
     def down?
@@ -477,6 +491,10 @@ module Rufus
       stderr.puts("  #{pre}       trigger_lock: #{@trigger_lock.inspect}")
       stderr.puts("  #{pre}     uptime: #{uptime} (#{uptime_s})")
       stderr.puts("  #{pre}     down?: #{down?}")
+      stderr.puts("  #{pre}     frequency: #{frequency.inspect}")
+      stderr.puts("  #{pre}     discard_past: #{discard_past.inspect}")
+      stderr.puts("  #{pre}     started_at: #{started_at.inspect}")
+      stderr.puts("  #{pre}     paused_at: #{paused_at.inspect}")
       stderr.puts("  #{pre}     threads: #{self.threads.size}")
       stderr.puts("  #{pre}       thread: #{self.thread}")
       stderr.puts("  #{pre}       thread_key: #{self.thread_key}")
@@ -492,7 +510,12 @@ module Rufus
       stderr.puts("  #{pre}       interval_jobs: #{interval_jobs.size}")
       stderr.puts("  #{pre}       cron_jobs: #{cron_jobs.size}")
       stderr.puts("  #{pre}     running_jobs: #{running_jobs.size}")
-      stderr.puts("  #{pre}     work_queue: #{work_queue.size}")
+      stderr.puts("  #{pre}     work_queue:")
+      stderr.puts("  #{pre}       size: #{@work_queue.size}")
+      stderr.puts("  #{pre}       num_waiting: #{@work_queue.num_waiting}")
+      stderr.puts("  #{pre}     join_queue:")
+      stderr.puts("  #{pre}       size: #{@join_queue.size}")
+      stderr.puts("  #{pre}       num_waiting: #{@join_queue.num_waiting}")
       stderr.puts("} #{pre} .")
 
     rescue => e
@@ -506,7 +529,62 @@ module Rufus
       stderr.flush
     end
 
+    def shutdown(opt=nil)
+
+      opts =
+        case opt
+        when Symbol then { opt => true }
+        when Hash then opt
+        else {}
+        end
+
+      @jobs.unschedule_all
+
+      if opts[:wait] || opts[:join]
+        join_shutdown(opts)
+      elsif opts[:kill]
+        kill_shutdown(opts)
+      else
+        regular_shutdown(opts)
+      end
+
+      @work_queue.clear
+      unlock
+    end
+    alias stop shutdown
+
     protected
+
+    def join_shutdown(opts)
+
+      w = opts[:wait] || opts[:join]
+
+      #@started_at = nil
+        #
+        # when @started_at is nil, the scheduler thread exits, here
+        # we want it to exit when all the work threads have been joined
+        # hence it's set to nil later on
+        #
+      @paused_at = EoTime.now
+
+      (work_threads.size * 2 + 1).times { @work_queue << :shutdown }
+      work_threads.each { |t| t.join unless t == Thread.current }
+
+      @started_at = nil
+
+      join(w.is_a?(Numeric) ? w : nil)
+    end
+
+    def kill_shutdown(opts)
+
+      @started_at = nil
+      work_threads.each(&:kill)
+    end
+
+    def regular_shutdown(opts)
+
+      @started_at = nil
+    end
 
     # Returns [ job, job_id ]
     #
@@ -524,20 +602,6 @@ module Rufus
       jobs.each { |j| j.unschedule }
 
       sleep 0.01 while running_jobs.size > 0
-    end
-
-    def join_all_work_threads
-
-      work_threads.size.times { @work_queue << :sayonara }
-
-      work_threads.each { |t| t.join unless t == Thread.current }
-
-      @work_queue.clear
-    end
-
-    def kill_all_work_threads
-
-      work_threads.each { |t| t.kill }
     end
 
     #def free_all_work_threads
@@ -560,6 +624,8 @@ module Rufus
 
             sleep(@frequency)
           end
+
+          rejoin
         end
 
       @thread[@thread_key] = true
@@ -601,6 +667,11 @@ module Rufus
       end
     end
 
+    def rejoin
+
+      (@join_queue.num_waiting * 2 + 1).times { @join_queue << @thread }
+    end
+
     def do_schedule(job_type, t, callable, opts, return_job_instance, block)
 
       fail NotRunningError.new(
@@ -632,6 +703,8 @@ module Rufus
 
       return_job_instance ? job : job.job_id
     end
+
+    def monow; self.class.monow; end
   end
 end
 

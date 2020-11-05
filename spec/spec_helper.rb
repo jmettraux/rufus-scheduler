@@ -154,6 +154,8 @@ module Helpers
     fail "timeout after #{timeout}s"
   end
   alias :wait_for :wait_until
+
+  def monow; Process.clock_gettime(Process::CLOCK_MONOTONIC); end
 end
 RSpec.configure { |c| c.include(Helpers) }
 

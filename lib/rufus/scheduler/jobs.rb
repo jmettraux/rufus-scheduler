@@ -302,6 +302,7 @@ module Rufus
 
               job, time = @scheduler.work_queue.pop
 
+              break if job == :shutdown
               break if @scheduler.started_at == nil
 
               next if job.unscheduled_at

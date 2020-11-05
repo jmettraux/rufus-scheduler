@@ -323,6 +323,47 @@ describe Rufus::Scheduler do
     end
   end
 
+  describe '#join(limit)' do
+
+    it 'joins the scheduler thread' do
+
+      t =
+        Thread.new do
+          Thread.current['r'] = @scheduler.join(1)
+          Thread.current['a'] = 'over'
+        end
+
+      expect(t['r']).to eq(nil)
+      expect(t['a']).to eq(nil)
+
+      @scheduler.shutdown
+
+      sleep(1)
+
+      expect(t['r'].class).to eq(Thread)
+      expect(t['a']).to eq('over')
+    end
+
+    it 'times out' do
+
+      a = []
+
+      @scheduler.in(0.010) {
+        a << 0
+        sleep 3
+        a << 1
+      }
+
+      t0 = monow
+
+      r = @scheduler.join(1)
+
+      expect(monow - t0).to be < 1.5
+      expect(a).to eq([ 0 ])
+      expect(r).to eq(nil)
+    end
+  end
+
   describe '#job(job_id)' do
 
     it 'returns nil if there is no corresponding Job instance' do
@@ -711,7 +752,7 @@ describe Rufus::Scheduler do
       expect(@scheduler.threads).to eq([])
     end
 
-    it 'does not mind being called from a scheduler job' do
+    it 'does not mind being called from a scheduler job (gh-304)' do
 
       @scheduler.in '0s' do
         @scheduler.shutdown(:wait)
@@ -737,6 +778,13 @@ describe Rufus::Scheduler do
       sleep 0.4
 
       @scheduler.shutdown(:kill)
+
+      wait_until { @scheduler.threads.empty? }
+
+      expect(counter).to eq(0)
+      expect(@scheduler.uptime).to eq(nil)
+      expect(@scheduler.running_jobs).to eq([])
+      expect(@scheduler.threads).to eq([])
 
       sleep 1.4
 
