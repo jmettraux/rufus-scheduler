@@ -196,7 +196,11 @@ module Rufus
         #t.dup.strftime('%T.%6N')
       end
 
-      def monow; Process.clock_gettime(Process::CLOCK_MONOTONIC); end
+      if defined?(Process::CLOCK_MONOTONIC)
+        def monow; Process.clock_gettime(Process::CLOCK_MONOTONIC); end
+      else
+        def monow; Time.now.to_f; end
+      end
     end
 
     # Debugging tools...

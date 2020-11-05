@@ -155,7 +155,11 @@ module Helpers
   end
   alias :wait_for :wait_until
 
-  def monow; Process.clock_gettime(Process::CLOCK_MONOTONIC); end
+  if defined?(Process::CLOCK_MONOTONIC)
+    def monow; Process.clock_gettime(Process::CLOCK_MONOTONIC); end
+  else
+    def monow; Time.now.to_f; end
+  end
 end
 RSpec.configure { |c| c.include(Helpers) }
 
