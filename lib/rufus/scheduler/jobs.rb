@@ -429,6 +429,8 @@ module Rufus
           opts[:last] || opts[:last_at] || opts[:last_in]
       end
 
+      FIRSTS = [ :now, :immediately, 0 ].freeze
+
       def first_at=(first)
 
         return (@first_at = nil) if first == nil
@@ -436,7 +438,7 @@ module Rufus
         n0 = EoTime.now
         n1 = n0 + 0.003
 
-        first = n0 if [ :now, :immediately, 0 ].include?(first)
+        first = n0 if FIRSTS.include?(first)
         fdur = Rufus::Scheduler.parse_duration(first, no_error: true)
 
         @first_at = (fdur && (EoTime.now + fdur)) || EoTime.make(first)
