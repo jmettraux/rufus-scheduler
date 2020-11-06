@@ -1,68 +1,62 @@
 
-module Rufus
+#
+# The array rufus-scheduler uses to keep jobs in order (next to trigger
+# first).
+#
+class Rufus::Scheduler::JobArray
 
-  class Scheduler
+  def initialize
 
-    #
-    # The array rufus-scheduler uses to keep jobs in order (next to trigger
-    # first).
-    #
-    class JobArray
+    @mutex = Mutex.new
+    @array = []
+  end
 
-      def initialize
+  def push(job)
 
-        @mutex = Mutex.new
-        @array = []
-      end
+    @mutex.synchronize { @array << job unless @array.index(job) }
 
-      def push(job)
+    self
+  end
 
-        @mutex.synchronize { @array << job unless @array.index(job) }
+  def size
 
-        self
-      end
+    @array.size
+  end
 
-      def size
+  def each(now, &block)
 
-        @array.size
-      end
+    to_a.sort_by do |job|
 
-      def each(now, &block)
+      job.next_time || (now + 1)
 
-        to_a.sort_by do |job|
+    end.each do |job|
 
-          job.next_time || (now + 1)
+      nt = job.next_time
+      break if ( ! nt) || (nt > now)
 
-        end.each do |job|
-
-          nt = job.next_time
-          break if ( ! nt) || (nt > now)
-
-          block.call(job)
-        end
-      end
-
-      def delete_unscheduled
-
-        @mutex.synchronize {
-          @array.delete_if { |j| j.next_time.nil? || j.unscheduled_at } }
-      end
-
-      def to_a
-
-        @mutex.synchronize { @array.dup }
-      end
-
-      def [](job_id)
-
-        @mutex.synchronize { @array.find { |j| j.job_id == job_id } }
-      end
-
-      def unschedule_all
-
-        @array.each(&:unschedule)
-      end
+      block.call(job)
     end
+  end
+
+  def delete_unscheduled
+
+    @mutex.synchronize {
+      @array.delete_if { |j| j.next_time.nil? || j.unscheduled_at } }
+  end
+
+  def to_a
+
+    @mutex.synchronize { @array.dup }
+  end
+
+  def [](job_id)
+
+    @mutex.synchronize { @array.find { |j| j.job_id == job_id } }
+  end
+
+  def unschedule_all
+
+    @array.each(&:unschedule)
   end
 end
 

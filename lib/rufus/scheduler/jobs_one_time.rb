@@ -1,56 +1,53 @@
 
-class Rufus::Scheduler
+class Rufus::Scheduler::OneTimeJob < Rufus::Scheduler::Job
 
-  class OneTimeJob < Job
+  alias time next_time
 
-    alias time next_time
+  def occurrences(time0, time1)
 
-    def occurrences(time0, time1)
-
-      (time >= time0 && time <= time1) ? [ time ] : []
-    end
-
-    protected
-
-    def determine_id
-
-      [
-        self.class.name.split(':').last.downcase[0..-4],
-        @scheduled_at.to_f,
-        @next_time.to_f,
-        (self.object_id < 0 ? 'm' : '') + self.object_id.to_s
-      ].map(&:to_s).join('_')
-    end
-
-    # There is no next_time for one time jobs, hence the false.
-    #
-    def set_next_time(trigger_time, is_post=false)
-
-      @next_time = is_post ? nil : false
-    end
+    (time >= time0 && time <= time1) ? [ time ] : []
   end
 
-  class AtJob < OneTimeJob
+  protected
 
-    def initialize(scheduler, time, opts, block)
+  def determine_id
 
-      super(scheduler, time, opts, block)
-
-      @next_time =
-        opts[:_t] || Rufus::Scheduler.parse_at(time, opts)
-    end
+    [
+      self.class.name.split(':').last.downcase[0..-4],
+      @scheduled_at.to_f,
+      @next_time.to_f,
+      (self.object_id < 0 ? 'm' : '') + self.object_id.to_s
+    ].map(&:to_s).join('_')
   end
 
-  class InJob < OneTimeJob
+  # There is no next_time for one time jobs, hence the false.
+  #
+  def set_next_time(trigger_time, is_post=false)
 
-    def initialize(scheduler, duration, opts, block)
+    @next_time = is_post ? nil : false
+  end
+end
 
-      super(scheduler, duration, opts, block)
+class Rufus::Scheduler::AtJob < Rufus::Scheduler::OneTimeJob
 
-      @next_time =
-        @scheduled_at +
-        opts[:_t] || Rufus::Scheduler.parse_in(duration, opts)
-    end
+  def initialize(scheduler, time, opts, block)
+
+    super(scheduler, time, opts, block)
+
+    @next_time =
+      opts[:_t] || Rufus::Scheduler.parse_at(time, opts)
+  end
+end
+
+class Rufus::Scheduler::InJob < Rufus::Scheduler::OneTimeJob
+
+  def initialize(scheduler, duration, opts, block)
+
+    super(scheduler, duration, opts, block)
+
+    @next_time =
+      @scheduled_at +
+      opts[:_t] || Rufus::Scheduler.parse_in(duration, opts)
   end
 end
 
