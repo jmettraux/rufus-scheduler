@@ -15,7 +15,9 @@ module Rufus
     EoTime = ::EtOrbi::EoTime
 
     require 'rufus/scheduler/util'
-    require 'rufus/scheduler/jobs'
+    require 'rufus/scheduler/jobs_core'
+    require 'rufus/scheduler/jobs_one_time'
+    require 'rufus/scheduler/jobs_repeat'
     require 'rufus/scheduler/job_array'
     require 'rufus/scheduler/locks'
 
