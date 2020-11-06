@@ -157,5 +157,34 @@ describe Rufus::Scheduler::CronJob do
       expect(times.first).to be_between(Time.now + 2.5, Time.now + 3.5)
     end
   end
+
+  context 'overlap, gh-304' do
+
+    it 'does not trash start times' do
+
+      starts = []
+      ends = []
+
+      @scheduler.cron '* * * * *' do |job|
+        c = job.count
+        starts << Time.now
+        sleep 65
+        ends << c
+      end
+
+      wait_until(5 * 60) { starts.count > 2 }
+
+#p starts
+      secs = starts.collect(&:sec)
+
+      expect(secs).to eq([ 0, 0, 0 ])
+
+      ss = starts.collect { |s|
+        Time.local(s.year, s.month, s.day, s.hour, s.min, 0) }
+
+      expect((ss[1] - ss[0]).to_i).to eq(60)
+      expect((ss[2] - ss[1]).to_i).to eq(60)
+    end
+  end
 end
 

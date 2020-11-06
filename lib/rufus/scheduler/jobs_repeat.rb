@@ -308,6 +308,8 @@ class Rufus::Scheduler::CronJob < Rufus::Scheduler::RepeatJob
 
   def set_next_time(trigger_time, is_post=false)
 
+    return if is_post
+
     @next_time = next_time_from(trigger_time || Time.now)
   end
 end
