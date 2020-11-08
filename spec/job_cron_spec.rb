@@ -212,5 +212,62 @@ describe Rufus::Scheduler::CronJob do
       expect(times.first).to be_between(Time.now + 2.5, Time.now + 3.5)
     end
   end
+
+  describe '#resume' do
+
+    context 'discard_past: true' do
+
+      # Discard_past can be set at scheduler level, at job level, and
+      # at resume level.
+      # Test only the last case here.
+      # Every tests them all.
+
+      it 'discards' do
+
+        @scheduler.discard_past = false
+
+        job = @scheduler
+          .schedule_cron('* * * * * *', discard_past: false) do; end
+        job.pause
+
+        expect(job.count).to eq(0)
+
+        wait_next_seconds(2)
+
+        job.resume(discard_past: true)
+
+        wait_until { job.count > 0 }
+
+        expect(job.count).to eq(1)
+      end
+    end
+
+    context 'discard_past: false' do
+
+      # Discard_past can be set at scheduler level, at job level, and
+      # at resume level.
+      # Test only the last case here.
+      # Every tests them all.
+
+      it 'triggers the past' do
+
+        job =
+          @scheduler.schedule_cron('* * * * * *', discard_past: false) do; end
+        job.pause
+
+        expect(job.count).to eq(0)
+
+        wait_next_seconds(3)
+
+        expect(job.count).to eq(0)
+
+        job.resume(discard_past: false)
+
+        wait_next_second
+
+        expect(job.count).to be > 2
+      end
+    end
+  end
 end
 

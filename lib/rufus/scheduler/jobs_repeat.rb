@@ -319,11 +319,14 @@ class Rufus::Scheduler::CronJob < Rufus::Scheduler::RepeatJob
 
     t = trigger_time || now || EoTime.now
 
+    previous = @previous_time || @scheduled_at
+    t = previous if ! discard_past? && t > previous
+
     @next_time =
       if @first_at && @first_at > t
         @first_at
       else
-        next_time_from(t)
+        @cron_line.next_time(t)
       end
   end
 end
