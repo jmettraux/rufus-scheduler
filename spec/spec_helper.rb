@@ -155,6 +155,20 @@ module Helpers
   end
   alias :wait_for :wait_until
 
+  def wait_next_seconds(i=1)
+
+    s0 = Time.now.sec
+
+    wait_until(14, 0.05) do
+      s1 = Time.now.sec
+      s1 += 60 if s1 < s0
+      s1 - s0 == i
+    end
+
+    i
+  end
+  alias :wait_next_second :wait_next_seconds
+
   def monow; Rufus::Scheduler.monow; end
 end
 RSpec.configure { |c| c.include(Helpers) }
