@@ -194,9 +194,7 @@ class Rufus::Scheduler
   def resume(opts={})
 
     dp = opts[:discard_past]
-    jobs.each do |job|
-      job.resume_discard_past = dp if job.respond_to?(:resume_discard_past=)
-    end if dp != nil
+    jobs.each { |job| job.resume_discard_past = dp }
 
     @paused_at = nil
   end

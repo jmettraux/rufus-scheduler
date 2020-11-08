@@ -36,6 +36,10 @@ class Rufus::Scheduler::Job
   #
   attr_reader :handler
 
+  # Default, core, implementation has no effect. Repeat jobs do override it.
+  #
+  def resume_discard_past=(v); end
+
   def initialize(scheduler, original, opts, block)
 
     @scheduler = scheduler

@@ -143,6 +143,17 @@ class Rufus::Scheduler::RepeatJob < Rufus::Scheduler::Job
       a << next_time_from(a.last)
       a }
   end
+
+  protected
+
+  def discard_past?
+
+    dp = @scheduler.discard_past
+    dp = @discard_past if @discard_past != nil
+    dp = @resume_discard_past if @resume_discard_past != nil
+
+    dp
+  end
 end
 
 #
@@ -201,14 +212,12 @@ class Rufus::Scheduler::EveryJob < Rufus::Scheduler::EvInJob
     return @next_time = @first_at \
       if @first_at && (trigger_time == nil || @first_at > n)
 
-    dp = @scheduler.discard_past
-    dp = @discard_past if @discard_past != nil
-    dp = @resume_discard_past if @resume_discard_past != nil
-    @resume_discard_past = nil # reset that
-#p [ :dp, dp ]
+    dp = discard_past?
 
     loop do
+
       @next_time = (@next_time || n) + @frequency
+
       break if dp == false
       break if @next_time > n
     end
