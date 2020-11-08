@@ -172,26 +172,29 @@ class Rufus::Scheduler
     # misc
     #++
 
-    # Produces the UTC string representation of a Time instance
-    #
-    # like "2009/11/23 11:11:50.947109 UTC"
-    #
-    def utc_to_s(t=Time.now)
+    if RUBY_VERSION > '1.9.9'
 
-      "#{t.utc.strftime('%Y-%m-%d %H:%M:%S')}.#{sprintf('%06d', t.usec)} UTC"
-        # 1.9.x
+      # Produces the UTC string representation of a Time instance
+      #
+      # like "2009/11/23 11:11:50.947109 UTC"
+      #
+      def utc_to_s(t=Time.now)
+        "#{t.dup.utc.strftime('%F %T.%6N')} UTC"
+      end
 
-      #"#{t.dup.strftime('%F %T.%6N')} UTC"
-    end
+      # Produces a hour/min/sec/milli string representation of Time instance
+      #
+      def h_to_s(t=Time.now)
+        t.strftime('%T.%6N')
+      end
+    else
 
-    # Produces a hour/min/sec/milli string representation of Time instance
-    #
-    def h_to_s(t=Time.now)
-
-      "#{t.strftime('%H:%M:%S')}.#{sprintf('%06d', t.usec)}"
-        # 1.9.x
-
-      #t.dup.strftime('%T.%6N')
+      def utc_to_s(t=Time.now)
+        "#{t.utc.strftime('%Y-%m-%d %H:%M:%S')}.#{sprintf('%06d', t.usec)} UTC"
+      end
+      def h_to_s(t=Time.now)
+        "#{t.strftime('%H:%M:%S')}.#{sprintf('%06d', t.usec)}"
+      end
     end
 
     if defined?(Process::CLOCK_MONOTONIC)

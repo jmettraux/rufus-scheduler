@@ -170,6 +170,16 @@ module Helpers
   alias :wait_next_second :wait_next_seconds
 
   def monow; Rufus::Scheduler.monow; end
+
+  if RUBY_VERSION > '1.9.9'
+    def tstamp
+      Time.now.strftime('%T.%6N')
+    end
+  else
+    def tstamp
+      t = Time.now; "#{t.strftime('%H:%M:%S')}.#{sprintf('%06d', t.usec)}"
+    end
+  end
 end
 RSpec.configure { |c| c.include(Helpers) }
 
