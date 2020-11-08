@@ -249,12 +249,14 @@ class Rufus::Scheduler::Job
 
   def trigger_now(time)
 
+    ct = Thread.current
+
     t = EoTime.now
       # if there are mutexes, t might be really bigger than time
 
-    Thread.current[:rufus_scheduler_job] = self
-    Thread.current[:rufus_scheduler_time] = t
-    Thread.current[:rufus_scheduler_timeout] = compute_timeout
+    ct[:rufus_scheduler_job] = self
+    ct[:rufus_scheduler_time] = t
+    ct[:rufus_scheduler_timeout] = compute_timeout
 
     @last_time = t
 
@@ -263,20 +265,21 @@ class Rufus::Scheduler::Job
   ensure
 
     @last_work_time =
-      EoTime.now - Thread.current[:rufus_scheduler_time]
+      EoTime.now - ct[:rufus_scheduler_time]
     @mean_work_time =
       ((@count - 1) * @mean_work_time + @last_work_time) / @count
 
     post_trigger(time)
 
-    Thread.current[:rufus_scheduler_job] = nil
-    Thread.current[:rufus_scheduler_time] = nil
-    Thread.current[:rufus_scheduler_timeout] = nil
+    ct[:rufus_scheduler_job] = nil
+    ct[:rufus_scheduler_time] = nil
+    ct[:rufus_scheduler_timeout] = nil
   end
 
   def post_trigger(time)
 
     set_next_time(time, true)
+      # except IntervalJob instances, jobs will ignore this call
 
     callback(:on_post_trigger, time)
   end
@@ -286,11 +289,13 @@ class Rufus::Scheduler::Job
     thread =
       Thread.new do
 
-        Thread.current[:rufus_scheduler_job] = true
+        ct = Thread.current
+
+        ct[:rufus_scheduler_job] = true
           # indicates that the thread is going to be assigned immediately
 
-        Thread.current[@scheduler.thread_key] = true
-        Thread.current[:rufus_scheduler_work_thread] = true
+        ct[@scheduler.thread_key] = true
+        ct[:rufus_scheduler_work_thread] = true
 
         loop do
 
