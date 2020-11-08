@@ -103,61 +103,6 @@ describe Rufus::Scheduler::CronJob do
     end
   end
 
-  describe '#next_time' do
-
-    it 'returns the next trigger time' do
-
-      tomorrow = Time.now + 24 * 3600 # tomorrow
-
-      nt =
-        @scheduler.schedule_cron("0 0 #{tomorrow.day} * *", lambda {}).next_time
-
-      expect(nt.to_f).to eq(Time.parse(tomorrow.strftime('%Y-%m-%d')).to_f)
-      expect(nt.zone._name).to eq(EtOrbi::EoTime.local_tzone._name)
-    end
-
-    it 'returns the next trigger time (first_at => Time)' do
-
-      ft = Time.parse('2100-12-31')
-
-      job = @scheduler.schedule_cron('* * 1 * *', :first_at => ft) {}
-
-      nt = job.next_time
-
-      expect(nt.to_f).to eq(ft.to_f)
-      expect(nt.zone._name).to eq(EtOrbi::EoTime.local_tzone._name)
-    end
-  end
-
-  describe '#next_times' do
-
-    it 'returns the next n times' do
-
-      job = @scheduler.schedule_cron '1 * * * *' do; end
-
-      times =
-        2.times.inject([ job.next_time ]) { |a|
-          a << job.next_time_from(a.last)
-          a }
-
-      expect(job.next_times(3)).to eq(times)
-    end
-
-    it 'takes first_at/in into account' do
-
-      job = @scheduler.schedule_cron '* * * * * *', first_in: '3s' do; end
-
-      times =
-        2.times.inject([ job.next_time ]) { |a|
-          a << job.next_time_from(a.last)
-          a }
-
-      expect(job.next_times(3)).to eq(times)
-
-      expect(times.first).to be_between(Time.now + 2.5, Time.now + 3.5)
-    end
-  end
-
   context 'overlap, gh-304' do
 
     it 'does not trash start times (cron min)' do
@@ -210,6 +155,61 @@ describe Rufus::Scheduler::CronJob do
         .collect { |s, i| i == 0 ? 1 : (s - ts[i - 1]).to_i }
 
       expect(ds.uniq).to eq([ 1 ])
+    end
+  end
+
+  describe '#next_time' do
+
+    it 'returns the next trigger time' do
+
+      tomorrow = Time.now + 24 * 3600 # tomorrow
+
+      nt =
+        @scheduler.schedule_cron("0 0 #{tomorrow.day} * *", lambda {}).next_time
+
+      expect(nt.to_f).to eq(Time.parse(tomorrow.strftime('%Y-%m-%d')).to_f)
+      expect(nt.zone._name).to eq(EtOrbi::EoTime.local_tzone._name)
+    end
+
+    it 'returns the next trigger time (first_at => Time)' do
+
+      ft = Time.parse('2100-12-31')
+
+      job = @scheduler.schedule_cron('* * 1 * *', :first_at => ft) {}
+
+      nt = job.next_time
+
+      expect(nt.to_f).to eq(ft.to_f)
+      expect(nt.zone._name).to eq(EtOrbi::EoTime.local_tzone._name)
+    end
+  end
+
+  describe '#next_times' do
+
+    it 'returns the next n times' do
+
+      job = @scheduler.schedule_cron '1 * * * *' do; end
+
+      times =
+        2.times.inject([ job.next_time ]) { |a|
+          a << job.next_time_from(a.last)
+          a }
+
+      expect(job.next_times(3)).to eq(times)
+    end
+
+    it 'takes first_at/in into account' do
+
+      job = @scheduler.schedule_cron '* * * * * *', first_in: '3s' do; end
+
+      times =
+        2.times.inject([ job.next_time ]) { |a|
+          a << job.next_time_from(a.last)
+          a }
+
+      expect(job.next_times(3)).to eq(times)
+
+      expect(times.first).to be_between(Time.now + 2.5, Time.now + 3.5)
     end
   end
 end
