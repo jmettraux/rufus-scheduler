@@ -192,11 +192,11 @@ class Rufus::Scheduler::EveryJob < Rufus::Scheduler::EvInJob
 
   protected
 
-  def set_next_time(trigger_time, is_post=false)
+  def set_next_time(trigger_time, is_post=false, now=nil)
 
     return if is_post
 
-    n = EoTime.now
+    n = now || EoTime.now
 
     return @next_time = @first_at \
       if @first_at && (trigger_time == nil || @first_at > n)
@@ -240,14 +240,16 @@ class Rufus::Scheduler::IntervalJob < Rufus::Scheduler::EvInJob
 
   protected
 
-  def set_next_time(trigger_time, is_post=false)
+  def set_next_time(trigger_time, is_post=false, now=nil)
+
+    n = now || EoTime.now
 
     @next_time =
       if is_post
-        EoTime.now + @interval
+        n + @interval
       elsif trigger_time.nil?
-        if @first_at == nil || @first_at < Time.now
-          EoTime.now + @interval
+        if @first_at == nil || @first_at < n
+          n + @interval
         else
           @first_at
         end
@@ -306,11 +308,12 @@ class Rufus::Scheduler::CronJob < Rufus::Scheduler::RepeatJob
 
   protected
 
-  def set_next_time(trigger_time, is_post=false)
+  def set_next_time(trigger_time, is_post=false, now=nil)
 
     return if is_post
+#p [ @previous_time.to_s, trigger_time.to_s ]
 
-    @next_time = next_time_from(trigger_time || Time.now)
+    @next_time = next_time_from(trigger_time || now || EoTime.now)
   end
 end
 
