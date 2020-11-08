@@ -299,11 +299,7 @@ class Rufus::Scheduler::CronJob < Rufus::Scheduler::RepeatJob
 
   def next_time_from(time)
 
-    if @first_at == nil || @first_at <= time
-      @cron_line.next_time(time)
-    else
-      @first_at
-    end
+    @cron_line.next_time(time)
   end
 
   protected
@@ -311,9 +307,15 @@ class Rufus::Scheduler::CronJob < Rufus::Scheduler::RepeatJob
   def set_next_time(trigger_time, is_post=false, now=nil)
 
     return if is_post
-#p [ @previous_time.to_s, trigger_time.to_s ]
 
-    @next_time = next_time_from(trigger_time || now || EoTime.now)
+    t = trigger_time || now || EoTime.now
+
+    @next_time =
+      if @first_at && @first_at > t
+        @first_at
+      else
+        next_time_from(t)
+      end
   end
 end
 
