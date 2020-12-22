@@ -1102,7 +1102,9 @@ def scheduler.on_error(job, error)
 end
 ```
 
-## Rufus::Scheduler #on_pre_trigger and #on_post_trigger callbacks
+## Callbacks
+
+### Rufus::Scheduler #on_pre_trigger and #on_post_trigger callbacks
 
 One can bind callbacks before and after jobs trigger:
 
@@ -1125,6 +1127,21 @@ end
 The ```trigger_time``` is the time at which the job triggers. It might be a bit before ```Time.now```.
 
 Warning: these two callbacks are executed in the scheduler thread, not in the work threads (the threads where the job execution really happens).
+
+### Rufus::Scheduler#around_trigger
+
+One can create an around callback which will wrap a job:
+
+```ruby
+def s.around_trigger(job)
+  t = Time.now
+  puts "Starting job #{job.id}..."
+  yield
+  puts "job #{job.id} finished in #{Time.now-t} seconds."
+end
+```
+
+The around callback is executed in the thread.
 
 ### Rufus::Scheduler#on_pre_trigger as a guard
 

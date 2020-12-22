@@ -218,7 +218,10 @@ class Rufus::Scheduler::Job
   def do_call(time, do_rescue)
 
     args = [ self, time ][0, @callable.arity]
-    @callable.call(*args)
+
+    @scheduler.around_trigger(self) do
+      @callable.call(*args)
+    end
 
   rescue StandardError => se
 

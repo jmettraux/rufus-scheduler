@@ -1146,6 +1146,69 @@ describe Rufus::Scheduler do
     end
   end
 
+  describe '#around_trigger' do
+
+    it 'functions normally if no around_trigger is defined' do
+      $out = []
+
+      job_id =
+        @scheduler.in '0.5s' do |job|
+          $out << job.id
+        end
+
+      sleep 0.7
+
+      expect($out).to eq([ job_id ])
+    end
+
+    it 'wraps the job' do
+      $out = []
+
+      def @scheduler.around_trigger(job)
+        $out << "pre #{job.id}"
+        yield
+        $out << "post #{job.id}"
+      end
+
+      job_id =
+        @scheduler.in '0.5s' do |job|
+          $out << job.id
+        end
+
+      sleep 0.7
+
+      expect($out).to eq([ "pre #{job_id}", job_id, "post #{job_id}" ])
+    end
+
+    it 'does not block (runs in job thread)' do
+      $out = []
+
+      def @scheduler.around_trigger(job)
+        $out << "pre #{job.id}"
+        yield
+        $out << "post #{job.id}"
+      end
+
+      job_id1 =
+        @scheduler.in '0.1s' do |job|
+          sleep 0.5
+          $out << job.id
+        end
+      job_id2 =
+        @scheduler.in '0.2s' do |job|
+          $out << job.id
+        end
+
+      sleep 0.7
+
+      expect($out[0..2]).to eq([
+        "pre #{job_id1}",
+        "pre #{job_id2}",
+        job_id2
+      ])
+    end
+  end
+
   #--
   # misc
   #++
