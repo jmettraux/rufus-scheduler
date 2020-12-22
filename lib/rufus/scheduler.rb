@@ -125,6 +125,10 @@ class Rufus::Scheduler
     @started_at ? EoTime.now - @started_at : nil
   end
 
+  def around_trigger(job)
+    yield
+  end
+
   def uptime_s
 
     uptime ? self.class.to_duration(uptime) : ''
