@@ -4,6 +4,8 @@
 
 ### rufus-scheduler 3.7.0 - not yet released
 
+* Implement Scheduler#around_trigger, @jjb, gh-310
+
 
 ### rufus-scheduler 3.6.0 - released 2019-04-22
 

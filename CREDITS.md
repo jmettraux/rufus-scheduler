@@ -4,6 +4,7 @@
 
 ## Contributors
 
+* John Bachir https://github.com/jjb gh-310
 * Daniel Berger https://github.com/djberg96 gh-300
 * Ceyhun Onur https://github.com/ceyonur parse_cron no_error: true
 * Darwin Wu https://github.com/dwaxe Rails initializer vs tests change
