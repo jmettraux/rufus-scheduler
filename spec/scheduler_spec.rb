@@ -592,7 +592,7 @@ describe Rufus::Scheduler do
         sleep 3
       end
 
-      wait_until { @scheduler.running_jobs.size >= 2 }
+      wait_until { @scheduler.running_jobs.size > 1 }
 
       expect(
         @scheduler.running_jobs(:tag => 't0').map(&:original)

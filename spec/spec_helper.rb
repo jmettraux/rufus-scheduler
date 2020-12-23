@@ -138,7 +138,7 @@ module Helpers
 
   def wait_until(timeout=14, frequency=0.1, &block)
 
-    start = Time.now
+    start = monow
 
     loop do
 
@@ -148,7 +148,7 @@ module Helpers
       r = block.call
       return r if r
 
-      break if Time.now - start > timeout
+      break if monow - start > timeout
     end
 
     fail "timeout after #{timeout}s"
