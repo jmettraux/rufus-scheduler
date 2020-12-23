@@ -64,7 +64,7 @@ class Rufus::Scheduler::Job
     @unscheduled_at = nil
     @last_time = nil
 
-    @locals = {}
+    @locals = opts[:locals] || opts[:l] || {}
     @local_mutex = Mutex.new
 
     @id = determine_id

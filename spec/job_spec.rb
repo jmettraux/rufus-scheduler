@@ -351,6 +351,15 @@ describe Rufus::Scheduler::Job do
         expect(job.entries).to eq([ [ :x, :y ], [ 'hello', :z ], [ 123, {} ] ])
       end
     end
+
+    it 'can be set at job scheduling time' do
+
+      j0 = @scheduler.schedule_in '1s', locals: { a: :alpha } do; end
+      j1 = @scheduler.schedule_in '1s', l: { a: :aleph } do; end
+
+      expect(j0[:a]).to eq(:alpha)
+      expect(j1[:a]).to eq(:aleph)
+    end
   end
 
   context ':tag / :tags => [ t0, t1 ]' do
