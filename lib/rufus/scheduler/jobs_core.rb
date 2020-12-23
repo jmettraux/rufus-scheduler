@@ -45,6 +45,11 @@ class Rufus::Scheduler::Job
     @scheduler = scheduler
     @original = original
     @opts = opts
+    @attributes = @opts[:attributes].freeze || {}.freeze
+
+    def attributes
+      @attributes
+    end
 
     @handler = block
 

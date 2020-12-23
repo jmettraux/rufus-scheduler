@@ -1258,6 +1258,29 @@ It's OK to increase the :max_work_threads of a running scheduler.
 scheduler.max_work_threads += 10
 ```
 
+### :attributes
+
+A job can be given a hash of arbitrary attributes. These do not change
+across job runs. You might use attributes to assign a job a name, or
+an identifier in an outside system.
+
+```ruby
+class CronMonitorService
+  def self.ping(id)
+    Net::HTTP.get('cronmonitor.example.com', "/ping/#{id}")
+  end
+end
+
+def s.on_post_trigger(job, trigger_time)
+  puts "job #{job.attributes[:name]} has finished."
+  CronMonitorService.ping(job.attributes[:ping_id])
+end
+
+s.every '1 hour', attributes: {name: 'Data Importer', ping_id: 'a1b2c3d4e5'} do
+  # ...
+end
+```
+
 
 ## Rufus::Scheduler.singleton
 

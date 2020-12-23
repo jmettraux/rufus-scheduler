@@ -314,6 +314,57 @@ describe Rufus::Scheduler::Job do
     end
   end
 
+  context 'attributes' do
+    let!(:job) do
+      @scheduler.schedule_in('0.01s', attributes: {one: 1, two: 2}, times: 2) do
+        $out << 'in the job'
+      end
+    end
+
+    it 'can have attributes assigned' do
+      expect(job.class).to eq(Rufus::Scheduler::InJob)
+    end
+
+    describe '#attributes' do
+      subject{ job.attributes }
+
+      it 'makes attributes accessible' do
+        expect(subject).to eq({one: 1, two: 2})
+      end
+
+      it 'makes attributes accessible to pre, post, and around hooks' do
+        $out = []
+        def @scheduler.on_pre_trigger(job)
+          $out << "pre #{job.attributes[:one]}"
+        end
+        def @scheduler.on_post_trigger(job)
+          $out << "post #{job.attributes[:one]}"
+        end
+        def @scheduler.around_trigger(job)
+          $out << "around-pre #{job.attributes[:one]}"
+          yield
+          $out << "around-post #{job.attributes[:one]}"
+        end
+
+        sleep 0.5
+
+        expect($out).to eq([
+          'pre 1',
+          'around-pre 1',
+          'in the job',
+          'around-post 1',
+          'post 1'
+        ])
+      end
+
+      it 'does not allow attributes to be changed' do
+        expect{subject[:three]=3}.to raise_error
+      end
+    end
+
+  end
+
+
   context ':tag / :tags => [ t0, t1 ]' do
 
     it 'accepts one tag' do
