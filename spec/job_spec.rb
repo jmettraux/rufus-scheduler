@@ -296,7 +296,20 @@ describe Rufus::Scheduler::Job do
         job = @scheduler.schedule_in '1s' do; end
         job[:x] = :y
 
+        expect(job.key?(:a)).to eq(false)
         expect(job.key?(:x)).to eq(true)
+      end
+    end
+
+    describe '#has_key?' do
+
+      it 'returns true if there is an entry with the given key' do
+
+        job = @scheduler.schedule_in '1s' do; end
+        job[:x] = :y
+
+        expect(job.has_key?(:a)).to eq(false)
+        expect(job.has_key?(:x)).to eq(true)
       end
     end
 
@@ -310,6 +323,32 @@ describe Rufus::Scheduler::Job do
         job[123] = {}
 
         expect(job.keys.sort_by { |k| k.to_s }).to eq([ 123, 'hello', :x ])
+      end
+    end
+
+    describe '#values' do
+
+      it 'returns the array of values of the job-local variables' do
+
+        job = @scheduler.schedule_in '1s' do; end
+        job[:x] = :y
+        job['hello'] = :z
+        job[123] = {}
+
+        expect(job.values).to eq([ :y, :z, {} ])
+      end
+    end
+
+    describe '#entries' do
+
+      it 'returns the array of entry pairs of the job-local variables' do
+
+        job = @scheduler.schedule_in '1s' do; end
+        job[:x] = :y
+        job['hello'] = :z
+        job[123] = {}
+
+        expect(job.entries).to eq([ [ :x, :y ], [ 'hello', :z ], [ 123, {} ] ])
       end
     end
   end

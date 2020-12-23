@@ -156,15 +156,15 @@ class Rufus::Scheduler::Job
     @local_mutex.synchronize { @locals[key] }
   end
 
-  def key?(key)
+  def has_key?(key)
 
-    @local_mutex.synchronize { @locals.key?(key) }
+    @local_mutex.synchronize { @locals.has_key?(key) }
   end
+  alias key? has_key?
 
-  def keys
-
-    @local_mutex.synchronize { @locals.keys }
-  end
+  def keys; @local_mutex.synchronize { @locals.keys }; end
+  def values; @local_mutex.synchronize { @locals.values }; end
+  def entries; @local_mutex.synchronize { @locals.entries }; end
 
   #def hash
   #  self.object_id
