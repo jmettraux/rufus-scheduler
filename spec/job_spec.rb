@@ -361,6 +361,33 @@ describe Rufus::Scheduler::Job do
       expect(j1[:a]).to eq(:aleph)
     end
 
+    it 'is accessible to pre, post, and around hooks before first run' do
+      value = rand
+      job = @scheduler.schedule_in('0.01s', l: {one: value}, times: 1) do
+         $out << "in the job #{value}"
+       end
+      $out = []
+      def @scheduler.on_pre_trigger(job)
+        $out << "pre #{job[:one]}"
+      end
+      def @scheduler.on_post_trigger(job)
+        $out << "post #{job[:one]}"
+      end
+      def @scheduler.around_trigger(job)
+        $out << "around-pre #{job[:one]}"
+        yield
+        $out << "around-post #{job[:one]}"
+      end
+      sleep 0.5
+      expect($out).to eq([
+        "pre #{value}",
+        "around-pre #{value}",
+        "in the job #{value}",
+        "around-post #{value}",
+        "post #{value}"
+      ])
+    end
+
     describe '#locals' do
 
       it 'returns the locals hash, as is' do
