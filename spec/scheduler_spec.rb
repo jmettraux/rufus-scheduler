@@ -1078,7 +1078,7 @@ describe Rufus::Scheduler do
           $out << job.id
         end
 
-      sleep 0.7
+      wait_until { $out.size > 1 }
 
       expect($out).to eq([ "pre #{job_id}", job_id ])
     end
@@ -1095,7 +1095,7 @@ describe Rufus::Scheduler do
 
       @scheduler.in '0.5s' do; end
 
-      sleep 0.7
+      wait_until { $tt }
 
       expect($tt.class).to eq(EtOrbi::EoTime)
       expect($tt).to be > start
@@ -1118,7 +1118,7 @@ describe Rufus::Scheduler do
             $out << job.id
           end
 
-        sleep 0.7
+        wait_until { $out.size > 0 }
 
         expect($out).to eq([ "pre #{job_id}" ])
       end
@@ -1140,7 +1140,7 @@ describe Rufus::Scheduler do
           $out << job.id
         end
 
-      sleep 0.7
+      wait_until { $out.size > 1 }
 
       expect($out).to eq([ job_id, "post #{job_id}" ])
     end
@@ -1149,6 +1149,7 @@ describe Rufus::Scheduler do
   describe '#around_trigger' do
 
     it 'functions normally if no around_trigger is defined' do
+
       $out = []
 
       job_id =
@@ -1156,12 +1157,13 @@ describe Rufus::Scheduler do
           $out << job.id
         end
 
-      sleep 0.7
+      wait_until { $out.size > 0 }
 
       expect($out).to eq([ job_id ])
     end
 
     it 'wraps the job' do
+
       $out = []
 
       def @scheduler.around_trigger(job)
@@ -1175,12 +1177,13 @@ describe Rufus::Scheduler do
           $out << job.id
         end
 
-      sleep 0.7
+      wait_until { $out.size > 2 }
 
       expect($out).to eq([ "pre #{job_id}", job_id, "post #{job_id}" ])
     end
 
     it 'does not block (runs in job thread)' do
+
       $out = []
 
       def @scheduler.around_trigger(job)
@@ -1199,7 +1202,7 @@ describe Rufus::Scheduler do
           $out << job.id
         end
 
-      sleep 0.7
+      wait_until { $out.size > 2 }
 
       expect($out[0..2]).to eq([
         "pre #{job_id1}",
