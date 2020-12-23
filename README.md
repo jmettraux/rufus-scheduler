@@ -760,9 +760,9 @@ job.tags
   # => [ 'hello' ]
 ```
 
-### []=, [], key? and keys
+### []=, [], key?, has_key?, keys, values, and entries
 
-Threads have thread-local variables. Rufus-scheduler jobs have job-local variables.
+Threads have thread-local variables, similarly Rufus-scheduler jobs have job-local variables. Those are more like a dict with thread-safe access.
 
 ```ruby
 job =
@@ -777,13 +777,29 @@ sleep 3.6
 job[:counter]
   # => 3
 
-job.key?(:timestamp)
-  # => true
-job.keys
-  # => [ :timestamp, :counter ]
+job.key?(:timestamp) # => true
+job.has_key?(:timestamp) # => true
+job.keys # => [ :timestamp, :counter ]
 ```
 
-Job-local variables are thread-safe.
+Locals can be set at schedule time:
+```ruby
+job0 =
+  @scheduler.schedule_cron '*/15 12 * * *', locals: { a: 0 } do
+    # ...
+  end
+job1 =
+  @scheduler.schedule_cron '*/15 13 * * *', l: { a: 1 } do
+    # ...
+  end
+```
+
+One can fetch the Hash directly with `Job#locals`. Of course, direct manipulation is not thread-safe.
+```ruby
+job.locals.entries do |k, v|
+  p "#{k}: #{v}"
+end
+```
 
 ### call
 
