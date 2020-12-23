@@ -1192,19 +1192,26 @@ describe Rufus::Scheduler do
         $out << "post #{job.id}"
       end
 
+      # using Thread.pass to space out job scheduling/triggering
+      # so that $out.take(3) becomes predictable
+
       job_id1 =
         @scheduler.in '0.1s' do |job|
           sleep 0.5
           $out << job.id
         end
+
+      Thread.pass
+
       job_id2 =
         @scheduler.in '0.2s' do |job|
+          Thread.pass
           $out << job.id
         end
 
       wait_until { $out.size > 2 }
 
-      expect($out[0..2]).to eq([
+      expect($out.take(3)).to eq([
         "pre #{job_id1}",
         "pre #{job_id2}",
         job_id2
