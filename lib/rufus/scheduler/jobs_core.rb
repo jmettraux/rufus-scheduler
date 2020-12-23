@@ -15,6 +15,7 @@ class Rufus::Scheduler::Job
   attr_reader :last_time
   attr_reader :unscheduled_at
   attr_reader :tags
+  attr_reader :locals
   attr_reader :count
   attr_reader :last_work_time
   attr_reader :mean_work_time

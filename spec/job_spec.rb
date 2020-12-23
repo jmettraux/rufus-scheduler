@@ -360,6 +360,16 @@ describe Rufus::Scheduler::Job do
       expect(j0[:a]).to eq(:alpha)
       expect(j1[:a]).to eq(:aleph)
     end
+
+    describe '#locals' do
+
+      it 'returns the locals hash, as is' do
+
+        j0 = @scheduler.schedule_in '1s', locals: { a: :aa, b: :bb } do; end
+
+        expect(j0.locals).to eq(a: :aa, b: :bb)
+      end
+    end
   end
 
   context ':tag / :tags => [ t0, t1 ]' do
