@@ -188,7 +188,7 @@ describe Rufus::Scheduler do
 
       @scheduler.in(t) { seen = true }
 
-      sleep 0.1 while seen != true
+      wait_until { seen }
     end
 
     it 'accepts point in time and duration indifferently (#at)' do
@@ -199,7 +199,7 @@ describe Rufus::Scheduler do
 
       @scheduler.at(t) { seen = true }
 
-      sleep 0.1 while seen != true
+      wait_until { seen }
     end
   end
 
@@ -940,9 +940,7 @@ describe Rufus::Scheduler do
         sleep 2
       end
 
-      sleep 0.4
-
-      expect(@scheduler.jobs.size).to eq(1)
+      wait_until { @scheduler.jobs.size > 0 }
     end
 
     it 'does not return unscheduled jobs' do
