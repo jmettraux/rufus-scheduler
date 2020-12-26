@@ -760,6 +760,25 @@ describe Rufus::Scheduler do
     end
   end
 
+  describe '#shutdown(wait: n)' do
+
+    it 'waits no more than n seconds' do
+
+      job =
+        @scheduler.schedule_in '0s' do
+          sleep 7
+        end
+
+      wait_until { job.threads.size > 0 }
+
+      t0 = monow
+
+      @scheduler.shutdown(wait: 2)
+
+      expect(monow - t0).to be_between(2.0, 3.0)
+    end
+  end
+
   describe '#shutdown(:kill)' do
 
     it 'kills all the jobs and then shuts down' do
