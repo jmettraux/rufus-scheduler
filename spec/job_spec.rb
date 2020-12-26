@@ -659,7 +659,9 @@ describe Rufus::Scheduler::Job do
         sleep 0.9
       end
 
-      wait_until { $stderr.string.match?(/Rufus::Scheduler::TimeoutError/) }
+      #wait_until { $stderr.string.match?(/Rufus::Scheduler::TimeoutError/) }
+        # no worky on older Rubies... so
+      wait_until { $stderr.string.match(/Rufus::Scheduler::TimeoutError/) }
     end
 
     it 'does not prevent a repeat job from recurring' do
