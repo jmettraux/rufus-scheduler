@@ -45,9 +45,7 @@ describe Rufus::Scheduler::Job do
 
       job = @scheduler.schedule_in '0s' do; end
 
-      sleep 0.4
-
-      expect(job.last_time).not_to eq(nil)
+      wait_until { job.last_time }
     end
   end
 
@@ -76,12 +74,9 @@ describe Rufus::Scheduler::Job do
           sleep(1)
         end
 
-      sleep 0.4
+      wait_until { job.threads.size > 0 }
 
-      expect(job.threads.size).to eq(1)
-
-      t = job.threads.first
-      expect(t[:rufus_scheduler_job]).to eq(job)
+      expect(job.threads.first[:rufus_scheduler_job]).to eq(job)
     end
   end
 
@@ -143,9 +138,7 @@ describe Rufus::Scheduler::Job do
 
       job = @scheduler.in('0s', :job => true) { sleep(1) }
 
-      sleep 0.4
-
-      expect(job.running?).to eq(true)
+      wait_until { job.running? }
     end
   end
 
@@ -171,7 +164,7 @@ describe Rufus::Scheduler::Job do
 
       job = @scheduler.schedule_interval('0.4s') { sleep(10) }
 
-      sleep 1
+      wait_until { job.running? }
 
       expect(job.running?).to eq(true)
       expect(job.scheduled?).to eq(true)
@@ -201,7 +194,7 @@ describe Rufus::Scheduler::Job do
         end
       job.call
 
-      sleep 0.8
+      wait_until { counter > 1 }
 
       expect(counter).to eq(2)
     end
@@ -265,9 +258,7 @@ describe Rufus::Scheduler::Job do
             job[:counter] += 1
           end
 
-        sleep 3
-
-        expect(job[:counter]).to be > 1
+        wait_until { job[:counter] && job[:counter] > 1 }
       end
     end
 
@@ -362,11 +353,16 @@ describe Rufus::Scheduler::Job do
     end
 
     it 'is accessible to pre, post, and around hooks before first run' do
+
       value = rand
-      job = @scheduler.schedule_in('0.01s', l: {one: value}, times: 1) do
-         $out << "in the job #{value}"
-       end
+
+      job =
+        @scheduler.schedule_in('0.01s', l: { one: value }, times: 1) do
+          $out << "in the job #{value}"
+        end
+
       $out = []
+
       def @scheduler.on_pre_trigger(job)
         $out << "pre #{job[:one]}"
       end
@@ -378,7 +374,9 @@ describe Rufus::Scheduler::Job do
         yield
         $out << "around-post #{job[:one]}"
       end
-      sleep 0.5
+
+      wait_until { $out.size > 4 }
+
       expect($out).to eq([
         "pre #{value}",
         "around-pre #{value}",
@@ -487,7 +485,7 @@ describe Rufus::Scheduler::Job do
             sleep(5)
           end
 
-        sleep 3
+        wait_until { job.threads.size > 0 }
 
         expect(job.threads.size).to eq(1)
       end
@@ -509,7 +507,7 @@ describe Rufus::Scheduler::Job do
             sleep(3)
           end
 
-        sleep 0.7
+        wait_until { j0.threads.size + j1.threads.size > 0 }
 
         if j0.threads.any?
           expect(j0.threads.size).to eq(1)
@@ -532,7 +530,7 @@ describe Rufus::Scheduler::Job do
         j0 = @scheduler.in('0s', :job => true, :mutex => m) { sleep(3) }
         j1 = @scheduler.in('0s', :job => true, :mutex => m) { sleep(3) }
 
-        sleep 0.7
+        wait_until { j0.threads.size + j1.threads.size > 0 }
 
         if j0.threads.any?
           expect(j0.threads.size).to eq(1)
@@ -559,7 +557,7 @@ describe Rufus::Scheduler::Job do
             sleep(3)
           end
 
-        sleep 0.7
+        wait_until { j0.threads.size + j1.threads.size > 0 }
 
         if j0.threads.any?
           expect(j0.threads.size).to eq(1)
@@ -651,9 +649,7 @@ describe Rufus::Scheduler::Job do
         sleep 0.9
       end
 
-      sleep 2
-
-      expect($stderr.string).to match(/Rufus::Scheduler::TimeoutError/)
+      wait_until { $stderr.string.match?(/Rufus::Scheduler::TimeoutError/) }
     end
 
     it 'does not prevent a repeat job from recurring' do
@@ -665,9 +661,7 @@ describe Rufus::Scheduler::Job do
         sleep 0.9
       end
 
-      sleep 3
-
-      expect(counter).to be > 1
+      wait_until { counter > 1 }
     end
   end
 
