@@ -4,6 +4,7 @@
 
 ### rufus-scheduler 3.7.0 - not yet released
 
+* Implement Job #name and #name=, gh-309
 * Implement Scheduler#around_trigger, @jjb, gh-310
 
 

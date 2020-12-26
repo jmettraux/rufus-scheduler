@@ -20,6 +20,8 @@ class Rufus::Scheduler::Job
   attr_reader :last_work_time
   attr_reader :mean_work_time
 
+  attr_accessor :name
+
   # next trigger time
   #
   attr_accessor :next_time
@@ -69,6 +71,7 @@ class Rufus::Scheduler::Job
     @local_mutex = Mutex.new
 
     @id = determine_id
+    @name = opts[:name] || opts[:n]
 
     fail(
       ArgumentError,

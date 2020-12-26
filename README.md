@@ -377,6 +377,23 @@ While paused, the scheduler still accepts schedules, but no schedule will get tr
 
 ## job options
 
+### :name => string
+
+Sets the name of the job.
+
+```ruby
+scheduler.cron '*/15 8 * * *', name: 'Robert' do |job|
+  puts "A, it's #{Time.now} and my name is #{job.name}"
+end
+
+job1 =
+  scheduler.schedule_cron '*/30 9 * * *', n: 'temporary' do |job|
+    puts "B, it's #{Time.now} and my name is #{job.name}"
+  end
+# ...
+job1.name = 'Beowulf'
+```
+
 ### :blocking => true
 
 By default, jobs are triggered in their own, new threads. When `:blocking => true`, the job is triggered in the scheduler thread (a new thread is not created). Yes, while a blocking job is running, the scheduler is not scheduling.

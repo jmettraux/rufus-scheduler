@@ -386,13 +386,23 @@ describe Rufus::Scheduler::Job do
       ])
     end
 
+    describe '#name' do
+
+      it 'returns the job name' do
+
+        j = @scheduler.schedule_in '10d', name: 'alice' do; end
+
+        expect(j.name).to eq('alice')
+      end
+    end
+
     describe '#locals' do
 
       it 'returns the locals hash, as is' do
 
-        j0 = @scheduler.schedule_in '1s', locals: { a: :aa, b: :bb } do; end
+        j = @scheduler.schedule_in '1s', locals: { a: :aa, b: :bb } do; end
 
-        expect(j0.locals).to eq(a: :aa, b: :bb)
+        expect(j.locals).to eq(a: :aa, b: :bb)
       end
     end
   end
@@ -668,6 +678,18 @@ describe Rufus::Scheduler::Job do
   context 'discard_past: true/false' do
 
     # specified in spec/job_repeat_spec.rb
+  end
+
+  context 'name: / n:' do
+
+    it 'sets the job name' do
+
+      j0 = @scheduler.schedule_in '10d', name: 'Alfred' do; end
+      j1 = @scheduler.schedule_in '11d', n: 'Alberich' do; end
+
+      expect(j0.name).to eq('Alfred')
+      expect(j1.name).to eq('Alberich')
+    end
   end
 
   context 'work time' do
