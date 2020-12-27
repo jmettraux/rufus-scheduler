@@ -202,6 +202,8 @@ class Rufus::Scheduler
     else
       def monow; Time.now.to_f; end
     end
+
+    def ltstamp; Time.now.strftime('%FT%T.%3N'); end
   end
 
   # Debugging tools...

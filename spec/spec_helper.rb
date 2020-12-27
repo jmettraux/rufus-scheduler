@@ -170,6 +170,7 @@ module Helpers
   alias :wait_next_second :wait_next_seconds
 
   def monow; Rufus::Scheduler.monow; end
+  def ltstamp; Rufus::Scheduler.ltstamp; end
 
   if RUBY_VERSION > '1.9.9'
     def tstamp

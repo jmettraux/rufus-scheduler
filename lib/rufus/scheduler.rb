@@ -126,6 +126,7 @@ class Rufus::Scheduler
   end
 
   def around_trigger(job)
+
     yield
   end
 
@@ -134,33 +135,34 @@ class Rufus::Scheduler
     uptime ? self.class.to_duration(uptime) : ''
   end
 
-  def join(limit=nil)
+  def join(time_limit=nil)
 
     fail NotRunningError.new('cannot join scheduler that is not running') \
       unless @thread
     fail ThreadError.new('scheduler thread cannot join itself') \
       if @thread == Thread.current
 
-    if limit
-      limit_join(limit)
+    if time_limit
+      time_limit_join(time_limit)
     else
-      no_limit_join
+      no_time_limit_join
     end
   end
 
-  def limit_join(limit)
+  def time_limit_join(limit)
 
     fail ArgumentError.new("limit #{limit.inspect} should be > 0") \
       unless limit.is_a?(Numeric) && limit > 0
 
     t0 = monow
-    f = [ limit / 20, 0.100 ].min
+    f = [ limit.to_f / 20, 0.100 ].min
 
     while monow - t0 < limit
       r =
         begin
           @join_queue.pop(true)
         rescue ThreadError => e
+          # #<ThreadError: queue empty>
           false
         end
       return r if r
@@ -170,7 +172,7 @@ class Rufus::Scheduler
     nil
   end
 
-  def no_limit_join
+  def no_time_limit_join
 
     @join_queue.pop
   end
@@ -552,7 +554,10 @@ class Rufus::Scheduler
     end
 
     @work_queue.clear
+
     unlock
+
+    @thread.join
   end
   alias stop shutdown
 
@@ -560,7 +565,8 @@ class Rufus::Scheduler
 
   def join_shutdown(opts)
 
-    w = opts[:wait] || opts[:join]
+    limit = opts[:wait] || opts[:join]
+    limit = limit.is_a?(Numeric) ? limit : nil
 
     #@started_at = nil
       #
@@ -571,11 +577,14 @@ class Rufus::Scheduler
     @paused_at = EoTime.now
 
     (work_threads.size * 2 + 1).times { @work_queue << :shutdown }
-    work_threads.each { |t| t.join unless t == Thread.current }
+
+    work_threads
+      .collect { |wt|
+        wt == Thread.current ? nil : Thread.new { wt.join(limit); wt.kill } }
+      .each { |st|
+        st.join if st }
 
     @started_at = nil
-
-    join(w.is_a?(Numeric) ? w : nil)
   end
 
   def kill_shutdown(opts)
@@ -708,5 +717,6 @@ class Rufus::Scheduler
   end
 
   def monow; self.class.monow; end
+  def ltstamp; self.class.ltstamp; end
 end
 

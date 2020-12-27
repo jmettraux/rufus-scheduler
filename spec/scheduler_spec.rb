@@ -86,7 +86,8 @@ describe Rufus::Scheduler do
     @scheduler = Rufus::Scheduler.new
   end
   after :each do
-    @scheduler.shutdown
+    @scheduler.shutdown if @scheduler.uptime
+      # don't shutdown an already shut down scheduler.
   end
 
   describe 'a schedule method' do
@@ -742,7 +743,7 @@ describe Rufus::Scheduler do
         counter = counter + 1
       end
 
-      sleep 0.4
+      wait_until { @scheduler.threads.size > 0 }
 
       @scheduler.shutdown(:wait)
 
@@ -754,9 +755,22 @@ describe Rufus::Scheduler do
 
     it 'does not mind being called from a scheduler job (gh-304)' do
 
-      @scheduler.in '0s' do
-        @scheduler.shutdown(:wait)
-      end
+      seen = true
+
+      job =
+        @scheduler.schedule_in '0s' do
+          seen = true
+          @scheduler.shutdown(:wait)
+        end
+
+      t = wait_until { job.threads.first }
+
+      expect(seen).to eq(true)
+      expect(@scheduler.uptime).to eq(nil)
+
+      wait_until { @scheduler.running_jobs.empty? }
+
+      expect(@scheduler.threads.collect(&:status)).to eq([ 'sleep' ])
     end
   end
 
@@ -766,16 +780,22 @@ describe Rufus::Scheduler do
 
       job =
         @scheduler.schedule_in '0s' do
-          sleep 7
+          sleep 4
         end
 
       wait_until { job.threads.size > 0 }
 
       t0 = monow
 
-      @scheduler.shutdown(wait: 2)
+      t1 = @scheduler.shutdown(wait: 2)
 
       expect(monow - t0).to be_between(2.0, 3.0)
+
+      expect(job.threads.size).to eq(0)
+
+      expect(@scheduler.uptime).to eq(nil)
+      expect(@scheduler.running_jobs).to eq([])
+      expect(@scheduler.threads).to eq([])
     end
   end
 
