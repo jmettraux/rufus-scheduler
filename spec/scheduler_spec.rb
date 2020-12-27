@@ -736,18 +736,21 @@ describe Rufus::Scheduler do
 
     it 'shuts down and blocks until all the jobs ended their current runs' do
 
-      counter = 0
+      seen = false
 
-      @scheduler.in '0s' do
-        sleep 1
-        counter = counter + 1
-      end
+      job =
+        @scheduler.schedule_in '0s' do
+          sleep 1
+          seen = true
+        end
 
-      wait_until { @scheduler.threads.size > 0 }
+      wait_until { job.threads.first }
+
+      expect(seen).to eq(false)
 
       @scheduler.shutdown(:wait)
 
-      expect(counter).to eq(1)
+      expect(seen).to eq(true)
       expect(@scheduler.uptime).to eq(nil)
       expect(@scheduler.running_jobs).to eq([])
       expect(@scheduler.threads).to eq([])
