@@ -999,6 +999,10 @@ Shuts down the scheduler, ceases any scheduler/triggering activity.
 
 Shuts down the scheduler, waits (blocks) until all the jobs cease running.
 
+### Scheduler#shutdown(wait: n)
+
+Shuts down the scheduler, waits (blocks) at most n seconds until all the jobs cease running. (Jobs are killed after n seconds have elapsed).
+
 ### Scheduler#shutdown(:kill)
 
 Kills all the job (threads) and then shuts the scheduler down. Radical.
