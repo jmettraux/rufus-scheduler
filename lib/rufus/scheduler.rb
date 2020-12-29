@@ -149,34 +149,6 @@ class Rufus::Scheduler
     end
   end
 
-  def time_limit_join(limit)
-
-    fail ArgumentError.new("limit #{limit.inspect} should be > 0") \
-      unless limit.is_a?(Numeric) && limit > 0
-
-    t0 = monow
-    f = [ limit.to_f / 20, 0.100 ].min
-
-    while monow - t0 < limit
-      r =
-        begin
-          @join_queue.pop(true)
-        rescue ThreadError => e
-          # #<ThreadError: queue empty>
-          false
-        end
-      return r if r
-      sleep(f)
-    end
-
-    nil
-  end
-
-  def no_time_limit_join
-
-    @join_queue.pop
-  end
-
   def down?
 
     ! @started_at
@@ -596,6 +568,34 @@ class Rufus::Scheduler
   def regular_shutdown(opts)
 
     @started_at = nil
+  end
+
+  def time_limit_join(limit)
+
+    fail ArgumentError.new("limit #{limit.inspect} should be > 0") \
+      unless limit.is_a?(Numeric) && limit > 0
+
+    t0 = monow
+    f = [ limit.to_f / 20, 0.100 ].min
+
+    while monow - t0 < limit
+      r =
+        begin
+          @join_queue.pop(true)
+        rescue ThreadError => e
+          # #<ThreadError: queue empty>
+          false
+        end
+      return r if r
+      sleep(f)
+    end
+
+    nil
+  end
+
+  def no_time_limit_join
+
+    @join_queue.pop
   end
 
   # Returns [ job, job_id ]

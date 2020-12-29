@@ -349,11 +349,11 @@ describe Rufus::Scheduler do
 
       a = []
 
-      @scheduler.in(0.010) {
+      @scheduler.in(0.010) do
         a << 0
         sleep 3
         a << 1
-      }
+      end
 
       t0 = monow
 
