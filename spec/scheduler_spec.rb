@@ -779,7 +779,13 @@ describe Rufus::Scheduler do
 
   describe '#shutdown(wait: n)' do
 
-    it 'waits no more than n seconds' do
+    it 'waits no more than n seconds, kills unfinished jobs' do
+
+      seen = false
+      @scheduler.schedule_in('0s') do
+        sleep 100
+        seen = true
+      end
 
       job =
         @scheduler.schedule_in '0s' do
@@ -791,6 +797,8 @@ describe Rufus::Scheduler do
       t0 = monow
 
       t1 = @scheduler.shutdown(wait: 2)
+
+      expect(seen).to eq(false)
 
       expect(monow - t0).to be_between(2.0, 3.0)
 
