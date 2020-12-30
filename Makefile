@@ -23,5 +23,5 @@ build: gemspec_validate
 	mv $(NAME)-$(VERSION).gem pkg/
 
 push: build
-	gem push pkg/$(NAME)-$(VERSION).gem
+	gem push --otp "$(OTP)" pkg/$(NAME)-$(VERSION).gem
 
