@@ -1,4 +1,4 @@
-
+ 
 require 'date' if RUBY_VERSION < '1.9.0'
 require 'thread'
 
@@ -552,8 +552,15 @@ class Rufus::Scheduler
 
     work_threads
       .collect { |wt|
-        wt == Thread.current ? nil : Thread.new { wt.join(limit); wt.kill } }
-      .each { |st|
+        if wt == Thread.current
+          nil
+        else
+          #Thread.new {
+            wt.join(limit)
+            wt.kill
+          #}
+        end
+      }.each { |st|
         st.join if st }
 
     @started_at = nil
