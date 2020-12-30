@@ -782,20 +782,36 @@ describe Rufus::Scheduler do
 
     it 'waits no more than n seconds' do
 
-      job =
+      seen = []
+
+      job0 =
         @scheduler.schedule_in '0s' do
-          sleep 4
+          seen << :job0a
+          sleep 100
+          seen << :job0b
         end
 
-      wait_until { job.threads.size > 0 }
+      sleep 0.300
+
+      job1 =
+        @scheduler.schedule_in '0s' do
+          seen << :job1a
+          sleep 4
+          seen << :job1b
+        end
+
+      wait_until { seen.include?(:job1a) }
+
+      expect(seen).to eq([ :job0a, :job1a ])
 
       t0 = monow
 
-      t1 = @scheduler.shutdown(wait: 2)
+      @scheduler.shutdown(wait: 2)
 
       expect(monow - t0).to be_between(2.0, 3.0)
 
-      expect(job.threads.size).to eq(0)
+      expect(job0.threads.size).to eq(0)
+      expect(job1.threads.size).to eq(0)
 
       expect(@scheduler.uptime).to eq(nil)
       expect(@scheduler.running_jobs).to eq([])
