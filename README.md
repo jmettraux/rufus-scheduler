@@ -77,6 +77,7 @@ A rufus-scheduler instance will go on scheduling while it is present among the o
 ## related and similar gems
 
 * [Whenever](https://github.com/javan/whenever) - let cron call back your Ruby code, trusted and reliable cron drives your schedule
+* [ruby-clock](https://github.com/jjb/ruby-clock) - a clock process / job scheduler for Ruby
 * [Clockwork](https://github.com/Rykian/clockwork) - rufus-scheduler inspired gem
 * [Crono](https://github.com/plashchynski/crono) - an in-Rails cron scheduler
 * [PerfectSched](https://github.com/treasure-data/perfectsched) - highly available distributed cron built on [Sequel](https://sequel.jeremyevans.net) and more
