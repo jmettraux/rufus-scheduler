@@ -774,6 +774,7 @@ describe Rufus::Scheduler do
       wait_until { @scheduler.running_jobs.empty? }
 
       expect(@scheduler.threads.collect(&:status)).to eq([ 'sleep' ])
+        # :-(
     end
   end
 
@@ -799,6 +800,39 @@ describe Rufus::Scheduler do
       expect(@scheduler.uptime).to eq(nil)
       expect(@scheduler.running_jobs).to eq([])
       expect(@scheduler.threads).to eq([])
+    end
+
+    it 'does not mind being called from a scheduler job (gh-304)' do
+
+      seen = []
+
+      job0 =
+        @scheduler.schedule_in '0s' do
+          seen << :job0a
+          sleep 5
+          seen << :job0b
+        end
+
+      sleep 0.300
+
+      job1 =
+        @scheduler.schedule_in '0s' do
+          seen << :job1a
+          t0 = monow
+          @scheduler.shutdown(wait: 2)
+          seen << (monow - t0)
+        end
+
+      wait_until { seen.size > 2 }
+
+      expect(seen[0, 2]).to eq([ :job0a, :job1a ])
+      expect(seen[2]).to be_between(2.0, 3.0)
+
+      expect(@scheduler.uptime).to eq(nil)
+      expect(@scheduler.running_jobs).to eq([])
+
+      expect(@scheduler.threads.collect(&:status)).to eq([ 'sleep' ])
+        # :-(
     end
   end
 
