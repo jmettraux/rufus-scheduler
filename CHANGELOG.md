@@ -2,10 +2,17 @@
 # CHANGELOG.md
 
 
-### rufus-scheduler 3.7.0 - not yet released
+### rufus-scheduler 3.7.0 - released 2020-12-31
 
-* Implement Job #name and #name=, gh-309
+* Implement Job name:/n: #name and #name=, gh-309
+* Add Job #has_key?, #value, and #entries
+* Add #locals access to Job
 * Implement Scheduler#around_trigger, @jjb, gh-310
+* Accept max_worker_threads: for max_work_threads:
+* Clean up Scheduler#shutdwon, thanks @itsaphel and @jjb, gh-304, gh-315
+
+* f59df40 Bring in discard_past: for every jobs, gh-290
+* 7613277 Introduce :discard_past = false for cron, gh-305
 
 
 ### rufus-scheduler 3.6.0 - released 2019-04-22
