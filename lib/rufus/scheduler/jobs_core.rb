@@ -310,6 +310,8 @@ class Rufus::Scheduler::Job
 
         loop do
 
+          break if @scheduler.started_at == nil
+
           job, time = @scheduler.work_queue.pop
 
           break if job == :shutdown

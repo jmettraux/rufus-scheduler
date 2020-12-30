@@ -758,23 +758,33 @@ describe Rufus::Scheduler do
 
     it 'does not mind being called from a scheduler job (gh-304)' do
 
-      seen = true
+      seen = []
 
-      job =
+      job0 =
         @scheduler.schedule_in '0s' do
-          seen = true
-          @scheduler.shutdown(:wait)
+          seen << :job0a
+          sleep 3
+          seen << :job0b
         end
 
-      t = wait_until { job.threads.first }
+      sleep 0.300
 
-      expect(seen).to eq(true)
-      expect(@scheduler.uptime).to eq(nil)
+      job1 =
+        @scheduler.schedule_in '0s' do
+          seen << :job1a
+          @scheduler.shutdown(:wait)
+          seen << :job1b
+        end
 
-      wait_until { @scheduler.running_jobs.empty? }
+      t0 = monow
 
-      expect(@scheduler.threads.collect(&:status)).to eq([ 'sleep' ])
-        # :-(
+      wait_until { @scheduler.uptime == nil }
+
+      expect(monow - t0).to be_between(2.5, 4.0)
+
+      expect(seen.take(3)).to eq([ :job0a, :job1a, :job0b ])
+
+      wait_until { @scheduler.threads == [] }
     end
   end
 
@@ -847,8 +857,7 @@ describe Rufus::Scheduler do
       expect(@scheduler.uptime).to eq(nil)
       expect(@scheduler.running_jobs).to eq([])
 
-      expect(@scheduler.threads.collect(&:status)).to eq([ 'sleep' ])
-        # :-(
+      wait_until { @scheduler.threads == [] }
     end
   end
 
@@ -884,6 +893,34 @@ describe Rufus::Scheduler do
       expect(@scheduler.uptime).to eq(nil)
       expect(@scheduler.running_jobs).to eq([])
       expect(@scheduler.threads).to eq([])
+    end
+
+    it 'does not mind being called from a scheduler job (gh-304)' do
+
+      seen = []
+
+      job0 =
+        @scheduler.schedule_in '0s' do
+          seen << :job0a
+          sleep 5
+          seen << :job0b
+        end
+
+      sleep 0.300
+
+      job1 =
+        @scheduler.schedule_in '0s' do
+          seen << :job1a
+          @scheduler.shutdown(:kill)
+          seen << :job1b
+        end
+
+      wait_until { seen.include?(:job1a) }
+
+      expect(@scheduler.uptime).to eq(nil)
+      expect(@scheduler.running_jobs).to eq([])
+
+      wait_until { @scheduler.threads == [] }
     end
   end
 
