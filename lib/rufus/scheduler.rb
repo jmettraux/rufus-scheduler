@@ -9,7 +9,7 @@ module Rufus; end
 
 class Rufus::Scheduler
 
-  VERSION = '3.7.0'
+  VERSION = '3.7.1'
 
   EoTime = ::EtOrbi::EoTime
 

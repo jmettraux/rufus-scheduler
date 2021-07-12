@@ -1,6 +1,7 @@
 
 # CHANGELOG.md
 
+### rufus-scheduler 3.7.1 - not yet released
 
 ### rufus-scheduler 3.7.0 - released 2020-12-31
 
