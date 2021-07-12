@@ -445,6 +445,7 @@ class Rufus::Scheduler
     stderr.puts("{ #{pre} rufus-scheduler intercepted an error:")
     stderr.puts("  #{pre}   job:")
     stderr.puts("  #{pre}     #{job.class} #{job.original.inspect} #{job.opts.inspect}")
+    stderr.puts("  #{pre}     #{job.source_location.inspect}")
     # TODO: eventually use a Job#detail or something like that
     stderr.puts("  #{pre}   error:")
     stderr.puts("  #{pre}     #{err.object_id}")
