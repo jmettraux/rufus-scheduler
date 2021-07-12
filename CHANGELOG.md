@@ -1,7 +1,11 @@
 
 # CHANGELOG.md
 
+
 ### rufus-scheduler 3.7.1 - not yet released
+
+* Add #source_location to Job, gh-322
+
 
 ### rufus-scheduler 3.7.0 - released 2020-12-31
 

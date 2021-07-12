@@ -97,6 +97,12 @@ class Rufus::Scheduler::Job
 
   alias job_id id
 
+  def source_location
+
+    @callable.source_location
+  end
+  alias location source_location
+
   # Will fail with an ArgumentError if the job frequency is higher than
   # the scheduler frequency.
   #

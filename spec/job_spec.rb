@@ -396,6 +396,19 @@ describe Rufus::Scheduler::Job do
       end
     end
 
+    describe '#location' do
+
+      it 'returns the job location in code' do
+
+        j = @scheduler.schedule_in '10d', name: 'alice' do; end
+
+        l = j.location
+
+        expect(l[0]).to match(/\/rufus-scheduler\/spec\/job_spec\.rb$/)
+        expect(l[1]).to eq(__LINE__ - 5)
+      end
+    end
+
     describe '#locals' do
 
       it 'returns the locals hash, as is' do
