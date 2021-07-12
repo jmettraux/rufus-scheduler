@@ -407,6 +407,33 @@ describe Rufus::Scheduler::Job do
         expect(l[0]).to match(/\/rufus-scheduler\/spec\/job_spec\.rb$/)
         expect(l[1]).to eq(__LINE__ - 5)
       end
+
+      class InstanceHandler
+        def call(job, time); end
+      end
+
+      it 'returns the right location for a callable instance job' do
+
+        j = @scheduler.schedule_in '10d', InstanceHandler
+
+        l = j.source_location
+
+        expect(l[0]).to match(/\/rufus-scheduler\/spec\/job_spec\.rb$/)
+        expect(l[1]).to eq(__LINE__ - 10)
+      end
+
+      it 'returns the right location for a callable class job' do
+
+        j =
+          @scheduler.schedule_in('10h', Class.new do
+            def call; end
+          end)
+
+        l = j.source_location
+
+        expect(l[0]).to match(/\/rufus-scheduler\/spec\/job_spec\.rb$/)
+        expect(l[1]).to eq(__LINE__ - 6)
+      end
     end
 
     describe '#locals' do
