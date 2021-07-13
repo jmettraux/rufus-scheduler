@@ -916,10 +916,8 @@ describe Rufus::Scheduler do
         end
 
       wait_until { seen.include?(:job1a) }
-
       expect(@scheduler.uptime).to eq(nil)
-      expect(@scheduler.running_jobs).to eq([])
-
+      wait_until { @scheduler.running_jobs.empty? }
       wait_until { @scheduler.threads == [] }
     end
   end
