@@ -665,6 +665,24 @@ job.callable
   # => #<MyHandler:0x0000000163ae88 @counter=0>
 ```
 
+### source_location
+
+Added to rufus-scheduler 3.8.0.
+
+Returns the array `[ 'path/to/file.rb', 123 ]` like `Proc#source_location` does.
+
+```ruby
+require 'rufus-scheduler'
+
+scheduler = Rufus::Scheduler.new
+
+job = scheduler.schedule_every('2h') { p Time.now }
+
+p job.source_location
+  # ==> [ '/home/jmettraux/rufus-scheduler/test.rb', 6 ]
+
+```
+
 ### scheduled_at
 
 Returns the Time instance when the job got created.
