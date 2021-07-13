@@ -64,12 +64,16 @@ describe Rufus::Scheduler do
     it 'parses datetimes (with the local timezone implicitly)' do
 
 #dump_zones
-      localzone = Time.now.strftime('%z')
-      localzone = 'Z' if localzone == '+0000'
+      #localzone = Time.now.strftime('%z')
+      #localzone = 'Z' if localzone == '+0000'
+      #expect(
+      #  pa('Nov 18 16:01:00 2012').strftime('%c %z')
+      #).to eq("Sun Nov 18 16:01:00 2012 #{localzone}")
 
       expect(
         pa('Nov 18 16:01:00 2012').strftime('%c %z')
-      ).to eq("Sun Nov 18 16:01:00 2012 #{localzone}")
+          .gsub(' +0000', ' Z')
+      ).to eq('Sun Nov 18 16:01:00 2012 Z')
     end
 
     it 'parses cronlines' do
