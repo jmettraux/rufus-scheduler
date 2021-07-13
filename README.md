@@ -1,7 +1,7 @@
 
 # rufus-scheduler
 
-[![Build Status](https://secure.travis-ci.org/jmettraux/rufus-scheduler.svg)](https://travis-ci.org/jmettraux/rufus-scheduler)
+[![tests](https://github.com/jmettraux/rufus-scheduler/workflows/test/badge.svg)](https://github.com/jmettraux/rufus-scheduler/actions)
 [![Gem Version](https://badge.fury.io/rb/rufus-scheduler.svg)](https://badge.fury.io/rb/rufus-scheduler)
 [![Join the chat at https://gitter.im/floraison/fugit](https://badges.gitter.im/floraison/fugit.svg)](https://gitter.im/floraison/fugit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
