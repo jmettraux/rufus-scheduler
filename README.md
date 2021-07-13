@@ -223,7 +223,7 @@ job =
 # also
 
 job =
-  scheduler.in '10d', :job => true do
+  scheduler.in '10d', job: true do
     # ...
   end
 ```
@@ -378,7 +378,7 @@ While paused, the scheduler still accepts schedules, but no schedule will get tr
 
 ## job options
 
-### :name => string
+### name: string
 
 Sets the name of the job.
 
@@ -395,23 +395,23 @@ job1 =
 job1.name = 'Beowulf'
 ```
 
-### :blocking => true
+### blocking: true
 
-By default, jobs are triggered in their own, new threads. When `:blocking => true`, the job is triggered in the scheduler thread (a new thread is not created). Yes, while a blocking job is running, the scheduler is not scheduling.
+By default, jobs are triggered in their own, new threads. When `blocking: true`, the job is triggered in the scheduler thread (a new thread is not created). Yes, while a blocking job is running, the scheduler is not scheduling.
 
-### :overlap => false
+### overlap: false
 
 Since, by default, jobs are triggered in their own new threads, job instances might overlap. For example, a job that takes 10 minutes and is scheduled every 7 minutes will have overlaps.
 
-To prevent overlap, one can set `:overlap => false`. Such a job will not trigger if one of its instances is already running.
+To prevent overlap, one can set `overlap: false`. Such a job will not trigger if one of its instances is already running.
 
 The `:overlap` option is considered before the `:mutex` option when the scheduler is reviewing jobs for triggering.
 
-### :mutex => mutex_instance / mutex_name / array of mutexes
+### mutex: mutex_instance / mutex_name / array of mutexes
 
 When a job with a mutex triggers, the job's block is executed with the mutex around it, preventing other jobs with the same mutex from entering (it makes the other jobs wait until it exits the mutex).
 
-This is different from `:overlap => false`, which is, first, limited to instances of the same job, and, second, doesn't make the incoming job instance block/wait but give up.
+This is different from `overlap: false`, which is, first, limited to instances of the same job, and, second, doesn't make the incoming job instance block/wait but give up.
 
 `:mutex` accepts a mutex instance or a mutex name (String). It also accept an array of mutex names / mutex instances. It allows for complex relations between jobs.
 
@@ -421,12 +421,12 @@ Note: creating lots of different mutexes is OK. Rufus-scheduler will place them 
 
 The `:overlap` option is considered before the `:mutex` option when the scheduler is reviewing jobs for triggering.
 
-### :timeout => duration or point in time
+### timeout: duration or point in time
 
 It's OK to specify a timeout when scheduling some work. After the time specified, it gets interrupted via a Rufus::Scheduler::TimeoutError.
 
 ```ruby
-scheduler.in '10d', :timeout => '1d' do
+scheduler.in '10d', timeout: '1d' do
   begin
     # ... do something
   rescue Rufus::Scheduler::TimeoutError
@@ -447,15 +447,15 @@ In the case of an "every" job, this will be the first time (modulo the scheduler
 For a "cron" job as well, the :first will point to the first time the job has to trigger, the following trigger times are then determined by the cron string.
 
 ```ruby
-scheduler.every '2d', :first_at => Time.now + 10 * 3600 do
+scheduler.every '2d', first_at: Time.now + 10 * 3600 do
   # ... every two days, but start in 10 hours
 end
 
-scheduler.every '2d', :first_in => '10h' do
+scheduler.every '2d', first_in: '10h' do
   # ... every two days, but start in 10 hours
 end
 
-scheduler.cron '00 14 * * *', :first_in => '3d' do
+scheduler.cron '00 14 * * *', first_in: '3d' do
   # ... every day at 14h00, but start after 3 * 24 hours
 end
 ```
@@ -477,7 +477,7 @@ s = Rufus::Scheduler.new
 
 n = Time.now; p [ :scheduled_at, n, n.to_f ]
 
-s.every '3s', :first => :now do
+s.every '3s', first: :now do
   n = Time.now; p [ :in, n, n.to_f ]
 end
 
@@ -502,15 +502,15 @@ This option is for repeat jobs (cron / every) only.
 It indicates the point in time after which the job should unschedule itself.
 
 ```ruby
-scheduler.cron '5 23 * * *', :last_in => '10d' do
+scheduler.cron '5 23 * * *', last_in: '10d' do
   # ... do something every evening at 23:05 for 10 days
 end
 
-scheduler.every '10m', :last_at => Time.now + 10 * 3600 do
+scheduler.every '10m', last_at: Time.now + 10 * 3600 do
   # ... do something every 10 minutes for 10 hours
 end
 
-scheduler.every '10m', :last_in => 10 * 3600 do
+scheduler.every '10m', last_in: 10 * 3600 do
   # ... do something every 10 minutes for 10 hours
 end
 ```
@@ -525,16 +525,16 @@ job.last_at = Rufus::Scheduler.parse('2029-12-12')
   # set the last bound
 ```
 
-### :times => nb of times (before auto-unscheduling)
+### times: nb of times (before auto-unscheduling)
 
 One can tell how many times a repeat job (CronJob or EveryJob) is to execute before unscheduling by itself.
 
 ```ruby
-scheduler.every '2d', :times => 10 do
+scheduler.every '2d', times: 10 do
   # ... do something every two days, but not more than 10 times
 end
 
-scheduler.cron '0 23 * * *', :times => 31 do
+scheduler.cron '0 23 * * *', times: 31 do
   # ... do something every day at 23:00 but do it no more than 31 times
 end
 ```
@@ -542,7 +542,7 @@ end
 It's OK to assign nil to :times to make sure the repeat job is not limited. It's useful when the :times is determined at scheduling time.
 
 ```ruby
-scheduler.cron '0 23 * * *', :times => nolimit ? nil : 10 do
+scheduler.cron '0 23 * * *', times: (nolimit ? nil : 10) do
   # ...
 end
 ```
@@ -564,7 +564,7 @@ job.times = 10
 
 ## Job methods
 
-When calling a schedule method, the id (String) of the job is returned. Longer schedule methods return Job instances directly. Calling the shorter schedule methods with the :job => true also returns Job instances instead of Job ids (Strings).
+When calling a schedule method, the id (String) of the job is returned. Longer schedule methods return Job instances directly. Calling the shorter schedule methods with the `job: true` also returns Job instances instead of Job ids (Strings).
 
 ```ruby
   require 'rufus-scheduler'
@@ -582,7 +582,7 @@ When calling a schedule method, the id (String) of the job is returned. Longer s
     end
 
   job =
-    scheduler.in '1w', :job => true do
+    scheduler.in '1w', job: true do
       # ...
     end
 ```
@@ -608,7 +608,7 @@ Returns the scheduler instance itself.
 Returns the options passed at the Job creation.
 
 ```ruby
-job = scheduler.schedule_in('10d', :tag => 'hello') do; end
+job = scheduler.schedule_in('10d', tag: 'hello') do; end
 job.opts
   # => { :tag => 'hello' }
 ```
@@ -618,7 +618,7 @@ job.opts
 Returns the original schedule.
 
 ```ruby
-job = scheduler.schedule_in('10d', :tag => 'hello') do; end
+job = scheduler.schedule_in('10d', tag: 'hello') do; end
 job.original
   # => '10d'
 ```
@@ -688,7 +688,7 @@ p job.source_location
 Returns the Time instance when the job got created.
 
 ```ruby
-job = scheduler.schedule_in('10d', :tag => 'hello') do; end
+job = scheduler.schedule_in('10d', tag: 'hello') do; end
 job.scheduled_at
   # => 2013-07-17 23:48:54 +0900
 ```
@@ -791,7 +791,7 @@ job = scheduler.schedule_in('10d') do; end
 job.tags
   # => []
 
-job = scheduler.schedule_in('10d', :tag => 'hello') do; end
+job = scheduler.schedule_in('10d', tag: 'hello') do; end
 job.tags
   # => [ 'hello' ]
 ```
@@ -976,24 +976,24 @@ Here is an example:
   scheduler.at_jobs.each(&:unschedule)
 ```
 
-### Scheduler#jobs(:tag / :tags => x)
+### Scheduler#jobs(tag: / tags: x)
 
 When scheduling a job, one can specify one or more tags attached to the job. These can be used to look up the job later on.
 
 ```ruby
-  scheduler.in '10d', :tag => 'main_process' do
+  scheduler.in '10d', tag: 'main_process' do
     # ...
   end
-  scheduler.in '10d', :tags => [ 'main_process', 'side_dish' ] do
+  scheduler.in '10d', tags: [ 'main_process', 'side_dish' ] do
     # ...
   end
 
   # ...
 
-  jobs = scheduler.jobs(:tag => 'main_process')
+  jobs = scheduler.jobs(tag: 'main_process')
     # find all the jobs with the 'main_process' tag
 
-  jobs = scheduler.jobs(:tags => [ 'main_process', 'side_dish' ]
+  jobs = scheduler.jobs(tags: [ 'main_process', 'side_dish' ]
     # find all the jobs with the 'main_process' AND 'side_dish' tags
 ```
 
@@ -1058,7 +1058,7 @@ Lists the work threads associated with the scheduler. The query option defaults 
 * :active : all the work threads currently running a Job
 * :vacant : all the work threads currently not running a Job
 
-Note that the main schedule thread will be returned if it is currently running a Job (ie one of those :blocking => true jobs).
+Note that the main schedule thread will be returned if it is currently running a Job (ie one of those `blocking: true` jobs).
 
 ### Scheduler#scheduled?(job_or_job_id)
 
@@ -1066,7 +1066,7 @@ Returns true if the arg is a currently scheduled job (see Job#scheduled?).
 
 ### Scheduler#occurrences(time0, time1)
 
-Returns a hash ```{ job => [ t0, t1, ... ] }``` mapping jobs to their potential trigger time within the ```[ time0, time1 ]``` span.
+Returns a hash `{ job => [ t0, t1, ... ] }` mapping jobs to their potential trigger time within the `[ time0, time1 ]` span.
 
 Please note that, for interval jobs, the ```#mean_work_time``` is used, so the result is only a prediction.
 
@@ -1223,23 +1223,23 @@ By default, rufus-scheduler sleeps 0.300 second between every step. At each step
 The :frequency option lets you change that 0.300 second to something else.
 
 ```ruby
-scheduler = Rufus::Scheduler.new(:frequency => 5)
+scheduler = Rufus::Scheduler.new(frequency: 5)
 ```
 
 It's OK to use a time string to specify the frequency.
 
 ```ruby
-scheduler = Rufus::Scheduler.new(:frequency => '2h10m')
+scheduler = Rufus::Scheduler.new(frequency: '2h10m')
   # this scheduler will sleep 2 hours and 10 minutes between every "step"
 ```
 
 Use with care.
 
-### :lockfile => "mylockfile.txt"
+### lockfile: "mylockfile.txt"
 
 This feature only works on OSes that support the flock (man 2 flock) call.
 
-Starting the scheduler with ```:lockfile => ".rufus-scheduler.lock"``` will make the scheduler attempt to create and lock the file ```.rufus-scheduler.lock``` in the current working directory. If that fails, the scheduler will not start.
+Starting the scheduler with ```lockfile: '.rufus-scheduler.lock'``` will make the scheduler attempt to create and lock the file ```.rufus-scheduler.lock``` in the current working directory. If that fails, the scheduler will not start.
 
 The idea is to guarantee only one scheduler (in a group of schedulers sharing the same lockfile) is running.
 
@@ -1268,7 +1268,7 @@ class HostLock
 end
 
 scheduler =
-  Rufus::Scheduler.new(:scheduler_lock => HostLock.new('coffee.example.com'))
+  Rufus::Scheduler.new(scheduler_lock: HostLock.new('coffee.example.com'))
 ```
 
 By default, the scheduler_lock is an instance of `Rufus::Scheduler::NullLock`, with a `#lock` that returns true.
@@ -1291,7 +1291,7 @@ class PingLock
 end
 
 scheduler =
-  Rufus::Scheduler.new(:trigger_lock => PingLock.new('main.example.com'))
+  Rufus::Scheduler.new(trigger_lock: PingLock.new('main.example.com'))
 ```
 
 By default, the trigger_lock is an instance of `Rufus::Scheduler::NullLock`, with a `#lock` that always returns true.
@@ -1305,7 +1305,7 @@ In rufus-scheduler 2.x, by default, each job triggering received its own, brand 
 One can set this maximum value when starting the scheduler.
 
 ```ruby
-scheduler = Rufus::Scheduler.new(:max_work_threads => 77)
+scheduler = Rufus::Scheduler.new(max_work_threads: 77)
 ```
 
 It's OK to increase the :max_work_threads of a running scheduler.
@@ -1327,8 +1327,8 @@ Rufus::Scheduler.singleton.every '10s' { puts "hello, world!" }
 It's OK to pass initialization arguments (like :frequency or :max_work_threads) but they will only be taken into account the first time ```.singleton``` is called.
 
 ```ruby
-Rufus::Scheduler.singleton(:max_work_threads => 77)
-Rufus::Scheduler.singleton(:max_work_threads => 277) # no effect
+Rufus::Scheduler.singleton(max_work_threads: 77)
+Rufus::Scheduler.singleton(max_work_threads: 277) # no effect
 ```
 
 The ```.s``` is a shortcut for ```.singleton```.
@@ -1445,7 +1445,7 @@ Rufus::Scheduler.to_duration_hash(60)
 Rufus::Scheduler.to_duration_hash(62.127)
   # => { :m => 1, :s => 2, :ms => 127 }
 
-Rufus::Scheduler.to_duration_hash(62.127, :drop_seconds => true)
+Rufus::Scheduler.to_duration_hash(62.127, drop_seconds: true)
   # => { :m => 1 }
 ```
 
@@ -1628,7 +1628,7 @@ class ScheController < ApplicationController
         Rails.logger.info "time flies, it's now #{Time.now}"
       end
 
-    render :text => "scheduled job #{job_id}"
+    render text: "scheduled job #{job_id}"
   end
 end
 ```
