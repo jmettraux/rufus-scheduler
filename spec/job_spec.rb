@@ -53,14 +53,14 @@ describe Rufus::Scheduler::Job do
 
     it 'returns an empty list when the job is not running' do
 
-      job = @scheduler.in('1d', :job => true) {}
+      job = @scheduler.schedule_in('1d') {}
 
       expect(job.threads.size).to eq(0)
     end
 
     it 'returns an empty list after the job terminated' do
 
-      job = @scheduler.in('0s', :job => true) {}
+      job = @scheduler.schedule_in('0s') {}
 
       sleep 0.8
 
@@ -129,14 +129,14 @@ describe Rufus::Scheduler::Job do
 
     it 'returns false when the job is not running in any thread' do
 
-      job = @scheduler.in('1d', :job => true) {}
+      job = @scheduler.schedule_in('1d') {}
 
       expect(job.running?).to eq(false)
     end
 
     it 'returns true when the job is running in at least one thread' do
 
-      job = @scheduler.in('0s', :job => true) { sleep(1) }
+      job = @scheduler.schedule_in('0s') { sleep(1) }
 
       wait_until { job.running? }
     end
@@ -451,34 +451,31 @@ describe Rufus::Scheduler::Job do
 
     it 'accepts one tag' do
 
-      job = @scheduler.in '10d', :job => true, :tag => 't0' do; end
+      job = @scheduler.schedule_in '10d', tag: 't0' do; end
 
       expect(job.tags).to eq(%w[ t0 ])
     end
 
     it 'accepts an array of tags' do
 
-      job = @scheduler.in '10d', :job => true, :tag => %w[ t0 t1 ] do; end
+      job = @scheduler.schedule_in '10d', tag: %w[ t0 t1 ] do; end
 
       expect(job.tags).to eq(%w[ t0 t1 ])
     end
 
     it 'turns tags into strings' do
 
-      job = @scheduler.in '10d', :job => true, :tags => [ 1, 2 ] do; end
+      job = @scheduler.schedule_in '10d', tags: [ 1, 2 ] do; end
 
       expect(job.tags).to eq(%w[ 1 2 ])
     end
   end
 
-  context ':blocking => true' do
+  context 'blocking: true' do
 
     it 'runs the job in the same thread as the scheduler thread' do
 
-      job =
-        @scheduler.in('0s', :job => true, :blocking => true) do
-          sleep(1)
-        end
+      job = @scheduler.schedule_in('0s', blocking: true) { sleep(1) }
 
       sleep 0.4
 
@@ -494,10 +491,7 @@ describe Rufus::Scheduler::Job do
 
     it 'runs the job in a dedicated thread' do
 
-      job =
-        @scheduler.in('0s', :job => true) do
-          sleep(1)
-        end
+      job = @scheduler.schedule_in('0s') { sleep(1) }
 
       sleep 0.4
 
@@ -511,14 +505,11 @@ describe Rufus::Scheduler::Job do
 
   context ':allow_overlapping / :allow_overlap / :overlap' do
 
-    context 'default (:overlap => true)' do
+    context 'default (overlap: true)' do
 
       it 'lets a job overlap itself' do
 
-        job =
-          @scheduler.every('0.3', :job => true) do
-            sleep(5)
-          end
+        job = @scheduler.schedule_every('0.3') { sleep(5) }
 
         sleep 3
 
@@ -526,14 +517,11 @@ describe Rufus::Scheduler::Job do
       end
     end
 
-    context 'when :overlap => false' do
+    context 'when overlap: false' do
 
       it 'prevents a job from overlapping itself' do
 
-        job =
-          @scheduler.every('0.3', :job => true, :overlap => false) do
-            sleep(5)
-          end
+        job = @scheduler.schedule_every('0.3', overlap: false) { sleep(5) }
 
         wait_until { job.threads.size > 0 }
 
@@ -544,16 +532,16 @@ describe Rufus::Scheduler::Job do
 
   context ':mutex' do
 
-    context ':mutex => "mutex_name"' do
+    context 'mutex: "mutex_name"' do
 
       it 'prevents concurrent executions' do
 
         j0 =
-          @scheduler.in('0s', :job => true, :mutex => 'vladivostok') do
+          @scheduler.schedule_in('0s', mutex: 'vladivostok') do
             sleep(3)
           end
         j1 =
-          @scheduler.in('0s', :job => true, :mutex => 'vladivostok') do
+          @scheduler.schedule_in('0s', mutex: 'vladivostok') do
             sleep(3)
           end
 
@@ -571,14 +559,14 @@ describe Rufus::Scheduler::Job do
       end
     end
 
-    context ':mutex => mutex_instance' do
+    context 'mutex: mutex_instance' do
 
       it 'prevents concurrent executions' do
 
         m = Mutex.new
 
-        j0 = @scheduler.in('0s', :job => true, :mutex => m) { sleep(3) }
-        j1 = @scheduler.in('0s', :job => true, :mutex => m) { sleep(3) }
+        j0 = @scheduler.schedule_in('0s', mutex: m) { sleep(3) }
+        j1 = @scheduler.schedule_in('0s', mutex: m) { sleep(3) }
 
         wait_until { j0.threads.size + j1.threads.size > 0 }
 
@@ -594,18 +582,12 @@ describe Rufus::Scheduler::Job do
       end
     end
 
-    context ':mutex => [ array_of_mutex_names_or_instances ]' do
+    context 'mutex: [ array_of_mutex_names_or_instances ]' do
 
       it 'prevents concurrent executions' do
 
-        j0 =
-          @scheduler.in('0s', :job => true, :mutex => %w[ a b ]) do
-            sleep(3)
-          end
-        j1 =
-          @scheduler.in('0s', :job => true, :mutex => %w[ a b ]) do
-            sleep(3)
-          end
+        j0 = @scheduler.schedule_in('0s', mutex: %w[ a b ]) { sleep(3) }
+        j1 = @scheduler.schedule_in('0s', mutex: %w[ a b ]) { sleep(3) }
 
         wait_until { j0.threads.size + j1.threads.size > 0 }
 
@@ -622,7 +604,7 @@ describe Rufus::Scheduler::Job do
     end
   end
 
-  context ':timeout => duration_or_point_in_time' do
+  context 'timeout: duration_or_point_in_time' do
 
     it 'interrupts the job it is stashed to (duration)' do
 
@@ -630,7 +612,7 @@ describe Rufus::Scheduler::Job do
       toe = nil
 
       job =
-        @scheduler.schedule_in '0s', :timeout => '1s' do
+        @scheduler.schedule_in '0s', timeout: '1s' do
           begin
             counter = counter + 1
             sleep 1.5
@@ -651,7 +633,7 @@ describe Rufus::Scheduler::Job do
       counter = 0
 
       job =
-        @scheduler.schedule_in '0s', :timeout => Time.now + 1 do
+        @scheduler.schedule_in '0s', timeout: Time.now + 1 do
           begin
             counter = counter + 1
             sleep 1.5
@@ -669,13 +651,13 @@ describe Rufus::Scheduler::Job do
 
       t0, t1, t2 = nil
 
-      @scheduler.schedule_in '0s', :mutex => 'a' do
+      @scheduler.schedule_in '0s', mutex: 'a' do
         sleep 1
         t0 = Time.now
       end
 
       job =
-        @scheduler.schedule_in '0.5s', :mutex => 'a', :timeout => '1s' do
+        @scheduler.schedule_in '0.5s', mutex: 'a', timeout: '1s' do
           begin
             t1 = Time.now
             sleep 2
@@ -695,7 +677,7 @@ describe Rufus::Scheduler::Job do
 
     it 'emits the timeout information to $stderr (default #on_error)' do
 
-      @scheduler.every('1s', :timeout => '0.5s') do
+      @scheduler.every('1s', timeout: '0.5s') do
         sleep 0.9
       end
 
@@ -708,7 +690,7 @@ describe Rufus::Scheduler::Job do
 
       counter = 0
 
-      @scheduler.every('1s', :timeout => '0.5s') do
+      @scheduler.every('1s', timeout: '0.5s') do
         counter = counter + 1
         sleep 0.9
       end
