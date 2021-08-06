@@ -1649,20 +1649,24 @@ If you don't want rufus-scheduler to trigger anything while running the Ruby on 
 
 require 'rufus-scheduler'
 
-s = Rufus::Scheduler.singleton
+return if defined?(Rails::Console) || Rails.env.test? || File.split($PROGRAM_NAME).last == 'rake'
+  #
+  # do not schedule when Rails is run from its console, for a test/spec, or
+  # from a Rake task
 
-return if defined?(Rails::Console) || Rails.env.test? || File.split($0).last == 'rake'
 # return if $PROGRAM_NAME.include?('spring')
+  #
   # see https://github.com/jmettraux/rufus-scheduler/issues/186
 
-# do not schedule when Rails is run from its console, for a test/spec, or
-# from a Rake task
+s = Rufus::Scheduler.singleton
 
 s.every '1m' do
   Rails.logger.info "hello, it's #{Time.now}"
   Rails.logger.flush
 end
 ```
+
+(Beware later version of Rails where Spring takes care pre-running the initializers. Running `spring stop` or disabling Spring might be necessary in some cases to see changes to initializers being taken into account.)
 
 
 ### rails server -d
