@@ -117,6 +117,13 @@ module Helpers
     ENV['TZ'] = prev_tz
   end
 
+  def without_chronic(&block)
+
+    Object.send(:remove_const, :Chronic)
+
+    block.call
+  end
+
   def with_chronic(&block)
 
     require 'chronic'

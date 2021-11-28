@@ -70,10 +70,8 @@ describe Rufus::Scheduler do
       #  pa('Nov 18 16:01:00 2012').strftime('%c %z')
       #).to eq("Sun Nov 18 16:01:00 2012 #{localzone}")
 
-      expect(
-        pa('Nov 18 16:01:00 2012').strftime('%c %z')
-          .gsub(' +0000', ' Z')
-      ).to eq('Sun Nov 18 16:01:00 2012 Z')
+      expect(pa('Nov 18 16:01:00 2012').strftime('%c')
+        ).to eq('Sun Nov 18 16:01:00 2012')
     end
 
     it 'parses cronlines' do
@@ -98,12 +96,14 @@ describe Rufus::Scheduler do
 
     it 'does not use Chronic if not present' do
 
-      n = Time.now
-      d = n.wday == 0 ? 'tuesday' : 'monday'
-      t = pa("next #{d} 7 PM")
+      without_chronic do
 
-      expect(t.strftime('%Y-%m-%d %H:%M:%S')
-        ).to eq(n.strftime('%Y-%m-%d') + ' 19:00:00')
+        t = pa('next monday 7 PM')
+        n = Time.now
+
+        expect(t.strftime('%Y-%m-%d %H:%M:%S')
+          ).to eq(n.strftime('%Y-%m-%d') + ' 19:00:00')
+      end
     end
 
     it 'uses Chronic if present' do
