@@ -286,7 +286,7 @@ describe Rufus::Scheduler do
       @scheduler.unschedule(job)
 
       sleep 1.5
-      expect(counter).to eq(c)
+      expect(counter).to be_between(c, c + 1)
     end
   end
 
