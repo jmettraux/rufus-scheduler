@@ -98,13 +98,12 @@ describe Rufus::Scheduler do
 
     it 'does not use Chronic if not present' do
 
-      t = pa('next monday 7 PM')
-
       n = Time.now
+      d = n.wday == 0 ? 'tuesday' : 'monday'
+      t = pa("next #{d} 7 PM")
 
-      expect(t.strftime('%Y-%m-%d %H:%M:%S')).to eq(
-        n.strftime('%Y-%m-%d') + ' 19:00:00'
-      )
+      expect(t.strftime('%Y-%m-%d %H:%M:%S')
+        ).to eq(n.strftime('%Y-%m-%d') + ' 19:00:00')
     end
 
     it 'uses Chronic if present' do
