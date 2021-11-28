@@ -1336,11 +1336,11 @@ describe Rufus::Scheduler do
 
       wait_until { $out.size > 2 }
 
-      expect($out.take(3)).to eq([
-        "pre #{job_id1}",
-        "pre #{job_id2}",
-        job_id2
-      ])
+      expect(
+        $out.take(2).sort + $out[2, 1]
+      ).to eq(
+        [ "pre #{job_id1}", "pre #{job_id2}" ].sort + [ job_id2 ]
+      )
     end
   end
 
