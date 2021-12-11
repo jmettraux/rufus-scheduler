@@ -536,24 +536,14 @@ describe Rufus::Scheduler::Job do
 
       it 'prevents concurrent executions' do
 
-        j0 =
-          @scheduler.schedule_in('0s', mutex: 'vladivostok') do
-            sleep(3)
-          end
-        j1 =
-          @scheduler.schedule_in('0s', mutex: 'vladivostok') do
-            sleep(3)
-          end
+        j0 = @scheduler.schedule_in('0s', mutex: 'vladivostok') { sleep(7) }
+        sleep 0.5
+        j1 = @scheduler.schedule_in('0s', mutex: 'vladivostok') { sleep(7) }
 
-        wait_until { j0.threads.size + j1.threads.size > 0 }
+        wait_until { j0.threads.size > 0 }
 
-        if j0.threads.any?
-          expect(j0.threads.size).to eq(1)
-          expect(j1.threads.size).to eq(0)
-        else
-          expect(j0.threads.size).to eq(0)
-          expect(j1.threads.size).to eq(1)
-        end
+        expect(j0.threads.size).to eq(1)
+        expect(j1.threads.size).to eq(0)
 
         expect(@scheduler.mutexes.keys).to eq(%w[ vladivostok ])
       end
