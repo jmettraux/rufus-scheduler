@@ -653,6 +653,8 @@ describe Rufus::Scheduler do
 
     it 'respects :times for repeat jobs' do
 
+      loop { s = Time.now.sec; break if s > 10 && s < 50 }
+
       j0 = @scheduler.schedule_every '1m', :times => 10 do; end
 
       t0 = Time.parse((Time.now + 5 * 60).strftime('%Y-%m-%d %H:%M:01'))
