@@ -25,6 +25,8 @@ class Rufus::Scheduler::RepeatJob < Rufus::Scheduler::Job
       nil
     self.last_at =
       opts[:last] || opts[:last_at] || opts[:last_in]
+
+    @resume_discard_past = nil
   end
 
   FIRSTS = [ :now, :immediately, 0 ].freeze

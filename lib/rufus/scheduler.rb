@@ -583,7 +583,7 @@ class Rufus::Scheduler
       r =
         begin
           @join_queue.pop(true)
-        rescue ThreadError => _
+        rescue ThreadError
           # #<ThreadError: queue empty>
           false
         end

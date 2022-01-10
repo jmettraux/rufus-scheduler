@@ -4,7 +4,8 @@
 
 ### rufus-scheduler 3.8.1 - not yet released
 
-* Remove warning about unused variable, solackerman gh-332
+* Suppress warning about @resume_discard_past
+* Suppress warning about unused variable, solackerman gh-332
 
 
 ### rufus-scheduler 3.8.0 - released 2021-07-14
