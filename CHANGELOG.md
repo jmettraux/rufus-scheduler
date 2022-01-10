@@ -2,6 +2,11 @@
 # CHANGELOG.md
 
 
+### rufus-scheduler 3.8.1 - not yet released
+
+* Remove warning about unused variable, solackerman gh-332
+
+
 ### rufus-scheduler 3.8.0 - released 2021-07-14
 
 * Add #source_location to Job, gh-322

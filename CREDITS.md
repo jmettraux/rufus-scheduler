@@ -4,6 +4,7 @@
 
 ## Contributors
 
+* Sol Ackerman https://github.com/solarckerman gh-332
 * John Bachir https://github.com/jjb gh-310 gh-327
 * Daniel Berger https://github.com/djberg96 gh-300
 * Ceyhun Onur https://github.com/ceyonur parse_cron no_error: true
