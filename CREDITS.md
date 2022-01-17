@@ -4,6 +4,7 @@
 
 ## Contributors
 
+* Olle Jonsson https://github.com/olleolleolle gh-333
 * Sol Ackerman https://github.com/solarckerman gh-332
 * John Bachir https://github.com/jjb gh-310 gh-327
 * Daniel Berger https://github.com/djberg96 gh-300
