@@ -25,10 +25,9 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{matrix.ruby}}
-          bundler-cache: true
+          bundler-cache: true # 'bundle install' and cache
       - run: ruby --version
       - run: gem --version
       - run: bundle --version
-      - run: bundle install
       - run: bundle exec rspec --force-color --format documentation
 
