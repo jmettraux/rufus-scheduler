@@ -133,7 +133,7 @@ Yes, issues can be reported in [rufus-scheduler issues](https://github.com/jmett
 ### faq
 
 * [It doesn't work...](https://www.chiark.greenend.org.uk/~sgtatham/bugs.html)
-* [I want a refund](https://blog.nodejitsu.com/getting-refunds-on-open-source-projects)
+* [I want a refund](https://web.archive.org/web/20160425034214/http://blog.nodejitsu.com/getting-refunds-on-open-source-projects/)
 * [Passenger and rufus-scheduler](https://stackoverflow.com/questions/18108719/debugging-rufus-scheduler/18156180#18156180)
 * [Passenger and rufus-scheduler (2)](https://stackoverflow.com/questions/21861387/rufus-cron-job-not-working-in-apache-passenger#answer-21868555)
 * [Passenger in-depth spawn methods](https://www.phusionpassenger.com/library/indepth/ruby/spawn_methods/)
