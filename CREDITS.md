@@ -4,6 +4,7 @@
 
 ## Contributors
 
+* Konstantin https://github.com/fa11enangel gh-334 nodejitsu link
 * Olle Jonsson https://github.com/olleolleolle gh-333
 * Sol Ackerman https://github.com/solarckerman gh-332
 * John Bachir https://github.com/jjb gh-310 gh-327
