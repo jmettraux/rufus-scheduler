@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+### rufus-scheduler 3.8.2 - not yet released
+
+
 ### rufus-scheduler 3.8.1 - released 2022-01-11
 
 * Suppress warning about @resume_discard_past
