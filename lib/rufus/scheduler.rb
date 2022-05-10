@@ -630,12 +630,20 @@ class Rufus::Scheduler
       Thread.new do
 
         while @started_at do
+          begin
 
-          unschedule_jobs
-          trigger_jobs unless @paused_at
-          timeout_jobs
+            unschedule_jobs
+            trigger_jobs unless @paused_at
+            timeout_jobs
 
-          sleep(@frequency)
+            sleep(@frequency)
+
+          rescue => err
+            #
+            # for `blocking: true` jobs mostly
+            #
+            on_error(self, err)
+          end
         end
 
         rejoin
