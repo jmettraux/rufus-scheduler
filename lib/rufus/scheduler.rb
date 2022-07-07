@@ -443,10 +443,14 @@ class Rufus::Scheduler
     ms = {}; mutexes.each { |k, v| ms[k] = v.locked? }
 
     stderr.puts("{ #{pre} rufus-scheduler intercepted an error:")
-    stderr.puts("  #{pre}   job:")
-    stderr.puts("  #{pre}     #{job.class} #{job.original.inspect} #{job.opts.inspect}")
-    stderr.puts("  #{pre}     #{job.source_location.inspect}")
-    # TODO: eventually use a Job#detail or something like that
+    if job
+      stderr.puts("  #{pre}   job:")
+      stderr.puts("  #{pre}     #{job.class} #{job.original.inspect} #{job.opts.inspect}")
+      stderr.puts("  #{pre}     #{job.source_location.inspect}")
+      # TODO: eventually use a Job#detail or something like that
+    else
+      stderr.puts("  #{pre}   job: (error did not occur in a job)")
+    end
     stderr.puts("  #{pre}   error:")
     stderr.puts("  #{pre}     #{err.object_id}")
     stderr.puts("  #{pre}     #{err.class}")
@@ -642,7 +646,7 @@ class Rufus::Scheduler
             #
             # for `blocking: true` jobs mostly
             #
-            on_error(self, err)
+            on_error(nil, err)
           end
         end
 

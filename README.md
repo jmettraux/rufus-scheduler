@@ -860,7 +860,11 @@ require 'rufus-scheduler'
 s = Rufus::Scheduler.new
 
 def s.on_error(job, err)
-  p [ 'error in scheduled job', job.class, job.original, err.message ]
+  if job
+    p [ 'error in scheduled job', job.class, job.original, err.message ]
+  else
+    p [ 'error while scheduling', err.message ]
+  end
 rescue
   p $!
 end
