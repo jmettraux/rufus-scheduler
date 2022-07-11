@@ -4,6 +4,9 @@
 
 ### rufus-scheduler 3.8.2 - not yet released
 
+* Prevent error in shutdown when @thread is current Thread, gh-337
+* Rescue errors on the scheduling thread, gh-335
+
 
 ### rufus-scheduler 3.8.1 - released 2022-01-11
 
