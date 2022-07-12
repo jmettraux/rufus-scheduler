@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-### rufus-scheduler 3.8.2 - not yet released
+### rufus-scheduler 3.8.2 - released 2022-07-12
 
 * Prevent error in shutdown when @thread is current Thread, gh-337
 * Rescue errors on the scheduling thread, gh-335
