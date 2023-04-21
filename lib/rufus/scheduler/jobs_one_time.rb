@@ -20,7 +20,7 @@ class Rufus::Scheduler::OneTimeJob < Rufus::Scheduler::Job
     ].map(&:to_s).join('_')
   end
 
-  # There is no next_time for one time jobs, hence the false.
+  # There is no "next time" for one time jobs, hence the false.
   #
   def set_next_time(trigger_time, is_post=false, now=nil)
 

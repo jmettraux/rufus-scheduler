@@ -145,17 +145,6 @@ class Rufus::Scheduler::RepeatJob < Rufus::Scheduler::Job
       a << next_time_from(a.last)
       a }
   end
-
-  protected
-
-  def discard_past?
-
-    dp = @scheduler.discard_past
-    dp = @discard_past if @discard_past != nil
-    dp = @resume_discard_past if @resume_discard_past != nil
-
-    dp
-  end
 end
 
 #

@@ -365,5 +365,16 @@ class Rufus::Scheduler::Job
 
     @scheduler.work_queue << [ self, time ]
   end
+
+  # Scheduler level < Job level < this resume()'s level
+  #
+  def discard_past?
+
+    dp = @scheduler.discard_past
+    dp = @discard_past if @discard_past != nil
+    dp = @resume_discard_past if @resume_discard_past != nil
+
+    dp
+  end
 end
 

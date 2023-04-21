@@ -119,12 +119,6 @@ Go read [how to report bugs effectively](https://www.chiark.greenend.org.uk/~sgt
 
 Update: [help_help.md](https://gist.github.com/jmettraux/310fed75f568fd731814) might help help you.
 
-### on Gitter
-
-You can find help via chat over at [https://gitter.im/floraison/fugit](https://gitter.im/floraison/fugit). It's [fugit](https://github.com/floraison/fugit), [et-orbi](https://github.com/floraison/et-orbi), and rufus-scheduler combined chat room.
-
-Please be courteous.
-
 ### issues
 
 Yes, issues can be reported in [rufus-scheduler issues](https://github.com/jmettraux/rufus-scheduler/issues), I'd actually prefer bugs in there. If there is nothing wrong with rufus-scheduler, a [Stack Overflow question](https://stackoverflow.com/questions/ask?tags=rufus-scheduler+ruby) is better.
