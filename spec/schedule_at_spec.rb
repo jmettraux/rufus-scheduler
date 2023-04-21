@@ -146,6 +146,39 @@ describe Rufus::Scheduler do
       end
     end
 
+    it 'discards when scheduling in the past' do
+
+      expect(@scheduler.discard_past).to eq(true)
+
+      a = []
+      job = @scheduler.at(Time.now - 10) { |j| a << j }
+
+      sleep 1
+
+      expect(a).to eq([])
+    end
+
+    it 'triggers immediately when in the past and scheduler.discard_past == false' do
+
+      @scheduler.discard_past = false
+
+      a = []
+      job = @scheduler.at(Time.now - 10) { |j| a << j }
+
+      sleep 1
+
+      expect(a.collect(&:class)).to eq([ Rufus::Scheduler::AtJob ])
+    end
+
+    it 'fails when in the past and scheduler.discard_past == :fail' do
+
+      @scheduler.discard_past = :fail
+
+      expect {
+        @scheduler.at(Time.now - 10) {}
+      }.to raise_error(ArgumentError, /nada/)
+    end
+
     it 'accepts an ActiveSupport time thinggy'
   end
 

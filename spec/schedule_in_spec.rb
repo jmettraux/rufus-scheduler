@@ -70,6 +70,39 @@ describe Rufus::Scheduler do
       expect(job.time).to be <= job.scheduled_at + 3601
     end
 
+    it 'discards when scheduling in the past' do
+
+      expect(@scheduler.discard_past).to eq(true)
+
+      a = []
+
+      job = @scheduler.schedule_in(-1000) { |j| a << j }
+      sleep 1
+
+      expect(a).to eq([])
+    end
+
+    it 'triggers immediately when in the past and scheduler.discard_past == false' do
+
+      @scheduler.discard_past = false
+
+      a = []
+
+      job = @scheduler.in(-1000) { |j| a << j }
+      sleep 1
+
+      expect(a.collect(&:class)).to eq([ Rufus::Scheduler::InJob ])
+    end
+
+    it 'fails when in the past and scheduler.discard_past == :fail' do
+
+      @scheduler.discard_past = :fail
+
+      expect {
+        @scheduler.in(-777) {}
+      }.to raise_error(ArgumentError, /nada/)
+    end
+
     it 'accepts an ActiveSupport .from_now thinggy'
       #
       #   schedule_in(2.days.from_now)
