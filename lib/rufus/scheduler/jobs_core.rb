@@ -67,6 +67,8 @@ class Rufus::Scheduler::Job
     @unscheduled_at = nil
     @last_time = nil
 
+    @discard_past = opts[:discard_past]
+
     @locals = opts[:locals] || opts[:l] || {}
     @local_mutex = Mutex.new
 
@@ -74,9 +76,7 @@ class Rufus::Scheduler::Job
     @name = opts[:name] || opts[:n]
 
     fail(
-      ArgumentError,
-      'missing block or callable to schedule',
-      caller[2..-1]
+      ArgumentError, 'missing block or callable to schedule', caller[2..-1]
     ) unless @callable
 
     @tags = Array(opts[:tag] || opts[:tags]).collect { |t| t.to_s }

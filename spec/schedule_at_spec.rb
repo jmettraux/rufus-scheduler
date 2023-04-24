@@ -170,6 +170,15 @@ describe Rufus::Scheduler do
       expect(a.collect(&:class)).to eq([ Rufus::Scheduler::AtJob ])
     end
 
+    it 'fails when in the past and job discard_past: => :fail' do
+
+      expect(@scheduler.discard_past).to eq(true)
+
+      expect {
+        @scheduler.at(Time.now - 10, discard_past: :fail) {}
+      }.to raise_error(ArgumentError, /scheduling in the past/)
+    end
+
     it 'fails when in the past and scheduler.discard_past == :fail' do
 
       @scheduler.discard_past = :fail

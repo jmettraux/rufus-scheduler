@@ -103,6 +103,15 @@ describe Rufus::Scheduler do
       }.to raise_error(ArgumentError, /scheduling in the past/)
     end
 
+    it 'fails when in the past and job discard_past: => :fail' do
+
+      expect(@scheduler.discard_past).to eq(true)
+
+      expect {
+        @scheduler.in(-777, discard_past: :fail) {}
+      }.to raise_error(ArgumentError, /scheduling in the past/)
+    end
+
     it 'accepts an ActiveSupport .from_now thinggy'
       #
       #   schedule_in(2.days.from_now)

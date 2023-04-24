@@ -93,7 +93,6 @@ class Rufus::Scheduler::RepeatJob < Rufus::Scheduler::Job
   def resume(opts={})
 
     @resume_discard_past = opts[:discard_past]
-#p [ :@resume_discard_past, @resume_discard_past ]
     @paused_at = nil
   end
 
@@ -169,7 +168,6 @@ class Rufus::Scheduler::EveryJob < Rufus::Scheduler::EvInJob
     super(scheduler, duration, opts, block)
 
     @frequency = Rufus::Scheduler.parse_in(@original)
-    @discard_past = opts[:discard_past]
 
     fail ArgumentError.new(
       "cannot schedule #{self.class} with a frequency " +
