@@ -105,7 +105,7 @@ I'll drive you right to the [tracks](#so-rails).
 * Rufus::Scheduler::TimeOutError renamed to Rufus::Scheduler::TimeoutError
 * Introduction of "interval" jobs. Whereas "every" jobs are like "every 10 minutes, do this", interval jobs are like "do that, then wait for 10 minutes, then do that again, and so on"
 * Introduction of a lockfile: true/filename mechanism to prevent multiple schedulers from executing
-* "discard_past" is on by default. If the scheduler (its host) sleeps for 1 hour and a `every '10m'` job is on, it will trigger once at wakeup, not 6 times (discard_past was false by default in rufus-scheduler 2.x). No intention to re-introduce `discard_past: false` in 3.0 for now.
+* "discard_past" is on by default. If the scheduler (its host) sleeps for 1 hour and a `every '10m'` job is on, it will trigger once at wakeup, not 6 times (discard_past was false by default in rufus-scheduler 2.x).
 * Introduction of Scheduler #on_pre_trigger and #on_post_trigger callback points
 
 
@@ -552,6 +552,43 @@ job =
 
 job.times = 10
   # 10 days and it will be over
+```
+
+### discard_past: false/true/:fail
+
+`in` and `at` accept a `discard_past:` option since rufus-scheduler 3.9.0:
+
+```ruby
+require 'rufus-scheduler'
+
+scheduler = Rufus::Scheduler.new
+
+scheduler.in(-3600, discard_past: true) {}
+  # the job will never get scheduled
+
+scheduler.in(-3600, discard_past: false) {}
+  # the job will trigger immediately
+
+scheduler.in(-3600, discard_past: :fail) {}
+  # will raise an error...
+```
+
+Please note that `discard_past` can be set at the scheduler level:
+
+```ruby
+require 'rufus-scheduler'
+
+s0 = Rufus::Scheduler.new(discard_past: true) # default
+
+s1 = Rufus::Scheduler.new(discard_past: false)
+  # or
+s1 = Rufus::Scheduler.new
+s1.discard_past = false
+
+s2 = Rufus::Scheduler.new(discard_past: :fail)
+  # or
+s2 = Rufus::Scheduler.new
+s2.discard_past = :fail
 ```
 
 
