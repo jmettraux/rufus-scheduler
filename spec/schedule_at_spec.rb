@@ -151,7 +151,7 @@ describe Rufus::Scheduler do
       expect(@scheduler.discard_past).to eq(true)
 
       a = []
-      job = @scheduler.at(Time.now - 10) { |j| a << j }
+      @scheduler.at(Time.now - 10) { |j| a << j }
 
       sleep 1
 
@@ -163,7 +163,7 @@ describe Rufus::Scheduler do
       @scheduler.discard_past = false
 
       a = []
-      job = @scheduler.at(Time.now - 10) { |j| a << j }
+      @scheduler.at(Time.now - 10) { |j| a << j }
 
       sleep 1
 
@@ -176,7 +176,7 @@ describe Rufus::Scheduler do
 
       expect {
         @scheduler.at(Time.now - 10) {}
-      }.to raise_error(ArgumentError, /nada/)
+      }.to raise_error(ArgumentError, /scheduling in the past/)
     end
 
     it 'accepts an ActiveSupport time thinggy'

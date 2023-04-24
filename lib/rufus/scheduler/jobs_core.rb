@@ -103,6 +103,14 @@ class Rufus::Scheduler::Job
   end
   alias location source_location
 
+  # Returns true if the job is scheduled in the past.
+  # Used for OneTimeJob when discard_past == true
+  #
+  def past?
+
+    false # by default
+  end
+
   # Will fail with an ArgumentError if the job frequency is higher than
   # the scheduler frequency.
   #

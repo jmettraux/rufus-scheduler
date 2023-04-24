@@ -76,7 +76,7 @@ describe Rufus::Scheduler do
 
       a = []
 
-      job = @scheduler.schedule_in(-1000) { |j| a << j }
+      @scheduler.schedule_in(-1000) { |j| a << j }
       sleep 1
 
       expect(a).to eq([])
@@ -88,7 +88,7 @@ describe Rufus::Scheduler do
 
       a = []
 
-      job = @scheduler.in(-1000) { |j| a << j }
+      @scheduler.in(-1000) { |j| a << j }
       sleep 1
 
       expect(a.collect(&:class)).to eq([ Rufus::Scheduler::InJob ])
@@ -100,7 +100,7 @@ describe Rufus::Scheduler do
 
       expect {
         @scheduler.in(-777) {}
-      }.to raise_error(ArgumentError, /nada/)
+      }.to raise_error(ArgumentError, /scheduling in the past/)
     end
 
     it 'accepts an ActiveSupport .from_now thinggy'

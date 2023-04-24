@@ -8,6 +8,14 @@ class Rufus::Scheduler::OneTimeJob < Rufus::Scheduler::Job
     (time >= time0 && time <= time1) ? [ time ] : []
   end
 
+  # Used when discard_past? is set to true or :fail at scheduler or job level...
+  #
+  def past?
+
+    @next_time &&
+    @next_time < Time.now - @scheduler.frequency
+  end
+
   protected
 
   def determine_id

@@ -722,6 +722,14 @@ class Rufus::Scheduler
       end
 
     job = job_class.new(self, t, opts, block || callable)
+
+    if job.past? && (d = job.send(:discard_past?))
+      fail ArgumentError.new(
+        "scheduling in the past and discard_past set to :fail"
+          ) if d == :fail
+      return
+    end
+
     job.check_frequency
 
     @jobs.push(job)
