@@ -191,7 +191,34 @@ Interval jobs trigger, execute and then trigger again after the interval elapsed
 
 Cron jobs are based on the venerable cron utility (```man 5 crontab```). They trigger following a pattern given in (almost) the same language cron uses.
 
-####
+### Chronic and "Wed at 2pm"
+
+By default, rufus-scheduler relies on Ruby to parse strings like "Wed at 2pm". But most of the time, when calling this on Thursday, the day before is "invoked". Relying on [Chronic](https://github.com/mojombo/chronic) might solve the issue.
+
+Compare
+
+```ruby
+require 'rufus-scheduler'
+
+scheduler = Rufus::Scheduler.new
+
+scheduler.at('Wed at 2pm') do
+  # ... might point in the past and thus get triggered immediately
+end
+```
+
+with
+
+```ruby
+require 'chronic'
+require 'rufus-scheduler'
+
+scheduler = Rufus::Scheduler.new
+
+scheduler.at('Wed at 2pm') do
+  # ... will point to a time in the future and trigger appropriately
+end
+```
 
 ### #schedule_x vs #x
 
