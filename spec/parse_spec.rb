@@ -131,6 +131,78 @@ describe Rufus::Scheduler do
         expect(t).to be < Time.now
       end
     end
+
+    context 'with Chronic' do
+
+      in_the_future = lambda { |t| t > Time.now }
+
+      {
+
+        'Mon at 2pm' => [
+          in_the_future, lambda { |t| t.wday == 1 } ],
+        'Wed at 2pm' => [
+          in_the_future, lambda { |t| t.wday == 3 } ],
+        'Sun at 3pm' => [
+          in_the_future, lambda { |t| t.wday == 0 } ],
+        'Wed 2pm' => [
+          in_the_future, lambda { |t| t.wday == 3 } ],
+        'Apr 25 at 2pm' => [
+          lambda { |t| t.month == 4 && t.day == 25 && t.hour == 14 } ],
+        'next Apr 25 at 2pm' =>
+          ArgumentError,
+
+      }.each do |k, outcome|
+
+        title=
+          if outcome.is_a?(Class)
+            "fails to parse #{k.inspect}"
+          else
+            "parses #{k.inspect}" +
+            (outcome.is_a?(Array) && outcome.include?(in_the_future) ?
+              ' in the future' : '')
+          end
+
+        it(title) do
+
+          with_chronic do
+            r =
+              begin
+                pa(k)
+              rescue => err
+                err
+              end
+            if outcome.is_a?(Class)
+              expect(r).to be_a(outcome)
+            else
+              outcome.each { |l| expect(l[r]).to eq(true) }
+            end
+          end
+        end
+      end
+    end
+
+    context 'without Chronic' do
+
+      {
+
+        'Mon at 2pm' => lambda { |t| t.wday == 1 },
+        'Wed at 2pm' => lambda { |t| t.wday == 3 },
+        'Sun at 3pm' => lambda { |t| t.wday == 0 },
+        'Wed 2pm' => lambda { |t| t.wday == 3 },
+        'Apr 25 at 2pm' => lambda { |t| t.month == 4 && t.day == 25 }
+
+      }.each do |k, v|
+
+        it "parses #{k.inspect} (in the past potentially...)" do
+
+          without_chronic do
+            t = pa(k)
+            #expect(t > Time.now).to eq(true) # Not necessarily
+            expect(v[t]).to eq(true)
+          end
+        end
+      end
+    end
   end
 
   describe '.parse_duration' do
