@@ -135,6 +135,7 @@ describe Rufus::Scheduler do
     context 'with Chronic' do
 
       in_the_future = lambda { |t| t > Time.now }
+      tomorrow = Time.now + (24 + 1) * 3600
 
       {
 
@@ -148,7 +149,9 @@ describe Rufus::Scheduler do
           in_the_future, lambda { |t| t.wday == 3 } ],
         'Apr 25 at 2pm' => [
           lambda { |t| t.month == 4 && t.day == 25 && t.hour == 14 } ],
-        'next Apr 25 at 2pm' =>
+        #'next Apr 25 at 2pm' =>
+        #  ArgumentError,
+        "next #{tomorrow.strftime('%b %d')} at 2pm" =>
           ArgumentError,
 
       }.each do |k, outcome|
@@ -171,7 +174,6 @@ describe Rufus::Scheduler do
               rescue => err
                 err
               end
-p r.to_s
             if outcome.is_a?(Class)
               expect(r).to be_a(outcome)
             else
