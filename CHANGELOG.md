@@ -2,7 +2,11 @@
 # CHANGELOG.md
 
 
-### rufus-scheduler 3.9.0 - not yet released
+### rufus-scheduler 3.9.0 - released 2023-06-02
+
+* Add note about Chronic and "Wed at 2pm", gh-340
+* Let AtJob and InJob accept discard_past:
+* Enforce discard_past for At and In jobs, gh-339
 
 
 ### rufus-scheduler 3.8.2 - released 2022-07-12
