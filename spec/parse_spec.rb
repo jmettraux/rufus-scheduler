@@ -171,6 +171,7 @@ describe Rufus::Scheduler do
               rescue => err
                 err
               end
+p r.to_s
             if outcome.is_a?(Class)
               expect(r).to be_a(outcome)
             else
