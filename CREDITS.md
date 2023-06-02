@@ -72,6 +72,7 @@
 
 ## Feedback
 
+* jasonwbarnett (https://github.com/jaswonwbarnett) past time jobs, gh-339
 * aphel (https://github.com/itsaphel) #shutdown vs current thread, gh-304
 * aesyondu (https://github.com/aesyondu) Rails console 4.2.x, gh-186
 * Sasha Hoellger (https://github.com/mitnal) parse_cron and readme, gh-270
