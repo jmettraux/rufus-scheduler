@@ -515,6 +515,18 @@ that'll output something like:
 ...
 ```
 
+### :first_at_no_error
+
+In some heavy-duty configurations, the `:first_at` setting might be set on a point of time before the actual scheduling/triggering occurs and will result in an error `"cannot set first[_at|_in] in the past..."`. To prevent that, the `:first_at_no_error` option may be set to true.
+
+```ruby
+scheduler.every '10h', first_at: Time.now + 10, first_at_no_error: true do
+  # ...
+end
+```
+
+As introduced in [gh-342](https://github.com/jmettraux/rufus-scheduler/pull/342).
+
 ### :last_at, :last_in, :last
 
 This option is for repeat jobs (cron / every) only.
