@@ -2,7 +2,9 @@
 # CHANGELOG.md
 
 
-### rufus-scheduler 3.9.1 - not yet released
+### rufus-scheduler 3.9.1 - released 2023-06-09
+
+* Introduce :first_at_no_error option, austinarbor gh-342
 
 
 ### rufus-scheduler 3.9.0 - released 2023-06-02
