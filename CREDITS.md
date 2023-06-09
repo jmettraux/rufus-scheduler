@@ -4,6 +4,7 @@
 
 ## Contributors
 
+* Austin Arbor https://github.com/austinarbor gh-342 first_at_error
 * Bence Monus https://github.com/cromega gh-337 on_error and friends
 * Talia Wong https://github.com/blowfishpro gh-335 on_error and friends
 * Konstantin https://github.com/fa11enangel gh-334 nodejitsu link
