@@ -1658,6 +1658,26 @@ require 'tzinfo/data'
 require 'rufus-scheduler'
 ```
 
+### Timezone in the schedule thread
+
+Currently (3.9.x), rufus-scheduler strives to trigger at the right time. The trigger thread might not yield a `Time.now` in the scheduled timezone.
+
+```ruby
+ENV['TZ'] = 'Asia/Tokyo'
+
+require 'rufus-scheduler'
+
+s = Rufus::Scheduler.new
+
+s.cron('*/5 * * * * * Europe/Rome') do
+  p Time.now # ==> the representation will indicate the time is UTC+0900...
+end
+
+s.join
+```
+
+In the wake of [gh-341](https://github.com/jmettraux/rufus-scheduler/issues/341).
+
 
 ## so Rails?
 
