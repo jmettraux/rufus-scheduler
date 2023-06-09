@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+### rufus-scheduler 3.9.1 - not yet released
+
+
 ### rufus-scheduler 3.9.0 - released 2023-06-02
 
 * Add note about Chronic and "Wed at 2pm", gh-340
