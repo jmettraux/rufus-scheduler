@@ -15,6 +15,8 @@ class Rufus::Scheduler::RepeatJob < Rufus::Scheduler::Job
 
     @times = opts[:times]
 
+    @first_at_no_error = opts[:first_at_no_error] || false
+
     fail ArgumentError.new(
       "cannot accept :times => #{@times.inspect}, not nil or an int"
     ) unless @times == nil || @times.is_a?(Integer)
@@ -43,6 +45,7 @@ class Rufus::Scheduler::RepeatJob < Rufus::Scheduler::Job
 
     @first_at = (fdur && (EoTime.now + fdur)) || EoTime.make(first)
     @first_at = n1 if @first_at >= n0 && @first_at < n1
+    @first_at = n0 if @first_at < n0 && @first_at_no_error
 
     fail ArgumentError.new(
       "cannot set first[_at|_in] in the past: " +
@@ -319,4 +322,3 @@ class Rufus::Scheduler::CronJob < Rufus::Scheduler::RepeatJob
       end
   end
 end
-

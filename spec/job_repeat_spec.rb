@@ -191,6 +191,15 @@ describe Rufus::Scheduler::RepeatJob do
       }.to raise_error(ArgumentError)
     end
 
+    it 'does not raise on points in the past when first_at_no_error is set' do
+      n = Time.now
+      job =
+          @scheduler.schedule_every '7s',
+                                    { :first => Time.now - 60, :first_at_no_error => true } do; end
+
+      expect(job.first_at).to be < n + 0.7
+    end
+
     context ':first_time => :now/:immediately/0' do
 
       it 'schedules the first execution immediately (:first => :now)' do
@@ -439,4 +448,3 @@ describe Rufus::Scheduler::RepeatJob do
     end
   end
 end
-
