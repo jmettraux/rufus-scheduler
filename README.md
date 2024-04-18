@@ -72,6 +72,13 @@ It does not persist your schedules. When the process is gone and the scheduler i
 
 A rufus-scheduler instance will go on scheduling while it is present among the objects in a Ruby process. To make it stop scheduling you have to call its [`#shutdown` method](#schedulershutdown).
 
+Please note: rufus-scheduler is not a cron replacement.
+
+
+## related gems
+
+* [Puma-Rufus-Scheduler](https://github.com/javierav/puma-rufus-scheduler) - Puma plugin to run Rufus-Scheduler
+
 
 ## related and similar gems
 
@@ -80,8 +87,6 @@ A rufus-scheduler instance will go on scheduling while it is present among the o
 * [Clockwork](https://github.com/Rykian/clockwork) - rufus-scheduler inspired gem
 * [Crono](https://github.com/plashchynski/crono) - an in-Rails cron scheduler
 * [PerfectSched](https://github.com/treasure-data/perfectsched) - highly available distributed cron built on [Sequel](https://sequel.jeremyevans.net) and more
-
-(please note: rufus-scheduler is not a cron replacement)
 
 
 ## note about the 3.0 line
