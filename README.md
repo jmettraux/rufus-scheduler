@@ -77,13 +77,13 @@ Please note: rufus-scheduler is not a cron replacement.
 
 ## related gems
 
+* [ruby-clock](https://github.com/jjb/ruby-clock) - a clock process / job scheduler for Ruby
 * [Puma-Rufus-Scheduler](https://github.com/javierav/puma-rufus-scheduler) - Puma plugin to run Rufus-Scheduler
 
 
-## related and similar gems
+## similar gems
 
 * [Whenever](https://github.com/javan/whenever) - let cron call back your Ruby code, trusted and reliable cron drives your schedule
-* [ruby-clock](https://github.com/jjb/ruby-clock) - a clock process / job scheduler for Ruby
 * [Clockwork](https://github.com/Rykian/clockwork) - rufus-scheduler inspired gem
 * [Crono](https://github.com/plashchynski/crono) - an in-Rails cron scheduler
 * [PerfectSched](https://github.com/treasure-data/perfectsched) - highly available distributed cron built on [Sequel](https://sequel.jeremyevans.net) and more
