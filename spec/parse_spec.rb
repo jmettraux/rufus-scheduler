@@ -85,7 +85,7 @@ describe Rufus::Scheduler do
       expect(pa('* 23 * * *').class).to eq(Fugit::Cron)
     end
 
-    it 'raises on unparseable input' do
+    it 'raises on unparsable input' do
 
       expect {
         pa('nada')

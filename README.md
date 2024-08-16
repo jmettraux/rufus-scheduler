@@ -1466,7 +1466,7 @@ The #confirm_lock method is called right before a job triggers (if it is provide
 
 (introduced in rufus-scheduler 3.0.9).
 
-Another way of prodiving `#lock`, `#unlock` and `#confirm_lock` to a rufus-scheduler is by using the `:scheduler_lock` and `:trigger_lock` options.
+Another way of providing `#lock`, `#unlock` and `#confirm_lock` to a rufus-scheduler is by using the `:scheduler_lock` and `:trigger_lock` options.
 
 See [:trigger_lock](#trigger_lock) and [:scheduler_lock](#scheduler_lock).
 
@@ -1784,7 +1784,7 @@ If, anyway, you need something like `rails server -d`, why not try `bundle exec 
 
 ### executor / reloader
 
-You might benefit from wraping your scheduled code in the executor or reloader. Read more here: https://guides.rubyonrails.org/threading_and_code_execution.html
+You might benefit from wrapping your scheduled code in the executor or reloader. Read more here: https://guides.rubyonrails.org/threading_and_code_execution.html
 
 ## support
 
