@@ -26,6 +26,7 @@ Job scheduler for Ruby (at, cron, in and every jobs). Not a replacement for cron
     #'wiki_uri' => s.homepage + '/flor/wiki',
     #'documentation_uri' => s.homepage + '/tree/master/doc',
     #'mailing_list_uri' => 'https://groups.google.com/forum/#!forum/floraison',
+    'rubygems_mfa_required' => 'true',
   }
 
   #s.files = `git ls-files`.split("\n")
