@@ -49,7 +49,7 @@ s.every '5s', :overlap => false do
   puts '.. 1st task started'
   numbers = (0..5000000).to_a.shuffle
   numbers.sort
-  puts 'oo 1nd task finished'
+  puts 'oo 1st task finished'
 end
 
 s.every '7s', :overlap => false do
