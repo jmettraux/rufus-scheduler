@@ -2,7 +2,9 @@
 # CHANGELOG.md
 
 
-### rufus-scheduler 3.9.2 - not yet released
+### rufus-scheduler 3.9.2 - released 2024-09-04
+
+* For fugit >= 1.11.1
 
 
 ### rufus-scheduler 3.9.1 - released 2023-06-09
