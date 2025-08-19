@@ -21,8 +21,9 @@ Job scheduler for Ruby (at, cron, in and every jobs). Not a replacement for cron
   s.metadata = {
     'changelog_uri' => s.homepage + '/blob/master/CHANGELOG.md',
     'bug_tracker_uri' => s.homepage + '/issues',
-    'homepage_uri' =>  s.homepage,
+    'documentation_uri' => s.homepage,
     'source_code_uri' => s.homepage,
+    'homepage_uri' =>  s.homepage,
     #'wiki_uri' => s.homepage + '/flor/wiki',
     #'documentation_uri' => s.homepage + '/tree/master/doc',
     #'mailing_list_uri' => 'https://groups.google.com/forum/#!forum/floraison',
