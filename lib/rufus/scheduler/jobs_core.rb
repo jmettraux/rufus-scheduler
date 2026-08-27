@@ -289,16 +289,21 @@ class Rufus::Scheduler::Job
 
   ensure
 
-    @last_work_time =
-      EoTime.now - ct[:rufus_scheduler_time]
-    @mean_work_time =
-      ((@count - 1) * @mean_work_time + @last_work_time) / @count
+    begin
 
-    post_trigger(time)
+      @last_work_time =
+        EoTime.now - ct[:rufus_scheduler_time]
+      @mean_work_time =
+        ((@count - 1) * @mean_work_time + @last_work_time) / @count
 
-    ct[:rufus_scheduler_job] = nil
-    ct[:rufus_scheduler_time] = nil
-    ct[:rufus_scheduler_timeout] = nil
+      post_trigger(time)
+
+    ensure
+
+      ct[:rufus_scheduler_job] = nil
+      ct[:rufus_scheduler_time] = nil
+      ct[:rufus_scheduler_timeout] = nil
+    end
   end
 
   def post_trigger(time)
