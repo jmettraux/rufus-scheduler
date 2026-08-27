@@ -85,6 +85,14 @@ describe Rufus::Scheduler::AtJob do
       expect(job.next_times(3)).to eq([ job.next_time ])
     end
 
+    it 'returns no times for a nonpositive count' do
+
+      job = @scheduler.schedule_at Time.now + 1 do; end
+
+      expect(job.next_times(0)).to eq([])
+      expect(job.next_times(-1)).to eq([])
+    end
+
     it 'returns an empty array if it already triggered' do
 
       job = @scheduler.schedule_at Time.now + 0.001 do; end
@@ -95,4 +103,3 @@ describe Rufus::Scheduler::AtJob do
     end
   end
 end
-

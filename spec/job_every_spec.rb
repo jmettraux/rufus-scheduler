@@ -197,6 +197,14 @@ describe Rufus::Scheduler::EveryJob do
       expect(job.next_times(3)).to eq(times)
     end
 
+    it 'returns no times for a nonpositive count' do
+
+      job = @scheduler.schedule_every '5m' do; end
+
+      expect(job.next_times(0)).to eq([])
+      expect(job.next_times(-1)).to eq([])
+    end
+
     it 'takes first_at/in into account' do
 
       job = @scheduler.schedule_every '5m', first_in: 3 do; end
@@ -326,4 +334,3 @@ describe Rufus::Scheduler::EveryJob do
     end
   end
 end
-

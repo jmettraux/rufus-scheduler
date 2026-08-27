@@ -143,6 +143,8 @@ class Rufus::Scheduler::RepeatJob < Rufus::Scheduler::Job
   #
   def next_times(count)
 
+    return [] if count < 1
+
     (count - 1).times.inject([ next_time ]) { |a|
       a << next_time_from(a.last)
       a }

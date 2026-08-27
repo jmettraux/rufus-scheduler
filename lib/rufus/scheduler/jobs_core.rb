@@ -195,6 +195,8 @@ class Rufus::Scheduler::Job
 
   def next_times(count)
 
+    return [] if count < 1
+
     next_time ? [ next_time ] : []
   end
 
