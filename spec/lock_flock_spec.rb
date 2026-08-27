@@ -42,6 +42,25 @@ describe Rufus::Scheduler::FileLock do
 
       expect(f.flock(File::LOCK_NB | File::LOCK_EX)).to eq(false)
     end
+
+    it 'closes the file when the lock cannot be acquired' do
+
+      file = double(:file, :flock => false)
+
+      allow(File).to receive(:new).and_return(file)
+      expect(file).to receive(:close)
+
+      expect(@lock.lock).to eq(false)
+    end
+
+    it 'closes and forgets the file when unlocking' do
+
+      @lock.lock
+      file = @lock.instance_variable_get(:@lockfile)
+
+      expect(@lock.unlock).to eq(true)
+      expect(file.closed?).to eq(true)
+      expect(@lock.locked?).to eq(false)
+    end
   end
 end
-
