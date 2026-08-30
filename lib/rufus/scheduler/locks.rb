@@ -54,11 +54,20 @@ class Rufus::Scheduler::FileLock
     @lockfile = file
 
     true
+
+  ensure
+
+    file.close if file && file != @lockfile
   end
 
   def unlock
 
-    !! (@lockfile && @lockfile.flock(File::LOCK_UN))
+    file, @lockfile = @lockfile, nil
+    !! (file && file.flock(File::LOCK_UN))
+
+  ensure
+
+    file.close if file
   end
 
   def locked?
