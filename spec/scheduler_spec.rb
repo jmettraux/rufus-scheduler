@@ -664,6 +664,29 @@ describe Rufus::Scheduler do
 
       expect(h[j0].size).to eq(6)
     end
+
+    it 'respects lifecycle bounds for projected occurrences' do
+
+      t0 = Time.now
+      t1 = t0 + 30 * 60
+
+      finite = @scheduler.schedule_every '5m', :times => 2 do; end
+      bounded = @scheduler.schedule_every '5m', :last_in => '11m' do; end
+      one_time = @scheduler.schedule_at t0 + 10 * 60 do; end
+      one_time.unschedule
+
+      expect(finite.next_times(5).size).to eq(2)
+      expect(finite.occurrences(t0, t1).size).to eq(2)
+      expect(bounded.next_times(5).size).to eq(2)
+      expect(bounded.occurrences(t0, t1).size).to eq(2)
+      expect(one_time.next_times(5)).to eq([])
+      expect(one_time.occurrences(t0, t1)).to eq([])
+
+      finite.unschedule
+
+      expect(finite.next_times(5)).to eq([])
+      expect(finite.occurrences(t0, t1)).to eq([])
+    end
   end
 
   describe '#timeline' do
@@ -1375,4 +1398,3 @@ describe Rufus::Scheduler do
     end
   end
 end
-

@@ -5,6 +5,8 @@ class Rufus::Scheduler::OneTimeJob < Rufus::Scheduler::Job
 
   def occurrences(time0, time1)
 
+    return [] if @unscheduled_at || ! time
+
     (time >= time0 && time <= time1) ? [ time ] : []
   end
 
@@ -58,4 +60,3 @@ class Rufus::Scheduler::InJob < Rufus::Scheduler::OneTimeJob
       opts[:_t] || Rufus::Scheduler.parse_in(duration, opts)
   end
 end
-

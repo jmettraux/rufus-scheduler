@@ -195,9 +195,9 @@ class Rufus::Scheduler::Job
 
   def next_times(count)
 
-    return [] if count < 1
+    return [] if count < 1 || @unscheduled_at || ! next_time
 
-    next_time ? [ next_time ] : []
+    [ next_time ]
   end
 
   # Calls the callable (usually a block) wrapped in this Job instance.
@@ -387,4 +387,3 @@ class Rufus::Scheduler::Job
     dp
   end
 end
-

@@ -120,10 +120,13 @@ class Rufus::Scheduler::RepeatJob < Rufus::Scheduler::Job
     nt = @next_time
     ts = @times
 
+    return a if @unscheduled_at || ! nt
+
     loop do
 
       break if nt > time1
       break if ts && ts <= 0
+      break if @last_at && nt >= @last_at
 
       a << nt if nt >= time0
 
@@ -143,11 +146,17 @@ class Rufus::Scheduler::RepeatJob < Rufus::Scheduler::Job
   #
   def next_times(count)
 
-    return [] if count < 1
+    return [] if count < 1 || @unscheduled_at || ! next_time
 
-    (count - 1).times.inject([ next_time ]) { |a|
-      a << next_time_from(a.last)
-      a }
+    count = [ count, @times ].min if @times
+
+    a = []
+    count.times do
+      nt = a.empty? ? next_time : next_time_from(a.last)
+      break if ! nt || (@last_at && nt >= @last_at)
+      a << nt
+    end
+    a
   end
 end
 
