@@ -534,7 +534,7 @@ class Rufus::Scheduler
 
     unlock
 
-    @thread.join unless @thread == Thread.current
+    @thread.join if @thread && @thread != Thread.current
   end
   alias stop shutdown
 

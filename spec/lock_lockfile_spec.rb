@@ -46,6 +46,17 @@ describe Rufus::Scheduler do
       expect(s1.started_at).to eq(nil)
     end
 
+    it 'lets a scheduler shut down when it could not acquire the lock' do
+
+      s0 = Rufus::Scheduler.new :lockfile => '.rufus-scheduler.lock'
+      s1 = Rufus::Scheduler.new :lockfile => '.rufus-scheduler.lock'
+
+      expect(s1.started_at).to eq(nil)
+      expect { s1.shutdown }.not_to raise_error
+
+      s0.shutdown
+    end
+
     it 'releases the lockfile when shutting down' do
 
       s = Rufus::Scheduler.new :lockfile => '.rufus-scheduler.lock'
@@ -58,4 +69,3 @@ describe Rufus::Scheduler do
     end
   end
 end
-
