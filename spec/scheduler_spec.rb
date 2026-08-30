@@ -1271,6 +1271,24 @@ describe Rufus::Scheduler do
 
       expect($out).to eq([ job_id, "post #{job_id}" ])
     end
+
+    it 'clears job state when the callback raises' do
+
+      def @scheduler.on_post_trigger(job)
+        fail "post trigger failure for #{job.id}"
+      end
+      def @scheduler.on_error(job, error); end
+
+      job = @scheduler.schedule_in '0s', :blocking => true do; end
+
+      wait_until { job.last_time }
+      sleep 0.4
+
+      expect(job.running?).to eq(false)
+      expect(@scheduler.thread[:rufus_scheduler_job]).to eq(nil)
+      expect(@scheduler.thread[:rufus_scheduler_time]).to eq(nil)
+      expect(@scheduler.thread[:rufus_scheduler_timeout]).to eq(nil)
+    end
   end
 
   describe '#around_trigger' do
@@ -1375,4 +1393,3 @@ describe Rufus::Scheduler do
     end
   end
 end
-
